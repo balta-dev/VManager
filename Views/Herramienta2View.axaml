@@ -1,0 +1,7 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="VManager.Views.Herramienta2View"
+             x:DataType="vm:Herramienta2ViewModel"
+             xmlns:vm="using:VManager.ViewModels">
+    <TextBlock Text="{Binding Mensaje}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+</UserControl>
