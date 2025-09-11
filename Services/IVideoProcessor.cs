@@ -21,5 +21,5 @@ namespace VManager.Services
             string audioCodec,
             IProgress<double> progress);
     }
-    public record ProcessingResult(bool Success, string Message, string? OutputFile = null);
+    //public record ProcessingResult(bool Success, string Message, string? OutputFile = null);
 }

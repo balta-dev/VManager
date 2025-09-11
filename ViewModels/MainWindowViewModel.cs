@@ -1,6 +1,9 @@
-﻿using ReactiveUI;
+﻿using System;
+using System.Diagnostics;
+using ReactiveUI;
 using System.Reactive;
 using System.Reactive.Concurrency;
+using System.Runtime.InteropServices;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using Avalonia;
@@ -22,10 +25,13 @@ public class MainWindowViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> GoToHerramienta1 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta2 { get; }
     public ReactiveCommand<Unit, Unit> ToggleThemeCommand { get; }
+    
+    public ReactiveCommand<Unit, Unit> OpenGitHubCommand { get; }
 
     public MainWindowViewModel()
     {
         ToggleThemeCommand = ReactiveCommand.Create(ToggleTheme, outputScheduler: AvaloniaScheduler.Instance);
+        OpenGitHubCommand = ReactiveCommand.Create(OpenGitHub, outputScheduler: AvaloniaScheduler.Instance);
         
         GoToHerramienta1 = ReactiveCommand.Create(
             () =>
@@ -53,6 +59,31 @@ public class MainWindowViewModel : ViewModelBase
         app.RequestedThemeVariant = app.ActualThemeVariant == ThemeVariant.Dark
             ? ThemeVariant.Light
             : ThemeVariant.Dark;
+    }
+    
+    private void OpenGitHub()
+    {
+        string url = "https://github.com/balta-dev";
+        try
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                Process.Start("xdg-open", url);
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                Process.Start("open", url);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Optionally handle or log the error (e.g., show a message dialog)
+            System.Console.WriteLine($"Failed to open GitHub: {ex.Message}");
+        }
     }
 }
 
