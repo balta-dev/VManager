@@ -927,5 +927,5 @@
 /mnt/ntfs/Programacion/VManager/bin/Debug/net9.0/libvlc/win-x86/plugins/visualization/libprojectm_plugin.dll
 /mnt/ntfs/Programacion/VManager/bin/Debug/net9.0/libvlc/win-x86/plugins/visualization/libvisual_plugin.dll
 /mnt/ntfs/Programacion/VManager/bin/Debug/net9.0/Assets/Sounds/click.wav
-/mnt/ntfs/Programacion/VManager/bin/Debug/net9.0/Assets/Sounds/hover.wav
 /mnt/ntfs/Programacion/VManager/bin/Debug/net9.0/Assets/Sounds/toggletheme.wav
+/mnt/ntfs/Programacion/VManager/bin/Debug/net9.0/Assets/Sounds/click_legacy.wav
