@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VManager")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0a41599dcf6611bdaa4ad9e5b28cf7f2a7493ab4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8a737a0ca4d22fee8e3878f596ffbba24005c01d")]
 [assembly: System.Reflection.AssemblyProductAttribute("VManager")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VManager")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

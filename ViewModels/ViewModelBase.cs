@@ -17,13 +17,12 @@ public class ViewModelBase : ReactiveObject
     public string VideoPath { get; set; } = "";
     public int Progress { get; set; }
     public string Status { get; set; } = "";
-
+    
+    public ReactiveCommand<Unit, Unit> BrowseCommand { get; }
     public ViewModelBase()
     {
-        GlobalFFOptions.Configure(options => options.BinaryFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin", "ffmpeg"));
         BrowseCommand = ReactiveCommand.CreateFromTask(BrowseVideo, outputScheduler: AvaloniaScheduler.Instance);
     }
-    
     private async Task BrowseVideo()
     {
         TopLevel? topLevel = null; 
@@ -57,5 +56,5 @@ public class ViewModelBase : ReactiveObject
         }
             
     }
-    public ReactiveCommand<Unit, Unit> BrowseCommand { get; }
+    
 }
