@@ -4,15 +4,37 @@ using FFMpegCore;
 using FFMpegCore.Enums;
 using ReactiveUI;
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
+using VManager.Services;
 
 namespace VManager.ViewModels
 {
     public class Herramienta2ViewModel : ViewModelBase
     {
+        
+        // Listas de codecs
+        public ObservableCollection<string> AvailableVideoCodecs { get; } = new();
+        public ObservableCollection<string> AvailableAudioCodecs { get; } = new();
+
+        // Selected
+        private string _selectedVideoCodec = null;
+        public string SelectedVideoCodec
+        {
+            get => _selectedVideoCodec;
+            set => this.RaiseAndSetIfChanged(ref _selectedVideoCodec, value);
+        }
+
+        private string _selectedAudioCodec = null;
+        public string SelectedAudioCodec
+        {
+            get => _selectedAudioCodec;
+            set => this.RaiseAndSetIfChanged(ref _selectedAudioCodec, value);
+        }
         
         private string _porcentajeCompresionUsuario = "75"; // valor por defecto, 75%
         public string PorcentajeCompresionUsuario
@@ -25,6 +47,41 @@ namespace VManager.ViewModels
         public Herramienta2ViewModel()
         {
             CompressCommand = ReactiveCommand.CreateFromTask(CompressVideo, outputScheduler: AvaloniaScheduler.Instance);
+            TestCodecs();
+            LoadCodecsAsync();
+        }
+        
+        private async Task LoadCodecsAsync()
+        {
+            var codecService = new CodecService();
+            var videoCodecs = await codecService.GetAvailableVideoCodecsAsync();
+            var audioCodecs = await codecService.GetAvailableAudioCodecsAsync();
+
+            AvailableVideoCodecs.Clear();
+            foreach (var v in videoCodecs)
+                AvailableVideoCodecs.Add(v);
+
+            AvailableAudioCodecs.Clear();
+            foreach (var a in audioCodecs)
+                AvailableAudioCodecs.Add(a);
+            
+            SelectedVideoCodec = AvailableVideoCodecs.FirstOrDefault() ?? "libx264";
+            SelectedAudioCodec = AvailableAudioCodecs.Contains("aac") 
+                ? "aac" 
+                : AvailableAudioCodecs.FirstOrDefault();
+        }
+        
+        private async void TestCodecs() //debugging. muestra los codecs en consola.
+        {
+            var codecService = new VManager.Services.CodecService();
+            var videoCodecs = await codecService.GetAvailableVideoCodecsAsync();
+            var audioCodecs = await codecService.GetAvailableAudioCodecsAsync();
+
+            Console.WriteLine("Video codecs:");
+            foreach (var v in videoCodecs) Console.WriteLine(v);
+
+            Console.WriteLine("Audio codecs:");
+            foreach (var a in audioCodecs) Console.WriteLine(a);
         }
         
         private async Task CompressVideo()
@@ -45,51 +102,41 @@ namespace VManager.ViewModels
 
             Status = "Obteniendo información del video...";
             this.RaisePropertyChanged(nameof(Status));
+            
+            var videoCodec = SelectedVideoCodec ?? "libx264";
+            var audioCodec = SelectedAudioCodec ?? "aac";
 
-            var mediaInfo = await FFProbe.AnalyseAsync(VideoPath);
-            double duration = mediaInfo.Duration.TotalSeconds;
-            if (duration <= 0)
+            // Preparar archivo de salida
+            string outputFile = Path.Combine(
+                Path.GetDirectoryName(VideoPath)!,
+                Path.GetFileNameWithoutExtension(VideoPath) + $"-{percentValue}.mp4"
+            );
+
+            // Crear processor y progreso
+            var processor = new VideoProcessor();
+            var progress = new Progress<double>(p =>
             {
-                Status = "Error al obtener duración.";
-                this.RaisePropertyChanged(nameof(Status));
-                return;
-            }
-
-            long sizeBytes = new FileInfo(VideoPath).Length;
-            if (sizeBytes <= 0)
-            {
-                Status = "Error al obtener tamaño.";
-                this.RaisePropertyChanged(nameof(Status));
-                return;
-            }
-
-            long targetSize = sizeBytes * percentValue / 100;
-            int targetBitrate = (int)((targetSize * 8) / duration / 1000); // kbps
-
-            string outputFile = Path.Combine(Path.GetDirectoryName(VideoPath)!, Path.GetFileNameWithoutExtension(VideoPath) + $"-{percentValue}.mp4");
+                Progress = (int)(p * 100);
+                this.RaisePropertyChanged(nameof(Progress));
+            });
 
             Status = "Comprimiendo...";
             this.RaisePropertyChanged(nameof(Status));
 
-            await FFMpegArguments
-                .FromFileInput(VideoPath)
-                .OutputToFile(outputFile, overwrite: true, options => options
-                    .WithVideoCodec(VideoCodec.LibX264)
-                    .WithVideoBitrate(targetBitrate)
-                    .WithAudioCodec(AudioCodec.Aac)
-                    .WithAudioBitrate(128))
-                    .NotifyOnProgress(time =>
-                    {
-                        Progress = (int)(time.TotalSeconds / duration * 100);
-                        this.RaisePropertyChanged(nameof(Progress));
-                    })
-                .ProcessAsynchronously();
+            // Ejecutar compresión
+            var result = await processor.CompressAsync(
+                VideoPath,
+                outputFile,
+                percentValue,
+                videoCodec,
+                audioCodec,
+                progress
+            );
 
-            Status = $"Listo: {outputFile}";
+            Status = result.Message;
             Progress = 100;
             this.RaisePropertyChanged(nameof(Status));
             this.RaisePropertyChanged(nameof(Progress));
-            
         }
         
     }

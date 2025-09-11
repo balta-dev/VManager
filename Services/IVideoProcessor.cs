@@ -17,8 +17,9 @@ namespace VManager.Services
             string inputPath,
             string outputPath,
             int compressionPercentage,
+            string videoCodec,
+            string audioCodec,
             IProgress<double> progress);
     }
-
     public record ProcessingResult(bool Success, string Message, string? OutputFile = null);
 }

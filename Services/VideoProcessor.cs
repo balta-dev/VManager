@@ -35,12 +35,10 @@ namespace VManager.Services
                         .WithDuration(duration))
                     .NotifyOnProgress(time =>
                     {
-                        double progressValue = time.TotalSeconds / duration.TotalSeconds;
-                        progress.Report(progressValue);
+                        progress.Report(time.TotalSeconds / duration.TotalSeconds);
                     });
 
                 await args.ProcessAsynchronously();
-
                 return new ProcessingResult(true, "Corte realizado correctamente.", outputPath);
             }
             catch (Exception ex)
@@ -53,6 +51,8 @@ namespace VManager.Services
             string inputPath,
             string outputPath,
             int compressionPercentage,
+            string videoCodec,
+            string audioCodec,
             IProgress<double> progress)
         {
             if (!File.Exists(inputPath))
@@ -72,18 +72,16 @@ namespace VManager.Services
                 var args = FFMpegArguments
                     .FromFileInput(inputPath)
                     .OutputToFile(outputPath, overwrite: true, options => options
-                        .WithVideoCodec(VideoCodec.LibX264)
+                        .WithVideoCodec(videoCodec)
                         .WithVideoBitrate(targetBitrate)
-                        .WithAudioCodec(AudioCodec.Aac)
+                        .WithAudioCodec(audioCodec)
                         .WithAudioBitrate(128))
                     .NotifyOnProgress(time =>
                     {
-                        double progressValue = time.TotalSeconds / duration;
-                        progress.Report(progressValue);
+                        progress.Report(time.TotalSeconds / duration);
                     });
 
                 await args.ProcessAsynchronously();
-
                 return new ProcessingResult(true, "Compresión realizada correctamente.", outputPath);
             }
             catch (Exception ex)
@@ -92,4 +90,5 @@ namespace VManager.Services
             }
         }
     }
+
 }
