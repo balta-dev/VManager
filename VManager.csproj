@@ -10,8 +10,13 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
-    <AvaloniaResource Include="Assets\**" />
-  </ItemGroup>
+    <!-- Recursos de Avalonia (imágenes, iconos) -->
+    <AvaloniaResource Include="Assets\**" Exclude="Assets\Sounds\**" />
+    <!-- Archivos de sonido como contenido que se copia -->
+    <None Include="Assets\Sounds\**\*">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.3.5" />
@@ -22,5 +27,9 @@
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.5" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="FFMpegCore" Version="5.2.0" />
+    <PackageReference Include="LibVLCSharp" Version="3.9.4" />
+    <PackageReference Include="LibVLCSharp.Avalonia" Version="3.9.4" />
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.21" />
   </ItemGroup>
 </Project>

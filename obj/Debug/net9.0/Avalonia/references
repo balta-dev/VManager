@@ -25,7 +25,11 @@
 /home/balta/.nuget/packages/avalonia.x11/11.3.5/lib/net8.0/Avalonia.X11.dll
 /home/balta/.nuget/packages/communitytoolkit.mvvm/8.2.1/lib/net6.0/CommunityToolkit.Mvvm.dll
 /home/balta/.nuget/packages/dynamicdata/8.4.1/lib/net8.0/DynamicData.dll
+/home/balta/.nuget/packages/ffmpegcore/5.2.0/lib/netstandard2.0/FFMpegCore.dll
 /home/balta/.nuget/packages/harfbuzzsharp/8.3.1.1/lib/net8.0/HarfBuzzSharp.dll
+/home/balta/.nuget/packages/instances/3.0.1/lib/netstandard2.0/Instances.dll
+/home/balta/.nuget/packages/libvlcsharp.avalonia/3.9.4/lib/netstandard2.0/LibVLCSharp.Avalonia.dll
+/home/balta/.nuget/packages/libvlcsharp/3.9.4/lib/net8.0/LibVLCSharp.dll
 /home/balta/.nuget/packages/microcom.runtime/0.11.0/lib/net5.0/MicroCom.Runtime.dll
 /usr/share/dotnet/packs/Microsoft.NETCore.App.Ref/9.0.8/ref/net9.0/Microsoft.CSharp.dll
 /usr/share/dotnet/packs/Microsoft.NETCore.App.Ref/9.0.8/ref/net9.0/Microsoft.VisualBasic.Core.dll

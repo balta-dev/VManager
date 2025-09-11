@@ -8,21 +8,28 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="VManager"
-        Width="800" Height="450">
+        Width="800" Height="450"
+        Background="{DynamicResource WindowBackgroundBrush}">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <DockPanel Margin="20">
-        <!-- Menú de navegación -->
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="10">
-            <Button Content="VCut" Command="{Binding GoToHerramienta1}" />
-            <Button Content="VCompr" Command="{Binding GoToHerramienta2}" />
-        </StackPanel>
-
-        <!-- Contenido dinámico -->
+    <DockPanel Margin="0,0,0,0">
+     
+        <Grid DockPanel.Dock="Top" Margin="20,20,20,0" ColumnDefinitions="Auto Auto * Auto">
+            <Button Grid.Column="0" Content="VCut" Command="{Binding GoToHerramienta1}" Margin="0,0,10,0"/>
+            <Button Grid.Column="1" Content="VCompr" Command="{Binding GoToHerramienta2}" Margin="0,0,10,0"/>
+            <Button x:Name="ToggleTheme" Grid.Column="3" Content="Cambiar Tema" Command="{Binding ToggleThemeCommand}" Margin="0,0,0,0"/>
+        </Grid>
+        
+        <!-- Mensaje de bienvenida -->
+        <TextBlock Text="Bienvenido a VManager. Para comenzar, seleccione una herramienta." 
+                   FontSize="14" Margin="20,10,0,0"
+                   IsVisible="{Binding IsWelcomeVisible}" />
+        
         <ContentControl Content="{Binding CurrentView}" />
+        
     </DockPanel>
 
 </Window>

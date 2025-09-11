@@ -71,6 +71,22 @@
             "CommunityToolkit.Mvvm": {
               "target": "Package",
               "version": "[8.2.1, )"
+            },
+            "FFMpegCore": {
+              "target": "Package",
+              "version": "[5.2.0, )"
+            },
+            "LibVLCSharp": {
+              "target": "Package",
+              "version": "[3.9.4, )"
+            },
+            "LibVLCSharp.Avalonia": {
+              "target": "Package",
+              "version": "[3.9.4, )"
+            },
+            "VideoLAN.LibVLC.Windows": {
+              "target": "Package",
+              "version": "[3.0.21, )"
             }
           },
           "imports": [
