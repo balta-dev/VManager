@@ -14,7 +14,7 @@
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-
+    
     <DockPanel Margin="0,0,0,0">
      
         <Grid DockPanel.Dock="Top" Margin="20,20,20,0" ColumnDefinitions="Auto Auto * Auto">
@@ -23,8 +23,9 @@
             <Button x:Name="ToggleTheme" Grid.Column="3" Content="Cambiar Tema" Command="{Binding ToggleThemeCommand}" Margin="0,0,0,0"/>
         </Grid>
         
+        
         <!-- Footer -->
-        <Button DockPanel.Dock="Bottom" Content="Created by Baltazar Franz ❤️" 
+        <Button DockPanel.Dock="Bottom" Content="Creado por Baltazar Franz ❤️" 
                 Command="{Binding OpenGitHubCommand}"
                 FontSize="14" HorizontalAlignment="Center" Margin="0,0,0,10" Opacity="0.7"
                 Background="Transparent" BorderBrush="Transparent" Cursor="Hand"/>
@@ -34,7 +35,7 @@
                    FontSize="14" Margin="20,10,0,0"
                    IsVisible="{Binding IsWelcomeVisible}" />
         
-        <ContentControl Content="{Binding CurrentView}" />
+        <ContentControl x:Name="ContentArea" Content="{Binding CurrentView}" Background="Transparent" />
         
     </DockPanel>
 

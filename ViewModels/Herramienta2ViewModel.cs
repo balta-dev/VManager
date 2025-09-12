@@ -43,49 +43,63 @@ namespace VManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref _porcentajeCompresionUsuario, value);
         }
         public ReactiveCommand<Unit, Unit> CompressCommand { get; }
+        public ReactiveCommand<Unit, Unit> RefreshCodecsCommand { get; } 
         
         public Herramienta2ViewModel()
         {
+            RefreshCodecsCommand = ReactiveCommand.CreateFromTask(ReloadCodecsAsync, outputScheduler: AvaloniaScheduler.Instance);
             CompressCommand = ReactiveCommand.CreateFromTask(CompressVideo, outputScheduler: AvaloniaScheduler.Instance);
-            TestCodecs();
-            LoadCodecsAsync();
+            _ = LoadCodecsAsync();
         }
-        
-        private async Task LoadCodecsAsync()
+
+        private async Task LoadOrRefreshCodecsAsync(Func<Task<CodecCache>> getCacheFunc)
         {
             var codecService = new CodecService();
-            var videoCodecs = await codecService.GetAvailableVideoCodecsAsync();
-            var audioCodecs = await codecService.GetAvailableAudioCodecsAsync();
+            var cacheService = new CodecCacheService(codecService);
+
+            var cache = await getCacheFunc.Invoke();
 
             AvailableVideoCodecs.Clear();
-            foreach (var v in videoCodecs)
+            foreach (var v in cache.VideoCodecs)
                 AvailableVideoCodecs.Add(v);
 
             AvailableAudioCodecs.Clear();
-            foreach (var a in audioCodecs)
+            foreach (var a in cache.AudioCodecs)
                 AvailableAudioCodecs.Add(a);
-            
+
             SelectedVideoCodec = AvailableVideoCodecs.FirstOrDefault() ?? "libx264";
-            SelectedAudioCodec = AvailableAudioCodecs.Contains("aac") 
-                ? "aac" 
+            SelectedAudioCodec = AvailableAudioCodecs.Contains("aac")
+                ? "aac"
                 : AvailableAudioCodecs.FirstOrDefault();
+
+            Console.WriteLine($"Hardware detectado: {cache.Hardware}");
         }
         
-        private async void TestCodecs() //debugging. muestra los codecs en consola.
+        private Task LoadCodecsAsync()
         {
-            var codecService = new VManager.Services.CodecService();
-            var videoCodecs = await codecService.GetAvailableVideoCodecsAsync();
-            var audioCodecs = await codecService.GetAvailableAudioCodecsAsync();
-
-            Console.WriteLine("Video codecs:");
-            foreach (var v in videoCodecs) Console.WriteLine(v);
-
-            Console.WriteLine("Audio codecs:");
-            foreach (var a in audioCodecs) Console.WriteLine(a);
+            return LoadOrRefreshCodecsAsync(async () =>
+            {
+                var codecService = new CodecService();
+                var cacheService = new CodecCacheService(codecService);
+                return await cacheService.LoadOrBuildCacheAsync();
+            });
         }
+        
+        private Task ReloadCodecsAsync()
+        {
+            return LoadOrRefreshCodecsAsync(async () =>
+            {
+                var codecService = new CodecService();
+                var cacheService = new CodecCacheService(codecService);
+                return await cacheService.RefreshCacheAsync();
+            });
+        }
+        
         
         private async Task CompressVideo()
         {
+            HideFileReadyButton();
+            
             if (!File.Exists(VideoPath))
             {
                 Status = "Archivo no encontrado.";
@@ -133,6 +147,13 @@ namespace VManager.ViewModels
                 progress
             );
 
+            if (result.Success)
+            {
+                SoundManager.Play("success.wav");
+                SetLastCompressedFile(result.OutputPath);
+            }
+            else SoundManager.Play("fail.wav");
+            
             Status = result.Message;
             Progress = 100;
             this.RaisePropertyChanged(nameof(Status));

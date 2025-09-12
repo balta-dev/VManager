@@ -1,0 +1,25 @@
+{
+  "VideoCodecs": [
+    "h264_vaapi",
+    "hevc_vaapi",
+    "libx264",
+    "libx265",
+    "libvpx-vp9",
+    "libx264rgb"
+  ],
+  "AudioCodecs": [
+    "aac",
+    "flac",
+    "libmp3lame",
+    "libopus",
+    "libvorbis"
+  ],
+  "Hardware": {
+    "Nvidia": false,
+    "AMD": true,
+    "Intel": false,
+    "VAAPI": true,
+    "WindowsMediaFoundation": false,
+    "VideoToolbox": false
+  }
+}

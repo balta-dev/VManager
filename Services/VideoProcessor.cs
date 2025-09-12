@@ -96,9 +96,10 @@ namespace VManager.Services
                     {
                         progress.Report(time.TotalSeconds / duration);
                     });
-
+                
                 await args.ProcessAsynchronously();
-                return new ProcessingResult(true, "Compresión realizada correctamente.", outputPath);
+                return new ProcessingResult(true, $"¡Compresión finalizada!\nArchivo: {outputPath}", outputPath);
+
             }
             catch (Exception ex)
             {

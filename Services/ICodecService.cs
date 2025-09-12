@@ -7,5 +7,6 @@ namespace VManager.Services
     {
         Task<IReadOnlyList<string>> GetAvailableVideoCodecsAsync();
         Task<IReadOnlyList<string>> GetAvailableAudioCodecsAsync();
+        Task<HardwareCapabilities> GetHardwareCapabilitiesAsync();
     }
 }

@@ -85,5 +85,6 @@ public class MainWindowViewModel : ViewModelBase
             System.Console.WriteLine($"Failed to open GitHub: {ex.Message}");
         }
     }
+    
 }
 
