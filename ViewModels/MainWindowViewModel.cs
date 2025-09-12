@@ -12,6 +12,9 @@ namespace VManager.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
+    private Herramienta1ViewModel _herramienta1;
+    private Herramienta2ViewModel _herramienta2;
+    
     private ViewModelBase? _currentView;
     public ViewModelBase? CurrentView
     {
@@ -33,11 +36,14 @@ public class MainWindowViewModel : ViewModelBase
         ToggleThemeCommand = ReactiveCommand.Create(ToggleTheme, outputScheduler: AvaloniaScheduler.Instance);
         OpenGitHubCommand = ReactiveCommand.Create(OpenGitHub, outputScheduler: AvaloniaScheduler.Instance);
         
+        _herramienta1 = new Herramienta1ViewModel();
+        _herramienta2 = new Herramienta2ViewModel();
+        
         GoToHerramienta1 = ReactiveCommand.Create(
             () =>
             {
-                CurrentView = new Herramienta1ViewModel();
-                return Unit.Default; 
+                CurrentView = _herramienta1;
+                return Unit.Default;
             },
             outputScheduler: AvaloniaScheduler.Instance
         );
@@ -45,12 +51,11 @@ public class MainWindowViewModel : ViewModelBase
         GoToHerramienta2 = ReactiveCommand.Create(
             () =>
             {
-                CurrentView = new Herramienta2ViewModel();
-                return Unit.Default; 
+                CurrentView = _herramienta2;
+                return Unit.Default;
             },
             outputScheduler: AvaloniaScheduler.Instance
         );
-        
     }
     
     private void ToggleTheme()
