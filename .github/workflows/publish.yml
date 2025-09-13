@@ -3,11 +3,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:  # Esto habilita el arranque manual
 jobs:
   build:
     runs-on: windows-latest
     permissions:
-      contents: write # Permite crear y editar releases
+      contents: write  # Para crear releases
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
