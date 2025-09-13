@@ -1,5 +1,0 @@
-/mnt/ntfs/Programacion/VManager/bin/Release/net9.0/win-x64/publish/VManager.pdb
-/mnt/ntfs/Programacion/VManager/bin/Release/net9.0/win-x64/publish/av_libglesv2.dll
-/mnt/ntfs/Programacion/VManager/bin/Release/net9.0/win-x64/publish/libHarfBuzzSharp.dll
-/mnt/ntfs/Programacion/VManager/bin/Release/net9.0/win-x64/publish/libSkiaSharp.dll
-/mnt/ntfs/Programacion/VManager/bin/Release/net9.0/win-x64/publish/VManager.exe
