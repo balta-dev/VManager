@@ -6,6 +6,8 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    permissions:
+      contents: write # Permite crear y editar releases
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
