@@ -10,3 +10,6 @@ obj/
 *.user
 *.vs
 *.cache
+
+# Logs
+log.txt
