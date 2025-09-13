@@ -8,28 +8,51 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
 
+  <!-- Carpetas de recursos y binarios -->
   <ItemGroup>
+    <Folder Include="Binaries\Linux\" />
+    <Folder Include="Binaries\Mac\" />
+    <Folder Include="Binaries\Windows\" />
     <Folder Include="Models\" />
-    <!-- Recursos de Avalonia (imágenes, iconos) -->
-    <AvaloniaResource Include="Assets\**" Exclude="Assets\Sounds\**" />
-    <!-- Archivos de sonido como contenido que se copia -->
-    <None Include="Assets\Sounds\**\*">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-</ItemGroup>
 
+    <!-- Recursos Avalonia (excluyendo sonidos) -->
+    <AvaloniaResource Include="Assets\**" Exclude="Assets\Sounds\**" />
+
+    <!-- Sonidos incrustados -->
+    <EmbeddedResource Include="Assets\Sounds\**\*" />
+
+    <!-- Excluir ffplay explícitamente si existe -->
+    <None Remove="Binaries\Linux\ffplay" />
+    <None Remove="Binaries\Windows\ffplay.exe" />
+  </ItemGroup>
+
+  <!-- Paquetes NuGet -->
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.3.5" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.5" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.5" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.5" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.5" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.5" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="FFMpegCore" Version="5.2.0" />
-    <PackageReference Include="LibVLCSharp" Version="3.9.4" />
-    <PackageReference Include="LibVLCSharp.Avalonia" Version="3.9.4" />
-    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.21" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="System.Windows.Extensions" Version="9.0.9" />
+    <PackageReference Include="Xabe.FFmpeg" Version="6.0.0" />
+  </ItemGroup>
+
+  <!-- Binarios ffmpeg y ffprobe incrustados -->
+  <ItemGroup>
+    <!-- Linux -->
+    <None Remove="Binaries\Linux\ffmpeg" />
+    <EmbeddedResource Include="Binaries\Linux\ffmpeg" />
+    <None Remove="Binaries\Linux\ffprobe" />
+    <EmbeddedResource Include="Binaries\Linux\ffprobe" />
+
+    <!-- Windows -->
+    <None Remove="Binaries\Windows\ffmpeg.exe" />
+    <EmbeddedResource Include="Binaries\Windows\ffmpeg.exe" />
+    <None Remove="Binaries\Windows\ffprobe.exe" />
+    <EmbeddedResource Include="Binaries\Windows\ffprobe.exe" />
   </ItemGroup>
 </Project>

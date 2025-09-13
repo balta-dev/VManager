@@ -3,7 +3,7 @@
              x:Class="VManager.App"
              xmlns:local="using:VManager"
              RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
         <local:ViewLocator/>
@@ -13,17 +13,17 @@
         <FluentTheme />
     </Application.Styles>
              
-             <Application.Resources>
-                 <!-- Tema Claro -->
-                 <SolidColorBrush x:Key="PanelBackgroundBrushLight">#fff5f0</SolidColorBrush>
-                 <SolidColorBrush x:Key="BorderBrushPrimaryLight">#FFAAAAAA</SolidColorBrush>
-                 <SolidColorBrush x:Key="WindowBackgroundBrushLight">#fff7f3</SolidColorBrush>
+    <Application.Resources>
+        <!-- Tema Claro -->
+        <SolidColorBrush x:Key="PanelBackgroundBrushLight">#fff5f0</SolidColorBrush>
+        <SolidColorBrush x:Key="BorderBrushPrimaryLight">#FFAAAAAA</SolidColorBrush>
+        <SolidColorBrush x:Key="WindowBackgroundBrushLight">#fff7f3</SolidColorBrush>
 
-                 <!-- Tema Oscuro -->
-                 <SolidColorBrush x:Key="PanelBackgroundBrushDark">#FF2A2A2A</SolidColorBrush>
-                 <SolidColorBrush x:Key="BorderBrushPrimaryDark">#FF444444</SolidColorBrush>
-                 <SolidColorBrush x:Key="WindowBackgroundBrushDark">#1c1c1c</SolidColorBrush>
-             </Application.Resources>
+        <!-- Tema Oscuro -->
+        <SolidColorBrush x:Key="PanelBackgroundBrushDark">#FF2A2A2A</SolidColorBrush>
+        <SolidColorBrush x:Key="BorderBrushPrimaryDark">#FF444444</SolidColorBrush>
+        <SolidColorBrush x:Key="WindowBackgroundBrushDark">#1c1c1c</SolidColorBrush>
+    </Application.Resources>
 
              
 </Application>

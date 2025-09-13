@@ -48,7 +48,7 @@ namespace VManager.Services
             }
             catch (Exception ex)
             {
-                return new ProcessingResult(false, $"Error: {ex.Message}");
+                return new ProcessingResult(false, $"[DEBUG]: Error: {ex.Message}");
             }
         }
 
@@ -62,8 +62,19 @@ namespace VManager.Services
         {
             if (!File.Exists(inputPath))
                 return new ProcessingResult(false, "Archivo no encontrado.");
-
-            var mediaInfo = await FFProbe.AnalyseAsync(inputPath);
+           
+            IMediaAnalysis mediaInfo;
+            try
+            {
+                mediaInfo = await FFProbe.AnalyseAsync(inputPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DEBUG]: Error FFPROBE: {ex.Message}");
+                Console.WriteLine($"[DEBUG]: Stack Trace: {ex.StackTrace}");
+                return new ProcessingResult(false, $"Error al analizar el video: {ex.Message}");
+            }
+            
             double duration = mediaInfo.Duration.TotalSeconds;
             if (duration <= 0)
                 return new ProcessingResult(false, "Error al obtener duración.");
@@ -103,6 +114,7 @@ namespace VManager.Services
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"[DEBUG]: Error: {ex.Message}");
                 return new ProcessingResult(false, $"Error: {ex.Message}");
             }
         }

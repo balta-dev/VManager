@@ -15,17 +15,17 @@ namespace VManager.Behaviors
 
             foreach (var button in buttons)
             {
-                button.PointerEntered -= OnHover;
+                //button.PointerEntered -= OnHover;
                 button.Click -= OnClick;
 
                 if (button.Name == "ToggleTheme")
                 {
-                    button.PointerEntered += OnHover;
+                    //button.PointerEntered += OnHover;
                     button.Click += (s, e) => SoundManager.Play("toggletheme.wav");
                 }
                 else
                 {
-                    button.PointerEntered += OnHover;
+                    //button.PointerEntered += OnHover;
                     button.Click += OnClick;
                 }
             }

@@ -76,17 +76,17 @@
               "target": "Package",
               "version": "[5.2.0, )"
             },
-            "LibVLCSharp": {
+            "NAudio": {
               "target": "Package",
-              "version": "[3.9.4, )"
+              "version": "[2.2.1, )"
             },
-            "LibVLCSharp.Avalonia": {
+            "System.Windows.Extensions": {
               "target": "Package",
-              "version": "[3.9.4, )"
+              "version": "[9.0.9, )"
             },
-            "VideoLAN.LibVLC.Windows": {
+            "Xabe.FFmpeg": {
               "target": "Package",
-              "version": "[3.0.21, )"
+              "version": "[6.0.0, )"
             }
           },
           "imports": [

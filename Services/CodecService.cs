@@ -17,15 +17,7 @@ namespace VManager.Services
 
         public CodecService()
         {
-            _ffmpegPath = GetFFmpegPath();
-        }
-
-        private string GetFFmpegPath()
-        {
-            string basePath = AppDomain.CurrentDomain.BaseDirectory;
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                ? Path.Combine(basePath, "bin", "ffmpeg.exe")
-                : "/usr/bin/ffmpeg";
+            _ffmpegPath = FFmpegManager.FfmpegPath;
         }
 
         public async Task<IReadOnlyList<string>> GetAvailableVideoCodecsAsync()
@@ -139,6 +131,8 @@ namespace VManager.Services
 
             try
             {
+                //Console.WriteLine($"[DEBUG]: PATH de FFMPEG: {_ffmpegPath}");
+                
                 using var process = new Process { StartInfo = psi };
                 process.Start();
                 string output = await process.StandardOutput.ReadToEndAsync();
@@ -190,6 +184,21 @@ namespace VManager.Services
         private async Task<HardwareCapabilities> DetectWindowsHardwareAsync()
         {
             var capabilities = new HardwareCapabilities();
+            capabilities.Windows = true;
+            
+            // Detectar NVIDIA de forma independiente
+            try
+            {
+                capabilities.Nvidia = await DetectNvidiaWindowsAsync();
+                Console.WriteLine($"Resultado de DetectNvidiaWindowsAsync: Nvidia = {capabilities.Nvidia}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al detectar NVIDIA: {ex.Message}");
+                capabilities.Nvidia = false;
+            }
+
+            // Detectar AMD e Intel usando wmic
             try
             {
                 var psi = new ProcessStartInfo
@@ -197,24 +206,43 @@ namespace VManager.Services
                     FileName = "wmic",
                     Arguments = "path win32_VideoController get name",
                     RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
 
+                Console.WriteLine("Iniciando proceso wmic...");
                 using var process = Process.Start(psi);
                 if (process != null)
                 {
+                    Console.WriteLine("Proceso wmic iniciado correctamente");
                     var output = await process.StandardOutput.ReadToEndAsync();
+                    var error = await process.StandardError.ReadToEndAsync();
                     await process.WaitForExitAsync();
+                    Console.WriteLine($"Salida de wmic: {output}");
+                    Console.WriteLine($"Error de wmic: {error}");
+                    Console.WriteLine($"Código de salida de wmic: {process.ExitCode}");
+
                     var lowerOutput = output.ToLower();
                     capabilities.AMD = lowerOutput.Contains("amd") || lowerOutput.Contains("radeon");
                     capabilities.Intel = lowerOutput.Contains("intel");
-                    capabilities.Nvidia = await DetectNvidiaWindowsAsync();
+                    // Opcional: respaldo para NVIDIA usando wmic
+                    capabilities.Nvidia |= lowerOutput.Contains("nvidia"); // Combina con el resultado de DetectNvidiaWindowsAsync
                     capabilities.WindowsMediaFoundation = Environment.OSVersion.Version.Major >= 10;
+
+                    Console.WriteLine($"Valores asignados: AMD = {capabilities.AMD}, Intel = {capabilities.Intel}, Nvidia = {capabilities.Nvidia}");
+                }
+                else
+                {
+                    Console.WriteLine("Error: No se pudo iniciar el proceso wmic");
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Excepción en wmic: {ex.Message}");
+            }
 
+            Console.WriteLine($"Resultado final: Nvidia = {capabilities.Nvidia}, AMD = {capabilities.AMD}, Intel = {capabilities.Intel}");
             return capabilities;
         }
 
@@ -248,6 +276,7 @@ namespace VManager.Services
         private async Task<HardwareCapabilities> DetectLinuxHardwareAsync()
         {
             var capabilities = new HardwareCapabilities();
+            capabilities.Linux = true;
             try
             {
                 if (Directory.Exists("/sys/class/drm"))
@@ -329,7 +358,11 @@ namespace VManager.Services
 
         private async Task<HardwareCapabilities> DetectMacHardwareAsync()
         {
-            return new HardwareCapabilities { VideoToolbox = true }; // ✅ Corregido: devolver directamente el objeto
+            return new HardwareCapabilities 
+            { 
+                VideoToolbox = true,
+                Mac = true
+            };
         }
 
         private string GetTestCommandForCodec(string codecName)
@@ -458,6 +491,12 @@ namespace VManager.Services
 
     public class HardwareCapabilities
     {
+        
+        public bool Windows { get; set; }
+        
+        public bool Linux { get; set; }
+        
+        public bool Mac { get; set; }
         public bool Nvidia { get; set; }
         public bool AMD { get; set; }
         public bool Intel { get; set; }
@@ -468,12 +507,18 @@ namespace VManager.Services
         public override string ToString()
         {
             var capabilities = new List<string>();
+            
+            if (Windows) capabilities.Add("Windows");
+            if (Linux) capabilities.Add("Linux");
+            if (Mac) capabilities.Add("Mac");
+            
             if (Nvidia) capabilities.Add("NVIDIA");
             if (AMD) capabilities.Add("AMD");
             if (Intel) capabilities.Add("Intel");
             if (VAAPI) capabilities.Add("VAAPI");
             if (WindowsMediaFoundation) capabilities.Add("Windows Media Foundation");
             if (VideoToolbox) capabilities.Add("VideoToolbox");
+            
             return capabilities.Any() ? string.Join(", ", capabilities) : "Software Only";
         }
     }

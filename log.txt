@@ -1,0 +1,20 @@
+[DEBUG]: Iniciando VManager...
+[DEBUG] ffmpeg: /tmp/ffmpeg
+[DEBUG] ffprobe: /tmp/ffprobe
+[DEBUG]: Hardware detectado: Linux, AMD, VAAPI
+[DEBUG] Recurso extraído: /tmp/click.wav
+[DEBUG] [APLAY] Reproduciendo: click.wav
+[DEBUG] Recurso extraído: /tmp/click.wav
+[DEBUG] [APLAY] Reproduciendo: click.wav
+[DEBUG] Recurso extraído: /tmp/click.wav
+[DEBUG] [APLAY] Reproduciendo: click.wav
+[INFO] [APLAY] Sonido reproducido: click.wav
+[DEBUG] Archivo temporal eliminado: /tmp/click.wav
+[INFO] [APLAY] Sonido reproducido: click.wav
+[INFO] [APLAY] Sonido reproducido: click.wav
+[DEBUG] Recurso extraído: /tmp/click.wav
+[DEBUG] [APLAY] Reproduciendo: click.wav
+[INFO] [APLAY] Sonido reproducido: click.wav
+[DEBUG] Archivo temporal eliminado: /tmp/click.wav
+[DEBUG]: ¡Caché regenerado!
+[DEBUG]: Hardware detectado: Linux, AMD, VAAPI

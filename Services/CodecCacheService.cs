@@ -53,7 +53,7 @@ namespace VManager.Services
                 Hardware = hw
             };
 
-            Console.WriteLine("¡Caché regenerado!");
+            Console.WriteLine("[DEBUG]: ¡Caché regenerado!");
             
             await SaveCacheAsync(_cache);
             return _cache;
