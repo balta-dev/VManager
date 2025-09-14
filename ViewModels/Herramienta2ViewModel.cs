@@ -132,16 +132,20 @@ namespace VManager.ViewModels
             {
                 SoundManager.Play("success.wav");
                 SetLastCompressedFile(result.OutputPath);
+                Status = result.Message;
+                Progress = 100;
+                this.RaisePropertyChanged(nameof(Status));
+                this.RaisePropertyChanged(nameof(Progress));
             }
             else
             {
                 SoundManager.Play("fail.wav");
+                Status = result.Message; 
+                Progress = 0;
+                this.RaisePropertyChanged(nameof(Status));
+                this.RaisePropertyChanged(nameof(Progress));
             }
-
-            Status = result.Message;
-            Progress = 100;
-            this.RaisePropertyChanged(nameof(Status));
-            this.RaisePropertyChanged(nameof(Progress));
+            
         }
         
     }

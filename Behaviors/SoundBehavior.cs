@@ -23,7 +23,7 @@ namespace VManager.Behaviors
                 {
                     button.Click += OnToggleThemeClick;
                 }
-                else
+                else if (string.IsNullOrEmpty(button.Name) || !button.Name.Contains("QuestionMark"))
                 {
                     button.Click += OnClick;
                 }

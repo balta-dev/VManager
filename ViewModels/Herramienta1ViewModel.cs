@@ -87,6 +87,7 @@ namespace VManager.ViewModels
             
             if (!TryParseTime(TiempoDesde, out TimeSpan start))
             {
+                SoundManager.Play("fail.wav");
                 Status = "Tiempo 'desde' inválido";
                 this.RaisePropertyChanged(nameof(Status));
                 return;
@@ -94,6 +95,7 @@ namespace VManager.ViewModels
 
             if (!TryParseTime(TiempoHasta, out TimeSpan end))
             {
+                SoundManager.Play("fail.wav");
                 Status = "Tiempo 'hasta' inválido";
                 this.RaisePropertyChanged(nameof(Status));
                 return;
@@ -101,6 +103,7 @@ namespace VManager.ViewModels
 
             if (end <= start)
             {
+                SoundManager.Play("fail.wav");
                 Status = "Tiempo 'hasta' debe ser mayor que tiempo 'desde'";
                 this.RaisePropertyChanged(nameof(Status));
                 return;
@@ -133,16 +136,20 @@ namespace VManager.ViewModels
             {
                 SoundManager.Play("success.wav");
                 SetLastCompressedFile(result.OutputPath);
+                Status = result.Message;
+                Progress = 100;
+                this.RaisePropertyChanged(nameof(Status));
+                this.RaisePropertyChanged(nameof(Progress));
             }
             else
             {
                 SoundManager.Play("fail.wav");
+                Status = result.Message; 
+                Progress = 0;
+                this.RaisePropertyChanged(nameof(Status));
+                this.RaisePropertyChanged(nameof(Progress));
             }
-
-            Status = result.Message;
-            Progress = 100;
-            this.RaisePropertyChanged(nameof(Status));
-            this.RaisePropertyChanged(nameof(Progress));
+            
         }
         
         public string Mensaje => "Acá voy a meter una User Interface para VCUT";

@@ -15,6 +15,20 @@ public class MainWindowViewModel : ViewModelBase
     private Herramienta1ViewModel _herramienta1;
     private Herramienta2ViewModel _herramienta2;
     
+    private bool _herramienta1Activa;
+    public bool Herramienta1Activa
+    {
+        get => _herramienta1Activa;
+        set => this.RaiseAndSetIfChanged(ref _herramienta1Activa, value);
+    }
+
+    private bool _herramienta2Activa;
+    public bool Herramienta2Activa
+    {
+        get => _herramienta2Activa;
+        set => this.RaiseAndSetIfChanged(ref _herramienta2Activa, value);
+    }
+    
     private ViewModelBase? _currentView;
     public ViewModelBase? CurrentView
     {
@@ -28,7 +42,6 @@ public class MainWindowViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> GoToHerramienta1 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta2 { get; }
     public ReactiveCommand<Unit, Unit> ToggleThemeCommand { get; }
-    
     public ReactiveCommand<Unit, Unit> OpenGitHubCommand { get; }
 
     public MainWindowViewModel()
@@ -42,6 +55,8 @@ public class MainWindowViewModel : ViewModelBase
         GoToHerramienta1 = ReactiveCommand.Create(
             () =>
             {
+                Herramienta1Activa = true;
+                Herramienta2Activa = false;
                 CurrentView = _herramienta1;
                 return Unit.Default;
             },
@@ -51,6 +66,8 @@ public class MainWindowViewModel : ViewModelBase
         GoToHerramienta2 = ReactiveCommand.Create(
             () =>
             {
+                Herramienta2Activa = true;
+                Herramienta1Activa = false;
                 CurrentView = _herramienta2;
                 return Unit.Default;
             },

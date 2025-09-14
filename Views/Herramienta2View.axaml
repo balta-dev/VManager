@@ -14,6 +14,8 @@
         
     <StackPanel Margin="20" Spacing="10"  HorizontalAlignment="Center" VerticalAlignment="Center">
         
+        <TextBlock Text="Compresión de Videos" FontSize="25" HorizontalAlignment="Center" FontWeight="Bold"/>
+        
         <!-- Botón para refrescar codecs -->
         <Button Content="🗘 Regenerar caché"
                 Command="{Binding RefreshCodecsCommand}"
@@ -36,7 +38,7 @@
             <TextBlock Text="Porcentaje de Calidad:" FontSize="14" VerticalAlignment="Center"/>
             <TextBox Text="{Binding PorcentajeCompresionUsuario}" Width="10" Margin="0,0,0,0"/>
             <TextBlock Text="%" FontSize="14" VerticalAlignment="Center"/>
-            <Button Width="30" Margin="0,0,5,0">
+            <Button x:Name="QuestionMark" Width="30" Margin="0,0,5,0">
                 <Button.Content>
                     <TextBlock Text="?" FontWeight="Bold"/>
                 </Button.Content>
@@ -60,7 +62,7 @@
         <!-- Video Codec -->
         <TextBlock Text="Códec de Video:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,10,0,0"/>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-            <Button Content="?" Width="30" Margin="0,0,5,0" FontWeight="Bold"> 
+            <Button x:Name="QuestionMark2" Content="?" Width="30" Margin="0,0,5,0" FontWeight="Bold"> 
                 <ToolTip.Tip>
                     <TextBlock MaxWidth="400" TextWrapping="Wrap">
                         <Run Text="La opción predeterminada es la mejor para la mayoría de los casos."/>
@@ -84,7 +86,7 @@
         <!-- Audio Codec -->
         <TextBlock Text="Códec de Audio:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,10,0,0"/>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-            <Button Content="?" Width="30" Margin="0,0,5,0" FontWeight="Bold"> 
+            <Button x:Name="QuestionMark3" Content="?" Width="30" Margin="0,0,5,0" FontWeight="Bold"> 
                 <ToolTip.Tip>
                     <TextBlock MaxWidth="400" TextWrapping="Wrap">
                         <Run Text="La opción predeterminada es la mejor para la mayoría de los casos."/>
@@ -104,7 +106,11 @@
         </StackPanel>
 
         <!-- Barra de progreso -->
-        <ProgressBar Minimum="0" Maximum="100" Value="{Binding Progress}" Height="20" Width="420" Margin="0,30,0,0"/>
+        <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+            <ProgressBar Minimum="0" Maximum="100" Value="{Binding Progress}" Height="20" Width="420" Margin="0,30,0,0"/>
+            <TextBlock Text="{Binding Progress, StringFormat={}{0}%}"
+                       Width="40" Margin="0,30,0,0"/>
+        </StackPanel>
         
         <!-- Botón para comprimir -->
         <Button Content="Comprimir Video" Command="{Binding CompressCommand}" Width="130" Margin="0,5,0,0" HorizontalAlignment="Center"/>

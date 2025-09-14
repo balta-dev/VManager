@@ -18,10 +18,28 @@
     <DockPanel Margin="0,0,0,0">
      
         <Grid DockPanel.Dock="Top" Margin="20,20,20,0" ColumnDefinitions="Auto Auto * Auto">
-            <Button Grid.Column="0" Content="VCut" Command="{Binding GoToHerramienta1}" Margin="0,0,10,0"/>
-            <Button Grid.Column="1" Content="VCompr" Command="{Binding GoToHerramienta2}" Margin="0,0,10,0"/>
-            <Button x:Name="ToggleTheme" Grid.Column="3" Content="Cambiar Tema" Command="{Binding ToggleThemeCommand}" Margin="0,0,0,0"/>
+
+            <!-- Herramienta 1 -->
+            <ToggleButton Grid.Column="0"
+                          Content="VCut"
+                          IsChecked="{Binding Herramienta1Activa}"
+                          Command="{Binding GoToHerramienta1}"
+                          Margin="0,0,10,0"/>
+
+            <!-- Herramienta 2 -->
+            <ToggleButton Grid.Column="1"
+                          Content="VCompr"
+                          IsChecked="{Binding Herramienta2Activa}"
+                          Command="{Binding GoToHerramienta2}"
+                          Margin="0,0,10,0"/>
+
+            <!-- Cambiar tema -->
+            <Button x:Name="ToggleTheme"
+                    Grid.Column="3"
+                    Content="Cambiar Tema"
+                    Command="{Binding ToggleThemeCommand}"/>
         </Grid>
+
         
         <!-- Footer -->
         <Button DockPanel.Dock="Bottom" Content="Creado por Baltazar Franz ❤️" 
