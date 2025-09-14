@@ -14,6 +14,7 @@ namespace VManager.Views
         {
             InitializeComponent();
             SoundBehavior.Attach(this);
+            SoundManager.Play("dummy.wav");
             
             // implementación a medias, no tengo windows para testear que siquiera funcione. capaz debería probar en x11.
             ContentArea.AddHandler(DragDrop.DragOverEvent, DragOverHandler, Avalonia.Interactivity.RoutingStrategies.Tunnel);
