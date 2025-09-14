@@ -24,7 +24,7 @@
         <!-- Selección de archivo de video -->
         <TextBlock Text="Seleccionar Video:" FontSize="14" Margin="0,0,0,3"/>
         <DockPanel>
-            <Button Content="Examinar" Command="{Binding BrowseCommand}" Width="100" Margin="0,0,10,0"/>
+            <Button  Content="Examinar"  Command="{Binding BrowseCommand}" Width="100" Margin="0,0,10,0"/>
             <TextBox Text="{Binding VideoPath}" IsReadOnly="True" Watermark="Ruta del video" Width="300"/>
         </DockPanel>
         
@@ -114,7 +114,8 @@
         
         <Button Content="Mostrar archivo en carpeta"
                 IsVisible="{Binding IsFileReadyVisible}"
-                Command="{Binding ShowFileInFolderCommand}"/>
+                Command="{Binding ShowFileInFolderCommand}"
+                HorizontalAlignment="Center"/>
         
     </StackPanel>
     </Border>

@@ -9,8 +9,6 @@ namespace VManager.Services
             string outputPath,
             TimeSpan start,
             TimeSpan duration,
-            string videoCodec,
-            string audioCodec,
             IProgress<double> progress);
 
         Task<ProcessingResult> CompressAsync(

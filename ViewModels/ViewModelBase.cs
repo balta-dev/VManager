@@ -15,6 +15,8 @@ namespace VManager.ViewModels;
 public class ViewModelBase : ReactiveObject
 {
     public string VideoPath { get; set; } = "";
+    
+    public string OutputPath { get; set; } = "";
     public int Progress { get; set; }
     public string Status { get; set; } = "";
     

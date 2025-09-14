@@ -23,7 +23,6 @@
             <Button x:Name="ToggleTheme" Grid.Column="3" Content="Cambiar Tema" Command="{Binding ToggleThemeCommand}" Margin="0,0,0,0"/>
         </Grid>
         
-        
         <!-- Footer -->
         <Button DockPanel.Dock="Bottom" Content="Creado por Baltazar Franz ❤️" 
                 Command="{Binding OpenGitHubCommand}"

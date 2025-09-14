@@ -8,109 +8,161 @@ namespace VManager.Services
 {
     public class VideoProcessor : IVideoProcessor
     {
-        public async Task<ProcessingResult> CutAsync(
-            string inputPath,
-            string outputPath,
-            TimeSpan start,
-            TimeSpan duration,
-            string videoCodec,
-            string audioCodec,
-            IProgress<double> progress)
+        public static class ErrorMessages
         {
-            if (!File.Exists(inputPath))
-                return new ProcessingResult(false, "Archivo no encontrado.");
-
-            var mediaInfo = await FFProbe.AnalyseAsync(inputPath);
-            if (mediaInfo.Duration.TotalSeconds <= 0)
-                return new ProcessingResult(false, "Error al obtener duración.");
-
+            public const string FileNotFound = "Archivo no encontrado.";
+            public const string InvalidPercentage = "Porcentaje inválido.";
+            public const string AnalysisError = "Error al analizar el video: {0}";
+            public const string InvalidDuration = "Error al obtener duración.";
+            public const string InvalidCutParameters = "Parámetros de corte inválidos.";
+        }
+        private (string videoCodec, string audioCodec) GetDefaultCodecs(string? videoCodec, string? audioCodec)
+        {
+            return (videoCodec ?? "libx264", audioCodec ?? "aac");
+        }
+        private static async Task<AnalysisResult<IMediaAnalysis>> AnalyzeVideoAsync(string inputPath)
+        {
             try
             {
-                var args = FFMpegArguments
-                    .FromFileInput(inputPath)
-                    .OutputToFile(outputPath, overwrite: true, options =>
-                    {
-                        options
-                            .WithVideoCodec(videoCodec)
-                            .WithAudioCodec(audioCodec)
-                            .WithAudioBitrate(128);
-
-                        // Aquí aplicás la aceleración según el codec
-                        ConfigureHardwareAcceleration(options, videoCodec);
-                    })
-                    .NotifyOnProgress(time =>
-                    {
-                        progress.Report(time.TotalSeconds / duration.TotalSeconds);
-                    });
-
-                await args.ProcessAsynchronously();
-                return new ProcessingResult(true, "Corte realizado correctamente.", outputPath);
+                if (!File.Exists(inputPath))
+                    return new AnalysisResult<IMediaAnalysis>(false, ErrorMessages.FileNotFound);
+                
+                var mediaInfo = await FFProbe.AnalyseAsync(inputPath);
+                double duration = mediaInfo.Duration.TotalSeconds;
+                if (duration <= 0)
+                {
+                    return new AnalysisResult<IMediaAnalysis>(false, ErrorMessages.InvalidDuration);
+                }
+                return new AnalysisResult<IMediaAnalysis>(true, "Análisis completado", mediaInfo);
             }
             catch (Exception ex)
             {
-                return new ProcessingResult(false, $"[DEBUG]: Error: {ex.Message}");
+                Console.WriteLine($"[DEBUG]: Error: {ex.Message}");
+                Console.WriteLine($"[DEBUG]: Stack Trace: {ex.StackTrace}");
+                return new AnalysisResult<IMediaAnalysis>(false, string.Format(ErrorMessages.AnalysisError, ex.Message));
             }
         }
+        
+        public async Task<ProcessingResult> CutAsync(
+        string inputPath,
+        string outputPath,
+        TimeSpan start,
+        TimeSpan duration,
+        IProgress<double> progress)
+    {
+        var analysisResult = await AnalyzeVideoAsync(inputPath);
+        if (!analysisResult.Success)
+        {
+            return new ProcessingResult(false, analysisResult.Message);
+        }
 
+        var mediaInfo = analysisResult.Result!;
+        double totalDuration = mediaInfo.Duration.TotalSeconds;
+        
+        string directory = Path.GetDirectoryName(inputPath)!;
+        string fileName = Path.GetFileNameWithoutExtension(inputPath);
+        string extension = Path.GetExtension(inputPath); 
+        outputPath = Path.Combine(directory, $"{fileName}-VCUT{extension}");
+
+        // Validar parámetros de corte
+        string warningMessage = null;
+        if (start < TimeSpan.Zero || duration <= TimeSpan.Zero)
+        {
+            return new ProcessingResult(false, ErrorMessages.InvalidCutParameters);
+        }
+        if (start.TotalSeconds + duration.TotalSeconds > totalDuration)
+        {
+            // Ajustar duration para que no exceda el video
+            duration = TimeSpan.FromSeconds(totalDuration - start.TotalSeconds);
+            // Retornar un mensaje de advertencia
+            warningMessage = $"Advertencia: La duración del corte se ajustó automáticamente a {duration}.";
+        }
+        try
+        {
+            Console.WriteLine($"Corte - Video: copy, Audio: copy, Inicio: {start}, Duración: {duration}");
+
+            var args = FFMpegArguments
+                .FromFileInput(inputPath, false, options => options.Seek(start))
+                .OutputToFile(outputPath, overwrite: true, options =>
+                {
+                    options
+                        .WithVideoCodec("copy")
+                        .WithAudioCodec("copy")
+                        .WithDuration(duration);
+                })
+                .NotifyOnProgress(time =>
+                {
+                    progress.Report(time.TotalSeconds / duration.TotalSeconds);
+                });
+
+            await args.ProcessAsynchronously();
+            
+            string finalMessage = $"¡Corte finalizado!\nArchivo: {outputPath}";
+            if (!string.IsNullOrEmpty(warningMessage))
+            {
+                finalMessage += $"\n{warningMessage}";
+            }
+            
+            return new ProcessingResult(true, finalMessage, outputPath);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[DEBUG]: Error: {ex.Message}");
+            Console.WriteLine($"[DEBUG]: Stack Trace: {ex.StackTrace}");
+            return new ProcessingResult(false, $"Error: {ex.Message}");
+        }
+    }
         public async Task<ProcessingResult> CompressAsync(
             string inputPath,
             string outputPath,
             int compressionPercentage,
-            string videoCodec,
-            string audioCodec,
+            string? videoCodec,
+            string? audioCodec,
             IProgress<double> progress)
         {
-            if (!File.Exists(inputPath))
-                return new ProcessingResult(false, "Archivo no encontrado.");
-           
-            IMediaAnalysis mediaInfo;
-            try
+            
+            var (selectedVideoCodec, selectedAudioCodec) = GetDefaultCodecs(videoCodec, audioCodec);
+
+            var analysisResult = await AnalyzeVideoAsync(inputPath);
+            if (!analysisResult.Success)
             {
-                mediaInfo = await FFProbe.AnalyseAsync(inputPath);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[DEBUG]: Error FFPROBE: {ex.Message}");
-                Console.WriteLine($"[DEBUG]: Stack Trace: {ex.StackTrace}");
-                return new ProcessingResult(false, $"Error al analizar el video: {ex.Message}");
+                return new ProcessingResult(false, analysisResult.Message);
             }
             
+            string extension = Path.GetExtension(inputPath);
+            string outputFileName = Path.GetFileNameWithoutExtension(inputPath) + $"-{compressionPercentage}{extension}";
+            outputPath = Path.Combine(Path.GetDirectoryName(inputPath)!, outputFileName);
+            
+            var mediaInfo = analysisResult.Result!;
             double duration = mediaInfo.Duration.TotalSeconds;
-            if (duration <= 0)
-                return new ProcessingResult(false, "Error al obtener duración.");
 
             long sizeBytes = new FileInfo(inputPath).Length;
             long targetSize = sizeBytes * compressionPercentage / 100;
             int targetBitrate = (int)((targetSize * 8) / duration / 1000);
-
-            // Asegurar bitrate mínimo razonable
             targetBitrate = Math.Max(targetBitrate, 100);
 
             try
             {
-                Console.WriteLine($"Compresión - Video: {videoCodec}, Audio: {audioCodec}, Bitrate: {targetBitrate} kbps");
-                
+                Console.WriteLine($"Compresión - Video: {selectedVideoCodec}, Audio: {selectedAudioCodec}, Bitrate: {targetBitrate} kbps");
+
                 var args = FFMpegArguments
                     .FromFileInput(inputPath)
                     .OutputToFile(outputPath, overwrite: true, options =>
                     {
                         options
-                            .WithVideoCodec(videoCodec)
+                            .WithVideoCodec(selectedVideoCodec)
                             .WithVideoBitrate(targetBitrate)
-                            .WithAudioCodec(audioCodec)
+                            .WithAudioCodec(selectedAudioCodec)
                             .WithAudioBitrate(128);
-
-                        // Aquí aplicás la aceleración según el codec
-                        ConfigureHardwareAcceleration(options, videoCodec);
+                        ConfigureHardwareAcceleration(options, selectedVideoCodec);
                     })
                     .NotifyOnProgress(time =>
                     {
                         progress.Report(time.TotalSeconds / duration);
                     });
-                
+
                 await args.ProcessAsynchronously();
                 return new ProcessingResult(true, $"¡Compresión finalizada!\nArchivo: {outputPath}", outputPath);
-
             }
             catch (Exception ex)
             {
@@ -118,7 +170,6 @@ namespace VManager.Services
                 return new ProcessingResult(false, $"Error: {ex.Message}");
             }
         }
-
         private void ConfigureHardwareAcceleration(FFMpegArgumentOptions opts, string videoCodec)
         {
             var codec = videoCodec.ToLower();
@@ -136,7 +187,6 @@ namespace VManager.Services
                 ConfigureMacAcceleration(opts, codec);
             }
         }
-
         private void ConfigureWindowsAcceleration(FFMpegArgumentOptions opts, string codec)
         {
             switch (codec)
@@ -188,7 +238,6 @@ namespace VManager.Services
                     break;
             }
         }
-
         private void ConfigureLinuxAcceleration(FFMpegArgumentOptions opts, string codec)
         {
             switch (codec)
@@ -242,7 +291,6 @@ namespace VManager.Services
                     break;
             }
         }
-
         private void ConfigureMacAcceleration(FFMpegArgumentOptions opts, string codec)
         {
             switch (codec)
@@ -272,7 +320,6 @@ namespace VManager.Services
             }
         }
     }
-
     public class ProcessingResult
     {
         public bool Success { get; }
@@ -284,6 +331,19 @@ namespace VManager.Services
             Success = success;
             Message = message;
             OutputPath = outputPath;
+        }
+    }
+    public class AnalysisResult<T>
+    {
+        public bool Success { get; }
+        public string Message { get; }
+        public T? Result { get; }
+
+        public AnalysisResult(bool success, string message, T? result = default)
+        {
+            Success = success;
+            Message = message;
+            Result = result;
         }
     }
 }

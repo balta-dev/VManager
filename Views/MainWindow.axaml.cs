@@ -4,6 +4,7 @@ using Avalonia.Input;
 using System.Linq;
 using VManager.Behaviors;
 using Avalonia.Interactivity;
+using VManager.Services;
 
 namespace VManager.Views
 {

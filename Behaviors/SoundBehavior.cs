@@ -11,30 +11,38 @@ namespace VManager.Behaviors
     {
         public static void Attach(ILogical container)
         {
+            
             var buttons = container.GetLogicalDescendants().OfType<Button>();
 
             foreach (var button in buttons)
             {
-                //button.PointerEntered -= OnHover;
                 button.Click -= OnClick;
-
+                button.Click -= OnToggleThemeClick;
+                
                 if (button.Name == "ToggleTheme")
                 {
-                    //button.PointerEntered += OnHover;
-                    button.Click += (s, e) => SoundManager.Play("toggletheme.wav");
+                    button.Click += OnToggleThemeClick;
                 }
                 else
                 {
-                    //button.PointerEntered += OnHover;
                     button.Click += OnClick;
                 }
             }
         }
-
-        private static void OnHover(object? sender, PointerEventArgs e)
-            => SoundManager.Play("hover.wav");
-
-        private static void OnClick(object? sender, RoutedEventArgs e)
-            => SoundManager.Play("click.wav");
+        
+        private static async void OnHover(object? sender, PointerEventArgs e)
+        {
+            await SoundManager.Play("hover.wav");
+        }
+        
+        private static async void OnClick(object? sender, RoutedEventArgs e)
+        {
+            await SoundManager.Play("click.wav");
+        }
+        
+        private static async void OnToggleThemeClick(object? sender, RoutedEventArgs e)
+        {
+            await SoundManager.Play("toggletheme.wav");
+        }
     }
 }

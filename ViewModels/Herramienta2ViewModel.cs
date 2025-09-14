@@ -95,17 +95,9 @@ namespace VManager.ViewModels
             });
         }
         
-        
         private async Task CompressVideo()
         {
             HideFileReadyButton();
-            
-            if (!File.Exists(VideoPath))
-            {
-                Status = "Archivo no encontrado.";
-                this.RaisePropertyChanged(nameof(Status));
-                return;
-            }
 
             if (!int.TryParse(PorcentajeCompresionUsuario, out int percentValue) || percentValue <= 0 || percentValue > 100)
             {
@@ -116,17 +108,7 @@ namespace VManager.ViewModels
 
             Status = "Obteniendo información del video...";
             this.RaisePropertyChanged(nameof(Status));
-            
-            var videoCodec = SelectedVideoCodec ?? "libx264";
-            var audioCodec = SelectedAudioCodec ?? "aac";
 
-            // Preparar archivo de salida
-            string outputFile = Path.Combine(
-                Path.GetDirectoryName(VideoPath)!,
-                Path.GetFileNameWithoutExtension(VideoPath) + $"-{percentValue}.mp4"
-            );
-
-            // Crear processor y progreso
             var processor = new VideoProcessor();
             var progress = new Progress<double>(p =>
             {
@@ -136,24 +118,26 @@ namespace VManager.ViewModels
 
             Status = "Comprimiendo...";
             this.RaisePropertyChanged(nameof(Status));
-
-            // Ejecutar compresión
+            
             var result = await processor.CompressAsync(
                 VideoPath,
-                outputFile,
+                OutputPath,
                 percentValue,
-                videoCodec,
-                audioCodec,
+                SelectedVideoCodec,
+                SelectedAudioCodec,
                 progress
             );
-
+            
             if (result.Success)
             {
                 SoundManager.Play("success.wav");
                 SetLastCompressedFile(result.OutputPath);
             }
-            else SoundManager.Play("fail.wav");
-            
+            else
+            {
+                SoundManager.Play("fail.wav");
+            }
+
             Status = result.Message;
             Progress = 100;
             this.RaisePropertyChanged(nameof(Status));

@@ -3,5 +3,63 @@
              x:Class="VManager.Views.Herramienta1View"
              x:DataType="vm:Herramienta1ViewModel"
              xmlns:vm="using:VManager.ViewModels">
-    <TextBlock Text="{Binding Mensaje}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Border 
+        BorderBrush="{DynamicResource BorderBrushPrimary}" 
+        BorderThickness="2" 
+        CornerRadius="10" 
+        Padding="15" 
+        Margin="20"
+        Background="{DynamicResource PanelBackgroundBrush}">
+        
+    <StackPanel Margin="20" Spacing="10"  HorizontalAlignment="Center" VerticalAlignment="Center">
+        
+        <!-- Selección de archivo de video -->
+        <TextBlock Text="Seleccionar Video:" FontSize="14" Margin="0,0,0,3"/>
+        <DockPanel>
+            <Button Content="Examinar" Command="{Binding BrowseCommand}" Width="100" Margin="0,0,10,0"/>
+            <TextBox Text="{Binding VideoPath}" IsReadOnly="True" Watermark="Ruta del video" Width="300"/>
+        </DockPanel>
+        
+        <!-- Desde -->
+        <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+            <TextBlock Text="Recortar desde:" FontSize="14" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding TiempoDesde}" Width="100" Watermark="(hh:mm:ss)" Margin="0,0,0,0"/>
+            <Button Width="30" Margin="0,0,5,0">
+                <Button.Content>
+                    <TextBlock Text="?" FontWeight="Bold"/>
+                </Button.Content>
+                <ToolTip.Tip>
+                    <TextBlock MaxWidth="400" TextWrapping="Wrap">
+                        <Run Text="Se acepta formato en segundos y/o tiempo tradicional (hh:mm:ss)."/>
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Run Text="Siempre y cuando sean tiempos válidos, puedes utilizarlo como tú desees."/>
+                    </TextBlock>
+                </ToolTip.Tip>
+            </Button>
+        </StackPanel>
+        
+        <!-- Desde -->
+        <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+            <TextBlock Text="Recortar hasta: " FontSize="14" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding TiempoHasta}" Width="100" Watermark="(hh:mm:ss)" Margin="0,0,0,0"/>
+        </StackPanel>
+        
+
+        <!-- Barra de progreso -->
+        <ProgressBar Minimum="0" Maximum="100" Value="{Binding Progress}" Height="20" Width="420" Margin="0,30,0,0"/>
+        
+        <!-- Botón para comprimir -->
+        <Button Content="Recortar Video" Command="{Binding CutCommand}" Width="130" Margin="0,5,0,0" HorizontalAlignment="Center"/>
+
+        <!-- Estado -->
+        <TextBlock Text="{Binding Status}" FontSize="14" Margin="0,3,0,0" HorizontalAlignment="Center"/>
+        
+        <Button Content="Mostrar archivo en carpeta"
+                IsVisible="{Binding IsFileReadyVisible}"
+                Command="{Binding ShowFileInFolderCommand}"
+                HorizontalAlignment="Center"/>
+        
+    </StackPanel>
+    </Border>
 </UserControl>
