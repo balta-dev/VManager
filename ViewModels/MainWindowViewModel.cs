@@ -14,6 +14,7 @@ public class MainWindowViewModel : ViewModelBase
 {
     private Herramienta1ViewModel _herramienta1;
     private Herramienta2ViewModel _herramienta2;
+    private Herramienta3ViewModel _herramienta3;
     
     private bool _herramienta1Activa;
     public bool Herramienta1Activa
@@ -29,6 +30,13 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _herramienta2Activa, value);
     }
     
+    private bool _herramienta3Activa;
+    public bool Herramienta3Activa
+    {
+        get => _herramienta3Activa;
+        set => this.RaiseAndSetIfChanged(ref _herramienta3Activa, value);
+    }
+    
     private ViewModelBase? _currentView;
     public ViewModelBase? CurrentView
     {
@@ -41,6 +49,7 @@ public class MainWindowViewModel : ViewModelBase
     public bool IsWelcomeVisible => CurrentView == null;
     public ReactiveCommand<Unit, Unit> GoToHerramienta1 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta2 { get; }
+    public ReactiveCommand<Unit, Unit> GoToHerramienta3 { get; }
     public ReactiveCommand<Unit, Unit> ToggleThemeCommand { get; }
     public ReactiveCommand<Unit, Unit> OpenGitHubCommand { get; }
 
@@ -51,12 +60,14 @@ public class MainWindowViewModel : ViewModelBase
         
         _herramienta1 = new Herramienta1ViewModel();
         _herramienta2 = new Herramienta2ViewModel();
+        _herramienta3 = new Herramienta3ViewModel();
         
         GoToHerramienta1 = ReactiveCommand.Create(
             () =>
             {
                 Herramienta1Activa = true;
                 Herramienta2Activa = false;
+                Herramienta3Activa = false;
                 CurrentView = _herramienta1;
                 return Unit.Default;
             },
@@ -68,7 +79,20 @@ public class MainWindowViewModel : ViewModelBase
             {
                 Herramienta2Activa = true;
                 Herramienta1Activa = false;
+                Herramienta3Activa = false;
                 CurrentView = _herramienta2;
+                return Unit.Default;
+            },
+            outputScheduler: AvaloniaScheduler.Instance
+        );
+        
+        GoToHerramienta3 = ReactiveCommand.Create(
+            () =>
+            {
+                Herramienta3Activa = true;
+                Herramienta1Activa = false;
+                Herramienta2Activa = false;
+                CurrentView = _herramienta3;
                 return Unit.Default;
             },
             outputScheduler: AvaloniaScheduler.Instance

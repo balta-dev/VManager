@@ -8,7 +8,8 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="VManager"
-        Width="1280" Height="720"
+        MinWidth="390" MinHeight="140"
+        Width="1280" Height="800"
         Background="{DynamicResource WindowBackgroundBrush}">
 
     <Design.DataContext>
@@ -32,6 +33,13 @@
                           IsChecked="{Binding Herramienta2Activa}"
                           Command="{Binding GoToHerramienta2}"
                           Margin="0,0,10,0"/>
+            
+            <!-- Herramienta 3 -->
+            <ToggleButton Grid.Column="2"
+                          Content="VConv"
+                          IsChecked="{Binding Herramienta3Activa}"
+                          Command="{Binding GoToHerramienta3}"
+                          Margin="0,0,10,0"/>
 
             <!-- Cambiar tema -->
             <Button x:Name="ToggleTheme"
@@ -44,8 +52,9 @@
         <!-- Footer -->
         <Button DockPanel.Dock="Bottom" Content="Creado por Baltazar Franz ❤️" 
                 Command="{Binding OpenGitHubCommand}"
-                FontSize="14" HorizontalAlignment="Center" Margin="0,0,0,10" Opacity="0.7"
+                FontSize="14" HorizontalAlignment="Center" Margin="20,20,20,20" Opacity="0.7"
                 Background="Transparent" BorderBrush="Transparent" Cursor="Hand"/>
+
         
         <!-- Mensaje de bienvenida -->
         <TextBlock Text="Bienvenido a VManager. Para comenzar, seleccione una herramienta." 

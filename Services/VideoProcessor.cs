@@ -170,6 +170,58 @@ namespace VManager.Services
                 return new ProcessingResult(false, $"Error: {ex.Message}");
             }
         }
+        
+        public async Task<ProcessingResult> ConvertAsync(
+            string inputPath,
+            string outputPath, //está bien que haga overwrite porque es NECESARIO (inicializado en null)
+            string? videoCodec,
+            string? audioCodec,
+            string selectedFormat,
+            IProgress<double> progress)
+        {
+            
+            var (selectedVideoCodec, selectedAudioCodec) = GetDefaultCodecs(videoCodec, audioCodec);
+
+            var analysisResult = await AnalyzeVideoAsync(inputPath);
+            if (!analysisResult.Success)
+            {
+                return new ProcessingResult(false, analysisResult.Message);
+            }
+            
+            string outputFileName = Path.GetFileNameWithoutExtension(inputPath) + $"-VCONV.{selectedFormat}";
+            outputPath = Path.Combine(Path.GetDirectoryName(inputPath)!, outputFileName);
+            
+            var mediaInfo = analysisResult.Result!;
+            double duration = mediaInfo.Duration.TotalSeconds;
+            
+            try
+            {
+                Console.WriteLine($"Conversión - Video: {selectedVideoCodec}, Audio: {selectedAudioCodec}, Extension: {selectedFormat}");
+
+                var args = FFMpegArguments
+                    .FromFileInput(inputPath)
+                    .OutputToFile(outputPath, overwrite: true, options =>
+                    {
+                        options
+                            .WithVideoCodec(selectedVideoCodec)
+                            .WithAudioCodec(selectedAudioCodec)
+                            .WithAudioBitrate(128);
+                        ConfigureHardwareAcceleration(options, selectedVideoCodec);
+                    })
+                    .NotifyOnProgress(time =>
+                    {
+                        progress.Report(time.TotalSeconds / duration);
+                    });
+
+                await args.ProcessAsynchronously();
+                return new ProcessingResult(true, $"¡Conversión finalizada!\nArchivo: {outputPath}", outputPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DEBUG]: Error: {ex.Message}");
+                return new ProcessingResult(false, $"Error: {ex.Message}");
+            }
+        }
         private void ConfigureHardwareAcceleration(FFMpegArgumentOptions opts, string videoCodec)
         {
             var codec = videoCodec.ToLower();
