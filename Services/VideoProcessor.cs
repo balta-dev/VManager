@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using FFMpegCore;
 
+
 namespace VManager.Services
 {
     public class VideoProcessor : IVideoProcessor
@@ -74,12 +75,12 @@ namespace VManager.Services
         {
             // Ajustar duration para que no exceda el video
             duration = TimeSpan.FromSeconds(totalDuration - start.TotalSeconds);
-            // Retornar un mensaje de advertencia
-            warningMessage = $"Advertencia: La duración del corte se ajustó automáticamente a {duration}.";
+            string formatted = duration.ToString(@"hh\:mm\:ss");
+            warningMessage = $"Nota: La duración del corte se ajustó automáticamente a {formatted}.";
         }
         try
         {
-            Console.WriteLine($"Corte - Video: copy, Audio: copy, Inicio: {start}, Duración: {duration}");
+            Console.WriteLine($"Corte - Video: copy, Audio: copy, Inicio: {start}, Duración: {duration.ToString(@"hh\:mm\:ss")}");
 
             var args = FFMpegArguments
                 .FromFileInput(inputPath, false, options => options.Seek(start))
@@ -97,13 +98,12 @@ namespace VManager.Services
 
             await args.ProcessAsynchronously();
             
-            string finalMessage = $"¡Corte finalizado!\nArchivo: {outputPath}";
             if (!string.IsNullOrEmpty(warningMessage))
             {
-                finalMessage += $"\n{warningMessage}";
+                return new ProcessingResult(true, "¡Corte finalizado!", outputPath, warningMessage);
             }
             
-            return new ProcessingResult(true, finalMessage, outputPath);
+            return new ProcessingResult(true, "¡Corte finalizado!", outputPath);
         }
         catch (Exception ex)
         {
@@ -162,7 +162,7 @@ namespace VManager.Services
                     });
 
                 await args.ProcessAsynchronously();
-                return new ProcessingResult(true, $"¡Compresión finalizada!\nArchivo: {outputPath}", outputPath);
+                return new ProcessingResult(true, "¡Compresión finalizada!", outputPath);
             }
             catch (Exception ex)
             {
@@ -214,7 +214,7 @@ namespace VManager.Services
                     });
 
                 await args.ProcessAsynchronously();
-                return new ProcessingResult(true, $"¡Conversión finalizada!\nArchivo: {outputPath}", outputPath);
+                return new ProcessingResult(true, "¡Conversión finalizada!", outputPath);
             }
             catch (Exception ex)
             {
@@ -377,12 +377,14 @@ namespace VManager.Services
         public bool Success { get; }
         public string Message { get; }
         public string OutputPath { get; }
+        public string Warning { get; }
 
-        public ProcessingResult(bool success, string message, string outputPath = null)
+        public ProcessingResult(bool success, string message, string outputPath = null, string warning = null)
         {
             Success = success;
             Message = message;
             OutputPath = outputPath;
+            Warning = warning;
         }
     }
     public class AnalysisResult<T>

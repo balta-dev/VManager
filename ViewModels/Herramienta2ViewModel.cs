@@ -133,9 +133,13 @@ namespace VManager.ViewModels
                 SoundManager.Play("success.wav");
                 SetLastCompressedFile(result.OutputPath);
                 Status = result.Message;
+                Warning = result.Warning;
                 Progress = 100;
+                OutputPath = "Archivo: " + result.OutputPath;
                 this.RaisePropertyChanged(nameof(Status));
                 this.RaisePropertyChanged(nameof(Progress));
+                this.RaisePropertyChanged(nameof(OutputPath));
+                this.RaisePropertyChanged(nameof(Warning));
             }
             else
             {

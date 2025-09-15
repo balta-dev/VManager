@@ -74,11 +74,15 @@
         </StackPanel>
 
         <!-- Textos. Los puse acá porque si los ponía en el stack panel abajo quedan uno al lado del otro -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Spacing="168" Margin="0,10,0,0">
-          <TextBlock Text="Códec de Video:"/>
-          <TextBlock Text="Códec de Audio:"/>
-        </StackPanel>
-        
+        <Grid HorizontalAlignment="Left" Margin="0,10,0,0">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>  <!-- Para "Códec de Video:" -->
+            <ColumnDefinition Width="168"/>     <!-- Espacio flexible -->
+            <ColumnDefinition Width="Auto"/>  <!-- Para "Códec de Audio:" -->
+          </Grid.ColumnDefinitions>
+          <TextBlock Grid.Column="0" Text="Códec de Video:" VerticalAlignment="Center"/>
+          <TextBlock Grid.Column="2" Text="Códec de Audio:" VerticalAlignment="Center"/>
+        </Grid>
         
           <!-- Codecs Video + Audio -->
         <StackPanel Orientation="Horizontal" Spacing="40" HorizontalAlignment="Center" Margin="0,0,0,0">
@@ -137,7 +141,7 @@
           <TextBlock Grid.Column="1" Text="{Binding Progress, StringFormat={}{0}%}"
                      VerticalAlignment="Center" Margin="8,0,0,0"/>
         </Grid>
-
+        
         <!-- Botón convertir -->
         <Button Content="Convertir Formato de Video"  
                 FontSize="18" 
@@ -148,11 +152,30 @@
 
         <!-- Estado -->
         <TextBlock Text="{Binding Status}" FontSize="12" Margin="0,3,0,0" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding OutputPath}" FontSize="12" Margin="0,0,0,0" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding Warning}" FontSize="12" Margin="0,0,0,0" HorizontalAlignment="Center"/>
 
+        <!-- Mostrar archivo en carpeta -->
         <Button Content="Mostrar archivo en carpeta"
                 IsVisible="{Binding IsFileReadyVisible}"
                 Command="{Binding ShowFileInFolderCommand}"
-                HorizontalAlignment="Center"/>
+                HorizontalAlignment="Center"
+                Margin="0,20,0,0">
+          <Button.Styles>
+            <!-- Estado normal -->
+            <Style Selector="Button">
+              <Setter Property="Background" Value="{DynamicResource SystemAccentColor}"/>
+            </Style>
+            <!-- Hover -->
+            <Style Selector="Button:pointerover">
+              <Setter Property="Background" Value="{DynamicResource SystemAccentColorLight1}"/>
+            </Style>
+            <!-- Presionado -->
+            <Style Selector="Button:pressed">
+              <Setter Property="Background" Value="{DynamicResource SystemAccentColorDark1}"/>
+            </Style>
+          </Button.Styles>
+        </Button>
 
       </StackPanel>
     </Border>

@@ -115,7 +115,7 @@ namespace VManager.ViewModels
         private async Task ConvertVideo()
         {
             HideFileReadyButton();
-
+            
             Status = "Obteniendo información del video...";
             this.RaisePropertyChanged(nameof(Status));
 
@@ -141,11 +141,21 @@ namespace VManager.ViewModels
             if (result.Success)
             {
                 SoundManager.Play("success.wav");
+                OutputPath = result.OutputPath;
+                SetLastCompressedFile(OutputPath);
+                Status = result.Message;
+                Warning = result.Warning;
+                Progress = 100;
+                SoundManager.Play("success.wav");
                 SetLastCompressedFile(result.OutputPath);
                 Status = result.Message;
+                Warning = result.Warning;
                 Progress = 100;
+                OutputPath = "Archivo: " + result.OutputPath;
                 this.RaisePropertyChanged(nameof(Status));
                 this.RaisePropertyChanged(nameof(Progress));
+                this.RaisePropertyChanged(nameof(OutputPath));
+                this.RaisePropertyChanged(nameof(Warning));
             }
             else
             {
