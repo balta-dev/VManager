@@ -2,7 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="VManager.Views.Herramienta3View"
              x:DataType="vm:Herramienta3ViewModel"
-             xmlns:vm="using:VManager.ViewModels">
+             xmlns:vm="using:VManager.ViewModels"
+             xmlns:behaviors="clr-namespace:VManager.Behaviors"
+             xmlns:global="clr-namespace:">
 
   <!-- Se estira a toda la ventana y recorta cuando falta espacio -->
   <Grid ClipToBounds="True">
@@ -35,17 +37,18 @@
 
         <!-- Selección de archivo -->
         <StackPanel Spacing="6" HorizontalAlignment="Stretch">
-          <!-- Label + botón -->
           <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
             <TextBlock Text="Seleccionar Video:" FontSize="14" VerticalAlignment="Center"/>
             <Button Content="Examinar" Command="{Binding BrowseCommand}" Width="100"/>
           </StackPanel>
-
-          <!-- Ruta de video -->
+          <Border behaviors:DragDropHelper.EnableFileDrop="True"
+                  behaviors:DragDropHelper.DropTarget="VideoPath"
+                  Padding="2">
           <TextBox Text="{Binding VideoPath}" 
                    IsReadOnly="True" 
                    Watermark="Ruta del video"
                    HorizontalAlignment="Stretch"/>
+          </Border>
         </StackPanel>
 
         <!-- Selección de formato -->

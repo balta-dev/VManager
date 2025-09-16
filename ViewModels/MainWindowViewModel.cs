@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using Avalonia;
+using VManager.Views;
 
 namespace VManager.ViewModels;
 
