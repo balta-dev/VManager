@@ -88,7 +88,7 @@ Este proyecto está bajo la licencia [MIT](LICENSE).
 - **FFmpeg** - El corazón del procesamiento de video
 - **Avalonia** - Framework UI multiplataforma
 - **ReactiveUI** - Arquitectura reactiva
-- **@femaa33** - Por la idea de comenzar este proyecto ♡
+- [**@femaa33**](https://www.youtube.com/@femaa33) - Por la idea de comenzar este proyecto ♡
 
 ---
 
