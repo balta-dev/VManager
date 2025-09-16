@@ -41,7 +41,7 @@ VManager nace de la evolución de dos herramientas que desarrollé para uso en t
    ./VManager
    ```
 
-> **💡 Recomendación**: Para Linux, se recomienda usar **X11** en lugar de Wayland para asegurar la funcionalidad completa de **Drag & Drop**.
+> **⚠️ Nota**: Para Linux, Avalonia no tiene una implementación **Drag & Drop**, así que la única forma es ocupando el botón "Examinar". A pesar de que los desarrolladores no han tenido mucho interés en resolver esto, actualmente hay varios issues que están intentando resolver este problema (ejemplo: issue [#19232](https://github.com/AvaloniaUI/Avalonia/pull/19232) busca mergearse tras solucionar issue [#19347](https://github.com/AvaloniaUI/Avalonia/pull/19347)). El objetivo es utilizar la implementación original de Avalonia, pero si no se resuelve en un tiempo razonable se implementará de manera provisoria un GTK Helper para que pueda capturar el evento y se lo lo comunique a Avalonia mediante IPC.
 
 ### macOS 🍎
 1. Descarga el archivo `VManager-osx-x64.tar.gz` desde [Releases](../../releases)
@@ -52,7 +52,7 @@ VManager nace de la evolución de dos herramientas que desarrollé para uso en t
    ```
 4. Ejecuta la aplicación
 
-> **⚠️ Nota**: En macOS es necesario instalar FFmpeg por separado usando Homebrew u otro gestor de paquetes. Todavía no ha sido testeado en esta plataforma.
+> **⚠️ Nota**: En macOS es necesario instalar FFmpeg por separado usando Homebrew u otro gestor de paquetes (no fueron incluidos los binarios en el ejecutable). Todavía no ha sido testeado en esta plataforma, pero según la documentación de Avalonia la función **Drag & Drop** si está disponible.
 
 ## 🎯 Cómo usar
 
@@ -69,6 +69,7 @@ VManager está en **desarrollo activo**. Se están considerando agregar más her
 
 - 🎵 Extracción de audio
 - 📊 Soporte a múltiples archivos simultáneamente
+- Paridad de features multiplataforma (DnD)
 - Y mucho más...
 
 ## 🤝 Contribuciones
