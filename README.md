@@ -82,7 +82,7 @@ Las contribuciones son bienvenidas. Si tenés ideas, reportes de bugs o mejoras,
 
 ## 📄 Licencia
 
-Este proyecto está bajo la licencia [MIT](LICENSE).
+Este proyecto está bajo la licencia [MIT](LICENSE.md).
 
 ## 🙏 Reconocimientos
 
