@@ -11,7 +11,7 @@ using VManager.Views;
 
 namespace VManager.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase
+public class MainWindowViewModel : ReactiveObject
 {
     private Herramienta1ViewModel _herramienta1;
     private Herramienta2ViewModel _herramienta2;
