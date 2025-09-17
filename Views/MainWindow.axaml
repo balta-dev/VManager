@@ -42,10 +42,12 @@
                           Margin="0,0,10,0"/>
 
             <!-- Cambiar tema -->
-            <Button x:Name="ToggleTheme"
-                    Grid.Column="3"
-                    Content="Cambiar Tema"
-                    Command="{Binding ToggleThemeCommand}"/>
+            <ToggleButton x:Name="ToggleTheme"
+                          Grid.Column="3"
+                          Theme="{DynamicResource ThemeToggleButton}"
+                          Content="Cambiar Tema"
+                          IsChecked="{Binding IsDarkTheme}"
+                          Command="{Binding ToggleThemeCommand}"/>
         </Grid>
 
         

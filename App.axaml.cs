@@ -1,4 +1,7 @@
+using System;
+using System.Reactive.Linq;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
@@ -28,18 +31,27 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Aplica tus brushes personalizados según el tema actual
             ApplyCustomTheme();
 
-            // Eliminar duplicado de validadores de Avalonia
             if (BindingPlugins.DataValidators.Count > 0)
                 BindingPlugins.DataValidators.RemoveAt(0);
 
-            // Inicializar ventana principal
-            desktop.MainWindow = new MainWindow
+            var vm = new MainWindowViewModel();
+            var mainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                DataContext = vm,
             };
+
+            desktop.MainWindow = mainWindow;
+
+            // Escuchar cambios de tema y actualizar el VM
+            mainWindow.GetObservable(Window.ActualThemeVariantProperty)
+                .Cast<ThemeVariant>() // asegura el tipo correcto
+                .Subscribe(theme =>
+                {
+                    vm.IsDarkTheme = theme == ThemeVariant.Dark;
+                });
+            
         }
 
         base.OnFrameworkInitializationCompleted();

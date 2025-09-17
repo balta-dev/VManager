@@ -7,7 +7,10 @@ using System.Runtime.InteropServices;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using VManager.Views;
+using Avalonia.Styling;
 
 namespace VManager.ViewModels;
 
@@ -16,6 +19,7 @@ public class MainWindowViewModel : ReactiveObject
     private Herramienta1ViewModel _herramienta1;
     private Herramienta2ViewModel _herramienta2;
     private Herramienta3ViewModel _herramienta3;
+    private bool _isDarkTheme;
     
     private bool _herramienta1Activa;
     public bool Herramienta1Activa
@@ -53,6 +57,11 @@ public class MainWindowViewModel : ReactiveObject
     public ReactiveCommand<Unit, Unit> GoToHerramienta3 { get; }
     public ReactiveCommand<Unit, Unit> ToggleThemeCommand { get; }
     public ReactiveCommand<Unit, Unit> OpenGitHubCommand { get; }
+    public bool IsDarkTheme
+    {
+        get => _isDarkTheme;
+        set => this.RaiseAndSetIfChanged(ref _isDarkTheme, value);
+    }
 
     public MainWindowViewModel()
     {
@@ -98,6 +107,17 @@ public class MainWindowViewModel : ReactiveObject
             },
             outputScheduler: AvaloniaScheduler.Instance
         );
+        
+        _isDarkTheme = Application.Current.ActualThemeVariant == ThemeVariant.Dark;
+
+        // Suscribirse a cambios de tema
+        Application.Current.GetObservable(Application.ActualThemeVariantProperty)
+            .Subscribe(theme =>
+            {
+                IsDarkTheme = theme == ThemeVariant.Dark;
+            });
+
+        ToggleThemeCommand = ReactiveCommand.Create(ToggleTheme, outputScheduler: AvaloniaScheduler.Instance);
     }
     
     private void ToggleTheme()
