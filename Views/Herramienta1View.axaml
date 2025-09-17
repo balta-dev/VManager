@@ -9,13 +9,15 @@
     <Border BorderBrush="{DynamicResource BorderBrushPrimary}" 
             BorderThickness="2" 
             CornerRadius="10" 
-            Padding="15" 
+            Padding="0" 
             Margin="20,20,20,0"
             Background="{DynamicResource PanelBackgroundBrush}"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             ClipToBounds="True">
 
+      <ScrollViewer Padding="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Background="Transparent">
+      
       <StackPanel Margin="20" Spacing="12" HorizontalAlignment="Center" VerticalAlignment="Center">
 
         <!-- Título -->
@@ -110,6 +112,7 @@
         </Button>
 
       </StackPanel>
+      </ScrollViewer>
     </Border>
   </Grid>
 </UserControl>

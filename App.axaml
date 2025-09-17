@@ -18,6 +18,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <MergeResourceInclude Source="/Controls/ToggleButton.axaml"></MergeResourceInclude>
+                <MergeResourceInclude Source="/Controls/ScrollBar.axaml"></MergeResourceInclude>
+                <MergeResourceInclude Source="/Controls/ScrollViewer.axaml"></MergeResourceInclude>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
         
