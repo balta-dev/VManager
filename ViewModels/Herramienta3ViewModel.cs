@@ -24,7 +24,7 @@ namespace VManager.ViewModels
             RefreshCodecsCommand = ReactiveCommand.CreateFromTask(ReloadCodecsAsync, outputScheduler: AvaloniaScheduler.Instance);
             ConvertCommand = ReactiveCommand.CreateFromTask(ConvertVideo, outputScheduler: AvaloniaScheduler.Instance);
             _ = LoadCodecsAsync();
-            SelectedFormat = SupportedFormats[0];
+            SelectedFormat = SupportedFormats[0]; //mp4
         }
         
         private async Task ConvertVideo()

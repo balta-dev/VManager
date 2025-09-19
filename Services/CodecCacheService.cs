@@ -69,7 +69,7 @@ namespace VManager.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error writing codec cache file: {ex.Message}");
+                Console.WriteLine($"[ERROR] Error writing codec cache file: {ex.Message}");
             }
         }
     }

@@ -17,25 +17,6 @@ namespace VManager.ViewModels
     public class Herramienta2ViewModel : CodecViewModelBase
     {
         
-        // Listas de codecs
-        public ObservableCollection<string> AvailableVideoCodecs { get; } = new();
-        public ObservableCollection<string> AvailableAudioCodecs { get; } = new();
-
-        // Selected
-        private string _selectedVideoCodec = null;
-        public string SelectedVideoCodec
-        {
-            get => _selectedVideoCodec;
-            set => this.RaiseAndSetIfChanged(ref _selectedVideoCodec, value);
-        }
-
-        private string _selectedAudioCodec = null;
-        public string SelectedAudioCodec
-        {
-            get => _selectedAudioCodec;
-            set => this.RaiseAndSetIfChanged(ref _selectedAudioCodec, value);
-        }
-        
         private string _porcentajeCompresionUsuario = "75"; // valor por defecto, 75%
         public string PorcentajeCompresionUsuario
         {
@@ -47,9 +28,9 @@ namespace VManager.ViewModels
         
         public Herramienta2ViewModel()
         {
-            //RefreshCodecsCommand = ReactiveCommand.CreateFromTask(ReloadCodecsAsync, outputScheduler: AvaloniaScheduler.Instance);
+            RefreshCodecsCommand = ReactiveCommand.CreateFromTask(ReloadCodecsAsync, outputScheduler: AvaloniaScheduler.Instance);
             CompressCommand = ReactiveCommand.CreateFromTask(CompressVideo, outputScheduler: AvaloniaScheduler.Instance);
-            // _ = LoadCodecsAsync();
+            _ = LoadCodecsAsync();
         }
         
         private async Task CompressVideo()
