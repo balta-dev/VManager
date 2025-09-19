@@ -62,7 +62,6 @@ namespace VManager.Controls
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Console.WriteLine($"Propiedad cambiada: {e.PropertyName}");
             Dispatcher.UIThread.Post(() =>
             {
                 if (e.PropertyName == nameof(_viewModel.VideoPath))
