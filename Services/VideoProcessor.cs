@@ -275,7 +275,6 @@ namespace VManager.Services
                 // Windows Media Foundation
                 case "h264_mf":
                 case "hevc_mf":
-                    opts.WithCustomArgument("-profile:v main");
                     break;
 
                 // Software codecs - configuración optimizada
