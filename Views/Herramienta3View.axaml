@@ -192,14 +192,14 @@
                     </Canvas.Transitions>
 
                     <StackPanel HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding Status}" FontSize="12" Margin="0,3,0,0" HorizontalAlignment="Center"/>
-                    <TextBlock Text="{Binding OutputPath}" FontSize="12" Margin="0,16,0,0" HorizontalAlignment="Center"/>
-                    <TextBlock Text="{Binding Warning}" FontSize="12" Margin="0,0,32,0" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Status}" FontSize="12" Margin="0,2,0,0" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding OutputPath}" FontSize="12" Margin="0,7,0,0" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Warning}" FontSize="12" Margin="0,8,0,0" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Canvas> 
 
                 <!-- Mostrar archivo -->
-                <Canvas x:Name="MostrarArchivo" Width="150" Height="70" Tag="movible" Canvas.Top="270">
+                <Canvas x:Name="MostrarArchivo" Width="150" Height="70" Tag="movible" Canvas.Top="260">
                     <Canvas.Transitions>
                         <Transitions>
                             <DoubleTransition Property="Canvas.Left" Duration="0:0:0.15" Easing="CubicEaseOut"/>

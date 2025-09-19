@@ -73,6 +73,7 @@ public class ViewModelBase : ReactiveObject
         {
             VideoPath = files[0].Path.LocalPath;
             this.RaisePropertyChanged(nameof(VideoPath));
+            Console.WriteLine(VideoPath);
         }
             
     }
