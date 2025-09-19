@@ -1,22 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using VManager.ViewModels;
 
 namespace VManager.Controls
 {
+    public class ControlConfig
+    {
+        public Control Control { get; set; }
+        public double HorizontalOffset { get; set; }
+        public bool UseEstimatedWidth { get; set; }
+        public double OriginalTop { get; set; }
+    }
+
     public class FluidWrapController : IDisposable
     {
         private readonly Canvas _mainCanvas;
-        private readonly Canvas _videoBlock;
-        private readonly Canvas _audioBlock;
-        private readonly Canvas _progressBar;
-        private readonly Canvas _convertButton;
-        private readonly Canvas _statusLabel;
-        private readonly Canvas _fileDisplay;
-        private readonly Herramienta3ViewModel _viewModel;
+        private readonly ICodecViewModel _viewModel;
+        private readonly List<ControlConfig> _mainBlocks;
+        private readonly List<ControlConfig> _secondaryControls;
         private readonly Dictionary<Control, double> _originalTops = new();
 
         private static class LayoutConfig
@@ -28,7 +33,7 @@ namespace VManager.Controls
             public const double OffsetY = -140;
             public const double MovableOffset = 80;
             public const double BaseY = 150;
-            public const double CharacterWidthEstimate = 7.45;
+            public const double CharacterWidthEstimate = 7.45; // Restaurado de la versión anterior
         }
 
         public FluidWrapController(
@@ -39,18 +44,25 @@ namespace VManager.Controls
             Canvas convertButton,
             Canvas statusLabel,
             Canvas fileDisplay,
-            Herramienta3ViewModel viewModel)
+            ICodecViewModel viewModel)
         {
             _mainCanvas = mainCanvas ?? throw new ArgumentNullException(nameof(mainCanvas));
-            _videoBlock = videoBlock ?? throw new ArgumentNullException(nameof(videoBlock));
-            _audioBlock = audioBlock ?? throw new ArgumentNullException(nameof(audioBlock));
-            _progressBar = progressBar ?? throw new ArgumentNullException(nameof(progressBar));
-            _convertButton = convertButton ?? throw new ArgumentNullException(nameof(convertButton));
-            _statusLabel = statusLabel ?? throw new ArgumentNullException(nameof(statusLabel));
-            _fileDisplay = fileDisplay ?? throw new ArgumentNullException(nameof(fileDisplay));
             _viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
+            _mainBlocks = new List<ControlConfig>
+            {
+                new ControlConfig { Control = videoBlock ?? throw new ArgumentNullException(nameof(videoBlock)) },
+                new ControlConfig { Control = audioBlock ?? throw new ArgumentNullException(nameof(audioBlock)) }
+            };
+            _secondaryControls = new List<ControlConfig>
+            {
+                new ControlConfig { Control = progressBar ?? throw new ArgumentNullException(nameof(progressBar)), HorizontalOffset = -250 },
+                new ControlConfig { Control = convertButton ?? throw new ArgumentNullException(nameof(convertButton)), HorizontalOffset = -55 },
+                new ControlConfig { Control = statusLabel ?? throw new ArgumentNullException(nameof(statusLabel)), HorizontalOffset = 10, UseEstimatedWidth = true },
+                new ControlConfig { Control = fileDisplay ?? throw new ArgumentNullException(nameof(fileDisplay)), HorizontalOffset = -25 }
+            };
 
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+            //_mainCanvas.LayoutUpdated += (s, e) => Console.WriteLine("Layout actualizado");
             InitializePositions();
         }
 
@@ -62,16 +74,19 @@ namespace VManager.Controls
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            //Console.WriteLine($"Propiedad cambiada: {e.PropertyName}");
             Dispatcher.UIThread.Post(() =>
             {
-                if (e.PropertyName == nameof(_viewModel.VideoPath))
+                if (e.PropertyName == nameof(ICodecViewModel.VideoPath))
                 {
-                    UpdateCodecsBlocksPosition(); // Actualiza videoBlock y audioBlock
-                    UpdateControlPositions(); // Actualiza statusLabel y otros controles
+                    UpdateCodecsBlocksPosition();
+                    UpdateControlPositions();
                 }
-                else if (e.PropertyName is nameof(_viewModel.Status) or
-                         nameof(_viewModel.OutputPath) or
-                         nameof(_viewModel.Warning))
+                else if (e.PropertyName is nameof(ICodecViewModel.Status) or
+                         nameof(ICodecViewModel.OutputPath) or
+                         nameof(ICodecViewModel.Warning) or
+                         nameof(ICodecViewModel.Progress) or
+                         nameof(ICodecViewModel.IsFileReadyVisible))
                 {
                     UpdateControlPositions();
                 }
@@ -80,86 +95,96 @@ namespace VManager.Controls
 
         private void InitializePositions()
         {
-            var controls = new[] { _progressBar, _convertButton, _statusLabel, _fileDisplay };
-            foreach (var control in controls)
+            foreach (var config in _mainBlocks)
             {
-                double top = Canvas.GetTop(control);
-                if (double.IsNaN(top))
-                {
-                    top = LayoutConfig.BaseY;
-                }
-                _originalTops[control] = top;
-                Canvas.SetTop(control, top);
+                double top = Canvas.GetTop(config.Control);
+                if (double.IsNaN(top)) top = LayoutConfig.BaseY;
+                config.OriginalTop = top;
+                Canvas.SetTop(config.Control, top);
+            }
 
-                double left = CalculateInitialLeft(control);
-                Canvas.SetLeft(control, AdjustHorizontalCenter(control, left));
+            foreach (var config in _secondaryControls)
+            {
+                double top = Canvas.GetTop(config.Control);
+                if (double.IsNaN(top)) top = LayoutConfig.BaseY;
+                _originalTops[config.Control] = top;
+                Canvas.SetTop(config.Control, top);
+
+                double left = CalculateInitialLeft(config.Control);
+                left = AdjustHorizontalCenter(config.Control, left);
+                //Console.WriteLine($"Inicializando {config.Control.Name}: Left={left}, CanvasWidth={_mainCanvas.Bounds.Width}");
+                Canvas.SetLeft(config.Control, left);
             }
         }
 
         private double CalculateInitialLeft(Control control)
         {
-            if (control == _statusLabel)
+            if (control == _secondaryControls.First(c => c.UseEstimatedWidth).Control) // statusLabel
             {
                 return (_mainCanvas.Bounds.Width - GetEstimatedTextWidth()) / 2;
             }
-            return (_mainCanvas.Bounds.Width - 
-                    (control.DesiredSize.Width > 0 ? control.DesiredSize.Width : control.Bounds.Width)) / 2;
+            double controlWidth = control.DesiredSize.Width > 0 ? control.DesiredSize.Width : control.Bounds.Width;
+            return (_mainCanvas.Bounds.Width - controlWidth) / 2;
         }
 
         private double AdjustHorizontalCenter(Control control, double baseLeft)
         {
-            return control switch
+            foreach (var config in _secondaryControls)
             {
-                _ when control == _progressBar => baseLeft - 250,
-                _ when control == _convertButton => baseLeft - 55,
-                _ when control == _statusLabel => baseLeft + 10,
-                _ when control == _fileDisplay => baseLeft - 25,
-                _ => baseLeft
-            };
+                if (control == config.Control)
+                {
+                    return baseLeft + config.HorizontalOffset;
+                }
+            }
+            return baseLeft;
         }
 
         public void UpdateCodecsBlocksPosition()
         {
             double canvasWidth = _mainCanvas.Bounds.Width;
-            double videoWidth = _videoBlock.Bounds.Width;
-            double audioWidth = _audioBlock.Bounds.Width;
             bool isSmallScreen = canvasWidth < LayoutConfig.ThresholdWidth;
+            _viewModel.HeightBlock = isSmallScreen ? 350 : 280;
 
-            _viewModel.HeightBlock = isSmallScreen ? 370 : 300;
-
-            double startX = (canvasWidth - videoWidth) / 2 + LayoutConfig.OffsetX;
+            double startX = (canvasWidth - _mainBlocks[0].Control.Bounds.Width) / 2 + LayoutConfig.OffsetX;
             double startY = LayoutConfig.BaseY + LayoutConfig.OffsetY;
 
             if (!isSmallScreen)
             {
-                startX = (canvasWidth - (videoWidth + LayoutConfig.HorizontalSpacing + audioWidth)) / 2 + LayoutConfig.OffsetX;
-                Canvas.SetLeft(_videoBlock, startX);
-                Canvas.SetTop(_videoBlock, startY);
-                Canvas.SetLeft(_audioBlock, startX + videoWidth + LayoutConfig.HorizontalSpacing);
-                Canvas.SetTop(_audioBlock, startY);
+                double totalWidth = _mainBlocks.Sum(b => b.Control.Bounds.Width) +
+                                   (_mainBlocks.Count - 1) * LayoutConfig.HorizontalSpacing;
+                startX = (canvasWidth - totalWidth) / 2 + LayoutConfig.OffsetX;
+                double currentX = startX;
+
+                foreach (var config in _mainBlocks)
+                {
+                    //Console.WriteLine($"Control: {config.Control.Name}, Left={currentX}, Top={startY}");
+                    Canvas.SetLeft(config.Control, currentX);
+                    Canvas.SetTop(config.Control, startY);
+                    currentX += config.Control.Bounds.Width + LayoutConfig.HorizontalSpacing;
+                    config.Control.InvalidateMeasure();
+                    config.Control.InvalidateArrange();
+                    config.Control.InvalidateVisual();
+                }
             }
             else
             {
-                Canvas.SetLeft(_videoBlock, startX);
-                Canvas.SetTop(_videoBlock, startY);
-                Canvas.SetLeft(_audioBlock, startX);
-                Canvas.SetTop(_audioBlock, startY + _videoBlock.Bounds.Height + LayoutConfig.VerticalSpacing);
+                double currentY = startY;
+                foreach (var config in _mainBlocks)
+                {
+                    //Console.WriteLine($"Control: {config.Control.Name}, Left={startX}, Top={currentY}");
+                    Canvas.SetLeft(config.Control, startX);
+                    Canvas.SetTop(config.Control, currentY);
+                    currentY += config.Control.Bounds.Height + LayoutConfig.VerticalSpacing;
+                    config.Control.InvalidateMeasure();
+                    config.Control.InvalidateArrange();
+                    config.Control.InvalidateVisual();
+                }
             }
 
-            // Invalidar controles individuales
-            _videoBlock.InvalidateMeasure();
-            _videoBlock.InvalidateArrange();
-            _videoBlock.InvalidateVisual();
-            _audioBlock.InvalidateMeasure();
-            _audioBlock.InvalidateArrange();
-            _audioBlock.InvalidateVisual();
-
-            // Invalidar el lienzo
             _mainCanvas.InvalidateMeasure();
             _mainCanvas.InvalidateArrange();
             _mainCanvas.InvalidateVisual();
 
-            // Invalidar el contenedor padre
             if (_mainCanvas.Parent is Control parent)
             {
                 parent.InvalidateMeasure();
@@ -167,7 +192,6 @@ namespace VManager.Controls
                 parent.InvalidateVisual();
             }
 
-            // Forzar actualización retardada
             DispatcherTimer.RunOnce(() =>
             {
                 _mainCanvas.InvalidateVisual();
@@ -183,33 +207,36 @@ namespace VManager.Controls
             double canvasWidth = _mainCanvas.Bounds.Width;
             bool isSmallScreen = canvasWidth < LayoutConfig.ThresholdWidth;
             _viewModel.GridWidth = canvasWidth;
+            //Console.WriteLine($"Actualizando GridWidth a: {canvasWidth}, IsSmallScreen: {isSmallScreen}");
 
-            var controls = new[] { _progressBar, _convertButton, _statusLabel, _fileDisplay };
-            foreach (var control in controls)
+            foreach (var config in _secondaryControls)
             {
-                double top = _originalTops[control] + (isSmallScreen ? LayoutConfig.MovableOffset : 0);
-                Canvas.SetTop(control, top);
+                double top = _originalTops[config.Control] + (isSmallScreen ? LayoutConfig.MovableOffset : 0);
+                Canvas.SetTop(config.Control, top);
 
-                if (control == _progressBar)
+                if (config.Control == _secondaryControls[0].Control) // BarraProgreso
                 {
-                    Canvas.SetLeft(control, 0);
+                    Canvas.SetLeft(config.Control, 0);
+                    //Console.WriteLine($"Control: {config.Control.Name}, Left=0, CanvasWidth={canvasWidth}");
                 }
                 else
                 {
-                    double controlWidth = control.DesiredSize.Width > 0
-                        ? control.DesiredSize.Width
-                        : control.Bounds.Width;
+                    double controlWidth = config.Control.DesiredSize.Width > 0
+                        ? config.Control.DesiredSize.Width
+                        : config.Control.Bounds.Width;
 
-                    double left = control == _statusLabel
-                        ? (_mainCanvas.Bounds.Width - GetEstimatedTextWidth()) / 2
+                    double left = config.UseEstimatedWidth
+                        ? (canvasWidth - GetEstimatedTextWidth()) / 2
                         : (canvasWidth - controlWidth) / 2;
 
-                    Canvas.SetLeft(control, AdjustHorizontalCenter(control, left));
+                    left = AdjustHorizontalCenter(config.Control, left);
+                    //Console.WriteLine($"Control: {config.Control.Name}, Left={left}, Width={controlWidth}, Offset={config.HorizontalOffset}");
+                    Canvas.SetLeft(config.Control, left);
                 }
 
-                control.InvalidateMeasure();
-                control.InvalidateArrange();
-                control.InvalidateVisual();
+                config.Control.InvalidateMeasure();
+                config.Control.InvalidateArrange();
+                config.Control.InvalidateVisual();
             }
 
             _mainCanvas.InvalidateMeasure();
@@ -223,7 +250,6 @@ namespace VManager.Controls
                 parent.InvalidateVisual();
             }
 
-            // Forzar actualización retardada
             DispatcherTimer.RunOnce(() =>
             {
                 _mainCanvas.InvalidateVisual();

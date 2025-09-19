@@ -12,31 +12,56 @@ using Avalonia.Platform.Storage;
 
 namespace VManager.ViewModels;
 
-public class ViewModelBase : ReactiveObject
+public abstract class ViewModelBase : ReactiveObject
 {
     private string _videoPath = "";
+    private string _outputPath = "";
+    private string _lastCompressedFilePath;
+    private int _progress;
+    private string _status = "";
+    private string _warning = "";
+    private bool _isFileReadyVisible;
+
     public string VideoPath
     {
-        get => _videoPath;  
+        get => _videoPath;
         set => this.RaiseAndSetIfChanged(ref _videoPath, value);
     }
-    public string OutputPath { get; set; } = "";
-    public int Progress { get; set; }
-    public string Status { get; set; } = "";
-    public string Warning { get; set; } = "";
-    
-    private bool _isFileReadyVisible;
+
+    public string OutputPath
+    {
+        get => _outputPath;
+        set => this.RaiseAndSetIfChanged(ref _outputPath, value);
+    }
+
+    public int Progress
+    {
+        get => _progress;
+        set => this.RaiseAndSetIfChanged(ref _progress, value);
+    }
+
+    public string Status
+    {
+        get => _status;
+        set => this.RaiseAndSetIfChanged(ref _status, value);
+    }
+
+    public string Warning
+    {
+        get => _warning;
+        set => this.RaiseAndSetIfChanged(ref _warning, value);
+    }
+
     public bool IsFileReadyVisible
     {
         get => _isFileReadyVisible;
         set => this.RaiseAndSetIfChanged(ref _isFileReadyVisible, value);
     }
-    
-    private string _lastCompressedFilePath;
-    
+
     public ReactiveCommand<Unit, Unit> BrowseCommand { get; }
     public ReactiveCommand<Unit, Unit> ShowFileInFolderCommand { get; }
-    public ViewModelBase()
+
+    protected ViewModelBase()
     {
         BrowseCommand = ReactiveCommand.CreateFromTask(BrowseVideo, outputScheduler: AvaloniaScheduler.Instance);
         ShowFileInFolderCommand = ReactiveCommand.Create(ShowFileInFolder, outputScheduler: AvaloniaScheduler.Instance);
@@ -73,7 +98,6 @@ public class ViewModelBase : ReactiveObject
         {
             VideoPath = files[0].Path.LocalPath;
             this.RaisePropertyChanged(nameof(VideoPath));
-            Console.WriteLine(VideoPath);
         }
             
     }

@@ -14,7 +14,7 @@ using VManager.Services;
 
 namespace VManager.ViewModels
 {
-    public class Herramienta2ViewModel : ViewModelBase
+    public class Herramienta2ViewModel : CodecViewModelBase
     {
         
         // Listas de codecs
@@ -47,52 +47,9 @@ namespace VManager.ViewModels
         
         public Herramienta2ViewModel()
         {
-            RefreshCodecsCommand = ReactiveCommand.CreateFromTask(ReloadCodecsAsync, outputScheduler: AvaloniaScheduler.Instance);
+            //RefreshCodecsCommand = ReactiveCommand.CreateFromTask(ReloadCodecsAsync, outputScheduler: AvaloniaScheduler.Instance);
             CompressCommand = ReactiveCommand.CreateFromTask(CompressVideo, outputScheduler: AvaloniaScheduler.Instance);
-            _ = LoadCodecsAsync();
-        }
-
-        private async Task LoadOrRefreshCodecsAsync(Func<Task<CodecCache>> getCacheFunc)
-        {
-            var codecService = new CodecService();
-            var cacheService = new CodecCacheService(codecService);
-
-            var cache = await getCacheFunc.Invoke();
-
-            AvailableVideoCodecs.Clear();
-            foreach (var v in cache.VideoCodecs)
-                AvailableVideoCodecs.Add(v);
-
-            AvailableAudioCodecs.Clear();
-            foreach (var a in cache.AudioCodecs)
-                AvailableAudioCodecs.Add(a);
-
-            SelectedVideoCodec = AvailableVideoCodecs.FirstOrDefault() ?? "libx264";
-            SelectedAudioCodec = AvailableAudioCodecs.Contains("aac")
-                ? "aac"
-                : AvailableAudioCodecs.FirstOrDefault();
-
-            Console.WriteLine($"Hardware detectado: {cache.Hardware}");
-        }
-        
-        private Task LoadCodecsAsync()
-        {
-            return LoadOrRefreshCodecsAsync(async () =>
-            {
-                var codecService = new CodecService();
-                var cacheService = new CodecCacheService(codecService);
-                return await cacheService.LoadOrBuildCacheAsync();
-            });
-        }
-        
-        private Task ReloadCodecsAsync()
-        {
-            return LoadOrRefreshCodecsAsync(async () =>
-            {
-                var codecService = new CodecService();
-                var cacheService = new CodecCacheService(codecService);
-                return await cacheService.RefreshCacheAsync();
-            });
+            // _ = LoadCodecsAsync();
         }
         
         private async Task CompressVideo()

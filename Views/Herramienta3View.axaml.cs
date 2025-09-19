@@ -3,10 +3,9 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using System;
 using VManager.Controls;
-using VManager.ViewModels; // tu controlador
+using VManager.ViewModels; // Asegúrate de que incluya ICodecViewModel y CodecViewModelBase
 
 namespace VManager.Views;
-
 public partial class Herramienta3View : SoundEnabledUserControl
 {
     private FluidWrapController _fluidController;
@@ -14,7 +13,7 @@ public partial class Herramienta3View : SoundEnabledUserControl
     public Herramienta3View()
     {
         InitializeComponent();
-        DataContext = new Herramienta3ViewModel();
+        //DataContext = new Herramienta3ViewModel();
 
         // Se asegura de que los Canvas existan antes de inicializar el controlador
         this.AttachedToVisualTree += Herramienta3View_AttachedToVisualTree;
@@ -26,14 +25,14 @@ public partial class Herramienta3View : SoundEnabledUserControl
     private void Herramienta3View_AttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
         _fluidController = new FluidWrapController(
-            MyCanvas,
-            VideoBlockCanvas,
-            AudioBlockCanvas,
-            BarraProgreso,
-            Convertir,
-            Estado,
-            MostrarArchivo,
-            (Herramienta3ViewModel)DataContext
+            MyCanvas,                // mainCanvas
+            VideoBlockCanvas,        // videoBlock
+            AudioBlockCanvas,        // audioBlock
+            BarraProgreso,           // progressBar
+            Convertir,               // convertButton
+            Estado,                  // statusLabel (asegúrate de que tenga Name="StatusLabel" en XAML si usas bindings)
+            MostrarArchivo,          // fileDisplay
+            (ICodecViewModel)DataContext  // Cast a ICodecViewModel (Herramienta3ViewModel lo implementa)
         );
 
         // Reposicionar al cargar

@@ -61,7 +61,7 @@ namespace VManager.Services
             {
                 using var fileStream = File.Create(tempFilePath);
                 await stream.CopyToAsync(fileStream);
-                LogDebug($"Recurso extraído: {tempFilePath}");
+                //LogDebug($"Recurso extraído: {tempFilePath}");
             }
             catch (Exception ex)
             {
@@ -71,7 +71,7 @@ namespace VManager.Services
 
         private static async Task PlaySoundAsync(Stream stream, string fileName, string platform)
         {
-            LogDebug($"[{platform}] Reproduciendo: {fileName}");
+            //LogDebug($"[{platform}] Reproduciendo: {fileName}");
             try
             {
                 using var memoryStream = new MemoryStream();
@@ -99,7 +99,7 @@ namespace VManager.Services
 
         private static async Task PlayUnixSoundAsync(string playerCommand, string filePath, string fileName)
         {
-            LogDebug($"[{playerCommand.ToUpper()}] Reproduciendo: {fileName}");
+            //LogDebug($"[{playerCommand.ToUpper()}] Reproduciendo: {fileName}");
             try
             {
                 using var process = new Process
@@ -132,12 +132,12 @@ namespace VManager.Services
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
-                    LogDebug($"Archivo temporal eliminado: {filePath}");
+                    //LogDebug($"Archivo temporal eliminado: {filePath}");
                 }
             }
             catch (Exception ex)
             {
-                LogError($"Error al eliminar archivo temporal {filePath}: {ex.Message}");
+                // LogError($"Error al eliminar archivo temporal {filePath}: {ex.Message}");
             }
         }
 

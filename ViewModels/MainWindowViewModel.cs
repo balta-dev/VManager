@@ -16,10 +16,10 @@ namespace VManager.ViewModels;
 
 public class MainWindowViewModel : ReactiveObject
 {
+    public bool IsWelcomeVisible => CurrentView == null;
     private Herramienta1ViewModel _herramienta1;
     private Herramienta2ViewModel _herramienta2;
     private Herramienta3ViewModel _herramienta3;
-    private bool _isDarkTheme;
     
     private bool _herramienta1Activa;
     public bool Herramienta1Activa
@@ -51,12 +51,13 @@ public class MainWindowViewModel : ReactiveObject
             this.RaisePropertyChanged(nameof(IsWelcomeVisible)); // Notifica cambio de visibilidad
             } 
     }
-    public bool IsWelcomeVisible => CurrentView == null;
     public ReactiveCommand<Unit, Unit> GoToHerramienta1 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta2 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta3 { get; }
     public ReactiveCommand<Unit, Unit> ToggleThemeCommand { get; }
     public ReactiveCommand<Unit, Unit> OpenGitHubCommand { get; }
+    
+    private bool _isDarkTheme;
     public bool IsDarkTheme
     {
         get => _isDarkTheme;

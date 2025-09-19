@@ -210,8 +210,7 @@ namespace VManager.Services
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
-
-                Console.WriteLine("Iniciando proceso wmic...");
+                
                 using var process = Process.Start(psi);
                 if (process != null)
                 {
@@ -219,9 +218,6 @@ namespace VManager.Services
                     var output = await process.StandardOutput.ReadToEndAsync();
                     var error = await process.StandardError.ReadToEndAsync();
                     await process.WaitForExitAsync();
-                    Console.WriteLine($"Salida de wmic: {output}");
-                    Console.WriteLine($"Error de wmic: {error}");
-                    Console.WriteLine($"Código de salida de wmic: {process.ExitCode}");
 
                     var lowerOutput = output.ToLower();
                     capabilities.AMD = lowerOutput.Contains("amd") || lowerOutput.Contains("radeon");
@@ -229,8 +225,6 @@ namespace VManager.Services
                     // Opcional: respaldo para NVIDIA usando wmic
                     capabilities.Nvidia |= lowerOutput.Contains("nvidia"); // Combina con el resultado de DetectNvidiaWindowsAsync
                     capabilities.WindowsMediaFoundation = Environment.OSVersion.Version.Major >= 10;
-
-                    Console.WriteLine($"Valores asignados: AMD = {capabilities.AMD}, Intel = {capabilities.Intel}, Nvidia = {capabilities.Nvidia}");
                 }
                 else
                 {

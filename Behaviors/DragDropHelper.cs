@@ -12,7 +12,7 @@ namespace VManager.Behaviors
 {
     public static class DragDropHelper
     {
-        // Habilitar drag & drop
+        // Enable drag & drop
         public static readonly AttachedProperty<bool> EnableFileDropProperty =
             AvaloniaProperty.RegisterAttached<Control, bool>(
                 "EnableFileDrop", typeof(DragDropHelper));
@@ -20,7 +20,7 @@ namespace VManager.Behaviors
         public static bool GetEnableFileDrop(Control control) => control.GetValue(EnableFileDropProperty);
         public static void SetEnableFileDrop(Control control, bool value) => control.SetValue(EnableFileDropProperty, value);
 
-        // Propiedad del ViewModel donde se escriben los archivos
+        // ViewModel property where files are written
         public static readonly AttachedProperty<string> DropTargetProperty =
             AvaloniaProperty.RegisterAttached<Control, string>(
                 "DropTarget", typeof(DragDropHelper));
@@ -28,7 +28,7 @@ namespace VManager.Behaviors
         public static string GetDropTarget(Control control) => control.GetValue(DropTargetProperty);
         public static void SetDropTarget(Control control, string value) => control.SetValue(DropTargetProperty, value);
 
-        // Solo formatos de video y audio para tu app
+        // Only video and audio
         private static readonly string[] VideoExtensions = 
         {
             ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".3gp"
@@ -40,7 +40,7 @@ namespace VManager.Behaviors
         };
         
 
-        // Propiedad simple para habilitar audio además de video
+        // Simple property to also enable audio
         public static readonly AttachedProperty<bool> AllowAudioProperty =
             AvaloniaProperty.RegisterAttached<Control, bool>(
                 "AllowAudio", typeof(DragDropHelper));
@@ -54,10 +54,7 @@ namespace VManager.Behaviors
             {
                 if (e.NewValue is bool enabled && enabled)
                 {
-                    // ¡ESTO ES LO QUE FALTABA!
                     DragDrop.SetAllowDrop(control, true);
-                    
-                    // También necesitás manejar DragOver para indicar que acepta el drop
                     control.AddHandler(DragDrop.DragOverEvent, OnDragOver, handledEventsToo: true);
                     control.AddHandler(DragDrop.DragLeaveEvent, OnDragLeave, handledEventsToo: true);
                     control.AddHandler(DragDrop.DropEvent, OnDropFile, handledEventsToo: true);
@@ -72,7 +69,7 @@ namespace VManager.Behaviors
             });
         }
 
-        // Guardar el background original para restaurarlo
+        // Save original background
         private static readonly AttachedProperty<IBrush?> OriginalBackgroundProperty =
             AvaloniaProperty.RegisterAttached<Control, IBrush?>("OriginalBackground", typeof(DragDropHelper));
 
@@ -91,7 +88,7 @@ namespace VManager.Behaviors
                 return;
             }
 
-            // Verificar si hay archivos válidos (video/audio)
+            // Verify valid files
             if (sender is Control control)
             {
                 bool allowAudio = GetAllowAudio(control);
@@ -105,7 +102,7 @@ namespace VManager.Behaviors
 
                 if (!hasValidFile)
                 {
-                    // Archivo no válido - feedback visual rojo
+                    // RED VISUAL FEEDBACK
                     e.DragEffects = DragDropEffects.None;
                     
                     if (sender is Border border)
@@ -120,11 +117,11 @@ namespace VManager.Behaviors
                 }
             }
 
-            // Archivo válido
+            // Valid
             e.DragEffects = DragDropEffects.Copy;
             e.Handled = true;
             
-            // Color verde para archivos válidos
+            // Green visual feedback
             if (sender is Border validBorder)
             {
                 if (validBorder.GetValue(OriginalBackgroundProperty) == null)
@@ -138,7 +135,7 @@ namespace VManager.Behaviors
 
         private static void OnDragLeave(object? sender, DragEventArgs e)
         {
-            // Restaurar el color original cuando se va el drag
+            // Restore original color on drag leave
             if (sender is Border border)
             {
                 var originalBackground = border.GetValue(OriginalBackgroundProperty);
@@ -160,7 +157,7 @@ namespace VManager.Behaviors
             if (files == null || !files.Any())
                 return;
 
-            // Filtrar solo archivos de video/audio válidos
+            // Filter only video/audio
             bool allowAudio = GetAllowAudio(control);
             
             var validPaths = files.Where(file =>
@@ -173,7 +170,7 @@ namespace VManager.Behaviors
 
             if (!validPaths.Any())
             {
-                // No hay archivos válidos - mostrar feedback de error
+                // No valid files (error feedback)
                 ShowErrorFeedback(control);
                 return;
             }
@@ -189,7 +186,7 @@ namespace VManager.Behaviors
             {
                 prop.SetValue(dc, joined);
                 
-                // FORZAR NOTIFICACIÓN PARA REACTIVEUI
+                // force reactive notification
                 if (dc is ReactiveObject reactiveObj)
                 {
                     reactiveObj.RaisePropertyChanged(propName);
@@ -205,7 +202,7 @@ namespace VManager.Behaviors
                     }
                 }
                 
-                // FEEDBACK VISUAL DE ÉXITO
+                // success feedback! :)
                 ShowSuccessFeedback(control);
             }
 
@@ -216,15 +213,15 @@ namespace VManager.Behaviors
         {
             if (control is Border border)
             {
-                // Asegurarse de que el background esté limpio primero
+                // Check for clean background
                 var originalBackground = border.GetValue(OriginalBackgroundProperty) ?? border.Background;
                 
-                // Flash verde para éxito
+                // Green flash
                 border.Background = new SolidColorBrush(Colors.LightGreen, 0.6);
                 await System.Threading.Tasks.Task.Delay(200);
                 border.Background = originalBackground ?? Brushes.Transparent;
                 
-                // Limpiar la referencia
+                // Clear reference
                 border.ClearValue(OriginalBackgroundProperty);
             }
         }
@@ -233,15 +230,15 @@ namespace VManager.Behaviors
         {
             if (control is Border border)
             {
-                // Asegurarse de que el background esté limpio primero
+                // Check for clean background
                 var originalBackground = border.GetValue(OriginalBackgroundProperty) ?? border.Background;
                 
-                // Flash rojo para error
+                // Red flash
                 border.Background = new SolidColorBrush(Colors.LightCoral, 0.6);
                 await System.Threading.Tasks.Task.Delay(300);
                 border.Background = originalBackground ?? Brushes.Transparent;
                 
-                // Limpiar la referencia
+                // Clear reference
                 border.ClearValue(OriginalBackgroundProperty);
             }
         }
