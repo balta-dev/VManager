@@ -77,110 +77,176 @@
             </ToolTip.Tip>
           </Button>
         </StackPanel>
+        
+        <!-- ............. CANVA DINÁMICO ............. -->    
+            <Canvas x:Name="MyCanvas" Background="Transparent">
 
-        <!-- Textos. Los puse acá porque si los ponía en el stack panel abajo quedan uno al lado del otro -->
-        <Grid HorizontalAlignment="Left" Margin="0,10,0,0">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>  <!-- Para "Códec de Video:" -->
-            <ColumnDefinition Width="168"/>     <!-- Espacio flexible -->
-            <ColumnDefinition Width="Auto"/>  <!-- Para "Códec de Audio:" -->
-          </Grid.ColumnDefinitions>
-          <TextBlock Grid.Column="0" Text="Códec de Video:" VerticalAlignment="Center"/>
-          <TextBlock Grid.Column="2" Text="Códec de Audio:" VerticalAlignment="Center"/>
-        </Grid>
+                <!-- Bloque Video -->
+                <Canvas x:Name="VideoBlockCanvas" Width="150" Height="70">
+                    <Canvas.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Canvas.Left" Duration="0:0:0.2" Easing="CubicEaseOut"/>
+                            <DoubleTransition Property="Canvas.Top" Duration="0:0:0.2" Easing="CubicEaseOut"/>
+                        </Transitions>
+                    </Canvas.Transitions>
+                    
+                    <TextBlock Text="Códec de Video:" HorizontalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" Spacing="6" Margin="0 25 0 0">
+                        <Button x:Name="QuestionMark6" Content="?" Width="30" FontWeight="Bold">
+                            <ToolTip.Tip>
+                                <TextBlock MaxWidth="400" TextWrapping="Wrap">
+                                    <Run Text="La opción predeterminada es la mejor para la mayoría de los casos."/>
+                                    <LineBreak/><LineBreak/>
+                                    <Run Text="Se prioriza la aceleración por hardware (que se utilice tu GPU)."/>
+                                    <LineBreak/><LineBreak/>
+                                    <Run Text="Un códec de video básicamente comprime y descomprime video para ahorrar espacio o transmitir más rápido."/>
+                                    <LineBreak/><LineBreak/>
+                                    <Run Text="Si prefieres usar la CPU en lugar de la GPU, usa codecs como 'libx264'."/>
+                                    <LineBreak/>
+                                    <Run Text="La ventaja de usar la CPU es que provee la mejor calidad. La desventaja es que es mucho más lento."/>
+                                </TextBlock>
+                            </ToolTip.Tip>
+                        </Button>
+                        <ComboBox ItemsSource="{Binding AvailableVideoCodecs}" 
+                                  SelectedItem="{Binding SelectedVideoCodec, Mode=TwoWay}"
+                                  Width="200"/>
+                    </StackPanel>
+                    
+                    
+                </Canvas>
+
+                <!-- Bloque Audio -->
+                <Canvas x:Name="AudioBlockCanvas" Width="150" Height="70">
+                    <Canvas.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Canvas.Left" Duration="0:0:0.2" Easing="CubicEaseOut"/>
+                            <DoubleTransition Property="Canvas.Top" Duration="0:0:0.2" Easing="CubicEaseOut"/>
+                        </Transitions>
+                    </Canvas.Transitions>
+                    
+                    <TextBlock Text="Códec de Audio:" HorizontalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" Spacing="6" Margin="0 25 0 0">
+                            <Button x:Name="QuestionMark7" Content="?" Width="30" FontWeight="Bold">
+                                <ToolTip.Tip>
+                                    <TextBlock MaxWidth="400" TextWrapping="Wrap">
+                                        <Run Text="La opción predeterminada es la mejor para la mayoría de los casos."/>
+                                        <LineBreak/><LineBreak/>
+                                        <Run Text="Un códec de audio básicamente comprime y descomprime audio para ahorrar espacio o transmitir más rápido."/>
+                                        <LineBreak/><LineBreak/>
+                                        <Run Text="FLAC permite una calidad de audio excepcional, con la desventaja de consumir mucho espacio de almacenamiento."/>
+                                    </TextBlock>
+                                </ToolTip.Tip>
+                            </Button>
+                            <ComboBox ItemsSource="{Binding AvailableAudioCodecs}" 
+                                      SelectedItem="{Binding SelectedAudioCodec, Mode=TwoWay}"
+                                      Width="200"/> 
+                        </StackPanel>
+                </Canvas>
+
+                <!-- Barra de progreso   511 -->
+                <Canvas x:Name="BarraProgreso" Tag="movible" Canvas.Top="-35">
+                    <Canvas.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Canvas.Left" Duration="0:0:0.15" Easing="CubicEaseOut"/>
+                            <DoubleTransition Property="Canvas.Top" Duration="0:0:0.15" Easing="CubicEaseOut"/>
+                        </Transitions>
+                    </Canvas.Transitions>
+
+                    <Grid Margin="0,150,0,0" Width="{Binding GridWidth}" HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <ProgressBar Grid.Column="0" Minimum="0" Maximum="100" 
+                                     Value="{Binding Progress}" Height="20"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Progress, StringFormat={}{0}%}"
+                                   VerticalAlignment="Center" Margin="8,0,0,0"/>
+                    </Grid>
+                </Canvas>    
+
+                <!-- Botón Convertir -->
+                <Canvas x:Name="Convertir" Width="150" Height="70" Tag="movible" Canvas.Top="145">
+                    <Canvas.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Canvas.Left" Duration="0:0:0.15" Easing="CubicEaseOut"/>
+                            <DoubleTransition Property="Canvas.Top" Duration="0:0:0.15" Easing="CubicEaseOut"/>
+                        </Transitions>
+                    </Canvas.Transitions>
+
+                    <Button Content="Convertir Formato de Video"  
+                            FontSize="18" 
+                            Command="{Binding ConvertCommand}" 
+                            Width="255" 
+                            Margin="0,15,0,0" 
+                            HorizontalAlignment="Center"/>
+                </Canvas> 
+
+                <!-- Estado -->
+                <Canvas x:Name="Estado" Width="150" Height="70" Tag="movible" Canvas.Top="200">
+                    <Canvas.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Canvas.Left" Duration="0:0:0.15" Easing="CubicEaseOut"/>
+                            <DoubleTransition Property="Canvas.Top" Duration="0:0:0.15" Easing="CubicEaseOut"/>
+                        </Transitions>
+                    </Canvas.Transitions>
+
+                    <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding Status}" FontSize="12" Margin="0,3,0,0" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding OutputPath}" FontSize="12" Margin="0,16,0,0" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Warning}" FontSize="12" Margin="0,0,32,0" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Canvas> 
+
+                <!-- Mostrar archivo -->
+                <Canvas x:Name="MostrarArchivo" Width="150" Height="70" Tag="movible" Canvas.Top="270">
+                    <Canvas.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Canvas.Left" Duration="0:0:0.15" Easing="CubicEaseOut"/>
+                            <DoubleTransition Property="Canvas.Top" Duration="0:0:0.15" Easing="CubicEaseOut"/>
+                        </Transitions>
+                    </Canvas.Transitions>
+
+                    <Button Content="Mostrar archivo en carpeta"
+                            IsVisible="{Binding IsFileReadyVisible}"
+                            Command="{Binding ShowFileInFolderCommand}"
+                            HorizontalAlignment="Center"
+                            Margin="0,20,0,0">
+                        <Button.Styles>
+                            <!-- Estado normal -->
+                            <Style Selector="Button">
+                                <Setter Property="Background" Value="{DynamicResource SystemAccentColor}"/>
+                            </Style>
+                            <!-- Hover -->
+                            <Style Selector="Button:pointerover">
+                                <Setter Property="Background" Value="{DynamicResource SystemAccentColorLight1}"/>
+                            </Style>
+                            <!-- Presionado -->
+                            <Style Selector="Button:pressed">
+                                <Setter Property="Background" Value="{DynamicResource SystemAccentColorDark1}"/>
+                            </Style>
+                        </Button.Styles>
+                    </Button>
+                </Canvas>   
+
+            </Canvas>
+            <!-- ............. CIERRA CANVA DINÁMICO ............. -->
         
           <!-- Codecs Video + Audio -->
         <StackPanel Orientation="Horizontal" Spacing="40" HorizontalAlignment="Center" Margin="0,0,0,0">
 
           <!-- Video -->
           <StackPanel Orientation="Horizontal" Spacing="6">
-            <Button x:Name="QuestionMark2" Content="?" Width="30" FontWeight="Bold">
-              <ToolTip.Tip>
-                <TextBlock MaxWidth="400" TextWrapping="Wrap">
-                  <Run Text="La opción predeterminada es la mejor para la mayoría de los casos."/>
-                  <LineBreak/><LineBreak/>
-                  <Run Text="Se prioriza la aceleración por hardware (que se utilice tu GPU)."/>
-                  <LineBreak/><LineBreak/>
-                  <Run Text="Un códec de video básicamente comprime y descomprime video para ahorrar espacio o transmitir más rápido."/>
-                  <LineBreak/><LineBreak/>
-                  <Run Text="Si prefieres usar la CPU en lugar de la GPU, usa codecs como 'libx264'."/>
-                  <LineBreak/>
-                  <Run Text="La ventaja de usar la CPU es que provee la mejor calidad. La desventaja es que es mucho más lento."/>
-                </TextBlock>
-              </ToolTip.Tip>
-            </Button>
-            <ComboBox ItemsSource="{Binding AvailableVideoCodecs}" 
-                      SelectedItem="{Binding SelectedVideoCodec, Mode=TwoWay}"
-                      Width="200"/>
+            <TextBlock Width="230" Height="{Binding HeightBlock}"></TextBlock>
           </StackPanel>
 
           <!-- Audio -->
           <StackPanel Orientation="Horizontal" Spacing="6">
-            <Button x:Name="QuestionMark3" Content="?" Width="30" FontWeight="Bold">
-              <ToolTip.Tip>
-                <TextBlock MaxWidth="400" TextWrapping="Wrap">
-                  <Run Text="La opción predeterminada es la mejor para la mayoría de los casos."/>
-                  <LineBreak/><LineBreak/>
-                  <Run Text="Un códec de audio básicamente comprime y descomprime audio para ahorrar espacio o transmitir más rápido."/>
-                  <LineBreak/><LineBreak/>
-                  <Run Text="FLAC permite una calidad de audio excepcional, con la desventaja de consumir mucho espacio de almacenamiento."/>
-                </TextBlock>
-              </ToolTip.Tip>
-            </Button>
-            <ComboBox ItemsSource="{Binding AvailableAudioCodecs}" 
-                      SelectedItem="{Binding SelectedAudioCodec, Mode=TwoWay}"
-                      Width="200"/> 
+              <TextBlock Width="230"></TextBlock>
           </StackPanel>
 
         </StackPanel>
-
-        <!-- Barra de progreso + % -->
-        <Grid Margin="0,20,0,0" HorizontalAlignment="Stretch">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-          </Grid.ColumnDefinitions>
-
-          <ProgressBar Grid.Column="0" Minimum="0" Maximum="100" 
-                       Value="{Binding Progress}" Height="20"/>
-          <TextBlock Grid.Column="1" Text="{Binding Progress, StringFormat={}{0}%}"
-                     VerticalAlignment="Center" Margin="8,0,0,0"/>
-        </Grid>
         
-        <!-- Botón convertir -->
-        <Button Content="Convertir Formato de Video"  
-                FontSize="18" 
-                Command="{Binding ConvertCommand}" 
-                Width="255" 
-                Margin="0,15,0,0" 
-                HorizontalAlignment="Center"/>
-
-        <!-- Estado -->
-        <TextBlock Text="{Binding Status}" FontSize="12" Margin="0,3,0,0" HorizontalAlignment="Center"/>
-        <TextBlock Text="{Binding OutputPath}" FontSize="12" Margin="0,0,0,0" HorizontalAlignment="Center"/>
-        <TextBlock Text="{Binding Warning}" FontSize="12" Margin="0,0,0,0" HorizontalAlignment="Center"/>
-
-        <!-- Mostrar archivo en carpeta -->
-        <Button Content="Mostrar archivo en carpeta"
-                IsVisible="{Binding IsFileReadyVisible}"
-                Command="{Binding ShowFileInFolderCommand}"
-                HorizontalAlignment="Center"
-                Margin="0,20,0,0">
-          <Button.Styles>
-            <!-- Estado normal -->
-            <Style Selector="Button">
-              <Setter Property="Background" Value="{DynamicResource SystemAccentColor}"/>
-            </Style>
-            <!-- Hover -->
-            <Style Selector="Button:pointerover">
-              <Setter Property="Background" Value="{DynamicResource SystemAccentColorLight1}"/>
-            </Style>
-            <!-- Presionado -->
-            <Style Selector="Button:pressed">
-              <Setter Property="Background" Value="{DynamicResource SystemAccentColorDark1}"/>
-            </Style>
-          </Button.Styles>
-        </Button>
 
       </StackPanel>
       </ScrollViewer>

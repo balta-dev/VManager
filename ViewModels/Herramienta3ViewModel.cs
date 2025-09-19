@@ -17,6 +17,20 @@ namespace VManager.ViewModels
     public class Herramienta3ViewModel : ViewModelBase
     {
         
+        private double _gridWidth = 511; // valor inicial
+        private double _heightBlock = 300; // valor inicial
+        public double GridWidth
+        {
+            get => _gridWidth;
+            set => this.RaiseAndSetIfChanged(ref _gridWidth, value);
+        }
+        
+        public double HeightBlock
+        {
+            get => _heightBlock;
+            set => this.RaiseAndSetIfChanged(ref _heightBlock, value);
+        }
+        
         // Listas de codecs
         public ObservableCollection<string> AvailableVideoCodecs { get; } = new();
         public ObservableCollection<string> AvailableAudioCodecs { get; } = new();
@@ -140,12 +154,6 @@ namespace VManager.ViewModels
             
             if (result.Success)
             {
-                SoundManager.Play("success.wav");
-                OutputPath = result.OutputPath;
-                SetLastCompressedFile(OutputPath);
-                Status = result.Message;
-                Warning = result.Warning;
-                Progress = 100;
                 SoundManager.Play("success.wav");
                 SetLastCompressedFile(result.OutputPath);
                 Status = result.Message;
