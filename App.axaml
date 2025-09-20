@@ -35,7 +35,6 @@
         <SolidColorBrush x:Key="WindowBackgroundBrushDark">#1c1c1c</SolidColorBrush>
         <SolidColorBrush x:Key="ToggleButtonBorderDark">#fff7f3</SolidColorBrush>
         
-        
     </Application.Resources>
 
              

@@ -143,7 +143,7 @@ namespace VManager.Controls
         {
             double canvasWidth = _mainCanvas.Bounds.Width;
             bool isSmallScreen = canvasWidth < LayoutConfig.ThresholdWidth;
-            _viewModel.HeightBlock = isSmallScreen ? 350 : 280;
+            _viewModel.HeightBlock = isSmallScreen ? 380 : 280;
 
             double startX = (canvasWidth - _mainBlocks[0].Control.Bounds.Width) / 2 + LayoutConfig.OffsetX;
             double startY = LayoutConfig.BaseY + LayoutConfig.OffsetY;

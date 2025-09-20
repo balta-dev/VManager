@@ -3,8 +3,8 @@
                     x:ClassModifier="internal">
 
     <Design.PreviewWith>
-        <Border Padding="20" Background="{DynamicResource WindowBackgroundBrushLight}" Width="600">
-            <Grid ColumnDefinitions="*,*">
+        <Border Padding="20" Background="{DynamicResource SystemAccentColorLight3}" Width="600">
+            <Grid ColumnDefinitions="*,*,*">
                 <StackPanel Grid.Column="0" Spacing="10">
                     <ToggleButton Theme="{DynamicResource ThemeToggleButton}" />
                     <ToggleButton Theme="{DynamicResource ThemeToggleButton}" IsChecked="True" />
@@ -20,6 +20,11 @@
                     <ToggleButton Theme="{DynamicResource ThemeToggleButton}" IsChecked="True">Checked</ToggleButton>
                     <ToggleButton Theme="{DynamicResource ThemeToggleButton}" IsThreeState="True" IsChecked="{x:Null}">Indeterminate</ToggleButton>
                     <ToggleButton Theme="{DynamicResource ThemeToggleButton}" Width="120">Checkbox should wrap its text</ToggleButton>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Spacing="20">
+                    <ToggleButton Content="Click Me!" />
+                    <ToggleButton Content="Disabled" IsEnabled="False" />
+                    <ToggleButton Content="Three state" IsThreeState="True" />
                 </StackPanel>
             </Grid>
         </Border>
@@ -119,9 +124,9 @@
       </Style>
 
       <Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedPressed}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ToggleButtonBorderBrushCheckedPressed}" />
-        <Setter Property="Foreground" Value="{DynamicResource ToggleButtonForegroundCheckedPressed}" />
+        <Setter Property="Background" Value="{DynamicResource ToggleButtonBackgroundChecked}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ToggleButtonBorderBrushChecked}" />
+        <Setter Property="Foreground" Value="{DynamicResource ToggleButtonForegroundChecked}" />
       </Style>
 
       <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
@@ -152,13 +157,13 @@
           <Grid ColumnDefinitions="Auto, 10, *">
           
           <Border x:Name="PartToggleButton" 
-              Padding="5" 
+              Padding="2" 
               BorderThickness="2"
               BorderBrush="{DynamicResource BorderBrushPrimaryDark}"
               Background="{TemplateBinding Background}" 
-              CornerRadius="7" 
+              CornerRadius="15" 
               VerticalAlignment="Top">
-            <Border Width="15" Height="15" Margin="0 0 20 0" Background="{DynamicResource SystemChromeGrayColor}" CornerRadius="7">
+            <Border Width="30" Height="20" Margin="0 0 15 0" Background="{DynamicResource SystemChromeGrayColor}" CornerRadius="10">
                 <Border.Transitions>
                     <Transitions>
                         <ThicknessTransition Property="Margin" Duration="0:0:0.075"/>
@@ -191,7 +196,7 @@
             <Setter Property="BorderBrush" Value="{DynamicResource PanelBackgroundBrushLight}"/>
             
             <Style Selector="^ Border">
-                <Setter Property="Margin" Value="20 0 0 0"/>
+                <Setter Property="Margin" Value="15 0 0 0"/>
                 <Setter Property="Background" Value="{DynamicResource PanelBackgroundBrushLight}"/>
                 
             </Style>
