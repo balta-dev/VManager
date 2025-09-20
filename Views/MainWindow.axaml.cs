@@ -37,22 +37,20 @@ namespace VManager.Views
         }
         private void ApplyCustomAccent(ThemeVariant? theme = null)
         {
-        
             var actualTheme = theme ?? ActualThemeVariant;
             var accent = GetSystemAccentColor();
             var background = (actualTheme == ThemeVariant.Dark) ? Colors.Black : Colors.White;
-            var adjusted = AdjustColorForContrast(accent, background);
-            var foreground = GetContrastingColor(adjusted);
-            Resources["AccentBrush"] = new SolidColorBrush(adjusted);
+            var adjustedAccent = AdjustColorForAccentTheme(accent, actualTheme);
+            var foreground = GetContrastingColor(adjustedAccent);
+            Resources["AccentBrush"] = new SolidColorBrush(adjustedAccent);
             Resources["AccentForegroundBrush"] = new SolidColorBrush(foreground);
-            
         }
         private Color GetSystemAccentColor()
         {
             if (Application.Current.TryGetResource("SystemAccentColor", null, out var value) && value is Color accent) 
                 return accent;
             
-            return Color.FromArgb(0xFF, 0xFF, 0x00, 0x00); // Rojo puro
+            return Color.FromArgb(0xFF, 0xFF, 0x00, 0x00); // acá es IMPOSIBLE que llegue
          
         }
         
@@ -76,17 +74,10 @@ namespace VManager.Views
             if (l1 < l2) (l1, l2) = (l2, l1);
             return (l1 + 0.05) / (l2 + 0.05);
         }
-
-        private Color AdjustColorForContrast(Color baseColor, Color background, double minContrast = 4.5)
+        private Color LightenColor(Color color, double factor)
         {
-            if (GetContrastRatio(baseColor, background) >= minContrast)
-                return baseColor;
-
-            // Si no cumple, lo aclaro u oscurezco
-            var factor = GetRelativeLuminance(baseColor) > GetRelativeLuminance(background) ? -0.3 : 0.3;
-            byte Adjust(byte c) => (byte)Math.Clamp(c + (255 * factor), 0, 255);
-
-            return new Color(baseColor.A, Adjust(baseColor.R), Adjust(baseColor.G), Adjust(baseColor.B));
+            byte Adjust(byte c) => (byte)Math.Clamp(c + (255 - c) * factor, 0, 255);
+            return new Color(color.A, Adjust(color.R), Adjust(color.G), Adjust(color.B));
         }
         
         private Color GetContrastingColor(Color background, double minContrast = 4.5)
@@ -97,8 +88,46 @@ namespace VManager.Views
             var contrastWithWhite = GetContrastRatio(background, white);
             var contrastWithBlack = GetContrastRatio(background, black);
 
-            return (contrastWithWhite >= contrastWithBlack) ? white : black;
+            // Si el fondo es muy oscuro, usar blanco; si es muy claro, usar negro
+            return (GetRelativeLuminance(background) < 0.5) ? white : black;
         }
+        private Color AdjustColorForAccentTheme(Color baseColor, ThemeVariant theme, double minContrast = 4.5)
+        {
+            Color adjusted = baseColor;
 
+            // Priorizar ajuste según tema
+            bool lighten = theme == ThemeVariant.Dark; // Aclarar en modo oscuro, oscurecer en modo claro
+            double factor = 0.1; // Paso inicial del 10%
+            double luminanceThreshold = 0.2; // Umbral para considerar el color "muy oscuro"
+
+            for (int i = 0; i < 30; i++)
+            {
+                byte Adjust(byte c) => (byte)Math.Clamp(lighten ? c + (255 - c) * factor : c * (1 - factor), 0, 255);
+
+                adjusted = new Color(adjusted.A,
+                    Adjust(adjusted.R),
+                    Adjust(adjusted.G),
+                    Adjust(adjusted.B));
+
+                // Verificar contraste con el fondo
+                double contrast = GetContrastRatio(adjusted, (theme == ThemeVariant.Dark) ? Colors.Black : Colors.White);
+                if (contrast >= minContrast)
+                    break;
+
+                // Reducir factor si no se alcanza el contraste
+                if (i > 10 && contrast < minContrast * 0.9)
+                    factor *= 0.8;
+            }
+
+            // Si el color ajustado es muy oscuro (luminancia < umbral) y estamos en modo claro, forzar un ajuste adicional
+            double luminance = GetRelativeLuminance(adjusted);
+            if (theme == ThemeVariant.Light && luminance < luminanceThreshold)
+            {
+                adjusted = LightenColor(adjusted, 0.3); // Aclarar un 30% si está demasiado oscuro en modo claro
+            }
+
+            return adjusted;
+        }
+        
     }
 }
