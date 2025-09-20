@@ -39,7 +39,6 @@ public partial class Herramienta3View : SoundEnabledUserControl
         _fluidController.UpdateCodecsBlocksPosition();
         _fluidController.UpdateControlPositions();
     }
-
     private void OnBoundsChanged(Rect bounds)
     {
         if (_fluidController == null)

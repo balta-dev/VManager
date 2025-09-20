@@ -3,7 +3,7 @@
                     x:ClassModifier="internal">
 
     <Design.PreviewWith>
-        <Border Padding="20" Background="{DynamicResource SystemAccentColorLight3}" Width="600">
+        <Border Padding="20" Background="Gray" Width="600">
             <Grid ColumnDefinitions="*,*,*">
                 <StackPanel Grid.Column="0" Spacing="10">
                     <ToggleButton Theme="{DynamicResource ThemeToggleButton}" />
@@ -73,7 +73,7 @@
     </Style>
 
     <Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
-      <Setter Property="Background" Value="{DynamicResource ToggleButtonBackgroundPressed}" />
+      <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
       <Setter Property="BorderBrush" Value="{DynamicResource ToggleButtonBorderBrushPressed}" />
       <Setter Property="Foreground" Value="{DynamicResource ToggleButtonForegroundPressed}" />
     </Style>
@@ -110,17 +110,18 @@
       </Style>
     </Style>
 
+    <!--- AccentBrush para el Background. El contrario para el font -->
     <Style Selector="^:checked">
       <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource ToggleButtonBackgroundChecked}" />
+        <Setter Property="Background" Value="{DynamicResource AccentBrush}" /> 
         <Setter Property="BorderBrush" Value="{DynamicResource ToggleButtonBorderBrushChecked}" />
-        <Setter Property="Foreground" Value="{DynamicResource ToggleButtonForegroundChecked}" />
+        <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
       </Style>
 
       <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedPointerOver}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ToggleButtonBorderBrushCheckedPointerOver}" />
-        <Setter Property="Foreground" Value="{DynamicResource ToggleButtonForegroundCheckedPointerOver}" />
+        <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
       </Style>
 
       <Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">

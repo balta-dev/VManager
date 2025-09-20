@@ -60,11 +60,30 @@ public abstract class ViewModelBase : ReactiveObject
 
     public ReactiveCommand<Unit, Unit> BrowseCommand { get; }
     public ReactiveCommand<Unit, Unit> ShowFileInFolderCommand { get; }
+    public ReactiveCommand<Unit, Unit> ClearInfoCommand { get; }
 
     protected ViewModelBase()
     {
         BrowseCommand = ReactiveCommand.CreateFromTask(BrowseVideo, outputScheduler: AvaloniaScheduler.Instance);
         ShowFileInFolderCommand = ReactiveCommand.Create(ShowFileInFolder, outputScheduler: AvaloniaScheduler.Instance);
+        ClearInfoCommand = ReactiveCommand.Create(ClearInfo, outputScheduler: AvaloniaScheduler.Instance);
+    }
+
+    private void ClearInfo()
+    {
+        Status = "";
+        Warning = "";
+        VideoPath = "";
+        Progress = 0;
+        OutputPath = "";
+        IsFileReadyVisible = false;
+        this.RaisePropertyChanged(nameof(Status));
+        this.RaisePropertyChanged(nameof(Warning));
+        this.RaisePropertyChanged(nameof(VideoPath));
+        this.RaisePropertyChanged(nameof(IsFileReadyVisible));
+        this.RaisePropertyChanged(nameof(Progress));
+        this.RaisePropertyChanged(nameof(OutputPath));
+        
     }
     private async Task BrowseVideo()
     {

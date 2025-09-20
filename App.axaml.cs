@@ -5,7 +5,10 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.Themes.Fluent;
+using Avalonia.Threading;
 using VManager.ViewModels;
 using VManager.Views;
 
@@ -16,44 +19,22 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-
         // Suscribirse a cambios de tema para actualizar brushes automáticamente
-        this.PropertyChanged += (s, e) =>
-        {
-            if (e.Property == Application.ActualThemeVariantProperty)
-            {
-                ApplyCustomTheme();
-            }
-        };
+        this.GetObservable(ActualThemeVariantProperty).Subscribe(_ => ApplyCustomTheme());
     }
-
+    
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            ApplyCustomTheme();
 
             if (BindingPlugins.DataValidators.Count > 0)
                 BindingPlugins.DataValidators.RemoveAt(0);
-
-            var vm = new MainWindowViewModel();
-            var mainWindow = new MainWindow
-            {
-                DataContext = vm,
-            };
-
+            
+            var mainWindow = new MainWindow { DataContext = new MainWindowViewModel(), };
             desktop.MainWindow = mainWindow;
-
-            // Escuchar cambios de tema y actualizar el VM
-            mainWindow.GetObservable(Window.ActualThemeVariantProperty)
-                .Cast<ThemeVariant>() // asegura el tipo correcto
-                .Subscribe(theme =>
-                {
-                    vm.IsDarkTheme = theme == ThemeVariant.Dark;
-                });
             
         }
-
         base.OnFrameworkInitializationCompleted();
     }
     private void ApplyCustomTheme(ThemeVariant? theme = null)

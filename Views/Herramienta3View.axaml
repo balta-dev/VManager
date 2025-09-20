@@ -18,7 +18,9 @@
             Background="{DynamicResource PanelBackgroundBrush}"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            ClipToBounds="True">
+            ClipToBounds="True"
+            behaviors:DragDropHelper.EnableFileDrop="True"
+            behaviors:DragDropHelper.DropTarget="VideoPath">
       
       <ScrollViewer Padding="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Background="Transparent">
 
@@ -30,21 +32,32 @@
                    HorizontalAlignment="Center" 
                    FontWeight="Bold"/>
 
-        <!-- Botón regenerar -->
-        <Button Content="🗘 Regenerar caché"
-                Command="{Binding RefreshCodecsCommand}"
-                Width="150"
-                Margin="0,0,0,30"
-                HorizontalAlignment="Center"/>
+        <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center" Margin="0 0 0 35">
+            
+            <Button Content="⚠️ Forzar recálculos"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="10"
+                    Command="{Binding RefreshCodecsCommand}"
+                    Width="112"/>
+            
+            <Button Content="🗘 Actualizar"
+                    Command="{Binding ClearInfoCommand}"
+                    Background="{DynamicResource AccentBrush}"
+                    Foreground="{DynamicResource AccentForegroundBrush}"
+                    HorizontalAlignment="Center"
+                    Width="100"/>
+                    
+        </StackPanel>
 
+        
         <!-- Selección de archivo -->
         <StackPanel Spacing="6" HorizontalAlignment="Stretch">
           <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
             <TextBlock Text="Seleccionar Video:" FontSize="14" VerticalAlignment="Center"/>
             <Button Content="Examinar" Command="{Binding BrowseCommand}" Width="100"/>
           </StackPanel>
-          <Border behaviors:DragDropHelper.EnableFileDrop="True"
-                  behaviors:DragDropHelper.DropTarget="VideoPath"
+          <Border 
                   Padding="2">
           <TextBox Text="{Binding VideoPath}" 
                    IsReadOnly="True" 
@@ -158,7 +171,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <ProgressBar Grid.Column="0" Minimum="0" Maximum="100" 
+                        <ProgressBar Grid.Column="0" Minimum="0" Maximum="100" Foreground="{DynamicResource AccentBrush}"
                                      Value="{Binding Progress}" Height="20"/>
                         <TextBlock Grid.Column="1" Text="{Binding Progress, StringFormat={}{0}%}"
                                    VerticalAlignment="Center" Margin="8,0,0,0"/>
@@ -215,15 +228,13 @@
                         <Button.Styles>
                             <!-- Estado normal -->
                             <Style Selector="Button">
-                                <Setter Property="Background" Value="{DynamicResource SystemAccentColor}"/>
+                                <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}"/>
                             </Style>
                             <!-- Hover -->
                             <Style Selector="Button:pointerover">
-                                <Setter Property="Background" Value="{DynamicResource SystemAccentColor}"/>
-                            </Style>
-                            <!-- Presionado -->
-                            <Style Selector="Button:pressed">
-                                <Setter Property="Background" Value="{DynamicResource SystemAccentColor}"/>
+                                <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}"/>
                             </Style>
                         </Button.Styles>
                     </Button>
@@ -244,10 +255,9 @@
           <StackPanel Orientation="Horizontal" Spacing="6">
               <TextBlock Width="230"></TextBlock>
           </StackPanel>
-
+          
         </StackPanel>
         
-
       </StackPanel>
       </ScrollViewer>
     </Border>
