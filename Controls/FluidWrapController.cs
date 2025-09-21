@@ -41,7 +41,8 @@ namespace VManager.Controls
             Canvas videoBlock,
             Canvas audioBlock,
             Canvas progressBar,
-            Canvas convertButton,
+            Canvas execButton,
+            Canvas cancelButton,
             Canvas statusLabel,
             Canvas fileDisplay,
             ICodecViewModel viewModel)
@@ -56,7 +57,8 @@ namespace VManager.Controls
             _secondaryControls = new List<ControlConfig>
             {
                 new ControlConfig { Control = progressBar ?? throw new ArgumentNullException(nameof(progressBar)), HorizontalOffset = -250 },
-                new ControlConfig { Control = convertButton ?? throw new ArgumentNullException(nameof(convertButton)), HorizontalOffset = -55 },
+                new ControlConfig { Control = execButton ?? throw new ArgumentNullException(nameof(execButton)), HorizontalOffset = -55 },
+                new ControlConfig { Control = cancelButton ?? throw new ArgumentNullException(nameof(cancelButton)), HorizontalOffset = 20},
                 new ControlConfig { Control = statusLabel ?? throw new ArgumentNullException(nameof(statusLabel)), HorizontalOffset = 10, UseEstimatedWidth = true },
                 new ControlConfig { Control = fileDisplay ?? throw new ArgumentNullException(nameof(fileDisplay)), HorizontalOffset = -25 }
             };

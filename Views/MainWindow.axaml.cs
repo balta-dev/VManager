@@ -44,6 +44,12 @@ namespace VManager.Views
             var foreground = GetContrastingColor(adjustedAccent);
             Resources["AccentBrush"] = new SolidColorBrush(adjustedAccent);
             Resources["AccentForegroundBrush"] = new SolidColorBrush(foreground);
+
+            var redButton = Color.FromArgb(0xFF, 0xBF, 0x24, 0x24);
+            var adjustedRed = AdjustColorForAccentTheme(redButton, actualTheme);
+            Resources["RedButtonBrush"] = new SolidColorBrush(adjustedRed);
+            var redForeground = GetContrastingColor(adjustedRed);
+            Resources["RedButtonForegroundBrush"] = new SolidColorBrush(redForeground);
         }
         private Color GetSystemAccentColor()
         {

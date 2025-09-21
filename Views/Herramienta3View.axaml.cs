@@ -30,6 +30,7 @@ public partial class Herramienta3View : SoundEnabledUserControl
             AudioBlockCanvas,        // audioBlock
             BarraProgreso,           // progressBar
             Convertir,               // convertButton
+            Cancelar,               // cancelButton
             Estado,                  // statusLabel (asegúrate de que tenga Name="StatusLabel" en XAML si usas bindings)
             MostrarArchivo,          // fileDisplay
             (ICodecViewModel)DataContext  // Cast a ICodecViewModel (Herramienta3ViewModel lo implementa)

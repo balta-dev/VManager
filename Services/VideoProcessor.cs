@@ -1,9 +1,11 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using FFMpegCore;
-
 
 namespace VManager.Services
 {
@@ -17,10 +19,12 @@ namespace VManager.Services
             public const string InvalidDuration = "Error al obtener duración.";
             public const string InvalidCutParameters = "Parámetros de corte inválidos.";
         }
+
         private (string videoCodec, string audioCodec) GetDefaultCodecs(string? videoCodec, string? audioCodec)
         {
             return (videoCodec ?? "libx264", audioCodec ?? "aac");
         }
+
         private static async Task<AnalysisResult<IMediaAnalysis>> AnalyzeVideoAsync(string inputPath)
         {
             try
@@ -45,73 +49,74 @@ namespace VManager.Services
         }
         
         public async Task<ProcessingResult> CutAsync(
-        string inputPath,
-        string outputPath,
-        TimeSpan start,
-        TimeSpan duration,
-        IProgress<double> progress)
-    {
-        var analysisResult = await AnalyzeVideoAsync(inputPath);
-        if (!analysisResult.Success)
+            string inputPath,
+            string outputPath,
+            TimeSpan start,
+            TimeSpan duration,
+            IProgress<double> progress)
         {
-            return new ProcessingResult(false, analysisResult.Message);
-        }
-
-        var mediaInfo = analysisResult.Result!;
-        double totalDuration = mediaInfo.Duration.TotalSeconds;
-        
-        string directory = Path.GetDirectoryName(inputPath)!;
-        string fileName = Path.GetFileNameWithoutExtension(inputPath);
-        string extension = Path.GetExtension(inputPath); 
-        outputPath = Path.Combine(directory, $"{fileName}-VCUT{extension}");
-
-        // Validar parámetros de corte
-        string warningMessage = null;
-        if (start < TimeSpan.Zero || duration <= TimeSpan.Zero)
-        {
-            return new ProcessingResult(false, ErrorMessages.InvalidCutParameters);
-        }
-        if (start.TotalSeconds + duration.TotalSeconds > totalDuration)
-        {
-            // Ajustar duration para que no exceda el video
-            duration = TimeSpan.FromSeconds(totalDuration - start.TotalSeconds);
-            string formatted = duration.ToString(@"hh\:mm\:ss");
-            warningMessage = $"Nota: La duración del corte se ajustó automáticamente a {formatted}.";
-        }
-        try
-        {
-            Console.WriteLine($"Corte - Video: copy, Audio: copy, Inicio: {start}, Duración: {duration.ToString(@"hh\:mm\:ss")}");
-
-            var args = FFMpegArguments
-                .FromFileInput(inputPath, false, options => options.Seek(start))
-                .OutputToFile(outputPath, overwrite: true, options =>
-                {
-                    options
-                        .WithVideoCodec("copy")
-                        .WithAudioCodec("copy")
-                        .WithDuration(duration);
-                })
-                .NotifyOnProgress(time =>
-                {
-                    progress.Report(time.TotalSeconds / duration.TotalSeconds);
-                });
-
-            await args.ProcessAsynchronously();
-            
-            if (!string.IsNullOrEmpty(warningMessage))
+            var analysisResult = await AnalyzeVideoAsync(inputPath);
+            if (!analysisResult.Success)
             {
-                return new ProcessingResult(true, "¡Corte finalizado!", outputPath, warningMessage);
+                return new ProcessingResult(false, analysisResult.Message);
             }
+
+            var mediaInfo = analysisResult.Result!;
+            double totalDuration = mediaInfo.Duration.TotalSeconds;
             
-            return new ProcessingResult(true, "¡Corte finalizado!", outputPath);
+            string directory = Path.GetDirectoryName(inputPath)!;
+            string fileName = Path.GetFileNameWithoutExtension(inputPath);
+            string extension = Path.GetExtension(inputPath); 
+            outputPath = Path.Combine(directory, $"{fileName}-VCUT{extension}");
+
+            // Validar parámetros de corte
+            string warningMessage = null;
+            if (start < TimeSpan.Zero || duration <= TimeSpan.Zero)
+            {
+                return new ProcessingResult(false, ErrorMessages.InvalidCutParameters);
+            }
+            if (start.TotalSeconds + duration.TotalSeconds > totalDuration)
+            {
+                // Ajustar duration para que no exceda el video
+                duration = TimeSpan.FromSeconds(totalDuration - start.TotalSeconds);
+                string formatted = duration.ToString(@"hh\:mm\:ss");
+                warningMessage = $"Nota: La duración del corte se ajustó automáticamente a {formatted}.";
+            }
+            try
+            {
+                Console.WriteLine($"Corte - Video: copy, Audio: copy, Inicio: {start}, Duración: {duration.ToString(@"hh\:mm\:ss")}");
+
+                var args = FFMpegArguments
+                    .FromFileInput(inputPath, false, options => options.Seek(start))
+                    .OutputToFile(outputPath, overwrite: true, options =>
+                    {
+                        options
+                            .WithVideoCodec("copy")
+                            .WithAudioCodec("copy")
+                            .WithDuration(duration);
+                    })
+                    .NotifyOnProgress(time =>
+                    {
+                        progress.Report(time.TotalSeconds / duration.TotalSeconds);
+                    });
+
+                await args.ProcessAsynchronously();
+                
+                if (!string.IsNullOrEmpty(warningMessage))
+                {
+                    return new ProcessingResult(true, "¡Corte finalizado!", outputPath, warningMessage);
+                }
+                
+                return new ProcessingResult(true, "¡Corte finalizado!", outputPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DEBUG]: Error: {ex.Message}");
+                Console.WriteLine($"[DEBUG]: Stack Trace: {ex.StackTrace}");
+                return new ProcessingResult(false, $"Error: {ex.Message}");
+            }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[DEBUG]: Error: {ex.Message}");
-            Console.WriteLine($"[DEBUG]: Stack Trace: {ex.StackTrace}");
-            return new ProcessingResult(false, $"Error: {ex.Message}");
-        }
-    }
+
         public async Task<ProcessingResult> CompressAsync(
             string inputPath,
             string outputPath,
@@ -120,7 +125,6 @@ namespace VManager.Services
             string? audioCodec,
             IProgress<double> progress)
         {
-            
             var (selectedVideoCodec, selectedAudioCodec) = GetDefaultCodecs(videoCodec, audioCodec);
 
             var analysisResult = await AnalyzeVideoAsync(inputPath);
@@ -173,13 +177,13 @@ namespace VManager.Services
         
         public async Task<ProcessingResult> ConvertAsync(
             string inputPath,
-            string outputPath, //está bien que haga overwrite porque es NECESARIO (inicializado en null)
+            string outputPath,
             string? videoCodec,
             string? audioCodec,
             string selectedFormat,
-            IProgress<double> progress)
+            IProgress<double> progress,
+            CancellationToken cancellationToken = default)
         {
-            
             var (selectedVideoCodec, selectedAudioCodec) = GetDefaultCodecs(videoCodec, audioCodec);
 
             var analysisResult = await AnalyzeVideoAsync(inputPath);
@@ -187,13 +191,13 @@ namespace VManager.Services
             {
                 return new ProcessingResult(false, analysisResult.Message);
             }
-            
+
             string outputFileName = Path.GetFileNameWithoutExtension(inputPath) + $"-VCONV.{selectedFormat}";
             outputPath = Path.Combine(Path.GetDirectoryName(inputPath)!, outputFileName);
-            
+
             var mediaInfo = analysisResult.Result!;
             double duration = mediaInfo.Duration.TotalSeconds;
-            
+
             try
             {
                 Console.WriteLine($"Conversión - Video: {selectedVideoCodec}, Audio: {selectedAudioCodec}, Extension: {selectedFormat}");
@@ -207,14 +211,83 @@ namespace VManager.Services
                             .WithAudioCodec(selectedAudioCodec)
                             .WithAudioBitrate(128);
                         ConfigureHardwareAcceleration(options, selectedVideoCodec);
-                    })
-                    .NotifyOnProgress(time =>
-                    {
-                        progress.Report(time.TotalSeconds / duration);
                     });
 
-                await args.ProcessAsynchronously();
+                // Configurar el proceso manualmente
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "ffmpeg", // Asegúrate de que FFmpeg esté en el PATH
+                        Arguments = args.Arguments, // Obtener los argumentos generados
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
+
+                using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+                {
+                    // Registrar la acción de cancelación
+                    cts.Token.Register(() =>
+                    {
+                        if (!process.HasExited)
+                        {
+                            process.Kill();
+                            Console.WriteLine("[DEBUG]: Proceso FFmpeg terminado por cancelación.");
+                        }
+                    });
+
+                    process.Start();
+
+                    // Leer el progreso desde stderr
+                    using (var reader = process.StandardError)
+                    {
+                        string? line;
+                        while ((line = await reader.ReadLineAsync()) != null)
+                        {
+                            if (line.Contains("time="))
+                            {
+                                var timeMatch = Regex.Match(line, @"time=(\d{2}:\d{2}:\d{2}\.\d{2})");
+                                if (timeMatch.Success && TimeSpan.TryParse(timeMatch.Groups[1].Value, out var time))
+                                {
+                                    progress.Report(time.TotalSeconds / duration);
+                                }
+                            }
+                        }
+                    }
+
+                    await process.WaitForExitAsync();
+
+                    if (cts.Token.IsCancellationRequested)
+                    {
+                        if (File.Exists(outputPath))
+                        {
+                            File.Delete(outputPath);
+                            Console.WriteLine("[DEBUG]: Archivo de salida eliminado tras cancelación.");
+                        }
+                        Console.WriteLine("[DEBUG]: Conversión cancelada por el usuario.");
+                        return new ProcessingResult(false, "Conversión cancelada por el usuario.");
+                    }
+
+                    if (process.ExitCode != 0 && !cts.Token.IsCancellationRequested)
+                    {
+                        throw new Exception("FFmpeg terminó con un error.");
+                    }
+                }
+
                 return new ProcessingResult(true, "¡Conversión finalizada!", outputPath);
+            }
+            catch (OperationCanceledException)
+            {
+                if (File.Exists(outputPath))
+                {
+                    File.Delete(outputPath);
+                    Console.WriteLine("[DEBUG]: Archivo de salida eliminado tras cancelación.");
+                }
+                Console.WriteLine("[DEBUG]: Conversión cancelada por el usuario.");
+                return new ProcessingResult(false, "Conversión cancelada por el usuario.");
             }
             catch (Exception ex)
             {
@@ -222,6 +295,7 @@ namespace VManager.Services
                 return new ProcessingResult(false, $"Error: {ex.Message}");
             }
         }
+
         private void ConfigureHardwareAcceleration(FFMpegArgumentOptions opts, string videoCodec)
         {
             var codec = videoCodec.ToLower();
@@ -239,6 +313,7 @@ namespace VManager.Services
                 ConfigureMacAcceleration(opts, codec);
             }
         }
+
         private void ConfigureWindowsAcceleration(FFMpegArgumentOptions opts, string codec)
         {
             switch (codec)
@@ -289,6 +364,7 @@ namespace VManager.Services
                     break;
             }
         }
+
         private void ConfigureLinuxAcceleration(FFMpegArgumentOptions opts, string codec)
         {
             switch (codec)
@@ -342,6 +418,7 @@ namespace VManager.Services
                     break;
             }
         }
+
         private void ConfigureMacAcceleration(FFMpegArgumentOptions opts, string codec)
         {
             switch (codec)
@@ -371,6 +448,7 @@ namespace VManager.Services
             }
         }
     }
+
     public class ProcessingResult
     {
         public bool Success { get; }
@@ -386,6 +464,7 @@ namespace VManager.Services
             Warning = warning;
         }
     }
+
     public class AnalysisResult<T>
     {
         public bool Success { get; }

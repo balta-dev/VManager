@@ -33,13 +33,13 @@
                    FontWeight="Bold"/>
 
         <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center" Margin="0 0 0 35">
-            
+            <!-- 
             <Button Content="⚠️ Forzar recálculos"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     FontSize="10"
                     Command="{Binding RefreshCodecsCommand}"
-                    Width="112"/>
+                    Width="112"/>-->
             
             <Button Content="🗘 Actualizar"
                     Command="{Binding ClearInfoCommand}"
@@ -176,9 +176,25 @@
                                    VerticalAlignment="Center" Margin="8,0,0,0"/>
                     </Grid>
                 </Canvas>    
+                
+                <!-- Estado -->
+                <Canvas x:Name="Estado" Width="150" Height="70" Tag="movible" Canvas.Top="140">
+                    <Canvas.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Canvas.Left" Duration="0:0:0.15" Easing="CubicEaseOut"/>
+                            <DoubleTransition Property="Canvas.Top" Duration="0:0:0.15" Easing="CubicEaseOut"/>
+                        </Transitions>
+                    </Canvas.Transitions>
 
+                    <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding Status}" FontSize="12" Margin="0,2,0,0" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding OutputPath}" FontSize="12" Margin="0,7,0,0" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Warning}" FontSize="12" Margin="0,8,0,0" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Canvas> 
+                
                 <!-- Botón Convertir -->
-                <Canvas x:Name="Convertir" Width="150" Height="70" Tag="movible" Canvas.Top="145">
+                <Canvas x:Name="Convertir" Width="150" Height="70" Tag="movible" Canvas.Top="175">
                     <Canvas.Transitions>
                         <Transitions>
                             <DoubleTransition Property="Canvas.Left" Duration="0:0:0.15" Easing="CubicEaseOut"/>
@@ -193,22 +209,22 @@
                             Margin="0,15,0,0" 
                             HorizontalAlignment="Center"/>
                 </Canvas> 
-
-                <!-- Estado -->
-                <Canvas x:Name="Estado" Width="150" Height="70" Tag="movible" Canvas.Top="200">
+                
+                <!-- Botón de Cancelar -->
+                <Canvas x:Name="Cancelar" Width="150" Height="70" HorizontalAlignment="Center" Tag="movible" Canvas.Top="230">
                     <Canvas.Transitions>
                         <Transitions>
                             <DoubleTransition Property="Canvas.Left" Duration="0:0:0.15" Easing="CubicEaseOut"/>
                             <DoubleTransition Property="Canvas.Top" Duration="0:0:0.15" Easing="CubicEaseOut"/>
                         </Transitions>
                     </Canvas.Transitions>
-
-                    <StackPanel HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding Status}" FontSize="12" Margin="0,2,0,0" HorizontalAlignment="Center"/>
-                    <TextBlock Text="{Binding OutputPath}" FontSize="12" Margin="0,7,0,0" HorizontalAlignment="Center"/>
-                    <TextBlock Text="{Binding Warning}" FontSize="12" Margin="0,8,0,0" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Canvas> 
+                    <Button Content="CANCELAR"
+                            Command="{Binding CancelConversionCommand}"
+                            Background="{DynamicResource RedButtonBrush}"
+                            Foreground="{DynamicResource RedButtonForegroundBrush}"
+                            HorizontalAlignment="Center"
+                            Width="100"/>
+                </Canvas>
 
                 <!-- Mostrar archivo -->
                 <Canvas x:Name="MostrarArchivo" Width="150" Height="70" Tag="movible" Canvas.Top="260">
