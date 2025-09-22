@@ -4,9 +4,10 @@
              x:DataType="vm:Herramienta3ViewModel"
              xmlns:vm="using:VManager.ViewModels"
              xmlns:behaviors="clr-namespace:VManager.Behaviors"
-             xmlns:global="clr-namespace:">
-
-  <!-- Se estira a toda la ventana y recorta cuando falta espacio -->
+             xmlns:global="clr-namespace:"
+             xmlns:views="clr-namespace:VManager.Views">
+    
+    <!-- Se estira a toda la ventana y recorta cuando falta espacio -->
   <Grid ClipToBounds="True">
 
     <!-- Border con margen fijo de 20 -->
@@ -41,12 +42,14 @@
                     Command="{Binding RefreshCodecsCommand}"
                     Width="112"/>-->
             
-            <Button Content="🗘 Actualizar"
+            <Button Content="🗘 Refrescar"
                     Command="{Binding ClearInfoCommand}"
-                    Background="{DynamicResource AccentBrush}"
-                    Foreground="{DynamicResource AccentForegroundBrush}"
+                    x:Name="ClearInfo"
+                    HotKey="F5"
                     HorizontalAlignment="Center"
-                    Width="100"/>
+                    Width="100">
+            </Button>
+
                     
         </StackPanel>
 
@@ -55,7 +58,7 @@
         <StackPanel Spacing="6" HorizontalAlignment="Stretch">
           <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
             <TextBlock Text="Seleccionar Video:" FontSize="14" VerticalAlignment="Center"/>
-            <Button Content="Examinar" Command="{Binding BrowseCommand}" Width="80"/>
+            <Button Content="Examinar" Command="{Binding BrowseCommand}" HotKey="E" Width="80"/>
           </StackPanel>
           <Border Padding="2">
           <TextBox Text="{Binding VideoPath}" 
@@ -203,15 +206,19 @@
                     </Canvas.Transitions>
 
                     <Button Content="Convertir Formato de Video"  
-                            FontSize="18" 
+                            Classes="Accented"
+                            IsEnabled="{Binding IsVideoPathSet}"
+                            FontSize="18"
+                            FontWeight="DemiBold"
                             Command="{Binding ConvertCommand}" 
-                            Width="255" 
+                            Width="260"
+                            HotKey="Enter"
                             Margin="0,15,0,0" 
                             HorizontalAlignment="Center"/>
                 </Canvas> 
                 
                 <!-- Botón de Cancelar -->
-                <Canvas x:Name="Cancelar" Width="150" Height="70" HorizontalAlignment="Center" Tag="movible" Canvas.Top="230">
+                <Canvas x:Name="Cancelar" Width="145" Height="70" HorizontalAlignment="Center" Tag="movible" Canvas.Top="230">
                     <Canvas.Transitions>
                         <Transitions>
                             <DoubleTransition Property="Canvas.Left" Duration="0:0:0.15" Easing="CubicEaseOut"/>
@@ -219,15 +226,18 @@
                         </Transitions>
                     </Canvas.Transitions>
                     <Button Content="CANCELAR"
-                            Command="{Binding CancelConversionCommand}"
+                            IsEnabled="{Binding IsConverting}"
+                            FontSize="12"
+                            Command="{Binding ShowCancelDialogCommand}"
                             Background="{DynamicResource RedButtonBrush}"
                             Foreground="{DynamicResource RedButtonForegroundBrush}"
+                            HotKey="Escape"
                             HorizontalAlignment="Center"
-                            Width="100"/>
+                            Width="90"/>
                 </Canvas>
 
                 <!-- Mostrar archivo -->
-                <Canvas x:Name="MostrarArchivo" Width="150" Height="70" Tag="movible" Canvas.Top="260">
+                <Canvas x:Name="MostrarArchivo" Width="150" Height="70" Tag="movible" Canvas.Top="250">
                     <Canvas.Transitions>
                         <Transitions>
                             <DoubleTransition Property="Canvas.Left" Duration="0:0:0.15" Easing="CubicEaseOut"/>
@@ -235,24 +245,33 @@
                         </Transitions>
                     </Canvas.Transitions>
 
-                    <Button Content="Mostrar archivo en carpeta"
-                            IsVisible="{Binding IsFileReadyVisible}"
-                            Command="{Binding ShowFileInFolderCommand}"
-                            HorizontalAlignment="Center"
-                            Margin="0,20,0,0">
-                        <Button.Styles>
-                            <!-- Estado normal -->
-                            <Style Selector="Button">
-                                <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}"/>
-                            </Style>
+                    <ToggleButton Content="Mostrar archivo en carpeta"
+                                  IsVisible="{Binding IsFileReadyVisible}"
+                                  IsChecked="{Binding IsClicked, Mode=TwoWay}"
+                                  Command="{Binding ShowFileInFolderCommand}"
+                                  HorizontalAlignment="Center"
+                                  Margin="0,20,0,0">
+                        <ToggleButton.Styles>
+                            
                             <!-- Hover -->
-                            <Style Selector="Button:pointerover">
-                                <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}"/>
+                            <Style Selector="ToggleButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                                <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
                             </Style>
-                        </Button.Styles>
-                    </Button>
+
+                            <!-- Pressed -->
+                            <Style Selector="ToggleButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
+                                <Setter Property="Background" Value="{DynamicResource AccentForegroundBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+                            </Style>
+
+                            <!-- Checked (persiste después del clic) -->
+                            <Style Selector="ToggleButton:checked /template/ ContentPresenter#PART_ContentPresenter">
+                                <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
+                            </Style>
+                        </ToggleButton.Styles>
+                    </ToggleButton>
                 </Canvas>   
 
             </Canvas>
@@ -276,5 +295,6 @@
       </StackPanel>
       </ScrollViewer>
     </Border>
+    
   </Grid>
 </UserControl>

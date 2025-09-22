@@ -7,13 +7,18 @@ using FFMpegCore.Enums;
 using System;
 using System.IO;
 using System.Reactive;
+using System.Threading;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using VManager.Views;
 
 namespace VManager.ViewModels;
 
 public abstract class ViewModelBase : ReactiveObject
 {
+    private bool _isVideoPathSet;
     private string _videoPath = "";
     private string _outputPath = "";
     private string _lastCompressedFilePath;
@@ -21,7 +26,28 @@ public abstract class ViewModelBase : ReactiveObject
     private string _status = "";
     private string _warning = "";
     private bool _isFileReadyVisible;
-
+    private bool _isClicked;
+    private bool _isOperationRunning;
+    private bool _isDialogVisible;
+    protected CancellationTokenSource _cts;
+    
+    public bool IsDialogVisible
+    {
+        get => _isDialogVisible;
+        set => this.RaiseAndSetIfChanged(ref _isDialogVisible, value);
+    }
+    public bool IsOperationRunning
+    {
+        get => _isOperationRunning;
+        set => this.RaiseAndSetIfChanged(ref _isOperationRunning, value);
+    }
+    
+    public bool IsVideoPathSet
+    {
+        get => _isVideoPathSet;
+        set => this.RaiseAndSetIfChanged(ref _isVideoPathSet, value);
+    }
+    
     public string VideoPath
     {
         get => _videoPath;
@@ -61,29 +87,88 @@ public abstract class ViewModelBase : ReactiveObject
     public ReactiveCommand<Unit, Unit> BrowseCommand { get; }
     public ReactiveCommand<Unit, Unit> ShowFileInFolderCommand { get; }
     public ReactiveCommand<Unit, Unit> ClearInfoCommand { get; }
+    public ReactiveCommand<Unit, Unit> ShowCancelDialogCommand { get; }
 
     protected ViewModelBase()
     {
         BrowseCommand = ReactiveCommand.CreateFromTask(BrowseVideo, outputScheduler: AvaloniaScheduler.Instance);
         ShowFileInFolderCommand = ReactiveCommand.Create(ShowFileInFolder, outputScheduler: AvaloniaScheduler.Instance);
         ClearInfoCommand = ReactiveCommand.Create(ClearInfo, outputScheduler: AvaloniaScheduler.Instance);
+        ShowCancelDialogCommand = ReactiveCommand.CreateFromTask(ShowCancelDialogInMainWindow, outputScheduler: AvaloniaScheduler.Instance);
+    }
+    
+    private void MostrarOverlayEnMainWindow()
+    {
+        // Asegurarse de que hay una ventana principal
+        if (Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            var mainWindow = desktop.MainWindow;
+
+            if (mainWindow != null && mainWindow.DataContext is MainWindowViewModel mainVM)
+            {
+                mainVM.IsDialogVisible = true; // Esto activa el overlay en MainWindow
+            }
+        }
+    }
+    public async Task ShowCancelDialogInMainWindow()
+    {
+        MostrarOverlayEnMainWindow(); // Activa overlay
+
+        // Mostrar el diálogo
+        var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+        if (mainWindow != null)
+        {
+            var dialog = new CancelDialog();
+            bool? result = await dialog.ShowDialog<bool?>(mainWindow);
+        
+            if (result == true)
+            {
+                // Cancelar la operación
+                RequestCancelOperation();
+            }
+
+            // Desactivar overlay al cerrar el dialog
+            if (mainWindow.DataContext is MainWindowViewModel mainVM)
+                mainVM.IsDialogVisible = false;
+        }
+    }
+
+    
+    public void RequestCancelOperation()
+    {
+        CancelOperation();
+    }
+    
+    private void CancelOperation()
+    {
+        // Método virtual que las clases derivadas pueden sobrescribir
+        IsOperationRunning = false;
+        
+        if (_cts != null)
+        {
+            _cts.Cancel();
+            Console.WriteLine("[DEBUG]: Cancelación solicitada por el usuario. ADOOOOUUUUUU");
+        }
     }
 
     private void ClearInfo()
     {
-        Status = "";
+        Status = "¡Actualizado!";
         Warning = "";
         VideoPath = "";
         Progress = 0;
         OutputPath = "";
         IsFileReadyVisible = false;
+        IsVideoPathSet = false;
+        IsClicked = false;
         this.RaisePropertyChanged(nameof(Status));
         this.RaisePropertyChanged(nameof(Warning));
         this.RaisePropertyChanged(nameof(VideoPath));
         this.RaisePropertyChanged(nameof(IsFileReadyVisible));
         this.RaisePropertyChanged(nameof(Progress));
         this.RaisePropertyChanged(nameof(OutputPath));
-        
+        this.RaisePropertyChanged(nameof(IsVideoPathSet));
+        this.RaisePropertyChanged(nameof(IsClicked));
     }
     private async Task BrowseVideo()
     {
@@ -117,6 +202,8 @@ public abstract class ViewModelBase : ReactiveObject
         {
             VideoPath = files[0].Path.LocalPath;
             this.RaisePropertyChanged(nameof(VideoPath));
+            IsVideoPathSet = true;
+            this.RaisePropertyChanged(nameof(IsVideoPathSet));
         }
             
     }
@@ -130,6 +217,11 @@ public abstract class ViewModelBase : ReactiveObject
     {
         IsFileReadyVisible = false;
         this.RaisePropertyChanged(nameof(IsFileReadyVisible));
+    }
+    public bool IsClicked
+    {
+        get => _isClicked;
+        set => this.RaiseAndSetIfChanged(ref _isClicked, value);
     }
 
     private void ShowFileInFolder()
@@ -156,6 +248,9 @@ public abstract class ViewModelBase : ReactiveObject
             {
                 System.Diagnostics.Process.Start("open", folder);
             }
+
+            IsClicked = true;
+            this.RaisePropertyChanged(nameof(IsClicked));
         }
         catch (Exception ex)
         {

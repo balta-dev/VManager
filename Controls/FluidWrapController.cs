@@ -33,7 +33,7 @@ namespace VManager.Controls
             public const double OffsetY = -140;
             public const double MovableOffset = 80;
             public const double BaseY = 150;
-            public const double CharacterWidthEstimate = 7.45; // Restaurado de la versión anterior
+            public const double CharacterWidthEstimate = 6.9; // Restaurado de la versión anterior
         }
 
         public FluidWrapController(
@@ -58,8 +58,8 @@ namespace VManager.Controls
             {
                 new ControlConfig { Control = progressBar ?? throw new ArgumentNullException(nameof(progressBar)), HorizontalOffset = -250 },
                 new ControlConfig { Control = execButton ?? throw new ArgumentNullException(nameof(execButton)), HorizontalOffset = -55 },
-                new ControlConfig { Control = cancelButton ?? throw new ArgumentNullException(nameof(cancelButton)), HorizontalOffset = 20},
-                new ControlConfig { Control = statusLabel ?? throw new ArgumentNullException(nameof(statusLabel)), HorizontalOffset = 10, UseEstimatedWidth = true },
+                new ControlConfig { Control = cancelButton ?? throw new ArgumentNullException(nameof(cancelButton)), HorizontalOffset = 26},
+                new ControlConfig { Control = statusLabel ?? throw new ArgumentNullException(nameof(statusLabel)), HorizontalOffset = 7, UseEstimatedWidth = true },
                 new ControlConfig { Control = fileDisplay ?? throw new ArgumentNullException(nameof(fileDisplay)), HorizontalOffset = -25 }
             };
 

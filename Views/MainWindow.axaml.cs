@@ -3,12 +3,15 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using VManager.Behaviors;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
+using ReactiveUI;
 using VManager.Services;
+using VManager.ViewModels;
 
 namespace VManager.Views
 {
@@ -34,7 +37,43 @@ namespace VManager.Views
                     ApplyCustomAccent();
                 });
             
+            this.Closing += MainWindow_Closing;
         }
+        
+        private void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
+        {
+            if (DataContext is MainWindowViewModel vm && vm.CurrentView is ViewModelBase current)
+            {
+                if (current.IsOperationRunning)
+                {
+                    e.Cancel = true; // Cancelamos el cierre
+
+                    // Activamos el overlay (no funciona todavía)
+                    current.IsDialogVisible = true;
+
+                    // Ejecutamos la lógica del diálogo en el Dispatcher
+                    Avalonia.Threading.Dispatcher.UIThread.Post(async () =>
+                    {
+                        try
+                        {
+                            var dialog = new CancelDialog();
+                            bool? result = await dialog.ShowDialog<bool?>(this);
+
+                            if (result == true)
+                            {
+                                current.RequestCancelOperation();
+                                this.Close();
+                            }
+                        }
+                        finally
+                        {
+                            current.IsDialogVisible = false;
+                        }
+                    });
+                }
+            }
+        }
+        
         private void ApplyCustomAccent(ThemeVariant? theme = null)
         {
             var actualTheme = theme ?? ActualThemeVariant;

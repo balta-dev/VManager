@@ -1,0 +1,48 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="clr-namespace:VManager.Views"
+        x:Class="VManager.Views.CancelDialog"
+        Width="300" Height="150"
+        CanResize="False"
+        SystemDecorations="None"
+        Background="Transparent"
+        WindowStartupLocation="CenterOwner"
+        Title="Confirmar Cancelación">
+    
+    <Border CornerRadius="10"
+            BorderBrush="#CCCCCC"
+            BorderThickness="1"
+            Background="Gray"
+            BoxShadow="0 5 25 0 #00000080"
+            Margin="20"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+        
+        <StackPanel Margin="20" Spacing="15">
+            <TextBlock Text="¿Desea cancelar la operación?" 
+                       FontWeight="Bold"
+                       FontSize="14"
+                       TextAlignment="Center" />
+                       
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Center" 
+                        Spacing="15">
+                <Button x:Name="YesButton" 
+                        Content="Sí" 
+                        Width="80"
+                        Height="32"
+                        Background="#F44336"
+                        Foreground="White"
+                        CornerRadius="4"/>
+                <Button x:Name="NoButton" 
+                        Content="No" 
+                        Width="80"
+                        Height="32"
+                        Background="#4CAF50"
+                        Foreground="White"
+                        CornerRadius="4"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+    
+</Window>

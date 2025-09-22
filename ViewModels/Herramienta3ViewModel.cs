@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
@@ -17,21 +18,25 @@ namespace VManager.ViewModels
 {
     public class Herramienta3ViewModel : CodecViewModelBase
     {
+        private bool _isConverting;
+        public bool IsConverting
+        {
+            get => _isConverting;
+            set => this.RaiseAndSetIfChanged(ref _isConverting, value);
+        }
+        
         public VideoFormat SelectedFormat { get; set; } 
         public ReactiveCommand<Unit, Unit> ConvertCommand { get; }
         public ReactiveCommand<Unit, Unit> RefreshCodecsCommand { get; } 
-        
-        public ReactiveCommand<Unit, Unit> CancelConversionCommand { get; }
+       
         public Herramienta3ViewModel()
         {
             RefreshCodecsCommand = ReactiveCommand.CreateFromTask(ReloadCodecsAsync, outputScheduler: AvaloniaScheduler.Instance);
             ConvertCommand = ReactiveCommand.CreateFromTask(ConvertVideo, outputScheduler: AvaloniaScheduler.Instance);
-            CancelConversionCommand = ReactiveCommand.Create(CancelConversion, outputScheduler: AvaloniaScheduler.Instance);
             SelectedFormat = SupportedFormats[0]; //mp4
             _ = LoadCodecsAsync();
         }
         
-        private CancellationTokenSource _cts;
         private async Task ConvertVideo()
         {
             HideFileReadyButton();
@@ -54,6 +59,11 @@ namespace VManager.ViewModels
 
                 Status = "Convirtiendo...";
                 this.RaisePropertyChanged(nameof(Status));
+                
+                IsConverting = true;
+                IsOperationRunning = true;
+                this.RaisePropertyChanged(nameof(IsConverting));
+                this.RaisePropertyChanged(nameof(IsOperationRunning));
         
                 var result = await processor.ConvertAsync(
                     VideoPath,
@@ -77,6 +87,12 @@ namespace VManager.ViewModels
                     this.RaisePropertyChanged(nameof(Progress));
                     this.RaisePropertyChanged(nameof(OutputPath));
                     this.RaisePropertyChanged(nameof(Warning));
+                    IsConverting = false;
+                    IsOperationRunning = false;
+                    IsVideoPathSet = false; //para bloquear 
+                    this.RaisePropertyChanged(nameof(IsOperationRunning));
+                    this.RaisePropertyChanged(nameof(IsConverting));
+                    this.RaisePropertyChanged(nameof(IsVideoPathSet));
                 }
                 else
                 {
@@ -85,6 +101,10 @@ namespace VManager.ViewModels
                     Progress = 0;
                     this.RaisePropertyChanged(nameof(Status));
                     this.RaisePropertyChanged(nameof(Progress));
+                    IsConverting = false;
+                    IsOperationRunning = false;
+                    this.RaisePropertyChanged(nameof(IsConverting));
+                    this.RaisePropertyChanged(nameof(IsOperationRunning));
                 }
             }
             catch (OperationCanceledException)
@@ -94,6 +114,10 @@ namespace VManager.ViewModels
                 Progress = 0;
                 this.RaisePropertyChanged(nameof(Status));
                 this.RaisePropertyChanged(nameof(Progress));
+                IsConverting = false;
+                IsOperationRunning = false;
+                this.RaisePropertyChanged(nameof(IsConverting));
+                this.RaisePropertyChanged(nameof(IsOperationRunning));
                 
             }
             finally
@@ -103,15 +127,6 @@ namespace VManager.ViewModels
                 _cts = null;
             }
             
-        }
-        
-        public void CancelConversion()
-        {
-            if (_cts != null)
-            {
-                _cts.Cancel();
-                Console.WriteLine("[DEBUG]: Cancelación solicitada por el usuario.");
-            }
         }
         
     }

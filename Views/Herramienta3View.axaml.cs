@@ -4,12 +4,12 @@ using Avalonia.Controls.Shapes;
 using System;
 using VManager.Controls;
 using VManager.ViewModels; // Asegúrate de que incluya ICodecViewModel y CodecViewModelBase
+using ReactiveUI;
 
 namespace VManager.Views;
 public partial class Herramienta3View : SoundEnabledUserControl
 {
     private FluidWrapController _fluidController;
-
     public Herramienta3View()
     {
         InitializeComponent();

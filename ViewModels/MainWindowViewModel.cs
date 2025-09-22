@@ -14,7 +14,7 @@ using Avalonia.Styling;
 
 namespace VManager.ViewModels;
 
-public class MainWindowViewModel : ReactiveObject
+public class MainWindowViewModel : ViewModelBase
 {
     public bool IsWelcomeVisible => CurrentView == null;
     private Herramienta1ViewModel _herramienta1;
@@ -51,6 +51,7 @@ public class MainWindowViewModel : ReactiveObject
             this.RaisePropertyChanged(nameof(IsWelcomeVisible)); // Notifica cambio de visibilidad
             } 
     }
+    
     public ReactiveCommand<Unit, Unit> GoToHerramienta1 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta2 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta3 { get; }
