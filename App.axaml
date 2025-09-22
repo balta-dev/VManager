@@ -23,6 +23,17 @@
             <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
         </Style>
         
+        <!-- Estilo botón rojo -->
+        <Style Selector="Button.RedAccented">
+            <Setter Property="Background" Value="{DynamicResource RedButtonBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource RedButtonForegroundBrush}" />
+        </Style>
+
+        <Style Selector="Button.RedAccented:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource RedButtonForegroundBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource RedButtonBrush}" />
+        </Style>
+        
         <!-- Estilos globales PathIcon -->
         <Style Selector="PathIcon">
             <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>

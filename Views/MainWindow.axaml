@@ -206,7 +206,7 @@
             <ContentControl x:Name="ContentArea" Content="{Binding CurrentView}" Background="Transparent"/>
         </DockPanel>
         
-        <views:DimOverlay />
+        <views:DimOverlay ZIndex="100"/>
     </Grid>
     
     </Window>

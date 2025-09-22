@@ -26,7 +26,7 @@ namespace VManager.Views
             var accentObs = this.GetResourceObservable("SystemAccentColor")
                 .OfType<Color>()
                 .DistinctUntilChanged()
-                .Where(c => c != Color.FromArgb(0xFF, 0x00, 0x78, 0xD7));
+                .Where(c => c != Color.FromArgb(0xFF, 0x00, 0x78, 0xD7)); //default de systemaccent antes de tomarlo del resource padre
 
             var themeObs = this.GetObservable(ActualThemeVariantProperty)
                 .Select(_ => default(Color?)); // no aporta color, solo trigger
@@ -81,14 +81,14 @@ namespace VManager.Views
             var background = (actualTheme == ThemeVariant.Dark) ? Colors.Black : Colors.White;
             var adjustedAccent = AdjustColorForAccentTheme(accent, actualTheme);
             var foreground = GetContrastingColor(adjustedAccent);
-            Resources["AccentBrush"] = new SolidColorBrush(adjustedAccent);
-            Resources["AccentForegroundBrush"] = new SolidColorBrush(foreground);
+            Application.Current.Resources["AccentBrush"] = new SolidColorBrush(adjustedAccent);
+            Application.Current.Resources["AccentForegroundBrush"] = new SolidColorBrush(foreground);
 
             var redButton = Color.FromArgb(0xFF, 0xBF, 0x24, 0x24);
             var adjustedRed = AdjustColorForAccentTheme(redButton, actualTheme);
-            Resources["RedButtonBrush"] = new SolidColorBrush(adjustedRed);
+            Application.Current.Resources["RedButtonBrush"] = new SolidColorBrush(adjustedRed);
             var redForeground = GetContrastingColor(adjustedRed);
-            Resources["RedButtonForegroundBrush"] = new SolidColorBrush(redForeground);
+            Application.Current.Resources["RedButtonForegroundBrush"] = new SolidColorBrush(redForeground);
         }
         private Color GetSystemAccentColor()
         {

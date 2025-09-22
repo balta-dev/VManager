@@ -4,7 +4,7 @@
              x:Class="VManager.Views.DimOverlay"
              x:DataType="vm:ViewModelBase"
              IsVisible="{Binding IsDialogVisible}">
-    <Grid Background="#60000000"
+    <Grid Background="#64000000"
           HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch"/>
 </UserControl>
