@@ -57,7 +57,7 @@
         <StackPanel Spacing="6" HorizontalAlignment="Stretch">
           <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
             <TextBlock Text="Seleccionar Video:" FontSize="14" VerticalAlignment="Center"/>
-            <Button Content="Examinar" Command="{Binding BrowseCommand}" Width="80"/>
+            <Button Content="Examinar" Command="{Binding BrowseCommand}" HotKey="E" Width="80"/>
           </StackPanel>
           <Border behaviors:DragDropHelper.EnableFileDrop="True"
                   behaviors:DragDropHelper.DropTarget="VideoPath"
@@ -115,6 +115,7 @@
                 FontWeight="DemiBold"
                 IsEnabled="{Binding VideoPath, Converter={StaticResource ValidPathConverter}}"
                 Command="{Binding CutCommand}" 
+                HotKey="Enter"
                 Width="150" 
                 Margin="0,0,0,0" 
                 HorizontalAlignment="Center"/>
