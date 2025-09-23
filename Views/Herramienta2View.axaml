@@ -184,7 +184,7 @@
 
                     <Button Content="Comprimir Video"  
                             Classes="Accented"
-                            IsEnabled="{Binding IsVideoPathSet}"
+                            IsEnabled="{Binding VideoPath, Converter={StaticResource ValidPathConverter}}"
                             FontSize="18"
                             FontWeight="DemiBold"
                             Command="{Binding CompressCommand}" 
