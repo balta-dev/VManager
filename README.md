@@ -1,8 +1,8 @@
-# VManager 🎬
+<img width="100" height="100" alt="VManager" src="https://github.com/user-attachments/assets/1035f7c9-dfe5-47d2-a21a-2c88e296e50b" />ㅤㅤ
+ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ
 
-Una herramienta **fácil de usar** y **rápida** para gestionar videos: recortar, comprimir, cambiar formato y más.
-
-## Descripción
+## VManager
+### Una herramienta **fácil de usar** y **rápida** para gestionar videos: recortar, comprimir, cambiar formato y más.
 
 VManager nace de la evolución de dos herramientas que desarrollé para uso en terminal ([`vcut`](https://github.com/balta-dev/vcut) y [`vcompr`](https://github.com/balta-dev/vcompr)), con el objetivo de facilitar aún más su uso general y hacer estas funcionalidades accesibles para el usuario promedio. 
 
@@ -24,11 +24,15 @@ VManager nace de la evolución de dos herramientas que desarrollé para uso en t
 
 ## 📥 Instalación y uso
 
+---
+
 ### Windows 🪟
 1. Descarga el archivo `VManager-win-x64.zip` desde [Releases](../../releases)
 2. Extrae el contenido
 3. Ejecuta `VManager.exe`
 4. ¡Listo para usar! ✅
+
+---
 
 ### Linux 🐧
 1. Descarga el archivo `VManager-linux-x64.tar.gz` desde [Releases](../../releases)
@@ -43,6 +47,8 @@ VManager nace de la evolución de dos herramientas que desarrollé para uso en t
 
 > **⚠️ Nota**: Para Linux, Avalonia no tiene una implementación **Drag & Drop**, así que la única forma es ocupando el botón "Examinar". A pesar de que los desarrolladores de Avalonia no han tenido mucho interés, actualmente hay varios issues que están intentando resolver este problema (ejemplo: issue [#19232](https://github.com/AvaloniaUI/Avalonia/pull/19232) busca mergearse tras solucionar issue [#19347](https://github.com/AvaloniaUI/Avalonia/pull/19347)). El objetivo es utilizar la implementación original de Avalonia, pero si no se resuelve en un tiempo razonable se implementará de manera provisoria un GTK Helper para que pueda capturar el evento y se lo comunique a Avalonia mediante IPC.
 
+---
+
 ### macOS 🍎
 1. Descarga el archivo `VManager-osx-x64.tar.gz` desde [Releases](../../releases)
 2. Extrae el contenido
@@ -52,7 +58,9 @@ VManager nace de la evolución de dos herramientas que desarrollé para uso en t
    ```
 4. Ejecuta la aplicación
 
-> **⚠️ Nota**: En macOS es necesario instalar FFmpeg por separado usando Homebrew u otro gestor de paquetes (no fueron incluidos los binarios en el ejecutable). Todavía no ha sido testeado en esta plataforma, pero según la documentación de Avalonia la función **Drag & Drop** si está disponible.
+> **⚠️ Nota**: Todavía no ha sido testeado en esta plataforma. También, según la documentación de Avalonia la función **Drag & Drop** si está disponible.
+
+---
 
 ## 🎯 Cómo usar
 
@@ -89,7 +97,7 @@ Este proyecto está bajo la licencia [MIT](LICENSE.md).
 - **FFmpeg** - El corazón del procesamiento de video
 - **Avalonia** - Framework UI multiplataforma
 - **ReactiveUI** - Arquitectura reactiva
-- [**@femaa33**](https://www.youtube.com/@femaa33) - Por la idea de comenzar este proyecto ♡
+- [**@femaa33**](https://www.youtube.com/@femaa33) - Por la idea de comenzar este proyecto ♡ Y POR EL LOGO
 
 ---
 
