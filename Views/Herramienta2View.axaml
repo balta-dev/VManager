@@ -6,15 +6,17 @@
              xmlns:behaviors="clr-namespace:VManager.Behaviors">
 
   <Grid ClipToBounds="True">
-    <Border BorderBrush="{DynamicResource BorderBrushPrimary}" 
-            BorderThickness="2" 
-            CornerRadius="10" 
-            Padding="0" 
-            Margin="20,20,20,0"
-            Background="{DynamicResource PanelBackgroundBrush}"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            ClipToBounds="True">
+      <Border BorderBrush="{DynamicResource BorderBrushPrimary}" 
+              BorderThickness="2" 
+              CornerRadius="10" 
+              Padding="0" 
+              Margin="20,20,20,0"
+              Background="{DynamicResource PanelBackgroundBrush}"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              ClipToBounds="True"
+              behaviors:DragDropHelper.EnableFileDrop="True"
+              behaviors:DragDropHelper.DropTarget="VideoPath">
 
       <ScrollViewer Padding="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Background="Transparent">
         <StackPanel Margin="20" Spacing="12" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -51,7 +53,7 @@
               <TextBlock Text="Seleccionar Video:" FontSize="14" VerticalAlignment="Center"/>
               <Button Content="Examinar" Command="{Binding BrowseCommand}" HotKey="E" Width="80"/>
             </StackPanel>
-            <Border Padding="2" behaviors:DragDropHelper.EnableFileDrop="True" behaviors:DragDropHelper.DropTarget="VideoPath">
+            <Border Padding="2">
               <TextBox Text="{Binding VideoPath}" IsReadOnly="True" Watermark="Ruta del video" HorizontalAlignment="Stretch"/>
             </Border>
           </StackPanel>
