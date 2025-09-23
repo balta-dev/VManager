@@ -9,22 +9,19 @@
     <ApplicationIcon>Assets\VManager.ico</ApplicationIcon>
   </PropertyGroup>
 
-  <!-- Carpetas de recursos y binarios -->
+  <!-- Carpetas de recursos y modelos -->
   <ItemGroup>
     <Folder Include="Binaries\Linux\" />
     <Folder Include="Binaries\Mac\" />
     <Folder Include="Binaries\Windows\" />
     <Folder Include="Models\" />
+  </ItemGroup>
 
-    <!-- Recursos Avalonia (excluyendo sonidos) -->
+  <!-- Recursos Avalonia (excluyendo sonidos) -->
+  <ItemGroup>
     <AvaloniaResource Include="Assets\**" Exclude="Assets\Sounds\**" />
-
-    <!-- Sonidos incrustados -->
     <EmbeddedResource Include="Assets\Sounds\**\*" />
-
-    <!-- Excluir ffplay explícitamente si existe -->
-    <None Remove="Binaries\Linux\ffplay" />
-    <None Remove="Binaries\Windows\ffplay.exe" />
+    <AvaloniaResource Include="Assets\VManager.ico" />
   </ItemGroup>
 
   <!-- Paquetes NuGet -->
@@ -40,23 +37,28 @@
     <PackageReference Include="NAudio" Version="2.2.1" />
   </ItemGroup>
 
-  <!-- Binarios ffmpeg y ffprobe incrustados -->
-  <ItemGroup>
-    <!-- Linux -->
-    <None Remove="Binaries\Linux\ffmpeg" />
-    <EmbeddedResource Include="Binaries\Linux\ffmpeg" />
-    <None Remove="Binaries\Linux\ffprobe" />
-    <EmbeddedResource Include="Binaries\Linux\ffprobe" />
-
-    <!-- Windows -->
-    <None Remove="Binaries\Windows\ffmpeg.exe" />
+  <!-- Binarios ffmpeg/ffprobe solo en Release -->
+  <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(RuntimeIdentifier)' == 'win-x64'">
     <EmbeddedResource Include="Binaries\Windows\ffmpeg.exe" />
-    <None Remove="Binaries\Windows\ffprobe.exe" />
     <EmbeddedResource Include="Binaries\Windows\ffprobe.exe" />
+    <None Remove="Binaries\Windows\ffplay.exe" />
+    <None Remove="Binaries\Linux\**" />
+    <None Remove="Binaries\Mac\**" />
   </ItemGroup>
 
-  <ItemGroup>
-        <AvaloniaResource Include="Assets\VManager.ico" />
+  <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(RuntimeIdentifier)' == 'linux-x64'">
+    <EmbeddedResource Include="Binaries\Linux\ffmpeg" />
+    <EmbeddedResource Include="Binaries\Linux\ffprobe" />
+    <None Remove="Binaries\Linux\ffplay" />
+    <None Remove="Binaries\Windows\**" />
+    <None Remove="Binaries\Mac\**" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(RuntimeIdentifier)' == 'osx-x64'">
+    <EmbeddedResource Include="Binaries\Mac\ffmpeg" />
+    <EmbeddedResource Include="Binaries\Mac\ffprobe" />
+    <None Remove="Binaries\Windows\**" />
+    <None Remove="Binaries\Linux\**" />
   </ItemGroup>
 
 </Project>
