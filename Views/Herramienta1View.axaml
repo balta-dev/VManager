@@ -59,9 +59,7 @@
             <TextBlock Text="Seleccionar Video:" FontSize="14" VerticalAlignment="Center"/>
             <Button Content="Examinar" Command="{Binding BrowseCommand}" HotKey="E" Width="80"/>
           </StackPanel>
-          <Border behaviors:DragDropHelper.EnableFileDrop="True"
-                  behaviors:DragDropHelper.DropTarget="VideoPath"
-                  Padding="2">
+          <Border Padding="2">
             <TextBox Text="{Binding VideoPath}" 
                      IsReadOnly="True"
                      Width=""
