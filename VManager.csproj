@@ -7,6 +7,13 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <ApplicationIcon>Assets\VManager.ico</ApplicationIcon>
+  
+    <FileVersion>1.2.8.0</FileVersion>
+    <Product>VManager</Product>
+    <Company>Baltazar Franz</Company>
+    <Copyright>© 2025 Baltazar Franz</Copyright>
+    <Description>Herramienta para procesar videos con FFmpeg</Description>
+
   </PropertyGroup>
 
   <!-- Carpetas de recursos y modelos -->
