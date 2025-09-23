@@ -29,6 +29,7 @@ public static class FFmpegManager
         
         Console.WriteLine($"[DEBUG] ffmpeg: {FfmpegPath}");
         Console.WriteLine($"[DEBUG] ffprobe: {FfprobePath}");
+        Console.WriteLine($"[DEBUG] Temp path: {Path.GetTempPath()}");
     }
 
     private static string ExtractFFmpeg(string resourceName, string targetFileName)

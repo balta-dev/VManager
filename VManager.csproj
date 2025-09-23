@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
@@ -7,16 +8,21 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <ApplicationIcon>Assets\VManager.ico</ApplicationIcon>
-  
     <FileVersion>1.2.8.0</FileVersion>
     <Product>VManager</Product>
     <Company>Baltazar Franz</Company>
     <Copyright>© 2025 Baltazar Franz</Copyright>
     <Description>Herramienta para procesar videos con FFmpeg</Description>
-
   </PropertyGroup>
 
-  <!-- Carpetas de recursos y modelos -->
+  <!-- Detectar la plataforma de una forma que funcione -->
+  <PropertyGroup>
+    <IsWindows Condition="$(RuntimeIdentifier.Contains('win'))">true</IsWindows>
+    <IsLinux Condition="$(RuntimeIdentifier.Contains('linux'))">true</IsLinux>
+    <IsMac Condition="$(RuntimeIdentifier.Contains('osx'))">true</IsMac>
+  </PropertyGroup>
+
+  <!-- Carpetas y recursos básicos -->
   <ItemGroup>
     <Folder Include="Binaries\Linux\" />
     <Folder Include="Binaries\Mac\" />
@@ -24,7 +30,6 @@
     <Folder Include="Models\" />
   </ItemGroup>
 
-  <!-- Recursos Avalonia (excluyendo sonidos) -->
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" Exclude="Assets\Sounds\**" />
     <EmbeddedResource Include="Assets\Sounds\**\*" />
@@ -44,28 +49,22 @@
     <PackageReference Include="NAudio" Version="2.2.1" />
   </ItemGroup>
 
-  <!-- Binarios ffmpeg/ffprobe solo en Release -->
-  <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(RuntimeIdentifier)' == 'win-x64'">
+  <!-- Binarios por plataforma (solo en Release) -->
+  <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(IsWindows)' == 'true'">
     <EmbeddedResource Include="Binaries\Windows\ffmpeg.exe" />
     <EmbeddedResource Include="Binaries\Windows\ffprobe.exe" />
     <None Remove="Binaries\Windows\ffplay.exe" />
-    <None Remove="Binaries\Linux\**" />
-    <None Remove="Binaries\Mac\**" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(RuntimeIdentifier)' == 'linux-x64'">
+  <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(IsLinux)' == 'true'">
     <EmbeddedResource Include="Binaries\Linux\ffmpeg" />
     <EmbeddedResource Include="Binaries\Linux\ffprobe" />
     <None Remove="Binaries\Linux\ffplay" />
-    <None Remove="Binaries\Windows\**" />
-    <None Remove="Binaries\Mac\**" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(RuntimeIdentifier)' == 'osx-x64'">
+  <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(IsMac)' == 'true'">
     <EmbeddedResource Include="Binaries\Mac\ffmpeg" />
     <EmbeddedResource Include="Binaries\Mac\ffprobe" />
-    <None Remove="Binaries\Windows\**" />
-    <None Remove="Binaries\Linux\**" />
   </ItemGroup>
 
 </Project>

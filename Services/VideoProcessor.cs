@@ -11,6 +11,7 @@ namespace VManager.Services
 {
     public class VideoProcessor : IVideoProcessor
     {
+        private string _ffmpegPath = FFmpegManager.FfmpegPath;
         public static class ErrorMessages
         {
             public const string FileNotFound = "Archivo no encontrado.";
@@ -102,7 +103,7 @@ namespace VManager.Services
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = "ffmpeg",
+                FileName = _ffmpegPath,
                 Arguments = args.Arguments,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -243,7 +244,7 @@ namespace VManager.Services
                 {
                     StartInfo = new ProcessStartInfo
                     {
-                        FileName = "ffmpeg",
+                        FileName = _ffmpegPath,
                         Arguments = args.Arguments,
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
@@ -367,7 +368,7 @@ namespace VManager.Services
                 {
                     StartInfo = new ProcessStartInfo
                     {
-                        FileName = "ffmpeg", // Asegúrate de que FFmpeg esté en el PATH
+                        FileName = _ffmpegPath,
                         Arguments = args.Arguments, // Obtener los argumentos generados
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
