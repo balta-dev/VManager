@@ -5,7 +5,12 @@
              xmlns:vm="using:VManager.ViewModels"
              xmlns:behaviors="clr-namespace:VManager.Behaviors"
              xmlns:global="clr-namespace:"
-             xmlns:views="clr-namespace:VManager.Views">
+             xmlns:views="clr-namespace:VManager.Views"
+             xmlns:services="clr-namespace:VManager.Services">
+    
+    <UserControl.Resources>
+        <services:ValidPathConverter x:Key="ValidPathConverter" />
+    </UserControl.Resources>   
     
     <!-- Se estira a toda la ventana y recorta cuando falta espacio -->
   <Grid ClipToBounds="True">
@@ -207,7 +212,7 @@
 
                     <Button Content="Convertir Formato de Video"  
                             Classes="Accented"
-                            IsEnabled="{Binding IsVideoPathSet}"
+                            IsEnabled="{Binding VideoPath, Converter={StaticResource ValidPathConverter}}"
                             FontSize="18"
                             FontWeight="DemiBold"
                             Command="{Binding ConvertCommand}" 

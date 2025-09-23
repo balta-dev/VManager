@@ -3,8 +3,13 @@
              x:Class="VManager.Views.Herramienta1View"
              x:DataType="vm:Herramienta1ViewModel"
              xmlns:vm="using:VManager.ViewModels"
-             xmlns:behaviors="clr-namespace:VManager.Behaviors">
+             xmlns:behaviors="clr-namespace:VManager.Behaviors"
+             xmlns:services="clr-namespace:VManager.Services">
 
+  <UserControl.Resources>
+    <services:ValidPathConverter x:Key="ValidPathConverter" />
+  </UserControl.Resources>
+  
   <Grid ClipToBounds="True">
     <Border BorderBrush="{DynamicResource BorderBrushPrimary}" 
             BorderThickness="2" 
