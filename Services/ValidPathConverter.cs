@@ -11,10 +11,10 @@ public class ValidPathConverter : IValueConverter
         if (value is string path)
         {
             bool isValid = !string.IsNullOrEmpty(path);
-            Console.WriteLine($"[DEBUG]: ValidPathConverter - path: '{path}', isValid: {isValid}");
+            //Console.WriteLine($"[DEBUG]: ValidPathConverter - path: '{path}', isValid: {isValid}");
             return isValid;
         }
-        Console.WriteLine("[DEBUG]: ValidPathConverter - value is not a string or is null");
+        //Console.WriteLine("[DEBUG]: ValidPathConverter - value is not a string or is null");
         return false;
     }
 

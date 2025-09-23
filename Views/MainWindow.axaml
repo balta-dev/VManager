@@ -9,7 +9,7 @@
             x:Class="VManager.Views.MainWindow"
             x:DataType="vm:MainWindowViewModel"
             Icon="/Assets/VManager.ico"
-            Title="VManager v1.2.8"
+            Title="VManager"
             MinWidth="390" MinHeight="140"
             Width="1280" Height="800"
             Background="{DynamicResource WindowBackgroundBrush}">
@@ -79,10 +79,39 @@
             </Grid>
             
             <!-- Footer -->
-            <Button DockPanel.Dock="Bottom" Content="Creado por Baltazar Franz ❤️" 
-                    Command="{Binding OpenGitHubCommand}"
-                    FontSize="14" HorizontalAlignment="Center" Margin="20,20,20,20" Opacity="0.7"
-                    Background="Transparent" BorderBrush="Transparent" Cursor="Hand"/>
+            <Border DockPanel.Dock="Bottom" Padding="0 0 0 0" Background="Transparent">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>  <!-- Izquierda: versión -->
+                        <ColumnDefinition Width="*"/>     <!-- Centro: botón adaptativo -->
+                        <ColumnDefinition Width="Auto"/>  <!-- Derecha: vacío para equilibrio -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Izquierda -->
+                    <TextBlock Grid.Column="0"
+                               Text="Versión: 1.2.9"
+                               Margin="10 25 0 0"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               FontSize="12"
+                               Opacity="0.7"/>
+
+                    <!-- Centro: botón adaptativo -->
+                    <Button Grid.Column="1"
+                            Content="Creado por Baltazar Franz ❤️"
+                            Padding="0 20 0 20"
+                            Command="{Binding OpenGitHubCommand}"
+                            FontSize="15"
+                            Margin="-85 0 0 0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Opacity="0.7"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            Cursor="Hand"/>
+                </Grid>
+            </Border>
+
             
             <!-- Mensaje de bienvenida -->
             <TextBlock DockPanel.Dock="Top" FontWeight="Bold" Text="¡Bienvenido a VManager!" 

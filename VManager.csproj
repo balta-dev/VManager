@@ -8,7 +8,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <ApplicationIcon>Assets\VManager.ico</ApplicationIcon>
-    <FileVersion>1.2.8.0</FileVersion>
+    <Version>1.2.9</Version>
+    <FileVersion>1.2.9.0</FileVersion>
+    <Authors>Baltazar Franz</Authors>
     <Product>VManager</Product>
     <Company>Baltazar Franz</Company>
     <Copyright>© 2025 Baltazar Franz</Copyright>
