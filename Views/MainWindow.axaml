@@ -7,7 +7,7 @@
             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
             x:Class="VManager.Views.MainWindow"
             x:DataType="vm:MainWindowViewModel"
-            Icon="/Assets/avalonia-logo.ico"
+            Icon="/Assets/VManager.ico"
             Title="VManager v1.2.8"
             MinWidth="390" MinHeight="140"
             Width="1280" Height="800"

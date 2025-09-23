@@ -236,6 +236,11 @@ namespace VManager.Services
                         {
                             process.Kill();
                             Console.WriteLine("[DEBUG]: Proceso FFmpeg terminado por cancelación.");
+                            if (File.Exists(outputPath))
+                            {
+                                File.Delete(outputPath);
+                                Console.WriteLine("[DEBUG]: Archivo de salida eliminado tras cancelación.");
+                            }
                         }
                     });
 
@@ -262,6 +267,7 @@ namespace VManager.Services
 
                     if (cts.Token.IsCancellationRequested)
                     {
+                        //entra acá
                         if (File.Exists(outputPath))
                         {
                             File.Delete(outputPath);

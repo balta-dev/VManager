@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using VManager.Behaviors;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -42,34 +43,17 @@ namespace VManager.Views
         
         private void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
         {
-            if (DataContext is MainWindowViewModel vm && vm.CurrentView is ViewModelBase current)
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                if (current.IsOperationRunning)
+                var mainWindow = desktop.MainWindow;
+                if (mainWindow?.DataContext is MainWindowViewModel mainVM && mainVM.CurrentView is ViewModelBase current)
                 {
-                    e.Cancel = true; // Cancelamos el cierre
-
-                    // Activamos el overlay (no funciona todavía)
-                    current.IsDialogVisible = true;
-
-                    // Ejecutamos la lógica del diálogo en el Dispatcher
-                    Avalonia.Threading.Dispatcher.UIThread.Post(async () =>
+                    if (current.IsOperationRunning)
                     {
-                        try
-                        {
-                            var dialog = new CancelDialog();
-                            bool? result = await dialog.ShowDialog<bool?>(this);
-
-                            if (result == true)
-                            {
-                                current.RequestCancelOperation();
-                                this.Close();
-                            }
-                        }
-                        finally
-                        {
-                            current.IsDialogVisible = false;
-                        }
-                    });
+                        // Llamamos al método async que muestra overlay y diálogo
+                        _ = current.ShowCancelDialogInMainWindow(fromWindowClose: true);
+                        e.Cancel = true;// Cancelamos el cierre
+                    }
                 }
             }
         }

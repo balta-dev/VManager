@@ -29,8 +29,6 @@ public abstract class ViewModelBase : ReactiveObject
     private bool _isClicked;
     private bool _isOperationRunning;
     private bool _isDialogVisible;
-    protected CancellationTokenSource _cts;
-    
     public bool IsDialogVisible
     {
         get => _isDialogVisible;
@@ -88,13 +86,17 @@ public abstract class ViewModelBase : ReactiveObject
     public ReactiveCommand<Unit, Unit> ShowFileInFolderCommand { get; }
     public ReactiveCommand<Unit, Unit> ClearInfoCommand { get; }
     public ReactiveCommand<Unit, Unit> ShowCancelDialogCommand { get; }
-
+    
+    protected CancellationTokenSource _cts;
     protected ViewModelBase()
     {
         BrowseCommand = ReactiveCommand.CreateFromTask(BrowseVideo, outputScheduler: AvaloniaScheduler.Instance);
         ShowFileInFolderCommand = ReactiveCommand.Create(ShowFileInFolder, outputScheduler: AvaloniaScheduler.Instance);
         ClearInfoCommand = ReactiveCommand.Create(ClearInfo, outputScheduler: AvaloniaScheduler.Instance);
-        ShowCancelDialogCommand = ReactiveCommand.CreateFromTask(ShowCancelDialogInMainWindow, outputScheduler: AvaloniaScheduler.Instance);
+        ShowCancelDialogCommand = ReactiveCommand.CreateFromTask(
+            () => ShowCancelDialogInMainWindow(fromWindowClose: false),
+            outputScheduler: AvaloniaScheduler.Instance
+        );
     }
     
     private void MostrarOverlayEnMainWindow()
@@ -107,11 +109,13 @@ public abstract class ViewModelBase : ReactiveObject
             if (mainWindow != null && mainWindow.DataContext is MainWindowViewModel mainVM)
             {
                 mainVM.IsDialogVisible = true; // Esto activa el overlay en MainWindow
+                Console.WriteLine("Se activó el overlay");
             }
         }
     }
-    public async Task ShowCancelDialogInMainWindow()
+    public async Task ShowCancelDialogInMainWindow(bool fromWindowClose = false)
     {
+        
         MostrarOverlayEnMainWindow(); // Activa overlay
 
         // Mostrar el diálogo
@@ -125,12 +129,16 @@ public abstract class ViewModelBase : ReactiveObject
             {
                 // Cancelar la operación
                 RequestCancelOperation();
+                if (fromWindowClose)
+                    mainWindow.Close();
             }
 
             // Desactivar overlay al cerrar el dialog
             if (mainWindow.DataContext is MainWindowViewModel mainVM)
                 mainVM.IsDialogVisible = false;
+            
         }
+        
     }
 
     
@@ -138,6 +146,7 @@ public abstract class ViewModelBase : ReactiveObject
     {
         CancelOperation();
     }
+
     
     private void CancelOperation()
     {

@@ -6,6 +6,7 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <ApplicationIcon>Assets\VManager.ico</ApplicationIcon>
   </PropertyGroup>
 
   <!-- Carpetas de recursos y binarios -->
@@ -53,4 +54,9 @@
     <None Remove="Binaries\Windows\ffprobe.exe" />
     <EmbeddedResource Include="Binaries\Windows\ffprobe.exe" />
   </ItemGroup>
+
+  <ItemGroup>
+        <AvaloniaResource Include="Assets\VManager.ico" />
+  </ItemGroup>
+
 </Project>
