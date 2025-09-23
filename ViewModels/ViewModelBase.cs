@@ -18,7 +18,6 @@ namespace VManager.ViewModels;
 
 public abstract class ViewModelBase : ReactiveObject
 {
-    private bool _isVideoPathSet;
     private string _videoPath = "";
     private string _outputPath = "";
     private string _lastCompressedFilePath;
@@ -38,12 +37,6 @@ public abstract class ViewModelBase : ReactiveObject
     {
         get => _isOperationRunning;
         set => this.RaiseAndSetIfChanged(ref _isOperationRunning, value);
-    }
-    
-    public bool IsVideoPathSet
-    {
-        get => _isVideoPathSet;
-        set => this.RaiseAndSetIfChanged(ref _isVideoPathSet, value);
     }
     
     public string VideoPath
@@ -81,7 +74,7 @@ public abstract class ViewModelBase : ReactiveObject
         get => _isFileReadyVisible;
         set => this.RaiseAndSetIfChanged(ref _isFileReadyVisible, value);
     }
-
+    
     public ReactiveCommand<Unit, Unit> BrowseCommand { get; }
     public ReactiveCommand<Unit, Unit> ShowFileInFolderCommand { get; }
     public ReactiveCommand<Unit, Unit> ClearInfoCommand { get; }
@@ -128,6 +121,9 @@ public abstract class ViewModelBase : ReactiveObject
             if (result == true)
             {
                 // Cancelar la operación
+                
+                Console.WriteLine("Entrando al request cancel...");
+                
                 RequestCancelOperation();
                 if (fromWindowClose)
                     mainWindow.Close();
@@ -140,15 +136,8 @@ public abstract class ViewModelBase : ReactiveObject
         }
         
     }
-
     
-    public void RequestCancelOperation()
-    {
-        CancelOperation();
-    }
-
-    
-    private void CancelOperation()
+    private void RequestCancelOperation()
     {
         // Método virtual que las clases derivadas pueden sobrescribir
         IsOperationRunning = false;
@@ -159,8 +148,8 @@ public abstract class ViewModelBase : ReactiveObject
             Console.WriteLine("[DEBUG]: Cancelación solicitada por el usuario. ADOOOOUUUUUU");
         }
     }
-
-    private void ClearInfo()
+    public abstract bool IsVideoPathSet { get; set; }
+    public void ClearInfo()
     {
         Status = "¡Actualizado!";
         Warning = "";

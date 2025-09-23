@@ -21,6 +21,13 @@ public class MainWindowViewModel : ViewModelBase
     private Herramienta2ViewModel _herramienta2;
     private Herramienta3ViewModel _herramienta3;
     
+    private bool isVideoPathSet;
+    public override bool IsVideoPathSet //NO LO USO ACÁ. ES POR LA CLASE ABSTRACTA. YA SÉ QUE ES MALA PRÁCTICA PERDÓN.
+    {
+        get => isVideoPathSet;
+        set => this.RaiseAndSetIfChanged(ref isVideoPathSet, value);
+    }
+    
     private bool _herramienta1Activa;
     public bool Herramienta1Activa
     {

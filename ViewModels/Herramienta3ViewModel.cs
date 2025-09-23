@@ -25,6 +25,13 @@ namespace VManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref _isConverting, value);
         }
         
+        private bool isVideoPathSet;
+        public override bool IsVideoPathSet
+        {
+            get => isVideoPathSet;
+            set => this.RaiseAndSetIfChanged(ref isVideoPathSet, value);
+        }
+        
         public VideoFormat SelectedFormat { get; set; } 
         public ReactiveCommand<Unit, Unit> ConvertCommand { get; }
         public ReactiveCommand<Unit, Unit> RefreshCodecsCommand { get; } 
@@ -36,7 +43,6 @@ namespace VManager.ViewModels
             SelectedFormat = SupportedFormats[0]; //mp4
             _ = LoadCodecsAsync();
         }
-        
         private async Task ConvertVideo()
         {
             HideFileReadyButton();

@@ -229,8 +229,7 @@
                             IsEnabled="{Binding IsConverting}"
                             FontSize="12"
                             Command="{Binding ShowCancelDialogCommand}"
-                            Background="{DynamicResource RedButtonBrush}"
-                            Foreground="{DynamicResource RedButtonForegroundBrush}"
+                            Classes="RedAccented"
                             HotKey="Escape"
                             HorizontalAlignment="Center"
                             Width="90"/>

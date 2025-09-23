@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using VManager.Services;
@@ -16,6 +17,20 @@ namespace VManager.ViewModels
 {
     public class Herramienta2ViewModel : CodecViewModelBase
     {
+        
+        private bool _isConverting;
+        public bool IsConverting
+        {
+            get => _isConverting;
+            set => this.RaiseAndSetIfChanged(ref _isConverting, value);
+        }
+        
+        private bool isVideoPathSet;
+        public override bool IsVideoPathSet
+        {
+            get => isVideoPathSet;
+            set => this.RaiseAndSetIfChanged(ref isVideoPathSet, value);
+        }
         
         private string _porcentajeCompresionUsuario = "75"; // valor por defecto, 75%
         public string PorcentajeCompresionUsuario
@@ -35,15 +50,19 @@ namespace VManager.ViewModels
         
         private async Task CompressVideo()
         {
-            HideFileReadyButton();
+        HideFileReadyButton();
 
-            if (!int.TryParse(PorcentajeCompresionUsuario, out int percentValue) || percentValue <= 0 || percentValue > 100)
-            {
-                Status = "Porcentaje inválido.";
-                this.RaisePropertyChanged(nameof(Status));
-                return;
-            }
+        _cts = new CancellationTokenSource();
 
+        if (!int.TryParse(PorcentajeCompresionUsuario, out int percentValue) || percentValue <= 0 || percentValue > 100)
+        {
+            Status = "Porcentaje inválido.";
+            this.RaisePropertyChanged(nameof(Status));
+            return;
+        }
+
+        try
+        {
             Status = "Obteniendo información del video...";
             this.RaisePropertyChanged(nameof(Status));
 
@@ -56,16 +75,22 @@ namespace VManager.ViewModels
 
             Status = "Comprimiendo...";
             this.RaisePropertyChanged(nameof(Status));
-            
+
+            IsConverting = true;
+            IsOperationRunning = true;
+            this.RaisePropertyChanged(nameof(IsConverting));
+            this.RaisePropertyChanged(nameof(IsOperationRunning));
+
             var result = await processor.CompressAsync(
                 VideoPath,
                 OutputPath,
                 percentValue,
                 SelectedVideoCodec,
                 SelectedAudioCodec,
-                progress
+                progress,
+                _cts.Token // <-- Pasamos el CancellationToken
             );
-            
+
             if (result.Success)
             {
                 SoundManager.Play("success.wav");
@@ -82,13 +107,33 @@ namespace VManager.ViewModels
             else
             {
                 SoundManager.Play("fail.wav");
-                Status = result.Message; 
+                Status = result.Message;
                 Progress = 0;
                 this.RaisePropertyChanged(nameof(Status));
                 this.RaisePropertyChanged(nameof(Progress));
             }
-            
         }
+        catch (OperationCanceledException)
+        {
+            SoundManager.Play("fail.wav");
+            Status = "Compresión cancelada por el usuario.";
+            Progress = 0;
+            this.RaisePropertyChanged(nameof(Status));
+            this.RaisePropertyChanged(nameof(Progress));
+        }
+        finally
+        {
+            IsConverting = false;
+            IsOperationRunning = false;
+            this.RaisePropertyChanged(nameof(IsConverting));
+            this.RaisePropertyChanged(nameof(IsOperationRunning));
+
+            // Limpiar el CancellationTokenSource
+            _cts?.Dispose();
+            _cts = null;
+        }
+        }
+
         
     }
     

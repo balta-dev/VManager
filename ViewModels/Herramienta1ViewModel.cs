@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reactive;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
@@ -24,8 +25,21 @@ namespace VManager.ViewModels
             get => _tiempoHasta;
             set => this.RaiseAndSetIfChanged(ref _tiempoHasta, value);
         }
+        
+        private bool _isConverting;
+        public bool IsConverting
+        {
+            get => _isConverting;
+            set => this.RaiseAndSetIfChanged(ref _isConverting, value);
+        }
+        
+        private bool isVideoPathSet;
+        public override bool IsVideoPathSet
+        {
+            get => isVideoPathSet;
+            set => this.RaiseAndSetIfChanged(ref isVideoPathSet, value);
+        }
         public ReactiveCommand<Unit, Unit> CutCommand { get; }
-
         public Herramienta1ViewModel()
         {
             CutCommand = ReactiveCommand.CreateFromTask(CutVideo, outputScheduler: AvaloniaScheduler.Instance);
@@ -84,7 +98,8 @@ namespace VManager.ViewModels
         private async Task CutVideo()
         {
             HideFileReadyButton();
-            
+            _cts = new CancellationTokenSource();
+
             if (!TryParseTime(TiempoDesde, out TimeSpan start))
             {
                 SoundManager.Play("fail.wav");
@@ -108,54 +123,78 @@ namespace VManager.ViewModels
                 this.RaisePropertyChanged(nameof(Status));
                 return;
             }
-            
+
             TimeSpan duration = end - start;
 
-            Status = "Obteniendo información del video...";
-            this.RaisePropertyChanged(nameof(Status));
-
-            var processor = new VideoProcessor();
-            var progress = new Progress<double>(p =>
+            try
             {
-                Progress = (int)(p * 100);
-                this.RaisePropertyChanged(nameof(Progress));
-            });
-
-            Status = "Cortando...";
-            this.RaisePropertyChanged(nameof(Status));
-
-            var result = await processor.CutAsync(
-                VideoPath,
-                OutputPath,
-                start,
-                duration,
-                progress
-            );
-
-            if (result.Success)
-            {
-                SoundManager.Play("success.wav");
-                SetLastCompressedFile(result.OutputPath);
-                Status = result.Message;
-                Warning = result.Warning;
-                Progress = 100;
-                OutputPath = "Archivo: " + result.OutputPath;
+                Status = "Obteniendo información del video...";
                 this.RaisePropertyChanged(nameof(Status));
-                this.RaisePropertyChanged(nameof(Progress));
-                this.RaisePropertyChanged(nameof(OutputPath));
-                this.RaisePropertyChanged(nameof(Warning));
+
+                var processor = new VideoProcessor();
+                var progress = new Progress<double>(p =>
+                {
+                    Progress = (int)(p * 100);
+                    this.RaisePropertyChanged(nameof(Progress));
+                });
+
+                Status = "Cortando...";
+                IsConverting = true;
+                IsOperationRunning = true;
+                this.RaisePropertyChanged(nameof(Status));
+                this.RaisePropertyChanged(nameof(IsConverting));
+                this.RaisePropertyChanged(nameof(IsOperationRunning));
+
+                var result = await processor.CutAsync(
+                    VideoPath,
+                    OutputPath,
+                    start,
+                    duration,
+                    progress,
+                    _cts.Token 
+                );
+
+                if (result.Success)
+                {
+                    SoundManager.Play("success.wav");
+                    SetLastCompressedFile(result.OutputPath);
+                    Status = result.Message;
+                    Warning = result.Warning;
+                    Progress = 100;
+                    OutputPath = "Archivo: " + result.OutputPath;
+                    this.RaisePropertyChanged(nameof(Status));
+                    this.RaisePropertyChanged(nameof(Progress));
+                    this.RaisePropertyChanged(nameof(OutputPath));
+                    this.RaisePropertyChanged(nameof(Warning));
+                }
+                else
+                {
+                    SoundManager.Play("fail.wav");
+                    Status = result.Message;
+                    Progress = 0;
+                    this.RaisePropertyChanged(nameof(Status));
+                    this.RaisePropertyChanged(nameof(Progress));
+                }
             }
-            else
+            catch (OperationCanceledException)
             {
                 SoundManager.Play("fail.wav");
-                Status = result.Message; 
+                Status = "Corte cancelado por el usuario.";
                 Progress = 0;
                 this.RaisePropertyChanged(nameof(Status));
                 this.RaisePropertyChanged(nameof(Progress));
             }
-            
+            finally
+            {
+                IsConverting = false;
+                IsOperationRunning = false;
+                this.RaisePropertyChanged(nameof(IsConverting));
+                this.RaisePropertyChanged(nameof(IsOperationRunning));
+
+                _cts?.Dispose();
+                _cts = null;
+            }
         }
         
-        public string Mensaje => "Acá voy a meter una User Interface para VCUT";
     }
 }

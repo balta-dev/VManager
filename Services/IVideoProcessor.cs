@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 namespace VManager.Services
 {
@@ -9,7 +10,8 @@ namespace VManager.Services
             string outputPath,
             TimeSpan start,
             TimeSpan duration,
-            IProgress<double> progress);
+            IProgress<double> progress,
+            CancellationToken cancellationToken = default);
 
         Task<ProcessingResult> CompressAsync(
             string inputPath,
@@ -17,7 +19,17 @@ namespace VManager.Services
             int compressionPercentage,
             string videoCodec,
             string audioCodec,
-            IProgress<double> progress);
+            IProgress<double> progress,
+            CancellationToken cancellationToken = default);
+
+        Task<ProcessingResult> ConvertAsync(
+            string inputPath,
+            string outputPath,
+            string? videoCodec,
+            string? audioCodec,
+            string selectedFormat,
+            IProgress<double> progress,
+            CancellationToken cancellationToken = default);
     }
     //public record ProcessingResult(bool Success, string Message, string? OutputFile = null);
 }
