@@ -50,148 +50,156 @@ namespace VManager.Services
         }
         
         public async Task<ProcessingResult> CutAsync(
-    string inputPath,
-    string outputPath,
-    TimeSpan start,
-    TimeSpan duration,
-    IProgress<double> progress,
-    CancellationToken cancellationToken = default)
-{
-    var analysisResult = await AnalyzeVideoAsync(inputPath);
-    if (!analysisResult.Success)
+        string inputPath,
+        string outputPath,
+        TimeSpan start,
+        TimeSpan duration,
+        IProgress<double> progress,
+        CancellationToken cancellationToken = default)
     {
-        return new ProcessingResult(false, analysisResult.Message);
-    }
-
-    var mediaInfo = analysisResult.Result!;
-    double totalDuration = mediaInfo.Duration.TotalSeconds;
-
-    string directory = Path.GetDirectoryName(inputPath)!;
-    string fileName = Path.GetFileNameWithoutExtension(inputPath);
-    string extension = Path.GetExtension(inputPath);
-    outputPath = Path.Combine(directory, $"{fileName}-VCUT{extension}");
-
-    // Validar parámetros de corte
-    string? warningMessage = null;
-    if (start < TimeSpan.Zero || duration <= TimeSpan.Zero)
-    {
-        return new ProcessingResult(false, ErrorMessages.InvalidCutParameters);
-    }
-    if (start.TotalSeconds + duration.TotalSeconds > totalDuration)
-    {
-        duration = TimeSpan.FromSeconds(totalDuration - start.TotalSeconds);
-        string formatted = duration.ToString(@"hh\:mm\:ss");
-        warningMessage = $"Nota: La duración del corte se ajustó automáticamente a {formatted}.";
-    }
-
-    try
-    {
-        Console.WriteLine($"Corte - Video: copy, Audio: copy, Inicio: {start}, Duración: {duration.ToString(@"hh\:mm\:ss")}");
-
-        var args = FFMpegArguments
-            .FromFileInput(inputPath, false, options => options.Seek(start))
-            .OutputToFile(outputPath, overwrite: true, options =>
-            {
-                options
-                    .WithVideoCodec("copy")
-                    .WithAudioCodec("copy")
-                    .WithDuration(duration);
-            });
-
-        // Configurar proceso manualmente (igual que CompressAsync)
-        var process = new Process
+        var analysisResult = await AnalyzeVideoAsync(inputPath);
+        if (!analysisResult.Success)
         {
-            StartInfo = new ProcessStartInfo
-            {
-                FileName = _ffmpegPath,
-                Arguments = args.Arguments,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            }
-        };
+            return new ProcessingResult(false, analysisResult.Message);
+        }
 
-        using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+        var mediaInfo = analysisResult.Result!;
+        double totalDuration = mediaInfo.Duration.TotalSeconds;
+
+        string directory = Path.GetDirectoryName(inputPath)!;
+        string fileName = Path.GetFileNameWithoutExtension(inputPath);
+        string extension = Path.GetExtension(inputPath);
+        outputPath = Path.Combine(directory, $"{fileName}-VCUT{extension}");
+
+        // Validar parámetros de corte
+        string? warningMessage = null;
+        if (start < TimeSpan.Zero || duration <= TimeSpan.Zero)
         {
-            // ✅ Solo una forma de cancelación (como en CompressAsync)
-            cts.Token.Register(() =>
-            {
-                if (!process.HasExited)
+            return new ProcessingResult(false, ErrorMessages.InvalidCutParameters);
+        }
+        if (start.TotalSeconds + duration.TotalSeconds > totalDuration)
+        {
+            duration = TimeSpan.FromSeconds(totalDuration - start.TotalSeconds);
+            string formatted = duration.ToString(@"hh\:mm\:ss");
+            warningMessage = $"Nota: La duración del corte se ajustó automáticamente a {formatted}.";
+        }
+
+        try
+        {
+            Console.WriteLine($"Corte - Video: copy, Audio: copy, Inicio: {start}, Duración: {duration.ToString(@"hh\:mm\:ss")}");
+
+            var args = FFMpegArguments
+                .FromFileInput(inputPath, false, options => options.Seek(start))
+                .OutputToFile(outputPath, overwrite: true, options =>
                 {
-                    process.Kill();
-                    Console.WriteLine("[DEBUG]: Proceso FFmpeg terminado por cancelación.");
+                    options
+                        .WithVideoCodec("copy")
+                        .WithAudioCodec("copy")
+                        .WithDuration(duration);
+                });
+
+            // Configurar proceso manualmente (igual que CompressAsync)
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = _ffmpegPath,
+                    Arguments = args.Arguments,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+            {
+                // ✅ Solo una forma de cancelación (como en CompressAsync)
+                cts.Token.Register(() =>
+                {
+                    if (!process.HasExited)
+                    {
+                        process.Kill();
+                        Console.WriteLine("[DEBUG]: Proceso FFmpeg terminado por cancelación.");
+                        if (File.Exists(outputPath))
+                        {
+                            try
+                            {
+                                File.Delete(outputPath);
+                                Console.WriteLine("[DEBUG]: Archivo de salida eliminado tras cancelación.");
+                            }
+                            catch (IOException ex)
+                            {
+                                Console.WriteLine($"[DEBUG]: No se pudo eliminar el archivo inmediatamente: {ex.Message}");
+                                // Se intentará eliminar después de WaitForExitAsync
+                            }
+                        }
+                    }
+                });
+
+                process.Start();
+
+                // ✅ Lectura simple y directa (como en CompressAsync)
+                using (var reader = process.StandardError)
+                {
+                    string? line;
+                    while ((line = await reader.ReadLineAsync()) != null)
+                    {
+                        if (line.Contains("time="))
+                        {
+                            // ✅ Regex corregido (sin escapes dobles)
+                            var timeMatch = Regex.Match(line, @"time=(\d{2}:\d{2}:\d{2}\.\d{2})");
+                            if (timeMatch.Success && TimeSpan.TryParse(timeMatch.Groups[1].Value, out var time))
+                            {
+                                progress.Report(Math.Min(time.TotalSeconds / duration.TotalSeconds, 1.0));
+                            }
+                        }
+                    }
+                }
+
+                // ✅ Wait simple (como en CompressAsync)
+                await process.WaitForExitAsync(cts.Token);
+
+                if (cts.Token.IsCancellationRequested)
+                {
                     if (File.Exists(outputPath))
                     {
                         File.Delete(outputPath);
                         Console.WriteLine("[DEBUG]: Archivo de salida eliminado tras cancelación.");
                     }
+                    Console.WriteLine("[DEBUG]: Corte cancelado por el usuario.");
+                    return new ProcessingResult(false, "Corte cancelado por el usuario.");
                 }
-            });
 
-            process.Start();
-
-            // ✅ Lectura simple y directa (como en CompressAsync)
-            using (var reader = process.StandardError)
-            {
-                string? line;
-                while ((line = await reader.ReadLineAsync()) != null)
+                if (process.ExitCode != 0 && !cts.Token.IsCancellationRequested)
                 {
-                    if (line.Contains("time="))
-                    {
-                        // ✅ Regex corregido (sin escapes dobles)
-                        var timeMatch = Regex.Match(line, @"time=(\d{2}:\d{2}:\d{2}\.\d{2})");
-                        if (timeMatch.Success && TimeSpan.TryParse(timeMatch.Groups[1].Value, out var time))
-                        {
-                            progress.Report(Math.Min(time.TotalSeconds / duration.TotalSeconds, 1.0));
-                        }
-                    }
+                    throw new Exception("FFmpeg terminó con un error.");
                 }
             }
 
-            // ✅ Wait simple (como en CompressAsync)
-            await process.WaitForExitAsync(cts.Token);
-
-            if (cts.Token.IsCancellationRequested)
+            if (!string.IsNullOrEmpty(warningMessage))
             {
-                if (File.Exists(outputPath))
-                {
-                    File.Delete(outputPath);
-                    Console.WriteLine("[DEBUG]: Archivo de salida eliminado tras cancelación.");
-                }
-                Console.WriteLine("[DEBUG]: Corte cancelado por el usuario.");
-                return new ProcessingResult(false, "Corte cancelado por el usuario.");
+                return new ProcessingResult(true, "¡Corte finalizado!", outputPath, warningMessage);
             }
 
-            if (process.ExitCode != 0 && !cts.Token.IsCancellationRequested)
+            return new ProcessingResult(true, "¡Corte finalizado!", outputPath);
+        }
+        catch (OperationCanceledException)
+        {
+            if (File.Exists(outputPath))
             {
-                throw new Exception("FFmpeg terminó con un error.");
+                File.Delete(outputPath);
+                Console.WriteLine("[DEBUG]: Archivo de salida eliminado tras cancelación.");
             }
+            Console.WriteLine("[DEBUG]: Corte cancelado por el usuario.");
+            return new ProcessingResult(false, "Corte cancelado por el usuario.");
         }
-
-        if (!string.IsNullOrEmpty(warningMessage))
+        catch (Exception ex)
         {
-            return new ProcessingResult(true, "¡Corte finalizado!", outputPath, warningMessage);
+            Console.WriteLine($"[DEBUG]: Error: {ex.Message}");
+            return new ProcessingResult(false, $"Error: {ex.Message}");
         }
-
-        return new ProcessingResult(true, "¡Corte finalizado!", outputPath);
     }
-    catch (OperationCanceledException)
-    {
-        if (File.Exists(outputPath))
-        {
-            File.Delete(outputPath);
-            Console.WriteLine("[DEBUG]: Archivo de salida eliminado tras cancelación.");
-        }
-        Console.WriteLine("[DEBUG]: Corte cancelado por el usuario.");
-        return new ProcessingResult(false, "Corte cancelado por el usuario.");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"[DEBUG]: Error: {ex.Message}");
-        return new ProcessingResult(false, $"Error: {ex.Message}");
-    }
-}
 
 
         public async Task<ProcessingResult> CompressAsync(

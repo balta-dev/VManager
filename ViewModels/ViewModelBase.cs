@@ -87,7 +87,7 @@ public abstract class ViewModelBase : ReactiveObject
         ShowFileInFolderCommand = ReactiveCommand.Create(ShowFileInFolder, outputScheduler: AvaloniaScheduler.Instance);
         ClearInfoCommand = ReactiveCommand.Create(ClearInfo, outputScheduler: AvaloniaScheduler.Instance);
         ShowCancelDialogCommand = ReactiveCommand.CreateFromTask(
-            () => ShowCancelDialogInMainWindow(fromWindowClose: false),
+            () => ShowCancelDialog(), // <- Usar la versión sin retorno
             outputScheduler: AvaloniaScheduler.Instance
         );
     }
@@ -106,9 +106,8 @@ public abstract class ViewModelBase : ReactiveObject
             }
         }
     }
-    public async Task ShowCancelDialogInMainWindow(bool fromWindowClose = false)
+    public async Task<bool> ShowCancelDialogInMainWindow(bool fromWindowClose = false)
     {
-        
         MostrarOverlayEnMainWindow(); // Activa overlay
 
         // Mostrar el diálogo
@@ -117,24 +116,28 @@ public abstract class ViewModelBase : ReactiveObject
         {
             var dialog = new CancelDialog();
             bool? result = await dialog.ShowDialog<bool?>(mainWindow);
-        
+    
             if (result == true)
             {
                 // Cancelar la operación
-                
                 Console.WriteLine("Entrando al request cancel...");
-                
                 RequestCancelOperation();
-                if (fromWindowClose)
-                    mainWindow.Close();
             }
 
             // Desactivar overlay al cerrar el dialog
             if (mainWindow.DataContext is MainWindowViewModel mainVM)
                 mainVM.IsDialogVisible = false;
-            
-        }
         
+            // Retornar true solo si el usuario eligió cancelar Y viene de window close
+            return result == true && fromWindowClose;
+        }
+    
+        return false;
+    }
+    
+    public async Task ShowCancelDialog()
+    {
+        await ShowCancelDialogInMainWindow(fromWindowClose: false);
     }
     
     private void RequestCancelOperation()

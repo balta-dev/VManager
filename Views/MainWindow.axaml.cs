@@ -41,8 +41,13 @@ namespace VManager.Views
             this.Closing += MainWindow_Closing;
         }
         
-        private void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
+        private bool _allowClose = false;
+
+        private async void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
         {
+            if (_allowClose)
+                return; // Permitir el cierre
+
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var mainWindow = desktop.MainWindow;
@@ -50,9 +55,17 @@ namespace VManager.Views
                 {
                     if (current.IsOperationRunning)
                     {
-                        // Llamamos al método async que muestra overlay y diálogo
-                        _ = current.ShowCancelDialogInMainWindow(fromWindowClose: true);
-                        e.Cancel = true;// Cancelamos el cierre
+                        e.Cancel = true; // Cancelamos el cierre inicialmente
+                
+                        // Esperamos el resultado del diálogo
+                        bool shouldClose = await current.ShowCancelDialogInMainWindow(fromWindowClose: true);
+                
+                        if (shouldClose)
+                        {
+                            _allowClose = true;
+                            this.Close(); // Cerrar la ventana
+                        }
+                        // Si no should close, simplemente no hacemos nada y la ventana queda abierta
                     }
                 }
             }
