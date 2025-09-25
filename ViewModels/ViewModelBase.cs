@@ -140,16 +140,15 @@ public abstract class ViewModelBase : ReactiveObject
         await ShowCancelDialogInMainWindow(fromWindowClose: false);
     }
     
-    private void RequestCancelOperation()
+    public void RequestCancelOperation()
     {
-        // Método virtual que las clases derivadas pueden sobrescribir
-        IsOperationRunning = false;
-        
         if (_cts != null)
         {
             _cts.Cancel();
-            Console.WriteLine("[DEBUG]: Cancelación solicitada por el usuario. ADOOOOUUUUUU");
+            Console.WriteLine("[DEBUG]: Cancelación solicitada por el usuario.");
         }
+        // Método virtual que las clases derivadas pueden sobrescribir
+        IsOperationRunning = false;
     }
     public abstract bool IsVideoPathSet { get; set; }
     public void ClearInfo()

@@ -37,11 +37,11 @@
 
                 <!-- Textos a la derecha del ícono -->
                 <StackPanel Orientation="Vertical" Spacing="5">
-                    <TextBlock Text="¿Estás seguro?" 
+                    <TextBlock Text="¿Cancelar operación?" 
                                FontSize="20" FontWeight="Bold"
                                Margin="0 0 0 5"
                                HorizontalAlignment="Left"/>
-                    <TextBlock Text="¿Seguro que quieres cancelar el proceso?" 
+                    <TextBlock Text="Está a punto de terminar abruptamente el proceso de fondo." 
                                FontSize="15" HorizontalAlignment="Left"/>
                     <TextBlock Text="Esta acción no es reversible." 
                                FontSize="15" FontWeight="SemiBold" Foreground="OrangeRed" HorizontalAlignment="Left"/>
@@ -53,7 +53,7 @@
                         HorizontalAlignment="Right"
                         Spacing="10" Margin="20 10 20 20">
                 <Button x:Name="NoButton" Content="No" Width="90" Height="35" FontSize="18" CornerRadius="4"/>
-                <Button x:Name="YesButton" Content="Sí" Width="90" Height="35" FontSize="18" CornerRadius="4" Classes="RedAccented"/>
+                <Button x:Name="YesButton" Content="Cancelar" Width="100" Height="35" FontSize="18" CornerRadius="4" Classes="RedAccented"/>
             </StackPanel>
 
         </StackPanel>

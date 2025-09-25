@@ -368,20 +368,20 @@ namespace VManager.Services
                               (name.Contains("videotoolbox") && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) ||
                               ((name.Contains("mf") || name.Contains("amf")) && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) => null,
                 var name when name.Contains("vaapi") =>
-                    $"-init_hw_device vaapi=va:/dev/dri/renderD128 -f lavfi -i testsrc2=duration=0.1:size=320x240:rate=1 -vf format=nv12,hwupload=extra_hw_frames=20 -c:v {codecName} -b:v 1M -f null -",
+                    $"-init_hw_device vaapi=va:/dev/dri/renderD128 -f lavfi -i testsrc2=duration=0.001:size=130x130:rate=1 -vf format=nv12,hwupload=extra_hw_frames=20 -c:v {codecName} -b:v 1M -f null -",
                 var name when name.Contains("nvenc") =>
-                    $"-f lavfi -i testsrc2=duration=0.1:size=320x240:rate=1 -c:v {codecName} -preset fast -b:v 1M -f null -",
+                    $"-f lavfi -i testsrc2=duration=0.001:size=130x130:rate=1 -c:v {codecName} -preset fast -b:v 1M -f null -",
                 var name when name.Contains("qsv") =>
                     RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                        ? $"-init_hw_device qsv=hw -f lavfi -i testsrc2=duration=0.1:size=320x240:rate=1 -vf hwupload=extra_hw_frames=64 -c:v {codecName} -preset fast -b:v 1M -f null -"
-                        : $"-init_hw_device vaapi=va:/dev/dri/renderD128 -init_hw_device qsv=hw@va -f lavfi -i testsrc2=duration=0.1:size=320x240:rate=1 -vf format=nv12,hwupload=extra_hw_frames=64 -c:v {codecName} -preset fast -b:v 1M -f null -",
+                        ? $"-init_hw_device qsv=hw -f lavfi -i testsrc2=duration=0.001:size=130x130:rate=1 -vf hwupload=extra_hw_frames=64 -c:v {codecName} -preset fast -b:v 1M -f null -"
+                        : $"-init_hw_device vaapi=va:/dev/dri/renderD128 -init_hw_device qsv=hw@va -f lavfi -i testsrc2=duration=0.001:size=130x130:rate=1 -vf format=nv12,hwupload=extra_hw_frames=64 -c:v {codecName} -preset fast -b:v 1M -f null -",
                 var name when name.Contains("videotoolbox") =>
-                    $"-f lavfi -i testsrc2=duration=0.1:size=320x240:rate=1 -c:v {codecName} -b:v 1M -f null -",
+                    $"-f lavfi -i testsrc2=duration=0.001:size=130x130:rate=1 -c:v {codecName} -b:v 1M -f null -",
                 var name when name.Contains("mf") =>
-                    $"-f lavfi -i testsrc2=duration=0.1:size=320x240:rate=1 -c:v {codecName} -b:v 1M -f null -",
+                    $"-f lavfi -i testsrc2=duration=0.001:size=130x130:rate=1 -c:v {codecName} -b:v 1M -f null -",
                 var name when name.Contains("amf") =>
-                    $"-init_hw_device d3d11va=dx11 -f lavfi -i testsrc2=duration=0.1:size=320x240:rate=1 -vf hwupload=extra_hw_frames=8 -c:v {codecName} -b:v 1M -f null -",
-                _ => $"-f lavfi -i testsrc2=duration=0.1:size=320x240:rate=1 -c:v {codecName} -f null -"
+                    $"-init_hw_device d3d11va=dx11 -f lavfi -i testsrc2=duration=0.001:size=130x130:rate=1 -vf hwupload=extra_hw_frames=8 -c:v {codecName} -b:v 1M -f null -",
+                _ => $"-f lavfi -i testsrc2=duration=0.001:size=130x130:rate=1 -c:v {codecName} -f null -"
             };
         }
 

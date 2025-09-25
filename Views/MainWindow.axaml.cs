@@ -51,22 +51,35 @@ namespace VManager.Views
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var mainWindow = desktop.MainWindow;
-                if (mainWindow?.DataContext is MainWindowViewModel mainVM && mainVM.CurrentView is ViewModelBase current)
+                if (mainWindow?.DataContext is MainWindowViewModel mainVM)
                 {
-                    if (current.IsOperationRunning)
+                    // Verificar si hay alguna herramienta corriendo
+                    var runningTools = mainVM.Tools.Where(t => t.IsOperationRunning).ToList();
+
+                    if (runningTools.Any())
                     {
                         e.Cancel = true; // Cancelamos el cierre inicialmente
-                
-                        // Esperamos el resultado del diálogo
-                        bool shouldClose = await current.ShowCancelDialogInMainWindow(fromWindowClose: true);
-                
-                        if (shouldClose)
+
+                        // Mostrar diálogo de cancelación usando la herramienta activa (CurrentView)
+                        if (mainVM.CurrentView is ViewModelBase current)
                         {
-                            _allowClose = true;
-                            this.Close(); // Cerrar la ventana
+                            bool shouldClose = await current.ShowCancelDialogInMainWindow(fromWindowClose: true);
+
+                            if (shouldClose)
+                            {
+                                // Cancelar TODAS las operaciones en ejecución
+                                foreach (var tool in runningTools)
+                                {
+                                    tool.RequestCancelOperation();
+                                }
+
+                                _allowClose = true;
+                                this.Close(); // Cerrar la ventana
+                            }
+                            // Si el usuario cancela el diálogo, la ventana queda abierta
                         }
-                        // Si no should close, simplemente no hacemos nada y la ventana queda abierta
                     }
+                    // Si ninguna herramienta está corriendo, se permite cerrar sin diálogo
                 }
             }
         }

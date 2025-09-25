@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using ReactiveUI;
 using System.Reactive;
@@ -20,6 +21,7 @@ public class MainWindowViewModel : ViewModelBase
     private Herramienta1ViewModel _herramienta1;
     private Herramienta2ViewModel _herramienta2;
     private Herramienta3ViewModel _herramienta3;
+    public List<ViewModelBase> Tools { get; }
     
     private bool isVideoPathSet;
     public override bool IsVideoPathSet //NO LO USO ACÁ. ES POR LA CLASE ABSTRACTA. YA SÉ QUE ES MALA PRÁCTICA PERDÓN.
@@ -80,6 +82,13 @@ public class MainWindowViewModel : ViewModelBase
         _herramienta1 = new Herramienta1ViewModel();
         _herramienta2 = new Herramienta2ViewModel();
         _herramienta3 = new Herramienta3ViewModel();
+        
+        Tools = new List<ViewModelBase>
+        {
+            _herramienta1,
+            _herramienta2,
+            _herramienta3
+        };
         
         GoToHerramienta1 = ReactiveCommand.Create(
             () =>

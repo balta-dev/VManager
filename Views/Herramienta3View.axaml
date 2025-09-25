@@ -92,7 +92,7 @@
                 <LineBreak/>
                 <Run Text="• WebM + Opus (optimizado web)"/>
                 <LineBreak/><LineBreak/>
-                <Run Text="Nota: FFmpeg puede combinar casi cualquier formato, pero algunas combinaciones podrían no reproducirse en todos los dispositivos."/>
+                <Run Text="Nota: FFmpeg puede combinar muchos formatos, pero algunas combinaciones NO SON COMPATIBLES y/o podrían no reproducirse en todos los dispositivos."/>
               </TextBlock>
             </ToolTip.Tip>
           </Button>

@@ -23,6 +23,11 @@ public static class FFmpegManager
             FfmpegPath = ExtractFFmpeg("VManager.Binaries.Linux.ffmpeg", "ffmpeg");
             FfprobePath = ExtractFFmpeg("VManager.Binaries.Linux.ffprobe", "ffprobe");
         }
+        else if (OperatingSystem.IsMacOS())
+        {
+            FfmpegPath = ExtractFFmpeg("VManager.Binaries.Mac.ffmpeg", "ffmpeg");
+            FfprobePath = ExtractFFmpeg("VManager.Binaries.Mac.ffprobe", "ffprobe");
+        }
         
         // Configura FFMpegCore con la carpeta temporal donde se extraen los ejecutables
         GlobalFFOptions.Configure(new FFOptions { BinaryFolder = Path.GetTempPath() });
