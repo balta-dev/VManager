@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using VManager.Services;
+using VManager.Views;
 
 namespace VManager.ViewModels
 {
@@ -83,6 +84,9 @@ namespace VManager.ViewModels
         
                 if (result.Success)
                 {
+                    Notifier _notifier = new Notifier();
+                    _notifier.ShowFileConvertedNotification(result.Message, result.OutputPath);
+                    
                     SoundManager.Play("success.wav");
                     SetLastCompressedFile(result.OutputPath);
                     Status = result.Message;
