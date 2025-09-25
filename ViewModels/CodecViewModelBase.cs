@@ -54,6 +54,16 @@ namespace VManager.ViewModels
 
         public async Task LoadOrRefreshCodecsAsync(Func<Task<CodecCache>> getCacheFunc)
         {
+            // Inicializo con defaults conocidos para mostrar en la UI
+            AvailableVideoCodecs.Clear();
+            AvailableVideoCodecs.Add("libx264");
+            AvailableAudioCodecs.Clear();
+            AvailableAudioCodecs.Add("aac");
+
+            // Selecciono inmediatamente
+            SelectedVideoCodec = "libx264";
+            SelectedAudioCodec = "aac";
+            
             var cache = await getCacheFunc.Invoke();
 
             AvailableVideoCodecs.Clear();
