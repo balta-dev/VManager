@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using System;
 using System.IO;
 using Avalonia.Layout;
+using Avalonia.Platform;
 
 namespace VManager.Views
 {
@@ -14,7 +15,7 @@ namespace VManager.Views
     {
         private double _opacityIncrement = 0.1;
         private int _fadeIntervalMs = 30;
-        private double _slideIncrement = 3; // Pixels to move per tick
+        private double _slideIncrement = 60; // Pixels to move per tick
         private PixelPoint _startPosition;
         private PixelPoint _finalPosition;
 
@@ -35,7 +36,7 @@ namespace VManager.Views
                 (int)screen.Bounds.Width - (int)this.Width - 20,
                 (int)screen.Bounds.Height - (int)this.Height - 50);
             _startPosition = new PixelPoint(
-                (int)screen.Bounds.Width + 100, // Start 100 pixels off-screen to the right
+                (int)screen.Bounds.Width,
                 _finalPosition.Y);
 
             // Set initial position
@@ -45,7 +46,6 @@ namespace VManager.Views
             var border = new Border
             {
                 Background = new SolidColorBrush(Color.Parse("#FF1A1A1A")), // Dark gray Windows style
-                CornerRadius = new CornerRadius(8),
                 Padding = new Thickness(10)
             };
 
@@ -57,17 +57,17 @@ namespace VManager.Views
             };
 
             // Icon
-            if (File.Exists(iconPath))
+            var uri = new Uri("avares://VManager/Assets/VManager.ico");
+            using var stream = AssetLoader.Open(uri);
+            var icon = new Image
             {
-                var icon = new Image
-                {
-                    Source = new Bitmap(iconPath),
-                    Width = 16,
-                    Height = 16,
-                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top
-                };
-                horizontalPanel.Children.Add(icon);
-            }
+                Source = new Bitmap(stream),
+                Width = 16,
+                Height = 16,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top
+            };
+            horizontalPanel.Children.Add(icon);
+            
 
             // Text
             var textPanel = new StackPanel
