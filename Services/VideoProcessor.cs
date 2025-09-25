@@ -173,7 +173,14 @@ namespace VManager.Services
 
                 if (process.ExitCode != 0 && !cts.Token.IsCancellationRequested)
                 {
-                    throw new Exception("FFmpeg terminó con un error.");
+                    string? errorOutput = await process.StandardError.ReadToEndAsync();
+                    if (errorOutput.Contains("No such file or directory") ||
+                        errorOutput.Contains("Permission denied") ||
+                        errorOutput.Contains("Could not create") ||
+                        errorOutput.Contains("Invalid argument"))
+                    {
+                        throw new Exception($"FFmpeg error: {errorOutput} (ExitCode: {process.ExitCode})");
+                    }
                 }
             }
 
@@ -310,7 +317,14 @@ namespace VManager.Services
 
                     if (process.ExitCode != 0 && !cts.Token.IsCancellationRequested)
                     {
-                        throw new Exception("FFmpeg terminó con un error.");
+                        string? errorOutput = await process.StandardError.ReadToEndAsync();
+                        if (errorOutput.Contains("No such file or directory") ||
+                            errorOutput.Contains("Permission denied") ||
+                            errorOutput.Contains("Could not create") ||
+                            errorOutput.Contains("Invalid argument"))
+                        {
+                            throw new Exception($"FFmpeg error: {errorOutput} (ExitCode: {process.ExitCode})");
+                        }
                     }
                 }
 
@@ -434,10 +448,17 @@ namespace VManager.Services
                         Console.WriteLine("[DEBUG]: Conversión cancelada por el usuario.");
                         return new ProcessingResult(false, "Conversión cancelada por el usuario.");
                     }
-
+                    
                     if (process.ExitCode != 0 && !cts.Token.IsCancellationRequested)
                     {
-                        throw new Exception("FFmpeg terminó con un error.");
+                        string? errorOutput = await process.StandardError.ReadToEndAsync();
+                        if (errorOutput.Contains("No such file or directory") ||
+                            errorOutput.Contains("Permission denied") ||
+                            errorOutput.Contains("Could not create") ||
+                            errorOutput.Contains("Invalid argument"))
+                        {
+                            throw new Exception($"FFmpeg error: {errorOutput} (ExitCode: {process.ExitCode})");
+                        }
                     }
                 }
 
