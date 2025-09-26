@@ -89,7 +89,7 @@
 
                     <!-- Izquierda -->
                     <TextBlock Grid.Column="0"
-                               Text="Versión: 1.3.0"
+                               x:Name="VersionText"
                                Margin="10 25 0 0"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Left"

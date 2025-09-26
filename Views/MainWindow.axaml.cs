@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Input;
 using System.Linq;
@@ -9,6 +10,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using VManager.Behaviors;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using ReactiveUI;
 using VManager.Services;
@@ -24,6 +26,10 @@ namespace VManager.Views
             SoundBehavior.Attach(this);
             SoundManager.Play("dummy.wav");
             
+            var assembly = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Version;
+            string version = $"{assembly?.Major}.{assembly?.Minor}.{assembly?.Build}";
+            VersionText.Text = $"Versión: {version}";
+            
             var accentObs = this.GetResourceObservable("SystemAccentColor")
                 .OfType<Color>()
                 .DistinctUntilChanged()
@@ -38,8 +44,69 @@ namespace VManager.Views
                     ApplyCustomAccent();
                 });
             
+            this.Opened += async (_, _) => await CheckUpdatesAsync();
             this.Closing += MainWindow_Closing;
         }
+        
+        private async Task CheckUpdatesAsync()
+        {
+            var update = await UpdateChecker.CheckForUpdateAsync();
+
+            if (update.UpdateAvailable && !string.IsNullOrEmpty(update.DownloadUrl))
+            {
+                var dialog = new Window
+                {
+                    Title = "¡Actualización disponible!",
+                    Width = 500,
+                    Height = 400,
+                    Background = new SolidColorBrush(Color.Parse("#FF1E1E1E")),
+                    Foreground = new SolidColorBrush(Color.Parse("#FFFAFAFA")),
+                    Content = new StackPanel
+                    {
+                        Margin = new Thickness(10),
+                        Children =
+                        {
+                            new TextBlock
+                            {
+                                Text = $"Nueva versión {update.LatestVersion} disponible.",
+                                Margin = new Thickness(0,0,0,10),
+                                Foreground = new SolidColorBrush(Color.Parse("#FFFFE066")),
+                                FontSize = 23,
+                                FontWeight = FontWeight.Bold
+                            },
+                            new ScrollViewer
+                            {
+                                Height = 300,
+                                Content = new TextBlock
+                                {
+                                    Text = update.ReleaseNotes,
+                                    Opacity =  0.85,
+                                    TextWrapping = Avalonia.Media.TextWrapping.Wrap
+                                }
+                            },
+                            new Button
+                            {
+                                Content = "Descargar última versión",
+                                Classes = {"Accented"},
+                                FontSize = 15
+                                // Command will be set after dialog is fully initialized
+                            }
+                        }
+                    }
+                };
+
+                // Set the button's command after dialog is initialized
+                var button = (dialog.Content as StackPanel).Children.OfType<Button>().First();
+                button.Command = ReactiveUI.ReactiveCommand.Create(() =>
+                {
+                    Process.Start(new ProcessStartInfo(update.DownloadUrl) { UseShellExecute = true });
+                    dialog.Close(); // Close the dialog after opening the URL
+                }, outputScheduler: AvaloniaScheduler.Instance);
+
+                dialog.Show();
+            }
+        }
+        
         
         private bool _allowClose = false;
 
