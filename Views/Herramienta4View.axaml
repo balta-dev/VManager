@@ -102,7 +102,7 @@
         <TextBlock Text="{Binding OutputPath}" FontSize="12" Margin="0,-4,0,0" HorizontalAlignment="Center"/>
         <TextBlock Text="{Binding Warning}" FontSize="12" Margin="0,-6,0,0" HorizontalAlignment="Center"/>
         
-        <!-- Botón recortar -->
+        <!-- Botón extraer -->
         <Button Content="Extraer audio"  
                 FontSize="18" 
                 Classes="Accented"
@@ -110,7 +110,7 @@
                 IsEnabled="{Binding VideoPath, Converter={StaticResource ValidPathConverter}}"
                 Command="{Binding AudiofyCommand}" 
                 HotKey="Enter"
-                Width="150" 
+                Width="135" 
                 Margin="0,0,0,0" 
                 HorizontalAlignment="Center"/>
         

@@ -12,6 +12,7 @@
             Title="VManager"
             MinWidth="390" MinHeight="140"
             Width="1280" Height="800"
+            WindowStartupLocation="CenterScreen"
             Background="{DynamicResource WindowBackgroundBrush}">
 
         <Design.DataContext>
