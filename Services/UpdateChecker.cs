@@ -44,6 +44,11 @@ namespace VManager.Services
             {
                 // 2. Versión local (3 dígitos)
                 var exePath = Assembly.GetEntryAssembly()?.Location ?? "";
+                if (string.IsNullOrEmpty(exePath))
+                {
+                    // Fallback para Windows
+                    exePath = Process.GetCurrentProcess().MainModule?.FileName ?? "";
+                }
                 var fvi = FileVersionInfo.GetVersionInfo(exePath);
                 var productVersionClean = fvi.ProductVersion?.Split('+')[0] ?? "0.0.0";
                 var currentVersion = new Version(productVersionClean);
@@ -108,6 +113,11 @@ namespace VManager.Services
                 Console.WriteLine($"[DEBUG] Error al revisar actualizaciones: {ex.Message}");
                 return cached;
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Excepción: {ex.Message}");
+                return cached;
+            }
         }
 
         private static string GetPlatformAssetName()
@@ -144,12 +154,14 @@ namespace VManager.Services
                     var json = File.ReadAllText(CacheFilePath);
                     return JsonSerializer.Deserialize<UpdateInfo>(json);
                 }
+                return null;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[DEBUG] Error leyendo cache: {ex.Message}");
+                return null;
             }
-            return null;
+            
         }
     }
 }
