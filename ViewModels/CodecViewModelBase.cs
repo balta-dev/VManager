@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,19 +14,29 @@ namespace VManager.ViewModels
         private double _heightBlock = 300;
         private string _selectedVideoCodec = "";
         private string _selectedAudioCodec = "";
-
+        public List<string> _allVideoCodecs = new();
+        public List<string> _allAudioCodecs = new();
         public ObservableCollection<string> AvailableVideoCodecs { get; } = new();
         public ObservableCollection<string> AvailableAudioCodecs { get; } = new();
-        public ObservableCollection<VideoFormat> SupportedFormats { get; } = new ObservableCollection<VideoFormat>
+        public ObservableCollection<VideoFormat> SupportedVideoFormats { get; } = new ObservableCollection<VideoFormat>
         {
-            new VideoFormat { Extension = "mp4", DisplayName = "MP4" },
-            new VideoFormat { Extension = "mkv", DisplayName = "MKV" },
-            new VideoFormat { Extension = "avi", DisplayName = "AVI" },
-            new VideoFormat { Extension = "mov", DisplayName = "MOV" },
-            new VideoFormat { Extension = "webm", DisplayName = "WebM" },
-            new VideoFormat { Extension = "wmv", DisplayName = "WMV" },
-            new VideoFormat { Extension = "flv", DisplayName = "FLV" },
-            new VideoFormat { Extension = "3gp", DisplayName = "3GP" }
+            new VideoFormat { Extension = "mp4", DisplayName = ".mp4" },
+            new VideoFormat { Extension = "mkv", DisplayName = ".mkv" },
+            new VideoFormat { Extension = "avi", DisplayName = ".avi" },
+            new VideoFormat { Extension = "mov", DisplayName = ".mov" },
+            new VideoFormat { Extension = "webm", DisplayName = ".webm" },
+            new VideoFormat { Extension = "wmv", DisplayName = ".wmv" },
+            new VideoFormat { Extension = "flv", DisplayName = ".flv" },
+            new VideoFormat { Extension = "3gp", DisplayName = ".3gp" }
+        };
+        
+        public ObservableCollection<AudioFormat> SupportedAudioFormats { get; } = new ObservableCollection<AudioFormat>
+        {
+            new AudioFormat { Extension = "libmp3lame", DisplayName = ".mp3" },
+            new AudioFormat { Extension = "aac", DisplayName = ".aac" },
+            new AudioFormat { Extension = "flac", DisplayName = ".flac" },
+            new AudioFormat { Extension = "libopus", DisplayName = ".ogg (OPUS)" },
+            new AudioFormat { Extension = "libvorbis", DisplayName = ".ogg (VORBIS)" }
         };
 
         public string SelectedVideoCodec
@@ -65,13 +76,16 @@ namespace VManager.ViewModels
             SelectedAudioCodec = "aac";
             
             var cache = await getCacheFunc.Invoke();
+            
+            _allVideoCodecs = cache.VideoCodecs.ToList();
+            _allAudioCodecs = cache.AudioCodecs.ToList();
 
             AvailableVideoCodecs.Clear();
-            foreach (var v in cache.VideoCodecs)
+            foreach (var v in _allVideoCodecs)
                 AvailableVideoCodecs.Add(v);
 
             AvailableAudioCodecs.Clear();
-            foreach (var a in cache.AudioCodecs)
+            foreach (var a in _allAudioCodecs)
                 AvailableAudioCodecs.Add(a);
 
             SelectedVideoCodec = AvailableVideoCodecs.FirstOrDefault() ?? "libx264";
@@ -80,7 +94,6 @@ namespace VManager.ViewModels
                 : AvailableAudioCodecs.FirstOrDefault();
             
         }
-
         public async Task LoadCodecsAsync()
         {
             

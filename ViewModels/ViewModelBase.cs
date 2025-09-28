@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using VManager.Views;
 
 namespace VManager.ViewModels;
@@ -169,6 +170,16 @@ public abstract class ViewModelBase : ReactiveObject
         this.RaisePropertyChanged(nameof(OutputPath));
         this.RaisePropertyChanged(nameof(IsVideoPathSet));
         this.RaisePropertyChanged(nameof(IsClicked));
+        
+        _ = Task.Delay(2000).ContinueWith(_ =>
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                Status = "";
+                this.RaisePropertyChanged(nameof(Status));
+            });
+        });
+        
     }
     private async Task BrowseVideo()
     {

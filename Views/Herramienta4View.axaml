@@ -1,7 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="VManager.Views.Herramienta1View"
-             x:DataType="vm:Herramienta1ViewModel"
+             x:Class="VManager.Views.Herramienta4View"
+             x:DataType="vm:Herramienta4ViewModel"
              xmlns:vm="using:VManager.ViewModels"
              xmlns:behaviors="clr-namespace:VManager.Behaviors"
              xmlns:services="clr-namespace:VManager.Services">
@@ -28,7 +28,7 @@
       <StackPanel Margin="20" Spacing="12" HorizontalAlignment="Center" VerticalAlignment="Center">
 
         <!-- Título -->
-        <TextBlock Text="Recorte de Videos" 
+        <TextBlock Text="Extracción de Audio" 
                    FontSize="25" 
                    HorizontalAlignment="Center" 
                    FontWeight="Bold"/>
@@ -68,33 +68,21 @@
           </Border>
         </StackPanel>
 
-        <!-- Recortar desde -->
-        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="0,10,0,0">
-          <TextBlock Text="Recortar desde:" FontSize="14" VerticalAlignment="Center"/>
-          <TextBox Text="{Binding TiempoDesde}" Width="100" Watermark="(hh:mm:ss)"/>
-          <Button x:Name="QuestionMarkDesde" Content="?" Width="30" FontWeight="Bold">
+        <!-- lista de audio -->
+        <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,15,0,0" HorizontalAlignment="Center">
+          <TextBlock Text="¿A qué formato?" FontSize="14" VerticalAlignment="Center"/>
+          <ComboBox ItemsSource="{Binding SupportedAudioFormats}"
+                    SelectedItem="{Binding SelectedAudioFormat}"
+                    Width="150"/>
+          <Button x:Name="QuestionMark" Content="?" Width="30" FontWeight="Bold">
             <ToolTip.Tip>
               <TextBlock MaxWidth="400" TextWrapping="Wrap">
-                <Run Text="Se acepta formato en segundos y/o tiempo tradicional (hh:mm:ss)."/>
-                <LineBreak/>
-                <Run Text="Siempre y cuando sean tiempos válidos, puedes utilizarlo como tú desees."/>
+                <Run Text="Selecciona el formato de salida del audio."/>
                 <LineBreak/><LineBreak/>
-                <Run Text="Ejemplos de uso:"/>
-                <LineBreak/>
-                <Run Text="* Recortar desde 23. Recortar hasta 2:01"/>
-                <LineBreak/>
-                <Run Text="* Recortar desde 1:02:01. Recortar hasta 2:52:01"/>
-                <LineBreak/><LineBreak/>
-                <Run Text="Nota: la duración maxima se recalcula si no es adecuada."/>
+                <Run Text="Nota: Si estás dudando para .ogg: Opus es más nuevo y eficiente, Vorbis es de legado. "/>
               </TextBlock>
             </ToolTip.Tip>
           </Button>
-        </StackPanel>
-
-        <!-- Recortar hasta -->
-        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-          <TextBlock Text="Recortar hasta:" FontSize="14" VerticalAlignment="Center"/>
-          <TextBox Text="{Binding TiempoHasta}" Width="100" Watermark="(hh:mm:ss)"/>
         </StackPanel>
 
         <!-- Barra de progreso + porcentaje -->
@@ -115,12 +103,12 @@
         <TextBlock Text="{Binding Warning}" FontSize="12" Margin="0,-6,0,0" HorizontalAlignment="Center"/>
         
         <!-- Botón recortar -->
-        <Button Content="Recortar Video"  
+        <Button Content="Extraer audio"  
                 FontSize="18" 
                 Classes="Accented"
                 FontWeight="DemiBold"
                 IsEnabled="{Binding VideoPath, Converter={StaticResource ValidPathConverter}}"
-                Command="{Binding CutCommand}" 
+                Command="{Binding AudiofyCommand}" 
                 HotKey="Enter"
                 Width="150" 
                 Margin="0,0,0,0" 

@@ -20,7 +20,8 @@ namespace VManager.ViewModels
         double HeightBlock { set; }
         ObservableCollection<string> AvailableVideoCodecs { get; }
         ObservableCollection<string> AvailableAudioCodecs { get; }
-        ObservableCollection<VideoFormat> SupportedFormats { get; }
+        ObservableCollection<VideoFormat> SupportedVideoFormats { get; }
+        ObservableCollection<AudioFormat> SupportedAudioFormats { get; }
         string SelectedVideoCodec { get; } 
         string SelectedAudioCodec { get; }
         Task ReloadCodecsAsync();
@@ -30,6 +31,13 @@ namespace VManager.ViewModels
     }
 
     public class VideoFormat
+    {
+        public string Extension { get; set; }
+        public string DisplayName { get; set; }
+        public override string ToString() => DisplayName;
+    }
+    
+    public class AudioFormat
     {
         public string Extension { get; set; }
         public string DisplayName { get; set; }

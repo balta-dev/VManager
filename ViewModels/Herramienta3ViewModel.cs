@@ -33,7 +33,12 @@ namespace VManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref isVideoPathSet, value);
         }
         
-        public VideoFormat SelectedFormat { get; set; } 
+        private VideoFormat _selectedFormat;
+        public VideoFormat SelectedFormat
+        {
+            get => _selectedFormat;
+            set => this.RaiseAndSetIfChanged(ref _selectedFormat, value);
+        }
         public ReactiveCommand<Unit, Unit> ConvertCommand { get; }
         public ReactiveCommand<Unit, Unit> RefreshCodecsCommand { get; } 
        
@@ -41,19 +46,85 @@ namespace VManager.ViewModels
         {
             RefreshCodecsCommand = ReactiveCommand.CreateFromTask(ReloadCodecsAsync, outputScheduler: AvaloniaScheduler.Instance);
             ConvertCommand = ReactiveCommand.CreateFromTask(ConvertVideo, outputScheduler: AvaloniaScheduler.Instance);
-            SelectedFormat = SupportedFormats[0]; //mp4
+            SelectedFormat = SupportedVideoFormats[0]; //mp4
             _ = LoadCodecsAsync();
+            this.WhenAnyValue(x => x.SelectedVideoCodec, x => x.SelectedFormat)
+                .Subscribe(_ => UpdateAudioCodecsForSelectedVideo());
+
         }
+        
+        private void UpdateAudioCodecsForSelectedVideo()
+        {
+            var compatibleAudio = _allAudioCodecs.ToList();
+
+            // Filtrado según SelectedVideoCodec
+            if (SelectedVideoCodec == "libvpx" || SelectedVideoCodec == "webm")
+            {
+                compatibleAudio = compatibleAudio
+                    .Where(a => a == "libvorbis" || a == "libopus")
+                    .ToList();
+            }
+
+            // Filtrado según SelectedFormat
+            if (SelectedFormat != null)
+            {
+                switch (SelectedFormat.Extension.ToLower())
+                {
+                    case "mp4":
+                    case "m4v":
+                        // MP4/M4V típicamente soporta AAC, MP3, FLAC
+                        compatibleAudio = compatibleAudio
+                            .Where(a => a == "aac" || a == "libmp3lame" || a == "flac")
+                            .ToList();
+                        break;
+
+                    case "webm":
+                    case "vp8":
+                    case "vp9":
+                        // WebM soporta Vorbis u Opus
+                        compatibleAudio = compatibleAudio
+                            .Where(a => a == "libvorbis" || a == "libopus")
+                            .ToList();
+                        break;
+
+                    case "mkv":
+                        // MKV es muy flexible: acepta casi todos
+                        compatibleAudio = compatibleAudio
+                            .Where(a => a == "aac" || a == "libmp3lame" || a == "flac" || a == "libopus" || a == "libvorbis")
+                            .ToList();
+                        break;
+
+                    case "mov":
+                        // MOV soporta AAC y FLAC
+                        compatibleAudio = compatibleAudio
+                            .Where(a => a == "aac" || a == "flac")
+                            .ToList();
+                        break;
+
+                    default:
+                        // Otros formatos no filtran nada
+                        break;
+                }
+            }
+
+            // Limpiar y actualizar ObservableCollection
+            AvailableAudioCodecs.Clear();
+            foreach (var a in compatibleAudio)
+                AvailableAudioCodecs.Add(a);
+
+            // Asegurarse de que SelectedAudioCodec sigue siendo válido
+            if (!AvailableAudioCodecs.Contains(SelectedAudioCodec))
+                SelectedAudioCodec = AvailableAudioCodecs.FirstOrDefault();
+        }
+
+        
         private async Task ConvertVideo()
         {
             HideFileReadyButton();
-            
             _cts = new CancellationTokenSource();
 
             try
             {
-                HideFileReadyButton();
-        
                 Status = "Obteniendo información del video...";
                 this.RaisePropertyChanged(nameof(Status));
 

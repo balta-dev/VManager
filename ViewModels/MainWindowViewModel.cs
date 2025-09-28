@@ -21,6 +21,7 @@ public class MainWindowViewModel : ViewModelBase
     private Herramienta1ViewModel _herramienta1;
     private Herramienta2ViewModel _herramienta2;
     private Herramienta3ViewModel _herramienta3;
+    private Herramienta4ViewModel _herramienta4;
     public List<ViewModelBase> Tools { get; }
     
     private bool isVideoPathSet;
@@ -51,6 +52,13 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _herramienta3Activa, value);
     }
     
+    private bool _herramienta4Activa;
+    public bool Herramienta4Activa
+    {
+        get => _herramienta4Activa;
+        set => this.RaiseAndSetIfChanged(ref _herramienta4Activa, value);
+    }
+    
     private ViewModelBase? _currentView;
     public ViewModelBase? CurrentView
     {
@@ -64,6 +72,8 @@ public class MainWindowViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> GoToHerramienta1 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta2 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta3 { get; }
+    
+    public ReactiveCommand<Unit, Unit> GoToHerramienta4 { get; }
     public ReactiveCommand<Unit, Unit> ToggleThemeCommand { get; }
     public ReactiveCommand<Unit, Unit> OpenGitHubCommand { get; }
     
@@ -82,12 +92,14 @@ public class MainWindowViewModel : ViewModelBase
         _herramienta1 = new Herramienta1ViewModel();
         _herramienta2 = new Herramienta2ViewModel();
         _herramienta3 = new Herramienta3ViewModel();
+        _herramienta4 = new Herramienta4ViewModel();
         
         Tools = new List<ViewModelBase>
         {
             _herramienta1,
             _herramienta2,
-            _herramienta3
+            _herramienta3,
+            _herramienta4
         };
         
         GoToHerramienta1 = ReactiveCommand.Create(
@@ -96,6 +108,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta1Activa = true;
                 Herramienta2Activa = false;
                 Herramienta3Activa = false;
+                Herramienta4Activa = false;
                 CurrentView = _herramienta1;
                 return Unit.Default;
             },
@@ -108,6 +121,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta2Activa = true;
                 Herramienta1Activa = false;
                 Herramienta3Activa = false;
+                Herramienta4Activa = false;
                 CurrentView = _herramienta2;
                 return Unit.Default;
             },
@@ -120,7 +134,21 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta3Activa = true;
                 Herramienta1Activa = false;
                 Herramienta2Activa = false;
+                Herramienta4Activa = false;
                 CurrentView = _herramienta3;
+                return Unit.Default;
+            },
+            outputScheduler: AvaloniaScheduler.Instance
+        );
+        
+        GoToHerramienta4 = ReactiveCommand.Create(
+            () =>
+            {
+                Herramienta4Activa = true;
+                Herramienta1Activa = false;
+                Herramienta2Activa = false;
+                Herramienta3Activa = false;
+                CurrentView = _herramienta4;
                 return Unit.Default;
             },
             outputScheduler: AvaloniaScheduler.Instance

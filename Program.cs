@@ -8,12 +8,23 @@ namespace VManager;
 
 sealed class Program
 {
+    private static readonly string LogsFolder = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "VManager", "logs");
+    
     [STAThread]
     public static void Main(string[] args)
     {
-        // Configurar log de consola a archivo
-        var logFile = File.CreateText("log.txt");
-        logFile.AutoFlush = true;
+        Directory.CreateDirectory(LogsFolder);
+        
+        // Log file con rotación diaria
+        var logFilePath = Path.Combine(LogsFolder, $"log-{DateTime.UtcNow:yyyy-MM-dd}.log");
+
+        // Abrir en append (así no se pierde nada si la app se reinicia el mismo día)
+        var logFile = new StreamWriter(logFilePath, append: true, Encoding.UTF8)
+        {
+            AutoFlush = true
+        };
 
         // Redirigir Console.WriteLine y Console.Error
         Console.SetOut(new MultiTextWriter(Console.Out, logFile));

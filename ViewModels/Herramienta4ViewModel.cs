@@ -1,23 +1,21 @@
-using Avalonia.Controls;
-using Avalonia.ReactiveUI;
-using FFMpegCore;
-using FFMpegCore.Enums;
-using ReactiveUI;
 using System;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Platform.Storage;
+using Avalonia.ReactiveUI;
+using DynamicData;
+using ReactiveUI;
 using VManager.Services;
 using VManager.Views;
 
 namespace VManager.ViewModels
 {
-    public class Herramienta2ViewModel : CodecViewModelBase
+    
+    public class Herramienta4ViewModel : CodecViewModelBase
     {
+        
+        public AudioFormat SelectedAudioFormat { get; set; } 
         
         private bool _isConverting;
         public bool IsConverting
@@ -32,34 +30,27 @@ namespace VManager.ViewModels
             get => isVideoPathSet;
             set => this.RaiseAndSetIfChanged(ref isVideoPathSet, value);
         }
-        
-        private string _porcentajeCompresionUsuario = "75"; // valor por defecto, 75%
-        public string PorcentajeCompresionUsuario
+        public ReactiveCommand<Unit, Unit> AudiofyCommand { get; }
+        public Herramienta4ViewModel()
         {
-            get => _porcentajeCompresionUsuario;
-            set => this.RaiseAndSetIfChanged(ref _porcentajeCompresionUsuario, value);
+            AudiofyCommand = ReactiveCommand.CreateFromTask(AudiofyVideo, outputScheduler: AvaloniaScheduler.Instance);
+            SelectedAudioFormat = SupportedAudioFormats[0]; //mp3
+            // Hardcodear códecs de audio estándar
+            AvailableAudioCodecs.Clear();
+            AvailableAudioCodecs.AddRange(new[]
+            {
+                "aac",
+                "libmp3lame", 
+                "libvorbis",
+                "libopus",
+                "flac"
+            });
         }
-        public ReactiveCommand<Unit, Unit> CompressCommand { get; }
-        public ReactiveCommand<Unit, Unit> RefreshCodecsCommand { get; } 
         
-        public Herramienta2ViewModel()
-        {
-            RefreshCodecsCommand = ReactiveCommand.CreateFromTask(ReloadCodecsAsync, outputScheduler: AvaloniaScheduler.Instance);
-            CompressCommand = ReactiveCommand.CreateFromTask(CompressVideo, outputScheduler: AvaloniaScheduler.Instance);
-            _ = LoadCodecsAsync();
-        }
-        
-        private async Task CompressVideo()
+        private async Task AudiofyVideo()
         {
             HideFileReadyButton();
             _cts = new CancellationTokenSource();
-
-            if (!int.TryParse(PorcentajeCompresionUsuario, out int percentValue) || percentValue <= 0 || percentValue > 100)
-            {
-                Status = "Porcentaje inválido.";
-                this.RaisePropertyChanged(nameof(Status));
-                return;
-            }
 
             try
             {
@@ -73,24 +64,24 @@ namespace VManager.ViewModels
                     this.RaisePropertyChanged(nameof(Progress));
                 });
 
-                Status = "Comprimiendo...";
+                Status = "Extrayendo...";
                 this.RaisePropertyChanged(nameof(Status));
-
+                
                 IsConverting = true;
                 IsOperationRunning = true;
                 this.RaisePropertyChanged(nameof(IsConverting));
                 this.RaisePropertyChanged(nameof(IsOperationRunning));
-
-                var result = await processor.CompressAsync(
+        
+                var result = await processor.AudiofyAsync(
                     VideoPath,
                     OutputPath,
-                    percentValue,
                     SelectedVideoCodec,
                     SelectedAudioCodec,
+                    SelectedAudioFormat?.Extension,
                     progress,
-                    _cts.Token // <-- Pasamos el CancellationToken
+                    _cts.Token // Pasar el CancellationToken
                 );
-
+        
                 if (result.Success)
                 {
                     Notifier _notifier = new Notifier();
@@ -106,38 +97,47 @@ namespace VManager.ViewModels
                     this.RaisePropertyChanged(nameof(Progress));
                     this.RaisePropertyChanged(nameof(OutputPath));
                     this.RaisePropertyChanged(nameof(Warning));
+                    IsConverting = false;
+                    IsOperationRunning = false;
+                    IsVideoPathSet = false; //para bloquear 
+                    this.RaisePropertyChanged(nameof(IsOperationRunning));
+                    this.RaisePropertyChanged(nameof(IsConverting));
+                    this.RaisePropertyChanged(nameof(IsVideoPathSet));
                 }
                 else
                 {
                     SoundManager.Play("fail.wav");
-                    Status = result.Message;
+                    Status = result.Message; 
                     Progress = 0;
                     this.RaisePropertyChanged(nameof(Status));
                     this.RaisePropertyChanged(nameof(Progress));
+                    IsConverting = false;
+                    IsOperationRunning = false;
+                    this.RaisePropertyChanged(nameof(IsConverting));
+                    this.RaisePropertyChanged(nameof(IsOperationRunning));
                 }
             }
             catch (OperationCanceledException)
             {
                 SoundManager.Play("fail.wav");
-                Status = "Compresión cancelada por el usuario.";
+                Status = "Extracción cancelada por el usuario.";
                 Progress = 0;
                 this.RaisePropertyChanged(nameof(Status));
                 this.RaisePropertyChanged(nameof(Progress));
-            }
-            finally
-            {
                 IsConverting = false;
                 IsOperationRunning = false;
                 this.RaisePropertyChanged(nameof(IsConverting));
                 this.RaisePropertyChanged(nameof(IsOperationRunning));
-
+                
+            }
+            finally
+            {
                 // Limpiar el CancellationTokenSource
                 _cts?.Dispose();
                 _cts = null;
             }
+            
         }
-
         
     }
-    
 }

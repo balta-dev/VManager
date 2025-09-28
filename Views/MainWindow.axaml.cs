@@ -52,7 +52,7 @@ namespace VManager.Views
         {
             var update = await UpdateChecker.CheckForUpdateAsync();
 
-            if (update.UpdateAvailable && !string.IsNullOrEmpty(update.DownloadUrl))
+            if (update != null && update.UpdateAvailable && !string.IsNullOrEmpty(update.DownloadUrl))
             {
                 var dialog = new Window
                 {

@@ -76,7 +76,7 @@
         <!-- Selección de formato -->
         <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,15,0,0" HorizontalAlignment="Center">
           <TextBlock Text="¿A qué formato?" FontSize="14" VerticalAlignment="Center"/>
-          <ComboBox ItemsSource="{Binding SupportedFormats}"
+          <ComboBox ItemsSource="{Binding SupportedVideoFormats}"
                     SelectedItem="{Binding SelectedFormat}"
                     Width="100"/>
           <Button x:Name="QuestionMark" Content="?" Width="30" FontWeight="Bold">
@@ -84,7 +84,7 @@
               <TextBlock MaxWidth="400" TextWrapping="Wrap">
                 <Run Text="Selecciona el formato de salida para tu video."/>
                 <LineBreak/><LineBreak/>
-                <Run Text="Combinaciones más compatibles:"/>
+                <Run Text="Recomendaciones:"/>
                 <LineBreak/>
                 <Run Text="• MP4 + AAC (máxima compatibilidad)"/>
                 <LineBreak/>
@@ -92,7 +92,7 @@
                 <LineBreak/>
                 <Run Text="• WebM + Opus (optimizado web)"/>
                 <LineBreak/><LineBreak/>
-                <Run Text="Nota: FFmpeg puede combinar muchos formatos, pero algunas combinaciones NO SON COMPATIBLES y/o podrían no reproducirse en todos los dispositivos."/>
+                <Run Text="Nota: FFmpeg puede combinar muchos formatos, pero algunas combinaciones podrían no reproducirse en todos los dispositivos."/>
               </TextBlock>
             </ToolTip.Tip>
           </Button>

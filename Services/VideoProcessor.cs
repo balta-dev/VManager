@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -480,6 +482,285 @@ namespace VManager.Services
                 return new ProcessingResult(false, $"Error: {ex.Message}");
             }
         }
+        
+        public async Task<ProcessingResult> AudiofyAsync(
+            string inputPath,
+            string outputPath,
+            string? videoCodec,
+            string? audioCodec,
+            string selectedAudioFormat,
+            IProgress<double> progress,
+            CancellationToken cancellationToken = default)
+        {
+            Console.WriteLine($"[DEBUG] AudiofyAsync - inputPath: {inputPath}");
+            Console.WriteLine($"[DEBUG] AudiofyAsync - selectedAudioFormat: '{selectedAudioFormat}'");
+            
+            if (string.IsNullOrEmpty(selectedAudioFormat))
+            {
+                return new ProcessingResult(false, "Formato de audio no especificado.");
+            }
+
+            // Analizar archivo de entrada
+            var analysisResult = await AnalyzeVideoAsync(inputPath);
+            if (!analysisResult.Success)
+            {
+                return new ProcessingResult(false, analysisResult.Message);
+            }
+
+            var mediaInfo = analysisResult.Result!;
+            
+            // Verificar que tenga pistas de audio
+            if (mediaInfo.AudioStreams.Count == 0)
+            {
+                return new ProcessingResult(false, "El archivo no contiene pistas de audio.");
+            }
+
+            // Obtener información del audio original
+            var originalAudioStream = mediaInfo.AudioStreams.First();
+            string originalCodec = originalAudioStream.CodecName?.ToLower() ?? "unknown";
+            
+            Console.WriteLine($"[DEBUG] Códec de audio original: {originalCodec}");
+            Console.WriteLine($"[DEBUG] Formato de salida deseado: {selectedAudioFormat}");
+
+            string outputFileName = Path.GetFileNameWithoutExtension(inputPath) + $"-ACONV.{selectedAudioFormat}";
+            outputPath = Path.Combine(Path.GetDirectoryName(inputPath)!, outputFileName);
+
+            double duration = mediaInfo.Duration.TotalSeconds;
+
+            // Decidir si necesitamos recodificar o solo cambiar contenedor
+            var processingDecision = DecideAudioProcessing(originalCodec, selectedAudioFormat);
+            
+            // Usar el formato normalizado para el nombre del archivo
+            string normalizedFormat = NormalizeFormatName(selectedAudioFormat);
+            string correctedOutputFileName = Path.GetFileNameWithoutExtension(inputPath) + $"-ACONV.{normalizedFormat}";
+            outputPath = Path.Combine(Path.GetDirectoryName(inputPath)!, correctedOutputFileName);
+            
+            Console.WriteLine($"[DEBUG] Decisión: {processingDecision.Action}");
+            Console.WriteLine($"[DEBUG] Códec a usar: {processingDecision.Codec}");
+            Console.WriteLine($"[DEBUG] Razón: {processingDecision.Reason}");
+            Console.WriteLine($"[DEBUG] Archivo de salida corregido: {outputPath}");
+
+            try
+            {
+                var args = FFMpegArguments
+                    .FromFileInput(inputPath)
+                    .OutputToFile(outputPath, overwrite: true, options =>
+                    {
+                        options.WithCustomArgument("-vn"); // Sin video
+                        
+                        if (processingDecision.Action == AudioProcessingAction.Copy)
+                        {
+                            // Solo copiar el audio sin recodificar
+                            options.WithAudioCodec("copy");
+                        }
+                        else
+                        {
+                            // Recodificar con el códec especificado
+                            options
+                                .WithAudioCodec(processingDecision.Codec)
+                                .WithAudioBitrate(processingDecision.Bitrate);
+                        }
+                    });
+
+                Console.WriteLine($"[DEBUG] Argumentos FFmpeg: {args.Arguments}");
+
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = _ffmpegPath,
+                        Arguments = args.Arguments,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
+
+                using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+                {
+                    cts.Token.Register(() =>
+                    {
+                        if (!process.HasExited)
+                        {
+                            process.Kill();
+                            Console.WriteLine("[DEBUG]: Proceso FFmpeg terminado por cancelación.");
+                            if (File.Exists(outputPath))
+                            {
+                                try { File.Delete(outputPath); }
+                                catch (IOException ex) { Console.WriteLine($"[DEBUG]: {ex.Message}"); }
+                            }
+                        }
+                    });
+
+                    process.Start();
+
+                    using (var reader = process.StandardError)
+                    {
+                        string? line;
+                        while ((line = await reader.ReadLineAsync()) != null)
+                        {
+                            if (line.Contains("time="))
+                            {
+                                var timeMatch = Regex.Match(line, @"time=(\d{2}:\d{2}:\d{2}\.\d{2})");
+                                if (timeMatch.Success && TimeSpan.TryParse(timeMatch.Groups[1].Value, out var time))
+                                {
+                                    progress.Report(Math.Min(time.TotalSeconds / duration, 1.0));
+                                }
+                            }
+                        }
+                    }
+
+                    await process.WaitForExitAsync(cts.Token);
+
+                    if (cts.Token.IsCancellationRequested)
+                    {
+                        if (File.Exists(outputPath)) File.Delete(outputPath);
+                        return new ProcessingResult(false, "Extracción cancelada por el usuario.");
+                    }
+
+                    if (process.ExitCode != 0)
+                    {
+                        return new ProcessingResult(false, $"FFmpeg falló con código: {process.ExitCode}");
+                    }
+                }
+
+                if (!File.Exists(outputPath) || new FileInfo(outputPath).Length == 0)
+                {
+                    if (File.Exists(outputPath)) File.Delete(outputPath);
+                    return new ProcessingResult(false, "El archivo de salida no se creó correctamente.");
+                }
+
+                string successMessage = processingDecision.Action == AudioProcessingAction.Copy 
+                    ? $"¡Audio extraído sin recodificar! ({processingDecision.Reason})"
+                    : "¡Audio extraído y convertido!";
+                    
+                return new ProcessingResult(true, successMessage, outputPath);
+            }
+            catch (OperationCanceledException)
+            {
+                if (File.Exists(outputPath)) File.Delete(outputPath);
+                return new ProcessingResult(false, "Extracción cancelada por el usuario.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DEBUG]: Error: {ex.Message}");
+                return new ProcessingResult(false, $"Error: {ex.Message}");
+            }
+        }
+
+        // Estructura para la decisión de procesamiento
+        private struct AudioProcessingDecision
+        {
+            public AudioProcessingAction Action;
+            public string Codec;
+            public int Bitrate;
+            public string Reason;
+        }
+
+        private enum AudioProcessingAction
+        {
+            Copy,      // Solo cambiar contenedor, mantener códec
+            Reencode   // Recodificar audio
+        }
+
+        // Método que decide si recodificar o no
+        private AudioProcessingDecision DecideAudioProcessing(string originalCodec, string targetFormat)
+        {
+            var decision = new AudioProcessingDecision();
+            
+            // Normalizar el formato de entrada (puede venir como códec en lugar de formato)
+            string normalizedFormat = NormalizeFormatName(targetFormat);
+            
+            // Mapeos de códecs que pueden ir directamente a ciertos formatos
+            var compatibleMappings = new Dictionary<string, HashSet<string>>
+            {
+                ["aac"] = new HashSet<string> { "aac", "m4a", "mp4" },
+                ["mp3"] = new HashSet<string> { "mp3" },
+                ["flac"] = new HashSet<string> { "flac" },
+                ["vorbis"] = new HashSet<string> { "ogg", "oga" },
+                ["opus"] = new HashSet<string> { "opus", "ogg" },
+                ["pcm_s16le"] = new HashSet<string> { "wav" },
+                ["pcm_s24le"] = new HashSet<string> { "wav" },
+                ["pcm_f32le"] = new HashSet<string> { "wav" }
+            };
+
+            // Verificar si el códec original es compatible con el formato de salida
+            if (compatibleMappings.ContainsKey(originalCodec) && 
+                compatibleMappings[originalCodec].Contains(normalizedFormat))
+            {
+                decision.Action = AudioProcessingAction.Copy;
+                decision.Codec = "copy";
+                decision.Bitrate = 0; // No aplica
+                decision.Reason = $"Códec {originalCodec} compatible con formato {normalizedFormat}";
+                return decision;
+            }
+
+            // Si no es compatible, necesitamos recodificar
+            decision.Action = AudioProcessingAction.Reencode;
+            decision.Reason = $"Códec {originalCodec} no compatible con {normalizedFormat}, recodificando";
+
+            // Elegir códec y bitrate apropiados para el formato de salida
+            switch (normalizedFormat)
+            {
+                case "mp3":
+                    decision.Codec = "libmp3lame";
+                    decision.Bitrate = 192;
+                    break;
+                case "aac":
+                case "m4a":
+                    decision.Codec = "aac";
+                    decision.Bitrate = 128;
+                    break;
+                case "ogg":
+                case "oga":
+                    decision.Codec = "libvorbis";
+                    decision.Bitrate = 192;
+                    break;
+                case "flac":
+                    decision.Codec = "flac";
+                    decision.Bitrate = 0; // Lossless
+                    break;
+                case "wav":
+                    decision.Codec = "pcm_s16le";
+                    decision.Bitrate = 0; // Sin compresión
+                    break;
+                case "opus":
+                    decision.Codec = "libopus";
+                    decision.Bitrate = 128;
+                    break;
+                case "wma":
+                    decision.Codec = "wmav2";
+                    decision.Bitrate = 128;
+                    break;
+                default:
+                    // Fallback a AAC
+                    decision.Codec = "aac";
+                    decision.Bitrate = 128;
+                    break;
+            }
+
+            return decision;
+        }
+
+        // Método para normalizar nombres de códecs a formatos
+        private string NormalizeFormatName(string input)
+        {
+            var codecToFormat = new Dictionary<string, string>
+            {
+                ["libmp3lame"] = "mp3",
+                ["libvorbis"] = "ogg",
+                ["libopus"] = "opus",
+                ["pcm_s16le"] = "wav",
+                ["pcm_s24le"] = "wav",
+                ["pcm_f32le"] = "wav",
+                ["wmav2"] = "wma"
+            };
+            
+            string normalized = input.ToLower();
+            return codecToFormat.ContainsKey(normalized) ? codecToFormat[normalized] : normalized;
+        }
+
 
         private void ConfigureHardwareAcceleration(FFMpegArgumentOptions opts, string videoCodec)
         {

@@ -15,7 +15,13 @@ namespace VManager.Services
         public CodecCacheService(ICodecService codecService)
         {
             _codecService = codecService;
-            _cacheFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "codecs.json");
+            string cacheFolder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "VManager", "cache");
+
+            Directory.CreateDirectory(cacheFolder);
+
+            _cacheFile = Path.Combine(cacheFolder, "codecs.json");
         }
 
         public async Task<CodecCache> LoadOrBuildCacheAsync()
