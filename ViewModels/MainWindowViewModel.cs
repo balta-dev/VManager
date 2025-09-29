@@ -18,6 +18,14 @@ namespace VManager.ViewModels;
 public class MainWindowViewModel : ViewModelBase
 {
     public bool IsWelcomeVisible => CurrentView == null;
+    private string _welcomeMessage;
+
+    public string WelcomeMessage
+    {
+        get => _welcomeMessage;
+        set => this.RaiseAndSetIfChanged(ref _welcomeMessage, value);
+    }
+    
     private Herramienta1ViewModel _herramienta1;
     private Herramienta2ViewModel _herramienta2;
     private Herramienta3ViewModel _herramienta3;
@@ -88,6 +96,10 @@ public class MainWindowViewModel : ViewModelBase
     {
         ToggleThemeCommand = ReactiveCommand.Create(ToggleTheme, outputScheduler: AvaloniaScheduler.Instance);
         OpenGitHubCommand = ReactiveCommand.Create(OpenGitHub, outputScheduler: AvaloniaScheduler.Instance);
+        
+        var username = Environment.UserName;
+        username = char.ToUpper(username[0]) + username.Substring(1);
+        WelcomeMessage = "¡Bienvenido a VManager!";
         
         _herramienta1 = new Herramienta1ViewModel();
         _herramienta2 = new Herramienta2ViewModel();

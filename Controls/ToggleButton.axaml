@@ -49,7 +49,7 @@
     <Setter Property="Template">
       <ControlTemplate>
         <ContentPresenter x:Name="PART_ContentPresenter"
-                          Background="{TemplateBinding Background}"
+                          Background="{DynamicResource WindowBackgroundBrush}"
                           BorderBrush="{TemplateBinding BorderBrush}"
                           BorderThickness="{TemplateBinding BorderThickness}"
                           CornerRadius="{TemplateBinding CornerRadius}"
