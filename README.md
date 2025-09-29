@@ -7,10 +7,10 @@
 VManager nace de la evolución de dos herramientas que desarrollé para uso en terminal ([`vcut`](https://github.com/balta-dev/vcut) y [`vcompr`](https://github.com/balta-dev/vcompr)), con el objetivo de facilitar aún más su uso general y hacer estas funcionalidades accesibles para el usuario promedio. 
 
 <img width="1281" height="834" alt="image" src="https://github.com/user-attachments/assets/188a6b69-3fde-4ca6-bd37-68f98c1456ea" />
-<p align="center">
-   <img src="https://github.com/user-attachments/assets/74090b59-dc26-4161-8f72-70f8238dca53" width="730">
-   <img src="https://github.com/user-attachments/assets/be29fd65-82c0-48ca-b55b-daadfe4bb678" width="265">
-</p>
+<img width="1279" height="827" alt="image" src="https://github.com/user-attachments/assets/2cbca789-016b-452e-b53d-a088c5f780ab" />
+<img width="1278" height="824" alt="image" src="https://github.com/user-attachments/assets/107d262d-a7fb-4544-8ab1-1546b029056c" />
+
+
 
 
 
