@@ -46,6 +46,30 @@ namespace VManager.Views
             
             this.Opened += async (_, _) => await CheckUpdatesAsync();
             this.Closing += MainWindow_Closing;
+            this.KeyDown += OnKeyDown;
+            MainSplitView.AddHandler(
+                InputElement.KeyDownEvent,
+                new EventHandler<KeyEventArgs>(MainSplitview_OnPreviewKeyDown),
+                RoutingStrategies.Tunnel);
+        }
+        
+        private void MainSplitview_OnPreviewKeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && e.KeyModifiers == KeyModifiers.None)
+            {
+                e.Handled = true; // ❌ Enter queda bloqueado en toda la sidebar
+            }
+        }
+        
+        private void OnKeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+            {
+                if (this.WindowState == WindowState.FullScreen)
+                    this.WindowState = WindowState.Normal;
+                else
+                    this.WindowState = WindowState.FullScreen;
+            }
         }
         
         private async Task CheckUpdatesAsync()
