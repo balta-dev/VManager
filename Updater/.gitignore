@@ -1,0 +1,20 @@
+# Build output
+bin/
+obj/
+
+# Rider/VS files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.idea/*
+
+# Logs
+*.log
+
+# Dependencias locales / NuGet
+*.nupkg
+packages/
+
+# Otros
+*.vs

@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <ApplicationIcon>Assets\VManager.ico</ApplicationIcon>
+    <Version>1.3.2</Version>
+    <FileVersion>1.3.2.0</FileVersion>
+    <Authors>Baltazar Franz</Authors>
+    <Product>VManager</Product>
+    <Company>Baltazar Franz</Company>
+    <Copyright>© 2025 Baltazar Franz</Copyright>
+    <Description>Herramienta para procesar videos con FFmpeg</Description>
+  </PropertyGroup>
+
+  <!-- Detectar la plataforma de una forma que funcione -->
+  <PropertyGroup>
+    <IsWindows Condition="$(RuntimeIdentifier.Contains('win'))">true</IsWindows>
+    <IsLinux Condition="$(RuntimeIdentifier.Contains('linux'))">true</IsLinux>
+    <IsMac Condition="$(RuntimeIdentifier.Contains('osx'))">true</IsMac>
+  </PropertyGroup>
+
+  <!-- Carpetas y recursos básicos -->
+  <ItemGroup>
+    <Folder Include="Binaries\Linux\" />
+    <Folder Include="Binaries\Mac\" />
+    <Folder Include="Binaries\Windows\" />
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" Exclude="Assets\Sounds\**" />
+    <EmbeddedResource Include="Assets\Sounds\**\*" />
+    <AvaloniaResource Include="Assets\VManager.ico" />
+  </ItemGroup>
+
+  <!-- Paquetes NuGet -->
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.5" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.5" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.5" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.5" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.5" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.5" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="FFMpegCore" Version="5.2.0" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+  </ItemGroup>
+
+  <!-- Binarios por plataforma (solo en Release) -->
+  <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(IsWindows)' == 'true'">
+    <EmbeddedResource Include="Binaries\Windows\ffmpeg.exe" />
+    <EmbeddedResource Include="Binaries\Windows\ffprobe.exe" />
+    <None Remove="Binaries\Windows\ffplay.exe" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(IsLinux)' == 'true'">
+    <EmbeddedResource Include="Binaries\Linux\ffmpeg" />
+    <EmbeddedResource Include="Binaries\Linux\ffprobe" />
+    <None Remove="Binaries\Linux\ffplay" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(IsMac)' == 'true'">
+    <EmbeddedResource Include="Binaries\Mac\ffmpeg" />
+    <EmbeddedResource Include="Binaries\Mac\ffprobe" />
+  </ItemGroup>
+
+</Project>

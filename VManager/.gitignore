@@ -1,0 +1,16 @@
+# Build / bin / obj
+bin/
+obj/
+
+# Rider project files
+.idea/
+*.sln.iml
+
+# Otros temporales
+*.user
+*.vs
+*.cache
+
+# Logs
+log.txt
+.idea/

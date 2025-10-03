@@ -1,0 +1,172 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="VManager.Views.Herramienta1View"
+             x:DataType="vm:Herramienta1ViewModel"
+             xmlns:vm="using:VManager.ViewModels"
+             xmlns:behaviors="clr-namespace:VManager.Behaviors"
+             xmlns:services="clr-namespace:VManager.Services">
+
+  <UserControl.Resources>
+    <services:ValidPathConverter x:Key="ValidPathConverter" />
+  </UserControl.Resources>
+  
+  <Grid ClipToBounds="True">
+    <Border BorderBrush="{DynamicResource BorderBrushPrimary}" 
+            BorderThickness="2" 
+            CornerRadius="10" 
+            Padding="0" 
+            Margin="0,20,20,0"
+            Background="{DynamicResource PanelBackgroundBrush}"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            ClipToBounds="True"
+            behaviors:DragDropHelper.EnableFileDrop="True"
+            behaviors:DragDropHelper.DropTarget="VideoPath">
+
+      <ScrollViewer Padding="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Background="Transparent">
+      
+      <StackPanel Margin="20" Spacing="12" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+        <!-- Título -->
+        <TextBlock Text="Recorte de Videos" 
+                   FontSize="25" 
+                   HorizontalAlignment="Center" 
+                   FontWeight="Bold"/>
+        
+        <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center" Margin="0 0 0 35">
+          <!-- 
+            <Button Content="⚠️ Forzar recálculos"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="10"
+                    Command="{Binding RefreshCodecsCommand}"
+                    Width="112"/>-->
+            
+          <Button Content="🗘 Refrescar"
+                  Command="{Binding ClearInfoCommand}"
+                  x:Name="ClearInfo"
+                  HotKey="F5"
+                  HorizontalAlignment="Center"
+                  Width="100">
+          </Button>
+
+                    
+        </StackPanel>
+
+        <!-- Selección de archivo -->
+        <StackPanel Spacing="6" HorizontalAlignment="Stretch">
+          <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+            <TextBlock Text="Seleccionar Video:" FontSize="14" VerticalAlignment="Center"/>
+            <Button Content="Examinar" Command="{Binding BrowseCommand}" HotKey="E" Width="80"/>
+          </StackPanel>
+          <Border Padding="2">
+            <TextBox Text="{Binding VideoPath}" 
+                     IsReadOnly="True"
+                     Width=""
+                     Watermark="Ruta del video"
+                     HorizontalAlignment="Stretch"/>
+          </Border>
+        </StackPanel>
+
+        <!-- Recortar desde -->
+        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="0,10,0,0">
+          <TextBlock Text="Recortar desde:" FontSize="14" VerticalAlignment="Center"/>
+          <TextBox Text="{Binding TiempoDesde}" Width="100" Watermark="(hh:mm:ss)"/>
+          <Button x:Name="QuestionMarkDesde" Content="?" Width="30" FontWeight="Bold">
+            <ToolTip.Tip>
+              <TextBlock MaxWidth="400" TextWrapping="Wrap">
+                <Run Text="Se acepta formato en segundos y/o tiempo tradicional (hh:mm:ss)."/>
+                <LineBreak/>
+                <Run Text="Siempre y cuando sean tiempos válidos, puedes utilizarlo como tú desees."/>
+                <LineBreak/><LineBreak/>
+                <Run Text="Ejemplos de uso:"/>
+                <LineBreak/>
+                <Run Text="* Recortar desde 23. Recortar hasta 2:01"/>
+                <LineBreak/>
+                <Run Text="* Recortar desde 1:02:01. Recortar hasta 2:52:01"/>
+                <LineBreak/><LineBreak/>
+                <Run Text="Nota: la duración maxima se recalcula si no es adecuada."/>
+              </TextBlock>
+            </ToolTip.Tip>
+          </Button>
+        </StackPanel>
+
+        <!-- Recortar hasta -->
+        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+          <TextBlock Text="Recortar hasta:" FontSize="14" VerticalAlignment="Center"/>
+          <TextBox Text="{Binding TiempoHasta}" Width="100" Watermark="(hh:mm:ss)"/>
+        </StackPanel>
+
+        <!-- Barra de progreso + porcentaje -->
+        <Grid Margin="0,20,0,0" HorizontalAlignment="Stretch">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <ProgressBar Grid.Column="0" Minimum="0" Maximum="100" 
+                       Value="{Binding Progress}" Height="20"/>
+          <TextBlock Grid.Column="1" Text="{Binding Progress, StringFormat={}{0}%}"
+                     VerticalAlignment="Center" Margin="8,0,0,0"/>
+        </Grid>
+
+        <!-- Estado -->
+        <TextBlock Text="{Binding Status}" FontSize="12" Margin="0,3,0,0" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding OutputPath}" FontSize="12" Margin="0,-4,0,0" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding Warning}" FontSize="12" Margin="0,-6,0,0" HorizontalAlignment="Center"/>
+        
+        <!-- Botón recortar -->
+        <Button Content="Recortar Video"  
+                FontSize="18" 
+                Classes="Accented"
+                FontWeight="DemiBold"
+                IsEnabled="{Binding VideoPath, Converter={StaticResource ValidPathConverter}}"
+                Command="{Binding CutCommand}" 
+                HotKey="Enter"
+                Width="150" 
+                Margin="0,0,0,0" 
+                HorizontalAlignment="Center"/>
+        
+        <Button Content="CANCELAR"
+                IsEnabled="{Binding IsConverting}"
+                FontSize="12"
+                Margin="0 -7 0 0"
+                Command="{Binding ShowCancelDialogCommand}"
+                Classes="RedAccented"
+                HotKey="Escape"
+                HorizontalAlignment="Center"
+                Width="90"/>
+
+        <!-- Mostrar archivo en carpeta -->
+        <ToggleButton Content="Mostrar archivo en carpeta"
+                      IsVisible="{Binding IsFileReadyVisible}"
+                      IsChecked="{Binding IsClicked, Mode=TwoWay}"
+                      Command="{Binding ShowFileInFolderCommand}"
+                      HorizontalAlignment="Center"
+                      Margin="0,20,0,0">
+          <ToggleButton.Styles>
+                            
+            <!-- Hover -->
+            <Style Selector="ToggleButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+              <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+              <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
+            </Style>
+
+            <!-- Pressed -->
+            <Style Selector="ToggleButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
+              <Setter Property="Background" Value="{DynamicResource AccentForegroundBrush}" />
+              <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+            </Style>
+
+            <!-- Checked (persiste después del clic) -->
+            <Style Selector="ToggleButton:checked /template/ ContentPresenter#PART_ContentPresenter">
+              <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+              <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
+            </Style>
+          </ToggleButton.Styles>
+        </ToggleButton>
+
+      </StackPanel>
+      </ScrollViewer>
+    </Border>
+  </Grid>
+</UserControl>
