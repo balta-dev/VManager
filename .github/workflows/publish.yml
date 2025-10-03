@@ -36,32 +36,28 @@ jobs:
             archive-cmd: tar -czf VManager-osx-x64.tar.gz -C ./VManager/bin/Release/net9.0/osx-x64/publish .
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x' # Usa la última versión de .NET 9.0
+          dotnet-version: '9.0.x'
 
       - name: Restore dependencies
         run: |
           dotnet restore VManager/VManager.csproj
           dotnet restore Updater/Updater.csproj
 
-      - name: Build and Publish VManager
+      - name: Publish VManager
         run: |
           dotnet publish VManager/VManager.csproj -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
 
-      - name: Build and Publish Updater
+      - name: Publish Updater
         run: |
-          dotnet publish Updater/Updater.csproj -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
+          dotnet publish Updater/Updater.csproj -c Release -r ${{ matrix.runtime }} --self-contained false -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
 
-      - name: Create Archive (Windows)
-        if: matrix.os == 'windows-latest'
-        run: ${{ matrix.archive-cmd }}
-
-      - name: Create Archive (Unix)
-        if: matrix.os != 'windows-latest'
+      - name: Create Archive
         run: ${{ matrix.archive-cmd }}
 
       - name: Upload Release Assets
