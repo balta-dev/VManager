@@ -30,30 +30,19 @@ namespace VManager.Services
 
         public static async Task<UpdateInfo?> CheckForUpdateAsync()
         {
-            Console.WriteLine("Buscando actualizaciones...");
-
-            // 1. Ver si existe cache y es reciente (< 60s)
+            // Intentar usar cache reciente (< 5 minutos)
             var cached = LoadCache();
             if (cached != null && (DateTime.UtcNow - cached.LastChecked).TotalMinutes < 5)
-            {
-                Console.WriteLine("[DEBUG] Usando cache (última comprobación hace menos de 5 minutos).");
                 return cached;
-            }
 
             try
             {
-                // 2. Versión local (3 dígitos)
-                var exePath = Assembly.GetEntryAssembly()?.Location ?? "";
-                if (string.IsNullOrEmpty(exePath))
-                {
-                    // Fallback para Windows
-                    exePath = Process.GetCurrentProcess().MainModule?.FileName ?? "";
-                }
+                // Versión actual de la app
+                var exePath = Assembly.GetEntryAssembly()?.Location ?? Process.GetCurrentProcess().MainModule?.FileName ?? "";
                 var fvi = FileVersionInfo.GetVersionInfo(exePath);
-                var productVersionClean = fvi.ProductVersion?.Split('+')[0] ?? "0.0.0";
-                var currentVersion = new Version(productVersionClean);
+                var currentVersion = new Version(fvi.ProductVersion?.Split('+')[0] ?? "0.0.0");
 
-                // 3. Llamada a GitHub API
+                // Llamada a GitHub API
                 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("VManager-Updater");
                 var url = $"https://api.github.com/repos/{RepoOwner}/{RepoName}/releases/latest";
                 var json = await httpClient.GetStringAsync(url);
@@ -61,24 +50,20 @@ namespace VManager.Services
                 using var doc = JsonDocument.Parse(json);
                 var root = doc.RootElement;
 
+                // Versión remota
+                var tagName = root.GetProperty("tag_name").GetString() ?? "0.0.0";
+                if (tagName.StartsWith("v")) tagName = tagName[1..];
+                var segments = tagName.Split(new[] { '+', '-' }, StringSplitOptions.RemoveEmptyEntries)[0].Split('.');
+                var latestVersion = new Version(
+                    segments.Length > 0 ? int.Parse(segments[0]) : 0,
+                    segments.Length > 1 ? int.Parse(segments[1]) : 0,
+                    segments.Length > 2 ? int.Parse(segments[2]) : 0
+                );
+
+                // Notas de la versión
                 var releaseNotes = root.GetProperty("body").GetString() ?? "";
 
-                // Extraer versión remota limpia
-                var tagName = root.GetProperty("tag_name").GetString() ?? "0.0.0";
-                if (tagName.StartsWith("v"))
-                    tagName = tagName[1..];
-
-                var numericPart = tagName.Split(new[] { '+', '-' }, StringSplitOptions.RemoveEmptyEntries)[0];
-                var segments = numericPart.Split('.');
-
-                var major = segments.Length > 0 ? int.Parse(segments[0]) : 0;
-                var minor = segments.Length > 1 ? int.Parse(segments[1]) : 0;
-                var build = segments.Length > 2 ? int.Parse(segments[2]) : 0;
-
-                var latestVersion = new Version(major, minor, build);
-                Console.WriteLine("latestVersion: " + latestVersion);
-
-                // 4. Buscar asset según plataforma
+                // Asset por plataforma
                 string platform = GetPlatformAssetName();
                 string downloadUrl = "";
                 foreach (var asset in root.GetProperty("assets").EnumerateArray())
@@ -103,31 +88,17 @@ namespace VManager.Services
                 SaveCache(updateInfo);
                 return updateInfo;
             }
-            catch (HttpRequestException ex) when (ex.Message.Contains("rate limit"))
+            catch
             {
-                Console.WriteLine("[DEBUG] Límite de GitHub excedido, devolviendo cache si existe...");
-                return cached;
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine($"[DEBUG] Error al revisar actualizaciones: {ex.Message}");
-                return cached;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[ERROR] Excepción: {ex.Message}");
-                return cached;
+                return cached; // fallback si falla
             }
         }
 
         private static string GetPlatformAssetName()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                return "win-x64";
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                return "linux-x64";
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                return "osx-x64";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return "win-x64";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) return "linux-x64";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) return "osx-x64";
             return "";
         }
 
@@ -139,10 +110,7 @@ namespace VManager.Services
                 var options = new JsonSerializerOptions { WriteIndented = true };
                 File.WriteAllText(CacheFilePath, JsonSerializer.Serialize(info, options));
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[DEBUG] Error guardando cache: {ex.Message}");
-            }
+            catch { }
         }
 
         private static UpdateInfo? LoadCache()
@@ -156,12 +124,10 @@ namespace VManager.Services
                 }
                 return null;
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine($"[DEBUG] Error leyendo cache: {ex.Message}");
                 return null;
             }
-            
         }
     }
 }

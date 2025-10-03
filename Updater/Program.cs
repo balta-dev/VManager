@@ -1,3 +1,31 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 
-Console.WriteLine("Hello, World!");
+class Program
+{
+    static void Main(string[] args)
+    {
+        if (args.Length < 2) return;
+
+        string targetDir = args[0];
+        string sourceDir = args[1];
+
+        // Esperar a que la app principal cierre
+        var processes = Process.GetProcessesByName("VManager"); 
+        foreach (var p in processes) p.WaitForExit();
+
+        // Copiar archivos
+        foreach (var file in Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories))
+        {
+            string relative = Path.GetRelativePath(sourceDir, file);
+            string dest = Path.Combine(targetDir, relative);
+            Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+            File.Copy(file, dest, overwrite: true);
+        }
+
+        string exeName = "VManager" + (OperatingSystem.IsWindows() ? ".exe" : "");
+        Process.Start(Path.Combine(targetDir, exeName));
+
+    }
+}

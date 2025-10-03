@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using Avalonia.Controls;
 using Avalonia.Input;
 using System.Linq;
@@ -76,6 +77,18 @@ namespace VManager.Views
         {
             var update = await UpdateChecker.CheckForUpdateAsync();
 
+            if (update != null)
+            {
+                Console.WriteLine($"Versión local: {update.CurrentVersion}");
+                Console.WriteLine($"Versión remota: {update.LatestVersion}");
+                Console.WriteLine($"Ultima vez comprobado: {update.LastChecked}");
+                if (!update.UpdateAvailable)
+                {
+                    Console.WriteLine("No hay actualización disponible.");
+                    return;
+                }
+            }
+
             if (update != null && update.UpdateAvailable && !string.IsNullOrEmpty(update.DownloadUrl))
             {
                 var dialog = new Window
@@ -113,23 +126,37 @@ namespace VManager.Views
                                 Content = "Descargar última versión",
                                 Classes = {"Accented"},
                                 FontSize = 15
-                                // Command will be set after dialog is fully initialized
+                                // Command se setea después
                             }
                         }
                     }
                 };
 
-                // Set the button's command after dialog is initialized
                 var button = (dialog.Content as StackPanel).Children.OfType<Button>().First();
                 button.Command = ReactiveUI.ReactiveCommand.Create(() =>
                 {
-                    Process.Start(new ProcessStartInfo(update.DownloadUrl) { UseShellExecute = true });
-                    dialog.Close(); // Close the dialog after opening the URL
+                    Console.WriteLine("Usuario presionó descargar. Lanzando updater...");
+
+                    string tempFolder = Path.Combine(Path.GetTempPath(), "VManager_Update");
+                    Directory.CreateDirectory(tempFolder);
+
+                    string updaterPath = Path.Combine(AppContext.BaseDirectory, "Updater.exe");
+
+                    var psi = new ProcessStartInfo
+                    {
+                        FileName = updaterPath,
+                        Arguments = $"\"{AppContext.BaseDirectory}\" \"{tempFolder}\"",
+                        UseShellExecute = false,
+                    };
+                    Process.Start(psi);
+
+                    Environment.Exit(0);
                 }, outputScheduler: AvaloniaScheduler.Instance);
 
                 dialog.Show();
             }
         }
+
         
         
         private bool _allowClose = false;
