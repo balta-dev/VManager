@@ -30,6 +30,11 @@ namespace VManager.Services
 
         public static async Task<UpdateInfo?> CheckForUpdateAsync()
         {
+            // Versión actual de la app
+            var exePath = Assembly.GetEntryAssembly()?.Location ?? Process.GetCurrentProcess().MainModule?.FileName ?? "";
+            var fvi = FileVersionInfo.GetVersionInfo(exePath);
+            var currentVersion = new Version(fvi.ProductVersion?.Split('+')[0] ?? "0.0.0");
+            
             // Intentar usar cache reciente (< 5 minutos)
             var cached = LoadCache();
             if (cached != null && (DateTime.UtcNow - cached.LastChecked).TotalMinutes < 5)
@@ -37,11 +42,6 @@ namespace VManager.Services
 
             try
             {
-                // Versión actual de la app
-                var exePath = Assembly.GetEntryAssembly()?.Location ?? Process.GetCurrentProcess().MainModule?.FileName ?? "";
-                var fvi = FileVersionInfo.GetVersionInfo(exePath);
-                var currentVersion = new Version(fvi.ProductVersion?.Split('+')[0] ?? "0.0.0");
-
                 // Llamada a GitHub API
                 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("VManager-Updater");
                 var url = $"https://api.github.com/repos/{RepoOwner}/{RepoName}/releases/latest";

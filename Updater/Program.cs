@@ -24,8 +24,19 @@ class Program
             File.Copy(file, dest, overwrite: true);
         }
 
+        // Borrar la carpeta temporal
+        try
+        {
+            Directory.Delete(sourceDir, recursive: true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al borrar la carpeta temporal: {ex.Message}");
+            // Opcional: Registrar el error en un log si es necesario
+        }
+
+        // Iniciar VManager
         string exeName = "VManager" + (OperatingSystem.IsWindows() ? ".exe" : "");
         Process.Start(Path.Combine(targetDir, exeName));
-
     }
 }
