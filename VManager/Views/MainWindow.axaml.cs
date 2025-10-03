@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -139,8 +140,12 @@ namespace VManager.Views
 
                     string tempFolder = Path.Combine(Path.GetTempPath(), "VManager_Update");
                     Directory.CreateDirectory(tempFolder);
-
-                    string updaterPath = Path.Combine(AppContext.BaseDirectory, "Updater.exe");
+                    
+                    string updaterFileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) 
+                        ? "Updater.exe" 
+                        : "Updater";
+                    
+                    string updaterPath = Path.Combine(AppContext.BaseDirectory, updaterFileName);
 
                     var psi = new ProcessStartInfo
                     {
@@ -156,8 +161,6 @@ namespace VManager.Views
                 dialog.Show();
             }
         }
-
-        
         
         private bool _allowClose = false;
 
