@@ -20,6 +20,14 @@ class Program
         {
             string relative = Path.GetRelativePath(sourceDir, file);
             string dest = Path.Combine(targetDir, relative);
+    
+            // Saltar el updater para no sobrescribirlo mientras corre
+            if (Path.GetFileName(file).Equals("Updater", StringComparison.OrdinalIgnoreCase) ||
+                Path.GetFileName(file).Equals("Updater.exe", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+    
             Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
             File.Copy(file, dest, overwrite: true);
         }
