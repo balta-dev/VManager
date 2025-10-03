@@ -135,30 +135,48 @@ namespace VManager.Views
                 };
 
                 var button = (dialog.Content as StackPanel).Children.OfType<Button>().First();
-                button.Command = ReactiveUI.ReactiveCommand.Create(async () =>
+                button.Command = ReactiveUI.ReactiveCommand.CreateFromTask(async () =>
                 {
                     Console.WriteLine("Usuario presionó descargar. Descargando actualización...");
 
                     string tempFolder = Path.Combine(Path.GetTempPath(), "VManager_Update");
                     Directory.CreateDirectory(tempFolder);
     
-                    // ESTO ES LO QUE FALTA:
+                    Console.WriteLine($"Carpeta temporal creada: {tempFolder}");
+
+                    // Descargar
                     using var client = new HttpClient();
-                    var zipBytes = await client.GetByteArrayAsync(update.DownloadUrl);
-    
-                    string downloadedFile = Path.Combine(tempFolder, "update.zip"); // o .tar.gz según plataforma
-                    await File.WriteAllBytesAsync(downloadedFile, zipBytes);
-    
-                    // Extraer el archivo
+                    var fileBytes = await client.GetByteArrayAsync(update.DownloadUrl);
+
+                    string downloadedFile;
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        downloadedFile = Path.Combine(tempFolder, "update.zip");
+                        await File.WriteAllBytesAsync(downloadedFile, fileBytes);
                         System.IO.Compression.ZipFile.ExtractToDirectory(downloadedFile, tempFolder);
-                    // Para Linux/Mac necesitarías extraer .tar.gz
-    
+                    }
+                    else // Linux o macOS
+                    {
+                        downloadedFile = Path.Combine(tempFolder, "update.tar.gz");
+                        await File.WriteAllBytesAsync(downloadedFile, fileBytes);
+
+                        // Extraer con tar
+                        var tarProcess = new ProcessStartInfo
+                        {
+                            FileName = "tar",
+                            Arguments = $"-xzf \"{downloadedFile}\" -C \"{tempFolder}\"",
+                            UseShellExecute = false,
+                            CreateNoWindow = true
+                        };
+                        var process = Process.Start(tarProcess);
+                        await process!.WaitForExitAsync();
+                    }
+
                     // Ahora sí lanzar el updater
                     string updaterFileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) 
                         ? "Updater.exe" 
                         : "Updater";
-    
+
                     string updaterPath = Path.Combine(AppContext.BaseDirectory, updaterFileName);
 
                     var psi = new ProcessStartInfo
@@ -170,7 +188,7 @@ namespace VManager.Views
                     Process.Start(psi);
 
                     Environment.Exit(0);
-                }, outputScheduler: AvaloniaScheduler.Instance);
+                });
 
                 dialog.Show();
             }
