@@ -188,7 +188,7 @@ namespace VManager.Views
                     Process.Start(psi);
 
                     Environment.Exit(0);
-                });
+                }, outputScheduler: AvaloniaScheduler.Instance);
 
                 dialog.Show();
             }
