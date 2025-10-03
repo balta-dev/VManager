@@ -1,4 +1,4 @@
-name: ${{ github.event.inputs.tag || github.ref_name }}
+name: Publish Release
 
 on:
   push:
