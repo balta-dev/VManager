@@ -50,20 +50,10 @@ jobs:
           dotnet restore Updater/Updater.csproj
 
       - name: Publish VManager
-        run: |
-          dotnet publish VManager/VManager.csproj -c Release -r ${{ matrix.runtime }} \
-            --self-contained true \
-            -p:PublishSingleFile=true \
-            -p:EnableCompressionInSingleFile=true
+        run: dotnet publish VManager/VManager.csproj -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
 
       - name: Publish Updater (Trimmed)
-        run: |
-          dotnet publish Updater/Updater.csproj -c Release -r ${{ matrix.runtime }} \
-            --self-contained true \
-            -p:PublishSingleFile=true \
-            -p:EnableCompressionInSingleFile=true \
-            -p:PublishTrimmed=true \
-            -p:TrimMode=link
+        run: dotnet publish Updater/Updater.csproj -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:PublishTrimmed=true -p:TrimMode=link
 
       - name: Create Archive
         run: ${{ matrix.archive-cmd }}
