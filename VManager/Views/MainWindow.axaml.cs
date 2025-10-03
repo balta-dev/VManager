@@ -4,6 +4,7 @@ using System.IO;
 using Avalonia.Controls;
 using Avalonia.Input;
 using System.Linq;
+using System.Net.Http;
 using System.Reactive.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -134,17 +135,30 @@ namespace VManager.Views
                 };
 
                 var button = (dialog.Content as StackPanel).Children.OfType<Button>().First();
-                button.Command = ReactiveUI.ReactiveCommand.Create(() =>
+                button.Command = ReactiveUI.ReactiveCommand.Create(async () =>
                 {
-                    Console.WriteLine("Usuario presionó descargar. Lanzando updater...");
+                    Console.WriteLine("Usuario presionó descargar. Descargando actualización...");
 
                     string tempFolder = Path.Combine(Path.GetTempPath(), "VManager_Update");
                     Directory.CreateDirectory(tempFolder);
-                    
+    
+                    // ESTO ES LO QUE FALTA:
+                    using var client = new HttpClient();
+                    var zipBytes = await client.GetByteArrayAsync(update.DownloadUrl);
+    
+                    string downloadedFile = Path.Combine(tempFolder, "update.zip"); // o .tar.gz según plataforma
+                    await File.WriteAllBytesAsync(downloadedFile, zipBytes);
+    
+                    // Extraer el archivo
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        System.IO.Compression.ZipFile.ExtractToDirectory(downloadedFile, tempFolder);
+                    // Para Linux/Mac necesitarías extraer .tar.gz
+    
+                    // Ahora sí lanzar el updater
                     string updaterFileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) 
                         ? "Updater.exe" 
                         : "Updater";
-                    
+    
                     string updaterPath = Path.Combine(AppContext.BaseDirectory, updaterFileName);
 
                     var psi = new ProcessStartInfo
