@@ -1,0 +1,71 @@
+name: ${{ github.event.inputs.tag || github.ref_name }}
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag para la release (ej: v1.3.2)'
+        required: true
+        default: 'v1.3.2'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            runtime: win-x64
+            extension: .exe
+            archive: zip
+            archive-cmd: 7z a VManager-win-x64.zip -r ./VManager/bin/Release/net9.0/win-x64/publish/*
+          - os: ubuntu-latest
+            runtime: linux-x64
+            extension: ''
+            archive: tar.gz
+            archive-cmd: tar -czf VManager-linux-x64.tar.gz -C ./VManager/bin/Release/net9.0/linux-x64/publish .
+          - os: macos-latest
+            runtime: osx-x64
+            extension: ''
+            archive: tar.gz
+            archive-cmd: tar -czf VManager-osx-x64.tar.gz -C ./VManager/bin/Release/net9.0/osx-x64/publish .
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x' # Usa la última versión de .NET 9.0
+
+      - name: Restore dependencies
+        run: |
+          dotnet restore VManager/VManager.csproj
+          dotnet restore Updater/Updater.csproj
+
+      - name: Build and Publish VManager
+        run: |
+          dotnet publish VManager/VManager.csproj -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
+
+      - name: Build and Publish Updater
+        run: |
+          dotnet publish Updater/Updater.csproj -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
+
+      - name: Create Archive (Windows)
+        if: matrix.os == 'windows-latest'
+        run: ${{ matrix.archive-cmd }}
+
+      - name: Create Archive (Unix)
+        if: matrix.os != 'windows-latest'
+        run: ${{ matrix.archive-cmd }}
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          files: VManager-${{ matrix.runtime }}.${{ matrix.archive }}
