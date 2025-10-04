@@ -41,7 +41,7 @@ namespace VManager.Services
             
             // Intentar usar cache reciente (< 5 minutos)
             var cached = LoadCache();
-            if (cached != null && cached.CurrentVersion == currentVersion && (DateTime.UtcNow - cached.LastChecked).TotalMinutes < 5)
+            if (cached != null && cached.CurrentVersion > new Version(0, 0, 0) && (DateTime.UtcNow - cached.LastChecked).TotalMinutes < 5)
                 return cached;
 
             try
