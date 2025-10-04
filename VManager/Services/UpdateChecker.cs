@@ -42,15 +42,11 @@ namespace VManager.Services
             Console.WriteLine($"exePath: {exePath}");
             Console.WriteLine($"Current Version: {currentVersion}");
             
-            // Intentar usar cache reciente (< 5 minutos)
+            // Intentar usar cache reciente (< 2 minutos)
             var cached = LoadCache();
             
-            Console.WriteLine($"Cached Current Version: {cached?.CurrentVersion}");
-            
-            if (cached != null && (DateTime.UtcNow - cached.LastChecked).TotalMinutes < 5)
+            if (cached != null && (DateTime.UtcNow - cached.LastChecked).TotalMinutes < 2)
                 return cached;
-            
-            if (cached == null) Console.WriteLine("null cache!");
 
             try
             {
