@@ -39,10 +39,18 @@ namespace VManager.Services
             var fvi = FileVersionInfo.GetVersionInfo(exePath);
             var currentVersion = new Version(fvi.ProductVersion?.Split('+')[0] ?? "0.0.0");
             
+            Console.WriteLine($"exePath: {exePath}");
+            Console.WriteLine($"Current Version: {currentVersion}");
+            
             // Intentar usar cache reciente (< 5 minutos)
             var cached = LoadCache();
-            if (cached != null && cached.CurrentVersion > new Version(0, 0, 0) && (DateTime.UtcNow - cached.LastChecked).TotalMinutes < 5)
+            
+            Console.WriteLine($"Cached Current Version: {cached?.CurrentVersion}");
+            
+            if (cached != null && (DateTime.UtcNow - cached.LastChecked).TotalMinutes < 5)
                 return cached;
+            
+            if (cached == null) Console.WriteLine("null cache!");
 
             try
             {
