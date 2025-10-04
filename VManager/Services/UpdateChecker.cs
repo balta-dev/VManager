@@ -31,7 +31,11 @@ namespace VManager.Services
         public static async Task<UpdateInfo?> CheckForUpdateAsync()
         {
             // Versión actual de la app
-            var exePath = Assembly.GetEntryAssembly()?.Location ?? Process.GetCurrentProcess().MainModule?.FileName ?? "";
+            var exePath = Assembly.GetEntryAssembly()?.Location ?? "";
+            if (string.IsNullOrEmpty(exePath))
+            {
+                exePath = Process.GetCurrentProcess().MainModule?.FileName ?? "";
+            }
             var fvi = FileVersionInfo.GetVersionInfo(exePath);
             var currentVersion = new Version(fvi.ProductVersion?.Split('+')[0] ?? "0.0.0");
             
