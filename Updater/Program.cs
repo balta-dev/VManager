@@ -21,9 +21,10 @@ class Program
             string relative = Path.GetRelativePath(sourceDir, file);
             string dest = Path.Combine(targetDir, relative);
     
-            // Saltar el updater para no sobrescribirlo mientras corre
-            if (Path.GetFileName(file).Equals("Updater", StringComparison.OrdinalIgnoreCase) ||
-                Path.GetFileName(file).Equals("Updater.exe", StringComparison.OrdinalIgnoreCase))
+            // Saltar el updater DESTINO para no sobrescribirlo mientras corre
+            string destFileName = Path.GetFileName(dest);
+            if (destFileName.Equals("Updater", StringComparison.OrdinalIgnoreCase) ||
+                destFileName.Equals("Updater.exe", StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }
@@ -40,7 +41,6 @@ class Program
         catch (Exception ex)
         {
             Console.WriteLine($"Error al borrar la carpeta temporal: {ex.Message}");
-            // Opcional: Registrar el error en un log si es necesario
         }
 
         // Iniciar VManager
