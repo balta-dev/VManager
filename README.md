@@ -54,8 +54,6 @@ VManager nace de la evolución de dos herramientas que desarrollé para uso en t
    ./VManager
    ```
 
-> **⚠️ Nota**: Para Linux, Avalonia no tiene una implementación **Drag & Drop**, así que la única forma es ocupando el botón "Examinar". A pesar de que los desarrolladores de Avalonia no han tenido mucho interés, actualmente hay varios issues que están intentando resolver este problema (ejemplo: issue [#19232](https://github.com/AvaloniaUI/Avalonia/pull/19232) busca mergearse tras solucionar issue [#19347](https://github.com/AvaloniaUI/Avalonia/pull/19347)). El objetivo es utilizar la implementación original de Avalonia, pero si no se resuelve en un tiempo razonable se implementará de manera provisoria un GTK Helper para que pueda capturar el evento y se lo comunique a Avalonia mediante IPC.
-
 ---
 
 ### macOS 🍎
@@ -82,20 +80,19 @@ VManager nace de la evolución de dos herramientas que desarrollé para uso en t
 
 ## 🛠️ Desarrollo futuro
 
-VManager está en **desarrollo activo**. Se están considerando agregar más herramientas para gestión de video y audio, incluyendo:
+VManager está en **constante desarrollo**. Se están considerando agregar más herramientas para gestión de video y audio, incluyendo:
 
-- 🎵 Extracción de audio
 - 📊 Soporte a múltiples archivos simultáneamente
 - Paridad de features multiplataforma (DnD)
 - Y mucho más...
 
 ## 🤝 Contribuciones
 
-Las contribuciones son bienvenidas. Si tenés ideas, reportes de bugs o mejoras, no dudes en:
+Las contribuciones son bienvenidas y promovidas. Si tenés ideas, reportes de bugs o mejoras, no dudes en:
 
-- Abrir un [Issue](../../issues)
-- Enviar un [Pull Request](../../pulls)
-- Sugerir nuevas características
+- a) Abrir un [Issue](../../issues)
+- b) Enviar un [Pull Request](../../pulls)
+- c) Sugerir nuevas características
 
 ## 📄 Licencia
 
