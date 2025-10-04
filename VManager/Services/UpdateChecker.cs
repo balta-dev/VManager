@@ -133,5 +133,15 @@ namespace VManager.Services
                 return null;
             }
         }
+        
+        public static void InvalidateCache()
+        {
+            try
+            {
+                if (File.Exists(CacheFilePath))
+                    File.Delete(CacheFilePath);
+            }
+            catch { }
+        }
     }
 }

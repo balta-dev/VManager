@@ -186,6 +186,8 @@ namespace VManager.Views
                         UseShellExecute = false,
                     };
                     Process.Start(psi);
+                    
+                    UpdateChecker.InvalidateCache();
 
                     Environment.Exit(0);
                 }, outputScheduler: AvaloniaScheduler.Instance);
