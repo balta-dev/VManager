@@ -84,7 +84,7 @@ namespace VManager.Views
                 Console.WriteLine($"Versión local: {update.CurrentVersion}");
                 Console.WriteLine($"Versión remota: {update.LatestVersion}");
                 Console.WriteLine($"Ultima vez comprobado: {update.LastChecked}");
-                if (!update.UpdateAvailable)
+                if (!update.UpdateAvailable && update.CurrentVersion == new Version(0, 0, 0))
                 {
                     Console.WriteLine("No hay actualización disponible.");
                     return;
