@@ -36,8 +36,11 @@ namespace VManager.Services
             {
                 exePath = Process.GetCurrentProcess().MainModule?.FileName ?? "";
             }
-            var fvi = FileVersionInfo.GetVersionInfo(exePath);
-            var currentVersion = new Version(fvi.ProductVersion?.Split('+')[0] ?? "0.0.0");
+            
+            var assembly = Assembly.GetExecutingAssembly();
+            var versionAttribute = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+            var versionString = versionAttribute?.InformationalVersion ?? "0.0.0";
+            var currentVersion = new Version(versionString.Split('+')[0].Split('-')[0]);
             
             Console.WriteLine($"exePath: {exePath}");
             Console.WriteLine($"Current Version: {currentVersion}");
