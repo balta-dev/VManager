@@ -82,11 +82,11 @@
           </StackPanel>
           
             <!-- Modo Debug -->
-          <StackPanel Orientation="Horizontal" Margin="0 200 0 0" Spacing="8" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal" Margin="0 -8 0 0" Spacing="8" VerticalAlignment="Center">
               <TextBlock Text="{Binding L[Configuration.Fields.EnableDebug]}"
                          FontSize="15"
                          VerticalAlignment="Center"/>
-              <CheckBox IsChecked="False" /> 
+              <CheckBox IsChecked="True" IsEnabled="False" /> 
             <!--<CheckBox IsChecked="{Binding MostrarIconoPorDefecto, Mode=TwoWay}" />-->
           </StackPanel>
           
