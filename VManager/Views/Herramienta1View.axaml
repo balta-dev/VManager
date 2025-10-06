@@ -28,7 +28,7 @@
       <StackPanel Margin="20" Spacing="12" HorizontalAlignment="Center" VerticalAlignment="Center">
 
         <!-- Título -->
-        <TextBlock Text="Recorte de Videos" 
+        <TextBlock Text="{Binding L[VCut.Title]}" 
                    FontSize="25" 
                    HorizontalAlignment="Center" 
                    FontWeight="Bold"/>
@@ -42,12 +42,22 @@
                     Command="{Binding RefreshCodecsCommand}"
                     Width="112"/>-->
             
-          <Button Content="🗘 Refrescar"
+          <Button 
                   Command="{Binding ClearInfoCommand}"
                   x:Name="ClearInfo"
                   HotKey="F5"
                   HorizontalAlignment="Center"
-                  Width="100">
+                  Width="105">
+            <Button.Content>
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                <!-- Aquí el PathIcon -->
+                <PathIcon Data="M5.50999526,3.31842271 C5.12151573,3.31842271 4.80046129,3.60710385 4.74965,3.9816481 L4.74264499,4.08577298 L4.74264499,6.97963208 C4.74264499,7.36811161 5.03132614,7.68916605 5.40587038,7.73997735 L5.50999526,7.74698235 L8.40385436,7.74698235 C8.82765021,7.74698235 9.17120463,7.40342793 9.17120463,6.97963208 C9.17120463,6.59115255 8.88252349,6.27009811 8.50797925,6.21928681 L8.40385436,6.21228181 L7.42512053,6.21182461 C10.3377833,3.87107476 14.6073963,4.05209336 17.3101833,6.75488039 C20.2069829,9.65167996 20.2069829,14.34832 17.3101833,17.2451196 C14.4133838,20.1419192 9.71674369,20.1419192 6.81994412,17.2451196 C5.05698183,15.4821573 4.31886614,12.9925923 4.78189684,10.58925 C4.86207142,10.173107 4.58971523,9.77076216 4.17357228,9.69058758 C3.75742932,9.610413 3.35508446,9.88276918 3.27490988,10.2989121 C2.71652434,13.1971899 3.60781134,16.2033812 5.73474696,18.3303168 C9.23088437,21.8264542 14.8992431,21.8264542 18.3953805,18.3303168 C21.8915179,14.8341794 21.8915179,9.16582064 18.3953805,5.66968323 C15.0747703,2.34907304 9.7945807,2.18235834 6.27720505,5.16953912 L6.27734554,4.08577298 C6.27734554,3.66197713 5.93379112,3.31842271 5.50999526,3.31842271 Z" 
+                          Width="15" Height="15" />
+                <!-- Texto del botón enlazado -->
+                <TextBlock Text="{Binding L[VCut.Buttons.Refresh]}" VerticalAlignment="Center"/>
+              </StackPanel>
+            </Button.Content>
+            
           </Button>
 
                     
@@ -56,21 +66,40 @@
         <!-- Selección de archivo -->
         <StackPanel Spacing="6" HorizontalAlignment="Stretch">
           <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-            <TextBlock Text="Seleccionar Video:" FontSize="14" VerticalAlignment="Center"/>
-            <Button Content="Examinar" Command="{Binding BrowseCommand}" HotKey="E" Width="80"/>
+            <TextBlock Text="{Binding L[VCut.Fields.SelectVideo]}" 
+                       FontSize="14" 
+                       VerticalAlignment="Center"/>
+        
+            <Button Command="{Binding BrowseCommand}" 
+                    HotKey="B" 
+                    Width="100"
+                    HorizontalAlignment="Center">
+              <Button.Content>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="6">
+                  <!-- Ícono a la izquierda -->
+                  <PathIcon Data="M11.5,2.75 C16.3324916,2.75 20.25,6.66750844 20.25,11.5 C20.25,13.6461673 19.4773285,15.6118676 18.1949905,17.1340957 L25.0303301,23.9696699 C25.3232233,24.2625631 25.3232233,24.7374369 25.0303301,25.0303301 C24.7640635,25.2965966 24.3473998,25.3208027 24.0537883,25.1029482 L23.9696699,25.0303301 L17.1340957,18.1949905 C15.6118676,19.4773285 13.6461673,20.25 11.5,20.25 C6.66750844,20.25 2.75,16.3324916 2.75,11.5 C2.75,6.66750844 6.66750844,2.75 11.5,2.75 Z M11.5,4.25 C7.49593556,4.25 4.25,7.49593556 4.25,11.5 C4.25,15.5040644 7.49593556,18.75 11.5,18.75 C15.5040644,18.75 18.75,15.5040644 18.75,11.5 C18.75,7.49593556 15.5040644,4.25 11.5,4.25 Z"
+                            Width="16"
+                            Height="16"
+                            VerticalAlignment="Center"/>
+                  <!-- Texto enlazado -->
+                  <TextBlock Text="{Binding L[VCut.Buttons.Browse]}" 
+                             VerticalAlignment="Center"/>
+                </StackPanel>
+              </Button.Content>
+            </Button>
           </StackPanel>
+
           <Border Padding="2">
             <TextBox Text="{Binding VideoPath}" 
                      IsReadOnly="True"
-                     Width=""
-                     Watermark="Ruta del video"
+                     Watermark="{Binding L[VCut.Fields.VideoPath]}"
                      HorizontalAlignment="Stretch"/>
           </Border>
         </StackPanel>
 
         <!-- Recortar desde -->
         <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="0,10,0,0">
-          <TextBlock Text="Recortar desde:" FontSize="14" VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding L[VCut.Fields.TrimFrom]}" FontSize="14" VerticalAlignment="Center"/>
           <TextBox Text="{Binding TiempoDesde}" Width="100" Watermark="(hh:mm:ss)"/>
           <Button x:Name="QuestionMarkDesde" Content="?" Width="30" FontWeight="Bold">
             <ToolTip.Tip>
@@ -93,7 +122,7 @@
 
         <!-- Recortar hasta -->
         <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-          <TextBlock Text="Recortar hasta:" FontSize="14" VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding L[VCut.Fields.TrimTo]}" FontSize="14" VerticalAlignment="Center"/>
           <TextBox Text="{Binding TiempoHasta}" Width="100" Watermark="(hh:mm:ss)"/>
         </StackPanel>
 
@@ -115,7 +144,7 @@
         <TextBlock Text="{Binding Warning}" FontSize="12" Margin="0,-6,0,0" HorizontalAlignment="Center"/>
         
         <!-- Botón recortar -->
-        <Button Content="Recortar Video"  
+        <Button Content="{Binding L[VCut.Buttons.Cut]}" 
                 FontSize="18" 
                 Classes="Accented"
                 FontWeight="DemiBold"
@@ -126,7 +155,7 @@
                 Margin="0,0,0,0" 
                 HorizontalAlignment="Center"/>
         
-        <Button Content="CANCELAR"
+        <Button Content="{Binding L[VCut.Buttons.Cancel]}"
                 IsEnabled="{Binding IsConverting}"
                 FontSize="12"
                 Margin="0 -7 0 0"
@@ -137,7 +166,7 @@
                 Width="90"/>
 
         <!-- Mostrar archivo en carpeta -->
-        <ToggleButton Content="Mostrar archivo en carpeta"
+        <ToggleButton Content="{Binding L[VCut.Buttons.ShowFileInFolder]}"
                       IsVisible="{Binding IsFileReadyVisible}"
                       IsChecked="{Binding IsClicked, Mode=TwoWay}"
                       Command="{Binding ShowFileInFolderCommand}"

@@ -1,0 +1,98 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="VManager.Views.ConfigurationView"
+             x:DataType="vm:ConfigurationViewModel"
+             xmlns:vm="using:VManager.ViewModels"
+             xmlns:behaviors="clr-namespace:VManager.Behaviors"
+             xmlns:services="clr-namespace:VManager.Services">
+
+  <UserControl.Resources>
+    <services:ValidPathConverter x:Key="ValidPathConverter" />
+  </UserControl.Resources>
+  
+  <Grid ClipToBounds="True">
+    <Border BorderBrush="{DynamicResource BorderBrushPrimary}" 
+            BorderThickness="2" 
+            CornerRadius="10" 
+            Padding="0" 
+            Margin="0,20,20,0"
+            Background="{DynamicResource PanelBackgroundBrush}"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            ClipToBounds="True">
+
+      <ScrollViewer Padding="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Background="Transparent">
+      
+      <StackPanel Margin="20" Spacing="12">
+
+        <!-- Título -->
+        <TextBlock Text="{Binding L[Configuration.Title]}" 
+                   FontSize="25" 
+                   Margin="0 40 0 0"
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center"
+                   FontWeight="Bold"/>
+        
+        <!-- Bienvenido -->
+        <TextBlock FontSize="12" Classes="RedAccented" HorizontalAlignment="Center" Text="{Binding OpenConfig}"/>
+        
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Spacing="12" Margin="0 60 0 35">
+
+          <!-- Idioma -->
+          <StackPanel Orientation="Horizontal" Spacing="8" Margin="0 0 0 8" VerticalAlignment="Center">
+            <TextBlock Text="{Binding L[Configuration.Fields.Language]}"
+                       FontSize="14"
+                       VerticalAlignment="Center"
+                       FontWeight="DemiBold"/>
+            <ComboBox ItemsSource="{Binding Idiomas}"
+                      SelectedItem="{Binding IdiomaSeleccionado, Mode=TwoWay}"
+                      Width="150"/>
+          </StackPanel>
+
+          <!-- Mostrar ícono -->
+          <StackPanel Orientation="Horizontal" Margin="0 -8 0 0" Spacing="8" VerticalAlignment="Center">
+              <TextBlock Text="{Binding L[Configuration.Fields.ShowProfileIcon]}"
+                         FontSize="14"
+                         VerticalAlignment="Center"/>
+              <CheckBox IsChecked="{Binding UseCustomIcon, Mode=TwoWay}" />
+          </StackPanel>
+          
+          <!-- Mostrar tiempo restante  -->
+          <StackPanel Orientation="Horizontal" Margin="0 -8 0 0" Spacing="8" VerticalAlignment="Center">
+            <TextBlock Text="{Binding L[Configuration.Fields.HideRemainingTime]}"
+                       FontSize="14"
+                       VerticalAlignment="Center"/>
+            <CheckBox IsChecked="True" IsEnabled="False"/>
+          </StackPanel>
+          
+          <!-- Ocultar notificaciones  -->
+          <StackPanel Orientation="Horizontal" Margin="0 -8 0 0" Spacing="8" VerticalAlignment="Center">
+            <TextBlock Text="{Binding L[Configuration.Fields.HideNotifications]}"
+                       FontSize="14"
+                       VerticalAlignment="Center"/>
+            <CheckBox IsChecked="{Binding !EnableNotifications, Mode=TwoWay}" />
+          </StackPanel>
+          
+          <!-- Activar sonidos  -->
+          <StackPanel Orientation="Horizontal" Margin="0 -8 0 0" Spacing="8" VerticalAlignment="Center">
+              <TextBlock Text="{Binding L[Configuration.Fields.EnableSounds]}"
+                         FontSize="14"
+                         VerticalAlignment="Center"/>
+              <CheckBox IsChecked="{Binding !EnableSounds, Mode=TwoWay}" />
+          </StackPanel>
+          
+            <!-- Modo Debug -->
+          <StackPanel Orientation="Horizontal" Margin="0 200 0 0" Spacing="8" VerticalAlignment="Center">
+              <TextBlock Text="{Binding L[Configuration.Fields.EnableDebug]}"
+                         FontSize="15"
+                         VerticalAlignment="Center"/>
+              <CheckBox IsChecked="False" /> 
+            <!--<CheckBox IsChecked="{Binding MostrarIconoPorDefecto, Mode=TwoWay}" />-->
+          </StackPanel>
+          
+      </StackPanel>
+      </StackPanel>
+      </ScrollViewer>
+    </Border>
+  </Grid>
+</UserControl>

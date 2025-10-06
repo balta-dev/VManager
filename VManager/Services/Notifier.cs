@@ -2,12 +2,29 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using VManager.Views;
+using VManager.ViewModels;
 
 namespace VManager.Services;
 public class Notifier
 {
+    private static bool _enabled = true;
+
+    public static bool Enabled
+    {
+        get => _enabled;
+        set
+        {
+            if (_enabled != value)
+            {
+                _enabled = value;
+                System.Console.WriteLine($"Sonidos {(value ? "activados" : "desactivados")}");
+            }
+        }
+    }
+    
     public void ShowNotificationLinux(string title, string message)
     {
+        
         Process.Start(new ProcessStartInfo
         {
             FileName = "notify-send",
@@ -30,6 +47,9 @@ public class Notifier
     
     public void ShowFileConvertedNotification(string status, string filePath)
     {
+        if (!Enabled)
+            return;
+        
         string fileName = Path.GetFileName(filePath);
         
         if (OperatingSystem.IsLinux())

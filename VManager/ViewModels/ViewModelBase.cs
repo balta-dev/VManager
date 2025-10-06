@@ -6,13 +6,18 @@ using FFMpegCore;
 using FFMpegCore.Enums;
 using System;
 using System.IO;
+using System.Linq;
 using System.Reactive;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
+using VManager.Services;
 using VManager.Views;
 
 namespace VManager.ViewModels;
@@ -81,7 +86,145 @@ public abstract class ViewModelBase : ReactiveObject
     public ReactiveCommand<Unit, Unit> ClearInfoCommand { get; }
     public ReactiveCommand<Unit, Unit> ShowCancelDialogCommand { get; }
     
+    public LocalizationService L => LocalizationService.Instance;
+    
     protected CancellationTokenSource _cts;
+    
+    public class UserProfileImageService
+    {
+        public static Bitmap? GetUserProfileImage()
+        {
+            try
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    return GetWindowsUserImage();
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    return GetLinuxUserImage();
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    return GetMacOSUserImage();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error obteniendo imagen de usuario: {ex.Message}");
+            }
+
+            return GetDefaultUserImage();
+        }
+
+        private static Bitmap? GetWindowsUserImage()
+        {
+            string userName = Environment.UserName;
+            
+            // Opción 1: AccountPictures del usuario actual
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string accountPictures = Path.Combine(appData, "Microsoft", "Windows", "AccountPictures");
+            
+            if (Directory.Exists(accountPictures))
+            {
+                // Buscar archivos de imagen (jpg, png, bmp)
+                var imageFiles = Directory.GetFiles(accountPictures, "*.*")
+                    .Where(f => f.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                               f.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                               f.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase))
+                    .OrderByDescending(f => new FileInfo(f).LastWriteTime)
+                    .ToArray();
+                
+                if (imageFiles.Length > 0)
+                {
+                    return new Bitmap(imageFiles[0]);
+                }
+            }
+
+            // Opción 2: Carpeta de datos del usuario en ProgramData
+            string programData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            string userTilePath = Path.Combine(programData, "Microsoft", "User Account Pictures");
+            
+            if (Directory.Exists(userTilePath))
+            {
+                var files = Directory.GetFiles(userTilePath, "*.jpg")
+                    .Concat(Directory.GetFiles(userTilePath, "*.png"))
+                    .Concat(Directory.GetFiles(userTilePath, "*.bmp"));
+                
+                foreach (var file in files)
+                {
+                    if (File.Exists(file))
+                    {
+                        return new Bitmap(file);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static Bitmap? GetLinuxUserImage()
+        {
+            string userName = Environment.UserName;
+            
+            // Intentar obtener desde AccountsService
+            string accountsServicePath = $"/var/lib/AccountsService/icons/{userName}";
+            if (File.Exists(accountsServicePath))
+            {
+                return new Bitmap(accountsServicePath);
+            }
+
+            // Intentar ubicación en home
+            string homePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string[] possiblePaths = {
+                Path.Combine(homePath, ".face"),
+                Path.Combine(homePath, ".face.icon"),
+                Path.Combine(homePath, ".local", "share", "pixmaps", "faces", userName)
+            };
+
+            foreach (var path in possiblePaths)
+            {
+                if (File.Exists(path))
+                {
+                    return new Bitmap(path);
+                }
+            }
+
+            return null;
+        }
+
+        private static Bitmap? GetMacOSUserImage()
+        {
+            string userName = Environment.UserName;
+            string homePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            
+            string profileImagePath = Path.Combine(
+                homePath, "Library", "Application Support", 
+                "Dock", "desktoppicture.db"
+            );
+
+            // En macOS, la imagen suele estar en la carpeta del usuario
+            string possiblePath = Path.Combine(
+                "/Library/User Pictures",
+                $"{userName}.png"
+            );
+
+            if (File.Exists(possiblePath))
+            {
+                return new Bitmap(possiblePath);
+            }
+
+            return null;
+        }
+
+        public static Bitmap GetDefaultUserImage()
+        {
+            // Si no se encuentra la imagen, puedes retornar null
+            // y manejar el caso en tu UI con un ícono por defecto
+            return null;
+        }
+    }
+    public Bitmap UserImage { get; }
     protected ViewModelBase()
     {
         BrowseCommand = ReactiveCommand.CreateFromTask(BrowseVideo, outputScheduler: AvaloniaScheduler.Instance);
@@ -91,6 +234,19 @@ public abstract class ViewModelBase : ReactiveObject
             () => ShowCancelDialog(), // <- Usar la versión sin retorno
             outputScheduler: AvaloniaScheduler.Instance
         );
+        
+        UserImage = UserProfileImageService.GetUserProfileImage() 
+                    ?? UserProfileImageService.GetDefaultUserImage();
+        
+        LocalizationService.Instance.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == "Item[]")
+            {
+                // Dispara PropertyChanged en todo el binding que use L
+                this.RaisePropertyChanged(nameof(LocalizationService));
+            }
+        };
+        
     }
     
     private void MostrarOverlayEnMainWindow()

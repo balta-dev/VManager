@@ -9,10 +9,29 @@ namespace VManager.Services
 {
     public static class SoundManager
     {
+        private static bool _enabled = true;
+
+        public static bool Enabled
+        {
+            get => _enabled;
+            set
+            {
+                if (_enabled != value)
+                {
+                    _enabled = value;
+                    System.Console.WriteLine($"Sonidos {(value ? "activados" : "desactivados")}");
+                }
+            }
+        }
+        
+        
         private const string SoundsNamespace = "VManager.Assets.Sounds";
         
         public static async Task Play(string fileName)
         {
+            if (!Enabled)
+                return;
+            
             if (string.IsNullOrWhiteSpace(fileName))
             {
                 LogError("El nombre del archivo no puede estar vacío");

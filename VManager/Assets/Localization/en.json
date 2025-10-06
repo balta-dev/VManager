@@ -1,0 +1,123 @@
+{
+  "General": {
+    "WelcomeMessage": "¡Welcome to VManager!",
+    "AppDescription": "VManager is a powerful and easy-to-use multi-function toolkit that allows you to cut, compress, and convert video formats.",
+    "Shortcuts": {
+      "Title": "Shortcut List:",
+      "Items": {
+        "Item1Title": "F1/F2/F3/F4 Keys:",
+        "Item1Description": " Switch between tools",
+        "Item2Title": "F5 Key:",
+        "Item2Description": " Refresh screen",
+        "Item3Title": "B:",
+        "Item3Description": " Browse video",
+        "Item4Title": "T:",
+        "Item4Description": " Toggle dark/light theme",
+        "Item5Title": "Enter:",
+        "Item5Description": " Start operation",
+        "Item6Title": "Esc:",
+        "Item6Description": " Cancel operation"
+      }
+    },
+    "Border": {
+      "Title1": "What does this program offer?",
+      "Items1": {
+        "Item1Title": "VCUT:",
+        "Item1Description": " quickly trims videos.",
+        "Item2Title": "VCOMPR:",
+        "Item2Description": " compresses videos, prioritizing your GPU.",
+        "Item3Title": "VCONV:",
+        "Item3Description": " converts between different video formats (ej. MKV → MP4).",
+        "Item4Title": "And coming soon:",
+        "Item4Description": " audio conversion, multiple files, etc."
+      },
+      "Title2": "How do I use it?",
+      "Items2": {
+        "Item1Description": "Select one of the tools in the top-left using the mouse or keyboard shortcut",
+        "Item2Description": "Drag the video into the box or select it with the 'Browse' button",
+        "Item3Description": "Process the video with the button and you're done!"
+      }
+    }
+  },
+  "Footer": {
+    "Title": "Created by Baltazar Franz ❤",
+    "Version": "Version:",
+    "Support": "This project is maintained by a single person, so if you'd like to contribute to it you can click the button below."
+  },
+  "VCut": {
+    "Title": "Cut Videos",
+    "Buttons": {
+      "Refresh": "Refresh",
+      "Browse": "Browse",
+      "Cut": "Cut Video",
+      "Cancel": "ABORT",
+      "ShowFileInFolder": "Show file in folder"
+    },
+    "Fields": {
+      "SelectVideo": "Select Video:",
+      "VideoPath": "Video path",
+      "TrimFrom": "Trim from:",
+      "TrimTo": "Trim to:"
+    }
+  },
+  "VCompress": {
+    "Title": "Video Compression",
+    "Buttons": {
+      "Refresh": "Refresh",
+      "Browse": "Browse",
+      "Compress": "Compress Video",
+      "Cancel": "ABORT",
+      "ShowFileInFolder": "Show file in folder"
+    },
+    "Fields": {
+      "SelectVideo": "Select Video:",
+      "VideoPath": "Video path",
+      "Quality": "Quality Percentage:",
+      "VideoCodec": "Video Codec:",
+      "AudioCodec": "Audio Codec:"
+    }
+  },
+  "VConvert": {
+    "Title": "Video Conversion",
+    "Buttons": {
+      "Refresh": "Refresh",
+      "Browse": "Browse",
+      "Convert": "Convert Video Format",
+      "Cancel": "ABORT",
+      "ShowFileInFolder": "Show file in folder"
+    },
+    "Fields": {
+      "SelectVideo": "Select Video:",
+      "VideoPath": "Video path",
+      "Format": "Target Format:",
+      "VideoCodec": "Video Codec:",
+      "AudioCodec": "Audio Codec:"
+    }
+  },
+  "VAudiofy": {
+    "Title": "Audio Extraction",
+    "Buttons": {
+      "Refresh": "Refresh",
+      "Browse": "Browse",
+      "Extract": "Extract Audio",
+      "Cancel": "ABORT",
+      "ShowFileInFolder": "Show file in folder"
+    },
+    "Fields": {
+      "SelectVideo": "Select Video:",
+      "VideoPath": "Video path",
+      "Format": "Target Format:"
+    }
+  },
+  "Configuration": {
+    "Title": "Settings",
+    "Fields": {
+      "Language": "Language:",
+      "ShowProfileIcon": "Show profile icon?",
+      "HideRemainingTime": "Hide remaining time?",
+      "EnableDebug": "Enable log output (DEBUG)",
+      "HideNotifications": "Hide notifications?",
+      "EnableSounds": "Disable sounds?"
+    }
+  }
+}

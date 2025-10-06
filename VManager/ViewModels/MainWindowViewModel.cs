@@ -4,6 +4,7 @@ using System.Diagnostics;
 using ReactiveUI;
 using System.Reactive;
 using System.Reactive.Concurrency;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
@@ -12,24 +13,19 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using VManager.Views;
 using Avalonia.Styling;
+using VManager.Services;
 
 namespace VManager.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
     public bool IsWelcomeVisible => CurrentView == null;
-    private string _welcomeMessage;
-
-    public string WelcomeMessage
-    {
-        get => _welcomeMessage;
-        set => this.RaiseAndSetIfChanged(ref _welcomeMessage, value);
-    }
     
     private Herramienta1ViewModel _herramienta1;
     private Herramienta2ViewModel _herramienta2;
     private Herramienta3ViewModel _herramienta3;
     private Herramienta4ViewModel _herramienta4;
+    public ConfigurationViewModel _configuration;
     public List<ViewModelBase> Tools { get; }
     
     private bool isVideoPathSet;
@@ -67,6 +63,13 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _herramienta4Activa, value);
     }
     
+    private bool _configuracionActiva;
+    public bool ConfiguracionActiva
+    {
+        get => _configuracionActiva;
+        set => this.RaiseAndSetIfChanged(ref _configuracionActiva, value);
+    }
+    
     private ViewModelBase? _currentView;
     public ViewModelBase? CurrentView
     {
@@ -85,26 +88,37 @@ public class MainWindowViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> ToggleThemeCommand { get; }
     public ReactiveCommand<Unit, Unit> OpenGitHubCommand { get; }
     
+    public ReactiveCommand<Unit, Unit> GoToConfiguration { get; }
+    
     private bool _isDarkTheme;
     public bool IsDarkTheme
     {
         get => _isDarkTheme;
         set => this.RaiseAndSetIfChanged(ref _isDarkTheme, value);
     }
+    public string WelcomeMessage => L["General.WelcomeMessage"];
+    
+    private bool _showCustomIcon = true;
+    public bool ShowCustomIcon
+    {
+        get => _showCustomIcon;
+        set => this.RaiseAndSetIfChanged(ref _showCustomIcon, value);
+    }
+    
+    public string VersionText { get; } =
+        $"{Assembly.GetEntryAssembly()?.GetName().Version?.ToString(3)}";
 
     public MainWindowViewModel()
     {
+        
         ToggleThemeCommand = ReactiveCommand.Create(ToggleTheme, outputScheduler: AvaloniaScheduler.Instance);
         OpenGitHubCommand = ReactiveCommand.Create(OpenGitHub, outputScheduler: AvaloniaScheduler.Instance);
-        
-        var username = Environment.UserName;
-        username = char.ToUpper(username[0]) + username.Substring(1);
-        WelcomeMessage = "¡Bienvenido a VManager!";
         
         _herramienta1 = new Herramienta1ViewModel();
         _herramienta2 = new Herramienta2ViewModel();
         _herramienta3 = new Herramienta3ViewModel();
         _herramienta4 = new Herramienta4ViewModel();
+        _configuration = new ConfigurationViewModel();
         
         Tools = new List<ViewModelBase>
         {
@@ -121,6 +135,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta2Activa = false;
                 Herramienta3Activa = false;
                 Herramienta4Activa = false;
+                ConfiguracionActiva = false;
                 CurrentView = _herramienta1;
                 return Unit.Default;
             },
@@ -134,6 +149,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta1Activa = false;
                 Herramienta3Activa = false;
                 Herramienta4Activa = false;
+                ConfiguracionActiva = false;
                 CurrentView = _herramienta2;
                 return Unit.Default;
             },
@@ -147,6 +163,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta1Activa = false;
                 Herramienta2Activa = false;
                 Herramienta4Activa = false;
+                ConfiguracionActiva = false;
                 CurrentView = _herramienta3;
                 return Unit.Default;
             },
@@ -160,7 +177,21 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta1Activa = false;
                 Herramienta2Activa = false;
                 Herramienta3Activa = false;
+                ConfiguracionActiva = false;
                 CurrentView = _herramienta4;
+                return Unit.Default;
+            },
+            outputScheduler: AvaloniaScheduler.Instance
+        );
+
+        GoToConfiguration = ReactiveCommand.Create(() =>
+            {
+                Herramienta1Activa = false;
+                Herramienta2Activa = false;
+                Herramienta3Activa = false;
+                Herramienta4Activa = false;
+                ConfiguracionActiva = true;
+                CurrentView = _configuration;
                 return Unit.Default;
             },
             outputScheduler: AvaloniaScheduler.Instance
@@ -176,6 +207,16 @@ public class MainWindowViewModel : ViewModelBase
             });
 
         ToggleThemeCommand = ReactiveCommand.Create(ToggleTheme, outputScheduler: AvaloniaScheduler.Instance);
+        
+        if (_configuration is ConfigurationViewModel configVM)
+        {
+            configVM.WhenAnyValue(x => x.UseCustomIcon)
+                .Subscribe(useCustom => ShowCustomIcon = useCustom);
+            
+            // Inicializar con el valor actual
+            ShowCustomIcon = configVM.UseCustomIcon;
+        }
+        
     }
     
     private void ToggleTheme()

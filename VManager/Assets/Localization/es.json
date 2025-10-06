@@ -1,0 +1,123 @@
+{
+  "General": {
+    "WelcomeMessage": "¡Bienvenido a VManager!",
+    "AppDescription": "VManager es un kit de herramientas multifunción potente y sencillo de utilizar que te permite cortar, comprimir, y convertir formatos de vídeo.",
+    "Shortcuts": {
+      "Title": "Lista de Atajos:",
+      "Items": {
+        "Item1Title": "Botones F1/F2/F3/F4:",
+        "Item1Description": " Intercambian entre herramientas",
+        "Item2Title": "Botón F5:",
+        "Item2Description": " Refrescar pantalla",
+        "Item3Title": "B:",
+        "Item3Description": " Buscar vídeo",
+        "Item4Title": "T:",
+        "Item4Description": " Cambiar tema oscuro/claro",
+        "Item5Title": "Enter:",
+        "Item5Description": " Comenzar operación",
+        "Item6Title": "Esc:",
+        "Item6Description": " Cancelar operación"
+      }
+    },
+    "Border": {
+      "Title1": "¿Qué ofrece este programa?",
+      "Items1": {
+        "Item1Title": "VCUT:",
+        "Item1Description": " recorta rápidamente vídeos.",
+        "Item2Title": "VCOMPR:",
+        "Item2Description": " comprime vídeos, priorizando tu GPU.",
+        "Item3Title": "VCONV:",
+        "Item3Description": " convierte entre distintos formatos de vídeo (ej. MKV → MP4).",
+        "Item4Title": "Y próximamente más:",
+        "Item4Description": " conversión de audio, múltiples archivos, etc."
+      },
+      "Title2": "¿Cómo lo uso?",
+      "Items2": {
+        "Item1Description": "Selecciona una de las herramientas arriba a la izquierda utilizando el mouse o el atajo de teclado",
+        "Item2Description": "Arrastra el vídeo al recuadro o selecciónalo con el botón 'Examinar'",
+        "Item3Description": "¡Procesa el vídeo con el botón y listo!"
+      }
+    }
+  },
+  "Footer": {
+    "Title": "Creado por Baltazar Franz ❤",
+    "Version": "Versión:",
+    "Support": "Este proyecto es mantenido por una única persona, así que si te gustaría contribuir al proyecto puedes darle al botón de abajo."
+  },
+  "VCut": {
+    "Title": "Recorte de Videos",
+    "Buttons": {
+      "Refresh": "Refrescar",
+      "Browse": "Buscar",
+      "Cut": "Cortar Video",
+      "Cancel": "CANCELAR",
+      "ShowFileInFolder": "Mostrar archivo en carpeta"
+    },
+    "Fields": {
+      "SelectVideo": "Seleccionar video:",
+      "VideoPath": "Ruta del video",
+      "TrimFrom": "Recortar desde:",
+      "TrimTo": "Recortar hasta:"
+    }
+  },
+  "VCompress": {
+    "Title": "Compresión de Videos",
+    "Buttons": {
+      "Refresh": "Refrescar",
+      "Browse": "Buscar",
+      "Compress": "Comprimir Video",
+      "Cancel": "CANCELAR",
+      "ShowFileInFolder": "Mostrar archivo en carpeta"
+    },
+    "Fields": {
+      "SelectVideo": "Seleccionar video:",
+      "VideoPath": "Ruta del video",
+      "Quality": "Porcentaje de Calidad:",
+      "VideoCodec": "Códec de Video:",
+      "AudioCodec": "Códec de Audio:"
+    }
+  },
+  "VConvert": {
+    "Title": "Conversión de Videos",
+    "Buttons": {
+      "Refresh": "Refrescar",
+      "Browse": "Buscar",
+      "Convert": "Convertir Formato Video",
+      "Cancel": "CANCELAR",
+      "ShowFileInFolder": "Mostrar archivo en carpeta"
+    },
+    "Fields": {
+      "SelectVideo": "Seleccionar video:",
+      "VideoPath": "Ruta del video",
+      "Format": "¿A qué formato?",
+      "VideoCodec": "Códec de Video:",
+      "AudioCodec": "Códec de Audio:"
+    }
+  },
+  "VAudiofy": {
+    "Title": "Extracción de Audio",
+    "Buttons": {
+      "Refresh": "Refrescar",
+      "Browse": "Examinar",
+      "Extract": "Extraer audio",
+      "Cancel": "CANCELAR",
+      "ShowFileInFolder": "Mostrar archivo en carpeta"
+    },
+    "Fields": {
+      "SelectVideo": "Seleccionar video:",
+      "VideoPath": "Ruta del video",
+      "Format": "¿A qué formato?"
+    }
+  },
+  "Configuration": {
+    "Title": "Configuraciones",
+    "Fields": {
+      "Language": "Idioma:",
+      "ShowProfileIcon": "¿Mostrar ícono de perfil?",
+      "HideRemainingTime": "¿Ocultar tiempo restante?",
+      "EnableDebug": "Habilitar salida de log (DEBUG)",
+      "HideNotifications": "¿Ocultar notificaciones?",
+      "EnableSounds": "¿Desactivar sonidos?"
+    }
+  }
+}

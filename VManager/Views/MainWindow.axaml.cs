@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using Avalonia.Controls;
@@ -6,6 +7,7 @@ using Avalonia.Input;
 using System.Linq;
 using System.Net.Http;
 using System.Reactive.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Avalonia;
@@ -15,12 +17,14 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
+using Avalonia.Threading;
 using ReactiveUI;
 using VManager.Services;
 using VManager.ViewModels;
 
 namespace VManager.Views
 {
+ 
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -28,10 +32,6 @@ namespace VManager.Views
             InitializeComponent();
             SoundBehavior.Attach(this);
             SoundManager.Play("dummy.wav");
-            
-            var assembly = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Version;
-            string version = $"{assembly?.Major}.{assembly?.Minor}.{assembly?.Build}";
-            VersionText.Text = $"Versión: {version}";
             
             var accentObs = this.GetResourceObservable("SystemAccentColor")
                 .OfType<Color>()
@@ -47,6 +47,8 @@ namespace VManager.Views
                     ApplyCustomAccent();
                 });
             
+            LocalizationService.Instance.PropertyChanged += OnLocalizationChanged;
+            
             this.Opened += async (_, _) => await CheckUpdatesAsync();
             this.Closing += MainWindow_Closing;
             this.KeyDown += OnKeyDown;
@@ -54,6 +56,22 @@ namespace VManager.Views
                 InputElement.KeyDownEvent,
                 new EventHandler<KeyEventArgs>(MainSplitview_OnPreviewKeyDown),
                 RoutingStrategies.Tunnel);
+        }
+        
+        private void OnLocalizationChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(LocalizationService.CurrentLanguage) || e.PropertyName == "Item[]")
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    if (DataContext is MainWindowViewModel vm)
+                    {
+                        var backup = DataContext;
+                        DataContext = null;
+                        DataContext = backup;
+                    }
+                });
+            }
         }
         
         private void MainSplitview_OnPreviewKeyDown(object? sender, KeyEventArgs e)
