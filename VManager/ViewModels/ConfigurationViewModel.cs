@@ -94,12 +94,8 @@ namespace VManager.ViewModels
         public bool UseCustomIcon
         {
             get => _useCustomIcon;
-            set
-            {
-                Console.WriteLine($"UseCustomIcon cambiando de {_useCustomIcon} a {value}");
-                this.RaiseAndSetIfChanged(ref _useCustomIcon, value);
-                Console.WriteLine($"UseCustomIcon cambió a {_useCustomIcon}");
-            }
+            set => this.RaiseAndSetIfChanged(ref _useCustomIcon, value);
+            
         }
 
         public ConfigurationViewModel()
