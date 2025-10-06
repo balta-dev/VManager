@@ -119,5 +119,12 @@
       "HideNotifications": "¿Ocultar notificaciones?",
       "EnableSounds": "¿Desactivar sonidos?"
     }
+  },
+  "CancelDialog": {
+    "Title": "¿Cancelar operación?",
+    "Info": "Está a punto de terminar abruptamente el proceso de fondo.",
+    "Warning": "Esta acción no es reversible.",
+    "Cancel": "Cancelar",
+    "No": "No"
   }
 }

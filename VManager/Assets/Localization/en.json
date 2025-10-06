@@ -119,5 +119,12 @@
       "HideNotifications": "Hide notifications?",
       "EnableSounds": "Disable sounds?"
     }
+  },
+  "CancelDialog": {
+    "Title": "Abort operation?",
+    "Info": "You are about to abruptly kill the background process.",
+    "Warning": "This action is not reversible.",
+    "Cancel": "Abort",
+    "No": "No"
   }
 }

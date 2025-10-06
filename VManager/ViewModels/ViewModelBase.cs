@@ -271,7 +271,7 @@ public abstract class ViewModelBase : ReactiveObject
         var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
         if (mainWindow != null)
         {
-            var dialog = new CancelDialog();
+            var dialog = new CancelDialog { DataContext = this };
             bool? result = await dialog.ShowDialog<bool?>(mainWindow);
     
             if (result == true)
