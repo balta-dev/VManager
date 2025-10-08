@@ -125,90 +125,87 @@ namespace VManager.ViewModels
 
             try
             {
-                Status = "Obteniendo información del video...";
-                this.RaisePropertyChanged(nameof(Status));
-
                 var processor = new VideoProcessor();
+
                 var progress = new Progress<double>(p =>
                 {
                     Progress = (int)(p * 100);
                     this.RaisePropertyChanged(nameof(Progress));
                 });
 
-                Status = "Convirtiendo...";
-                this.RaisePropertyChanged(nameof(Status));
-                
                 IsConverting = true;
                 IsOperationRunning = true;
                 this.RaisePropertyChanged(nameof(IsConverting));
                 this.RaisePropertyChanged(nameof(IsOperationRunning));
-        
-                var result = await processor.ConvertAsync(
-                    VideoPath,
-                    OutputPath,
-                    SelectedVideoCodec,
-                    SelectedAudioCodec,
-                    SelectedFormat?.Extension,
-                    progress,
-                    _cts.Token // Pasar el CancellationToken
-                );
-        
-                if (result.Success)
+
+                foreach (var video in VideoPaths)
                 {
-                    Notifier _notifier = new Notifier();
-                    _notifier.ShowFileConvertedNotification(result.Message, result.OutputPath);
-                    
+                    Status = $"Procesando: {Path.GetFileName(video)}...";
+                    this.RaisePropertyChanged(nameof(Status));
+
+                    string outputPath = Path.Combine(
+                        Path.GetDirectoryName(video)!,
+                        Path.GetFileNameWithoutExtension(video) + $"-VCONV.{SelectedFormat.Extension}"
+                    );
+
+                    var result = await processor.ConvertAsync(
+                        video,
+                        outputPath,
+                        SelectedVideoCodec,
+                        SelectedAudioCodec,
+                        SelectedFormat?.Extension,
+                        progress,
+                        _cts.Token
+                    );
+
+                    if (!result.Success)
+                    {
+                        SoundManager.Play("fail.wav");
+                        Status = $"Error procesando {Path.GetFileName(video)}: {result.Message}";
+                        Progress = 0;
+                        this.RaisePropertyChanged(nameof(Status));
+                        break; // Opcional: salir si un archivo falla
+                    }
+
                     SoundManager.Play("success.wav");
                     SetLastCompressedFile(result.OutputPath);
-                    Status = result.Message;
-                    Warning = result.Warning;
-                    Progress = 100;
-                    OutputPath = "Archivo: " + result.OutputPath;
-                    this.RaisePropertyChanged(nameof(Status));
-                    this.RaisePropertyChanged(nameof(Progress));
-                    this.RaisePropertyChanged(nameof(OutputPath));
-                    this.RaisePropertyChanged(nameof(Warning));
-                    IsConverting = false;
-                    IsOperationRunning = false;
-                    IsVideoPathSet = false; //para bloquear 
-                    this.RaisePropertyChanged(nameof(IsOperationRunning));
-                    this.RaisePropertyChanged(nameof(IsConverting));
-                    this.RaisePropertyChanged(nameof(IsVideoPathSet));
                 }
+
+                // Mensaje final
+                if (VideoPaths.Count == 1)
+                    Status = $"Archivo procesado: {Path.GetFileName(VideoPaths[0])}";
                 else
-                {
-                    SoundManager.Play("fail.wav");
-                    Status = result.Message; 
-                    Progress = 0;
-                    this.RaisePropertyChanged(nameof(Status));
-                    this.RaisePropertyChanged(nameof(Progress));
-                    IsConverting = false;
-                    IsOperationRunning = false;
-                    this.RaisePropertyChanged(nameof(IsConverting));
-                    this.RaisePropertyChanged(nameof(IsOperationRunning));
-                }
+                    Status = $"Todos los archivos procesados. Último: {Path.GetFileName(VideoPaths[^1])}";
+
+                Progress = 100;
+                IsConverting = false;
+                IsOperationRunning = false;
+                IsVideoPathSet = false;
+                this.RaisePropertyChanged(nameof(Status));
+                this.RaisePropertyChanged(nameof(Progress));
+                this.RaisePropertyChanged(nameof(IsConverting));
+                this.RaisePropertyChanged(nameof(IsOperationRunning));
+                this.RaisePropertyChanged(nameof(IsVideoPathSet));
             }
             catch (OperationCanceledException)
             {
                 SoundManager.Play("fail.wav");
                 Status = "Conversión cancelada por el usuario.";
                 Progress = 0;
-                this.RaisePropertyChanged(nameof(Status));
-                this.RaisePropertyChanged(nameof(Progress));
                 IsConverting = false;
                 IsOperationRunning = false;
+                this.RaisePropertyChanged(nameof(Status));
+                this.RaisePropertyChanged(nameof(Progress));
                 this.RaisePropertyChanged(nameof(IsConverting));
                 this.RaisePropertyChanged(nameof(IsOperationRunning));
-                
             }
             finally
             {
-                // Limpiar el CancellationTokenSource
                 _cts?.Dispose();
                 _cts = null;
             }
-            
         }
+
         
     }
     

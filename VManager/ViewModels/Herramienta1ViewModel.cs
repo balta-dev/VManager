@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Controls;
+using Avalonia.Platform.Storage;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
 using VManager.Services;
@@ -41,9 +44,50 @@ namespace VManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref isVideoPathSet, value);
         }
         public ReactiveCommand<Unit, Unit> CutCommand { get; }
+        public ReactiveCommand<Unit, Unit> BrowseSingleVideoCommand { get; }
         public Herramienta1ViewModel()
         {
             CutCommand = ReactiveCommand.CreateFromTask(CutVideo, outputScheduler: AvaloniaScheduler.Instance);
+            BrowseSingleVideoCommand = ReactiveCommand.CreateFromTask(BrowseSingleVideo, outputScheduler: AvaloniaScheduler.Instance);
+        }
+        
+        private async Task BrowseSingleVideo()
+        {
+            TopLevel? topLevel = null;
+            if (App.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop &&
+                desktop.MainWindow != null)
+            {
+                topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
+            }
+
+            if (topLevel == null)
+            {
+                Status = "No se pudo acceder a la ventana principal.";
+                this.RaisePropertyChanged(nameof(Status));
+                return;
+            }
+
+            var videoPatterns = new[] { "*.mp4", "*.mkv", "*.mov" };
+
+            var filters = new List<FilePickerFileType>
+            {
+                new FilePickerFileType("Videos") { Patterns = videoPatterns }
+            };
+
+            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Seleccionar video",
+                FileTypeFilter = filters,
+                AllowMultiple = false //este método existe solo por esto
+            });
+
+            if (files.Count > 0)
+            {
+                VideoPath = files[0].Path.LocalPath;
+                this.RaisePropertyChanged(nameof(VideoPath));
+                IsVideoPathSet = true;
+                this.RaisePropertyChanged(nameof(IsVideoPathSet));
+            }
         }
         
         private bool TryParseTime(string input, out TimeSpan result)

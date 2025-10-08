@@ -70,7 +70,7 @@
                        FontSize="14" 
                        VerticalAlignment="Center"/>
         
-            <Button Command="{Binding BrowseCommand}" 
+            <Button Command="{Binding BrowseSingleVideoCommand}" 
                     HotKey="B" 
                     Width="100"
                     HorizontalAlignment="Center">

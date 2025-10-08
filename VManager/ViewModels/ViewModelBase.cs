@@ -5,6 +5,7 @@ using Avalonia.ReactiveUI;
 using FFMpegCore;
 using FFMpegCore.Enums;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -49,6 +50,14 @@ public abstract class ViewModelBase : ReactiveObject
     {
         get => _videoPath;
         set => this.RaiseAndSetIfChanged(ref _videoPath, value);
+    }
+    
+    // Nueva lista de archivos
+    private List<string> _videoPaths = new List<string>();
+    public List<string> VideoPaths
+    {
+        get => _videoPaths;
+        set => this.RaiseAndSetIfChanged(ref _videoPaths, value);
     }
 
     public string OutputPath
@@ -337,43 +346,57 @@ public abstract class ViewModelBase : ReactiveObject
         });
         
     }
+    protected virtual bool AllowAudioFiles => false;
+
     private async Task BrowseVideo()
     {
-        //HideFileReadyButton();
-        
         TopLevel? topLevel = null; 
-        if (App.Current != null && 
-            App.Current.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop && 
-            desktop.MainWindow != null) 
+        if (App.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop &&
+            desktop.MainWindow != null)
         {
             topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
         }
-            
+
         if (topLevel == null)
         {
-            Status = App.Current == null || App.Current.ApplicationLifetime is not Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime
-                ? "El entorno de la aplicación no es compatible con la ventana principal."
-                : "La ventana principal no está inicializada.";
+            Status = "No se pudo acceder a la ventana principal.";
             this.RaisePropertyChanged(nameof(Status));
             return;
         }
 
+        var videoPatterns = new[] { "*.mp4", "*.mkv", "*.mov" };
+        var audioPatterns = new[] { "*.mp3", "*.wav", "*.ogg", "*.flac", "*.aac" };
+
+        var filters = new List<FilePickerFileType>
+        {
+            new FilePickerFileType("Videos") { Patterns = videoPatterns }
+        };
+
+        if (AllowAudioFiles)
+        {
+            filters.Add(new FilePickerFileType("Audios") { Patterns = audioPatterns });
+        }
+
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            Title = "Seleccionar Video",
-            FileTypeFilter = new[] { new FilePickerFileType("Videos") { Patterns = new[] { "*.mp4", "*.mkv", "*.mov" } } },
-            AllowMultiple = false
+            Title = AllowAudioFiles ? "Seleccionar videos o audios" : "Seleccionar video",
+            FileTypeFilter = filters,
+            AllowMultiple = true
         });
 
         if (files.Count > 0)
         {
-            VideoPath = files[0].Path.LocalPath;
+            VideoPaths = files.Select(f => f.Path.LocalPath).ToList();
+            VideoPath = VideoPaths.First(); // Para la UI
+            IsVideoPathSet = VideoPaths.Count > 0;
+
+            this.RaisePropertyChanged(nameof(VideoPaths));
             this.RaisePropertyChanged(nameof(VideoPath));
-            IsVideoPathSet = true;
             this.RaisePropertyChanged(nameof(IsVideoPathSet));
         }
-            
     }
+
+    
     public void SetLastCompressedFile(string path)
     {
         _lastCompressedFilePath = path;

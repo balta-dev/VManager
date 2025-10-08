@@ -95,7 +95,7 @@
     }
   },
   "VAudiofy": {
-    "Title": "Audio Extraction",
+    "Title": "Audio Extraction/Conversion",
     "Buttons": {
       "Refresh": "Refresh",
       "Browse": "Browse",
