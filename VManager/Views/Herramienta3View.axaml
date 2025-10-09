@@ -20,7 +20,7 @@
             BorderThickness="2" 
             CornerRadius="10" 
             Padding="0" 
-            Margin="0,20,20,0"
+            Margin="0,10,20,0"
             Background="{DynamicResource PanelBackgroundBrush}"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"

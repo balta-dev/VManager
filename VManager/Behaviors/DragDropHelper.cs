@@ -138,6 +138,12 @@ namespace VManager.Behaviors
             // Restore original color on drag leave
             if (sender is Border border)
             {
+                var mousePos = e.GetPosition(border);
+                // Si el cursor sigue dentro del border, no hacemos nada
+                if (mousePos.X >= 0 && mousePos.X <= border.Bounds.Width &&
+                    mousePos.Y >= 0 && mousePos.Y <= border.Bounds.Height)
+                    return;
+
                 var originalBackground = border.GetValue(OriginalBackgroundProperty);
                 border.Background = originalBackground ?? Brushes.Transparent;
                 border.ClearValue(OriginalBackgroundProperty);

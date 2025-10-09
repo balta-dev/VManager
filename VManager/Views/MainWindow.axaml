@@ -158,7 +158,7 @@
                                       Content="Cambiar Tema"
                                       HotKey="T"
                                       HorizontalAlignment="Right"
-                                      Margin="0,10,15,-10"
+                                      Margin="0,10,15,0"
                                       IsChecked="{Binding IsDarkTheme}"
                                       Command="{Binding ToggleThemeCommand}" />
                         
