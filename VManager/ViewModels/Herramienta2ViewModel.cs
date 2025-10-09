@@ -1,18 +1,11 @@
-using Avalonia.Controls;
 using Avalonia.ReactiveUI;
-using FFMpegCore;
-using FFMpegCore.Enums;
 using ReactiveUI;
 using System;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Platform.Storage;
 using VManager.Services;
-using VManager.Views;
 
 namespace VManager.ViewModels
 {
@@ -111,7 +104,7 @@ namespace VManager.ViewModels
 
                     if (!result.Success)
                     {
-                        SoundManager.Play("fail.wav");
+                        _ = SoundManager.Play("fail.wav");
                         Status = $"Error procesando {Path.GetFileName(video)}: {result.Message}";
                         Progress = 0;
                         this.RaisePropertyChanged(nameof(Status));
@@ -119,7 +112,7 @@ namespace VManager.ViewModels
                         break; // Opcional: salir si un archivo falla
                     }
 
-                    SoundManager.Play("success.wav");
+                    _ = SoundManager.Play("success.wav");
                     SetLastCompressedFile(result.OutputPath);
                 }
 
@@ -141,7 +134,7 @@ namespace VManager.ViewModels
             }
             catch (OperationCanceledException)
             {
-                SoundManager.Play("fail.wav");
+                _ = SoundManager.Play("fail.wav");
                 Status = "Compresión cancelada por el usuario.";
                 Progress = 0;
                 IsConverting = false;

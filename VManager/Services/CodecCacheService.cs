@@ -10,7 +10,7 @@ namespace VManager.Services
     {
         private readonly ICodecService _codecService;
         private readonly string _cacheFile;
-        private CodecCache _cache;
+        private CodecCache? _cache;
 
         public CodecCacheService(ICodecService codecService)
         {
@@ -39,7 +39,7 @@ namespace VManager.Services
                 }
                 catch
                 {
-                    RefreshCacheAsync();
+                    await RefreshCacheAsync();
                 }
             }
 

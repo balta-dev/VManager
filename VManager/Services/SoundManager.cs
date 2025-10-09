@@ -151,12 +151,11 @@ namespace VManager.Services
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
-                    //LogDebug($"Archivo temporal eliminado: {filePath}");
                 }
             }
             catch (Exception ex)
             {
-                // LogError($"Error al eliminar archivo temporal {filePath}: {ex.Message}");
+                Console.WriteLine($"Error al eliminar archivo temporal {filePath}: {ex.Message}");
             }
         }
 

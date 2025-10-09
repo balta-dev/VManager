@@ -54,7 +54,7 @@
       "ShowFileInFolder": "Show file in folder"
     },
     "Fields": {
-      "SelectVideo": "Select Video:",
+      "SelectVideo": "Select video:",
       "VideoPath": "Video path",
       "TrimFrom": "Trim from:",
       "TrimTo": "Trim to:"
@@ -70,7 +70,7 @@
       "ShowFileInFolder": "Show file in folder"
     },
     "Fields": {
-      "SelectVideo": "Select Video:",
+      "SelectVideo": "Select video/s:",
       "VideoPath": "Video path",
       "Quality": "Quality Percentage:",
       "VideoCodec": "Video Codec:",
@@ -87,7 +87,7 @@
       "ShowFileInFolder": "Show file in folder"
     },
     "Fields": {
-      "SelectVideo": "Select Video:",
+      "SelectVideo": "Select video/s:",
       "VideoPath": "Video path",
       "Format": "Target Format:",
       "VideoCodec": "Video Codec:",
@@ -104,7 +104,7 @@
       "ShowFileInFolder": "Show file in folder"
     },
     "Fields": {
-      "SelectVideo": "Select Video:",
+      "SelectVideo": "Select videos/audios:",
       "VideoPath": "Video path",
       "Format": "Target Format:"
     }

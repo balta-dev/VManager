@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reactive;
 using System.Threading;
@@ -52,7 +51,7 @@ namespace VManager.ViewModels
 
         private async Task AudiofyVideos()
         {
-            if (VideoPaths == null || VideoPaths.Count == 0)
+            if (VideoPaths.Count == 0)
                 return;
 
             HideFileReadyButton();
@@ -95,7 +94,7 @@ namespace VManager.ViewModels
                             outputPath,
                             null,
                             SelectedAudioCodec,
-                            SelectedAudioFormat?.Extension,
+                            SelectedAudioFormat?.Extension!,
                             progress,
                             _cts.Token
                         );
@@ -108,7 +107,7 @@ namespace VManager.ViewModels
                             outputPath,
                             SelectedVideoCodec,
                             SelectedAudioCodec,
-                            SelectedAudioFormat?.Extension,
+                            SelectedAudioFormat?.Extension!,
                             progress,
                             _cts.Token
                         );
@@ -118,13 +117,13 @@ namespace VManager.ViewModels
                     {
                         var notifier = new Notifier();
                         notifier.ShowFileConvertedNotification(result.Message, result.OutputPath);
-                        SoundManager.Play("success.wav");
+                        _ = SoundManager.Play("success.wav");
                         SetLastCompressedFile(result.OutputPath);
                         Warning = result.Warning;
                     }
                     else
                     {
-                        SoundManager.Play("fail.wav");
+                        _ = SoundManager.Play("fail.wav");
                         Status = result.Message;
                     }
                 }
@@ -141,7 +140,7 @@ namespace VManager.ViewModels
             }
             catch (OperationCanceledException)
             {
-                SoundManager.Play("fail.wav");
+                _ = SoundManager.Play("fail.wav");
                 Status = "Operación cancelada.";
                 Progress = 0;
             }
@@ -153,6 +152,8 @@ namespace VManager.ViewModels
                 _cts = null;
                 this.RaisePropertyChanged(nameof(IsConverting));
                 this.RaisePropertyChanged(nameof(IsOperationRunning));
+                this.RaisePropertyChanged(nameof(Status));
+                this.RaisePropertyChanged(nameof(Progress));
             }
         }
 

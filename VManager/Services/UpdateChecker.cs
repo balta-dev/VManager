@@ -20,10 +20,10 @@ namespace VManager.Services
 
         public class UpdateInfo
         {
-            public Version CurrentVersion { get; set; }
-            public Version LatestVersion { get; set; }
-            public string DownloadUrl { get; set; }
-            public string ReleaseNotes { get; set; }
+            public required Version CurrentVersion { get; set; }
+            public required Version LatestVersion { get; set; }
+            public required string DownloadUrl { get; set; }
+            public required string ReleaseNotes { get; set; }
             public DateTime LastChecked { get; set; }
             public bool UpdateAvailable => LatestVersion > CurrentVersion;
         }
@@ -43,7 +43,6 @@ namespace VManager.Services
             var currentVersion = new Version(versionString.Split('+')[0].Split('-')[0]);
             
             Console.WriteLine($"exePath: {exePath}");
-            Console.WriteLine($"Current Version: {currentVersion}");
             
             // Intentar usar cache reciente (< 2 minutos)
             var cached = LoadCache();

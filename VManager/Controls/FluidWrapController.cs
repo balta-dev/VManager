@@ -10,7 +10,7 @@ namespace VManager.Controls
 {
     public class ControlConfig
     {
-        public Control Control { get; set; }
+        public required Control Control { get; set; }
         public double HorizontalOffset { get; set; }
         public bool UseEstimatedWidth { get; set; }
         public double OriginalTop { get; set; }
@@ -74,7 +74,7 @@ namespace VManager.Controls
             GC.SuppressFinalize(this);
         }
 
-        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             //Console.WriteLine($"Propiedad cambiada: {e.PropertyName}");
             Dispatcher.UIThread.Post(() =>

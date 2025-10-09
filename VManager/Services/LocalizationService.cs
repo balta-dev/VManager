@@ -38,6 +38,11 @@ public class LocalizationService : INotifyPropertyChanged
             var parts = resource.Split('.');
             var lang = parts[^2]; // <- usa esto
             using var stream = assembly.GetManifestResourceStream(resource);
+            if (stream is null)
+            {
+                System.Console.WriteLine($"[WARN] No se pudo cargar el recurso '{resource}'.");
+                continue;
+            }
             using var reader = new StreamReader(stream);
             var json = reader.ReadToEnd();
 

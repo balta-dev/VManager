@@ -1,19 +1,12 @@
-using Avalonia.Controls;
 using Avalonia.ReactiveUI;
-using FFMpegCore;
-using FFMpegCore.Enums;
 using ReactiveUI;
 using System;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Platform.Storage;
 using VManager.Services;
-using VManager.Views;
 
 namespace VManager.ViewModels
 {
@@ -33,7 +26,7 @@ namespace VManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref isVideoPathSet, value);
         }
         
-        private VideoFormat _selectedFormat;
+        private VideoFormat _selectedFormat = new VideoFormat();
         public VideoFormat SelectedFormat
         {
             get => _selectedFormat;
@@ -114,7 +107,7 @@ namespace VManager.ViewModels
 
             // Asegurarse de que SelectedAudioCodec sigue siendo válido
             if (!AvailableAudioCodecs.Contains(SelectedAudioCodec))
-                SelectedAudioCodec = AvailableAudioCodecs.FirstOrDefault();
+                SelectedAudioCodec = AvailableAudioCodecs.FirstOrDefault()!;
         }
 
         
@@ -145,7 +138,7 @@ namespace VManager.ViewModels
 
                     string outputPath = Path.Combine(
                         Path.GetDirectoryName(video)!,
-                        Path.GetFileNameWithoutExtension(video) + $"-VCONV.{SelectedFormat.Extension}"
+                        Path.GetFileNameWithoutExtension(video) + $"-VCONV.{SelectedFormat?.Extension}"
                     );
 
                     var result = await processor.ConvertAsync(
@@ -153,21 +146,21 @@ namespace VManager.ViewModels
                         outputPath,
                         SelectedVideoCodec,
                         SelectedAudioCodec,
-                        SelectedFormat?.Extension,
+                        SelectedFormat?.Extension!,
                         progress,
                         _cts.Token
                     );
 
                     if (!result.Success)
                     {
-                        SoundManager.Play("fail.wav");
+                        _ = SoundManager.Play("fail.wav");
                         Status = $"Error procesando {Path.GetFileName(video)}: {result.Message}";
                         Progress = 0;
                         this.RaisePropertyChanged(nameof(Status));
                         break; // Opcional: salir si un archivo falla
                     }
 
-                    SoundManager.Play("success.wav");
+                    _ = SoundManager.Play("success.wav");
                     SetLastCompressedFile(result.OutputPath);
                 }
 
@@ -189,7 +182,7 @@ namespace VManager.ViewModels
             }
             catch (OperationCanceledException)
             {
-                SoundManager.Play("fail.wav");
+                _ = SoundManager.Play("fail.wav");
                 Status = "Conversión cancelada por el usuario.";
                 Progress = 0;
                 IsConverting = false;

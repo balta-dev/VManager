@@ -87,6 +87,24 @@
                 </StackPanel>
               </Button.Content>
             </Button>
+            <Button x:Name="QuestionMarkDesde" Content="?" Width="30" FontWeight="Bold">
+              <ToolTip.Tip>
+                <TextBlock MaxWidth="400" TextWrapping="Wrap">
+                  <Run Text="Se acepta formato en segundos y/o tiempo tradicional (hh:mm:ss)."/>
+                  <LineBreak/>
+                  <Run Text="Siempre y cuando sean tiempos válidos, puedes utilizarlo como tú desees."/>
+                  <LineBreak/><LineBreak/>
+                  <Run Text="Ejemplos de uso:"/>
+                  <LineBreak/>
+                  <Run Text="* Recortar desde 23. Recortar hasta 2:01"/>
+                  <LineBreak/>
+                  <Run Text="* Recortar desde 1:02:01. Recortar hasta 2:52:01"/>
+                  <LineBreak/><LineBreak/>
+                  <Run Text="Nota: la duración maxima se recalcula si no es adecuada."/>
+                </TextBlock>
+              </ToolTip.Tip>
+            </Button>
+            
           </StackPanel>
 
           <Border Padding="2">
@@ -97,27 +115,10 @@
           </Border>
         </StackPanel>
 
-        <!-- Recortar desde -->
+          <!-- Recortar desde -->
         <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="0,10,0,0">
           <TextBlock Text="{Binding L[VCut.Fields.TrimFrom]}" FontSize="14" VerticalAlignment="Center"/>
           <TextBox Text="{Binding TiempoDesde}" Width="100" Watermark="(hh:mm:ss)"/>
-          <Button x:Name="QuestionMarkDesde" Content="?" Width="30" FontWeight="Bold">
-            <ToolTip.Tip>
-              <TextBlock MaxWidth="400" TextWrapping="Wrap">
-                <Run Text="Se acepta formato en segundos y/o tiempo tradicional (hh:mm:ss)."/>
-                <LineBreak/>
-                <Run Text="Siempre y cuando sean tiempos válidos, puedes utilizarlo como tú desees."/>
-                <LineBreak/><LineBreak/>
-                <Run Text="Ejemplos de uso:"/>
-                <LineBreak/>
-                <Run Text="* Recortar desde 23. Recortar hasta 2:01"/>
-                <LineBreak/>
-                <Run Text="* Recortar desde 1:02:01. Recortar hasta 2:52:01"/>
-                <LineBreak/><LineBreak/>
-                <Run Text="Nota: la duración maxima se recalcula si no es adecuada."/>
-              </TextBlock>
-            </ToolTip.Tip>
-          </Button>
         </StackPanel>
 
         <!-- Recortar hasta -->

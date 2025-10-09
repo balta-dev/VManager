@@ -8,8 +8,8 @@ namespace VManager.Services;
 
 public static class FFmpegManager
 {
-    public static string FfmpegPath { get; private set; }
-    public static string FfprobePath { get; private set; }
+    public static string FfmpegPath { get; private set; } = string.Empty;
+    public static string FfprobePath { get; private set; } = string.Empty;
     
     public static void Initialize()
     {

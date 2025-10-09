@@ -32,12 +32,15 @@ namespace VManager.Views
 
             // Calculate final and start positions
             var screen = Screens.Primary;
-            _finalPosition = new PixelPoint(
-                (int)screen.Bounds.Width - (int)this.Width - 20,
-                (int)screen.Bounds.Height - (int)this.Height - 50);
-            _startPosition = new PixelPoint(
-                (int)screen.Bounds.Width,
-                _finalPosition.Y);
+            if (screen != null)
+            {
+                _finalPosition = new PixelPoint(
+                    (int)screen.Bounds.Width - (int)this.Width - 20,
+                    (int)screen.Bounds.Height - (int)this.Height - 50);
+                _startPosition = new PixelPoint(
+                    (int)screen.Bounds.Width,
+                    _finalPosition.Y);
+            }
 
             // Set initial position
             this.Position = _startPosition;

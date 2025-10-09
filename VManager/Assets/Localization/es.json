@@ -70,7 +70,7 @@
       "ShowFileInFolder": "Mostrar archivo en carpeta"
     },
     "Fields": {
-      "SelectVideo": "Seleccionar video:",
+      "SelectVideo": "Seleccionar video/s:",
       "VideoPath": "Ruta del video",
       "Quality": "Porcentaje de Calidad:",
       "VideoCodec": "Códec de Video:",
@@ -87,7 +87,7 @@
       "ShowFileInFolder": "Mostrar archivo en carpeta"
     },
     "Fields": {
-      "SelectVideo": "Seleccionar video:",
+      "SelectVideo": "Seleccionar video/s:",
       "VideoPath": "Ruta del video",
       "Format": "¿A qué formato?",
       "VideoCodec": "Códec de Video:",
@@ -104,7 +104,7 @@
       "ShowFileInFolder": "Mostrar archivo en carpeta"
     },
     "Fields": {
-      "SelectVideo": "Seleccionar video:",
+      "SelectVideo": "Seleccionar videos/audios:",
       "VideoPath": "Ruta del video",
       "Format": "¿A qué formato?"
     }

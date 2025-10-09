@@ -1,15 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Reactive;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia.ReactiveUI;
 using ReactiveUI;
 using VManager.Services;
-using VManager.Views;
-
-using ReactiveUI;
 
 namespace VManager.ViewModels
 {
@@ -35,7 +27,7 @@ namespace VManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref _enableNotifications, value);
         }
 
-        private string _idiomaSeleccionado;
+        private string _idiomaSeleccionado = "";
         public string IdiomaSeleccionado
         {
             get => _idiomaSeleccionado;
@@ -76,7 +68,7 @@ namespace VManager.ViewModels
             }
         }
 
-        private string _openConfig;
+        private string _openConfig = "";
         public string OpenConfig
         {
             get => _openConfig;
@@ -97,15 +89,48 @@ namespace VManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref _useCustomIcon, value);
             
         }
-
+        
+        private readonly ConfigurationService.AppConfig _config;
         public ConfigurationViewModel()
         {
-            IdiomaSeleccionado = "Español"; // idioma por defecto
-            this.WhenAnyValue(x => x.EnableSounds)
-                .Subscribe(val => SoundManager.Enabled = val);
-            this.WhenAnyValue(x => x.EnableNotifications)
-                .Subscribe(val => Notifier.Enabled = val);
+            // Cargar configuración al inicio
+            _config = ConfigurationService.Load();
 
+            // Inicializar propiedades
+            IdiomaSeleccionado = _config.Language;
+            EnableSounds = _config.EnableSounds;
+            EnableNotifications = _config.EnableNotifications;
+            UseCustomIcon = _config.UseCustomIcon;
+
+            // Guardar cambios automáticamente
+            // Suscribirse a cambios de EnableSounds y EnableNotifications
+            this.WhenAnyValue(x => x.EnableSounds)
+                .Subscribe(val =>
+                {
+                    SoundManager.Enabled = val;     // Actúa en la app
+                    SaveConfig();                   // Guarda en JSON
+                });
+
+            this.WhenAnyValue(x => x.EnableNotifications)
+                .Subscribe(val =>
+                {
+                    Notifier.Enabled = val;         // Actúa en la app
+                    SaveConfig();                   // Guarda en JSON
+                });
+
+            // Otros campos que quieras guardar automáticamente
+            this.WhenAnyValue(x => x.IdiomaSeleccionado, x => x.UseCustomIcon)
+                .Subscribe(_ => SaveConfig());
+        }
+
+        private void SaveConfig()
+        {
+            _config.Language = IdiomaSeleccionado;
+            _config.EnableSounds = EnableSounds;
+            _config.EnableNotifications = EnableNotifications;
+            _config.UseCustomIcon = UseCustomIcon;
+
+            ConfigurationService.Save(_config);
         }
         
     }

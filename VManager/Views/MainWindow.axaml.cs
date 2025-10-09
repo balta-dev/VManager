@@ -7,7 +7,6 @@ using Avalonia.Input;
 using System.Linq;
 using System.Net.Http;
 using System.Reactive.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Avalonia;
@@ -18,7 +17,6 @@ using Avalonia.Media;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using Avalonia.Threading;
-using ReactiveUI;
 using VManager.Services;
 using VManager.ViewModels;
 
@@ -31,9 +29,9 @@ namespace VManager.Views
         {
             InitializeComponent();
             SoundBehavior.Attach(this);
-            SoundManager.Play("dummy.wav");
+            _ = SoundManager.Play("dummy.wav");
             
-            var accentObs = this.GetResourceObservable("SystemAccentColor")
+            var accentObs = this.GetResourceObservable("SystemAccentColor")!
                 .OfType<Color>()
                 .DistinctUntilChanged()
                 .Where(c => c != Color.FromArgb(0xFF, 0x00, 0x78, 0xD7)); //default de systemaccent antes de tomarlo del resource padre
@@ -96,20 +94,23 @@ namespace VManager.Views
         private async Task CheckUpdatesAsync()
         {
             var update = await UpdateChecker.CheckForUpdateAsync();
-
-            if (update != null)
+            
+            if (update == null)
             {
-                Console.WriteLine($"Versión local: {update.CurrentVersion}");
-                Console.WriteLine($"Versión remota: {update.LatestVersion}");
-                Console.WriteLine($"Ultima vez comprobado: {update.LastChecked}");
-                if (!update.UpdateAvailable)
-                {
-                    Console.WriteLine("No hay actualización disponible.");
-                    return;
-                }
+                Console.WriteLine("No se pudo verificar actualizaciones (sin conexión y sin caché).");
+                return;
             }
 
-            if (update != null && update.UpdateAvailable && !string.IsNullOrEmpty(update.DownloadUrl))
+            Console.WriteLine($"Versión local: {update.CurrentVersion}");
+            Console.WriteLine($"Versión remota: {update.LatestVersion}");
+            Console.WriteLine($"Ultima vez comprobado: {update.LastChecked}");
+            if (!update.UpdateAvailable)
+            {
+                Console.WriteLine("No hay actualización disponible.");
+                return;
+            }
+            
+            if (update.UpdateAvailable && !string.IsNullOrEmpty(update.DownloadUrl))
             {
                 var dialog = new Window
                 {
@@ -152,7 +153,7 @@ namespace VManager.Views
                     }
                 };
 
-                var button = (dialog.Content as StackPanel).Children.OfType<Button>().First();
+                var button = (dialog.Content as StackPanel)!.Children.OfType<Button>().First();
                 button.Command = ReactiveUI.ReactiveCommand.CreateFromTask(async () =>
                 {
                     Console.WriteLine("Usuario presionó descargar. Descargando actualización...");
@@ -264,7 +265,7 @@ namespace VManager.Views
             var background = (actualTheme == ThemeVariant.Dark) ? Colors.Black : Colors.White;
             var adjustedAccent = AdjustColorForAccentTheme(accent, actualTheme);
             var foreground = GetContrastingColor(adjustedAccent);
-            Application.Current.Resources["AccentBrush"] = new SolidColorBrush(adjustedAccent);
+            Application.Current!.Resources["AccentBrush"] = new SolidColorBrush(adjustedAccent);
             Application.Current.Resources["AccentForegroundBrush"] = new SolidColorBrush(foreground);
 
             var redButton = Color.FromArgb(0xFF, 0xBF, 0x24, 0x24);
@@ -275,7 +276,7 @@ namespace VManager.Views
         }
         private Color GetSystemAccentColor()
         {
-            if (Application.Current.TryGetResource("SystemAccentColor", null, out var value) && value is Color accent) 
+            if (Application.Current!.TryGetResource("SystemAccentColor", null, out var value) && value is Color accent) 
                 return accent;
             
             return Color.FromArgb(0xFF, 0xFF, 0x00, 0x00); // acá es IMPOSIBLE que llegue

@@ -13,7 +13,7 @@ namespace VManager.Services
     {
         private readonly string _ffmpegPath;
         private readonly SemaphoreSlim _codecCacheLock = new SemaphoreSlim(1, 1);
-        private List<string> _cachedCodecs;
+        private List<string>? _cachedCodecs;
 
         public CodecService()
         {
@@ -350,16 +350,16 @@ namespace VManager.Services
             }
         }
 
-        private async Task<HardwareCapabilities> DetectMacHardwareAsync()
+        private Task<HardwareCapabilities> DetectMacHardwareAsync()
         {
-            return new HardwareCapabilities 
+            return Task.FromResult(new HardwareCapabilities 
             { 
                 VideoToolbox = true,
                 Mac = true
-            };
+            });
         }
 
-        private string GetTestCommandForCodec(string codecName)
+        private string? GetTestCommandForCodec(string codecName)
         {
             var lowerCodec = codecName.ToLower();
             return lowerCodec switch
@@ -409,8 +409,7 @@ namespace VManager.Services
                 await semaphore.WaitAsync();
                 try
                 {
-                    string testCommand = GetTestCommandForCodec(codec);
-                    if (testCommand == null) return null;
+                    string testCommand = GetTestCommandForCodec(codec)!;
 
                     var psi = new ProcessStartInfo
                     {
@@ -439,7 +438,7 @@ namespace VManager.Services
             }).ToArray();
 
             var results = await Task.WhenAll(tasks);
-            workingCodecs.AddRange(results.Where(r => r != null));
+            workingCodecs.AddRange(results.Where(r => r != null).Cast<string>());
 
             return workingCodecs;
         }
@@ -481,7 +480,7 @@ namespace VManager.Services
             }).ToArray();
 
             var results = await Task.WhenAll(tasks);
-            workingCodecs.AddRange(results.Where(r => r != null));
+            workingCodecs.AddRange(results.Where(r => r != null).Cast<string>());
 
             return workingCodecs;
         }

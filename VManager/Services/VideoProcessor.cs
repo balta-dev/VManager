@@ -592,7 +592,7 @@ namespace VManager.Services
         public string OutputPath { get; }
         public string Warning { get; }
 
-        public ProcessingResult(bool success, string message, string outputPath = null, string warning = null)
+        public ProcessingResult(bool success, string message, string outputPath = "", string warning = "")
         {
             Success = success;
             Message = message;

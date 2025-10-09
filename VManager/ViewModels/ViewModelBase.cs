@@ -27,7 +27,7 @@ public abstract class ViewModelBase : ReactiveObject
 {
     private string _videoPath = "";
     private string _outputPath = "";
-    private string _lastCompressedFilePath;
+    private string _lastCompressedFilePath = "";
     private int _progress;
     private string _status = "";
     private string _warning = "";
@@ -97,7 +97,7 @@ public abstract class ViewModelBase : ReactiveObject
     
     public LocalizationService L => LocalizationService.Instance;
     
-    protected CancellationTokenSource _cts;
+    protected CancellationTokenSource? _cts;
     
     public class UserProfileImageService
     {
@@ -123,7 +123,7 @@ public abstract class ViewModelBase : ReactiveObject
                 Console.WriteLine($"Error obteniendo imagen de usuario: {ex.Message}");
             }
 
-            return GetDefaultUserImage();
+            return null;
         }
 
         private static Bitmap? GetWindowsUserImage()
@@ -225,13 +225,6 @@ public abstract class ViewModelBase : ReactiveObject
 
             return null;
         }
-
-        public static Bitmap GetDefaultUserImage()
-        {
-            // Si no se encuentra la imagen, puedes retornar null
-            // y manejar el caso en tu UI con un ícono por defecto
-            return null;
-        }
     }
     public Bitmap UserImage { get; }
     protected ViewModelBase()
@@ -244,8 +237,7 @@ public abstract class ViewModelBase : ReactiveObject
             outputScheduler: AvaloniaScheduler.Instance
         );
         
-        UserImage = UserProfileImageService.GetUserProfileImage() 
-                    ?? UserProfileImageService.GetDefaultUserImage();
+        UserImage = UserProfileImageService.GetUserProfileImage()!;
         
         LocalizationService.Instance.PropertyChanged += (s, e) =>
         {
@@ -277,25 +269,27 @@ public abstract class ViewModelBase : ReactiveObject
         MostrarOverlayEnMainWindow(); // Activa overlay
 
         // Mostrar el diálogo
-        var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-        if (mainWindow != null)
-        {
-            var dialog = new CancelDialog { DataContext = this };
-            bool? result = await dialog.ShowDialog<bool?>(mainWindow);
-    
-            if (result == true)
+        if (Application.Current != null) {
+            var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            if (mainWindow != null)
             {
-                // Cancelar la operación
-                Console.WriteLine("Entrando al request cancel...");
-                RequestCancelOperation();
-            }
-
-            // Desactivar overlay al cerrar el dialog
-            if (mainWindow.DataContext is MainWindowViewModel mainVM)
-                mainVM.IsDialogVisible = false;
+                var dialog = new CancelDialog { DataContext = this };
+                bool? result = await dialog.ShowDialog<bool?>(mainWindow);
         
-            // Retornar true solo si el usuario eligió cancelar Y viene de window close
-            return result == true && fromWindowClose;
+                if (result == true)
+                {
+                    // Cancelar la operación
+                    Console.WriteLine("Entrando al request cancel...");
+                    RequestCancelOperation();
+                }
+
+                // Desactivar overlay al cerrar el dialog
+                if (mainWindow.DataContext is MainWindowViewModel mainVM)
+                    mainVM.IsDialogVisible = false;
+            
+                // Retornar true solo si el usuario eligió cancelar Y viene de window close
+                return result == true && fromWindowClose;
+            }
         }
     
         return false;

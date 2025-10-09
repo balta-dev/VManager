@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using Avalonia.Platform.Storage;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
 using VManager.Services;
-using VManager.Views;
 
 namespace VManager.ViewModels
 {
@@ -147,7 +145,7 @@ namespace VManager.ViewModels
 
             if (!TryParseTime(TiempoDesde, out TimeSpan start))
             {
-                SoundManager.Play("fail.wav");
+                _ = SoundManager.Play("fail.wav");
                 Status = "Tiempo 'desde' inválido";
                 this.RaisePropertyChanged(nameof(Status));
                 return;
@@ -155,7 +153,7 @@ namespace VManager.ViewModels
 
             if (!TryParseTime(TiempoHasta, out TimeSpan end))
             {
-                SoundManager.Play("fail.wav");
+                _ = SoundManager.Play("fail.wav");
                 Status = "Tiempo 'hasta' inválido";
                 this.RaisePropertyChanged(nameof(Status));
                 return;
@@ -163,7 +161,7 @@ namespace VManager.ViewModels
 
             if (end <= start)
             {
-                SoundManager.Play("fail.wav");
+                _ = SoundManager.Play("fail.wav");
                 Status = "Tiempo 'hasta' debe ser mayor que tiempo 'desde'";
                 this.RaisePropertyChanged(nameof(Status));
                 return;
@@ -204,7 +202,7 @@ namespace VManager.ViewModels
                     Notifier _notifier = new Notifier();
                     _notifier.ShowFileConvertedNotification(result.Message, result.OutputPath);
                     
-                    SoundManager.Play("success.wav");
+                    _ = SoundManager.Play("success.wav");
                     SetLastCompressedFile(result.OutputPath);
                     Status = result.Message;
                     Warning = result.Warning;
@@ -217,7 +215,7 @@ namespace VManager.ViewModels
                 }
                 else
                 {
-                    SoundManager.Play("fail.wav");
+                    _ = SoundManager.Play("fail.wav");
                     Status = result.Message;
                     Progress = 0;
                     this.RaisePropertyChanged(nameof(Status));
@@ -226,7 +224,7 @@ namespace VManager.ViewModels
             }
             catch (OperationCanceledException)
             {
-                SoundManager.Play("fail.wav");
+                await SoundManager.Play("fail.wav");
                 Status = "Corte cancelado por el usuario.";
                 Progress = 0;
                 this.RaisePropertyChanged(nameof(Status));

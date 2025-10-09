@@ -32,15 +32,15 @@ namespace VManager.ViewModels
 
     public class VideoFormat
     {
-        public string Extension { get; set; }
-        public string DisplayName { get; set; }
+        public string Extension { get; set; } = string.Empty;
+        public string DisplayName { get; set; } = string.Empty;
         public override string ToString() => DisplayName;
     }
     
     public class AudioFormat
     {
-        public string Extension { get; set; }
-        public string DisplayName { get; set; }
+        public string Extension { get; set; } = string.Empty;
+        public string DisplayName { get; set; } = string.Empty;
         public override string ToString() => DisplayName;
     }
 }

@@ -3,17 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using ReactiveUI;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using VManager.Views;
-using Avalonia.Styling;
-using VManager.Services;
 
 namespace VManager.ViewModels;
 
@@ -197,10 +191,10 @@ public class MainWindowViewModel : ViewModelBase
             outputScheduler: AvaloniaScheduler.Instance
         );
         
-        _isDarkTheme = Application.Current.ActualThemeVariant == ThemeVariant.Dark;
+        _isDarkTheme = Application.Current?.ActualThemeVariant == ThemeVariant.Dark;
 
         // Suscribirse a cambios de tema
-        Application.Current.GetObservable(Application.ActualThemeVariantProperty)
+        Application.Current?.GetObservable(Application.ActualThemeVariantProperty)
             .Subscribe(theme =>
             {
                 IsDarkTheme = theme == ThemeVariant.Dark;

@@ -91,7 +91,7 @@ namespace VManager.ViewModels
             SelectedVideoCodec = AvailableVideoCodecs.FirstOrDefault() ?? "libx264";
             SelectedAudioCodec = AvailableAudioCodecs.Contains("aac")
                 ? "aac"
-                : AvailableAudioCodecs.FirstOrDefault();
+                : AvailableAudioCodecs.FirstOrDefault() ?? "aac";
             
         }
         public async Task LoadCodecsAsync()
