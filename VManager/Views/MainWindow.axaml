@@ -320,11 +320,10 @@
 
                         <ContentControl x:Name="ContentArea" Content="{Binding CurrentView}" Background="Transparent"/>
                     </DockPanel>
-
-                    <!-- Overlay -->
-                    <views:DimOverlay ZIndex="100"/>
                 </Grid>
             </SplitView.Content>
         </SplitView>
+        <!-- Overlay -->
+        <views:DimOverlay ZIndex="100"/>
     </Grid>
 </Window>
