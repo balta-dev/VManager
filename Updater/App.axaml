@@ -1,0 +1,67 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Updater.App"
+             RequestedThemeVariant="Default">
+    <Application.Styles>
+        <FluentTheme />
+        
+        <!-- Estilos globales botones -->
+        <Style Selector="Button.Accented">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
+        </Style>
+
+        <Style Selector="Button.Accented:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource AccentForegroundBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="0 0 0 1" />
+        </Style>
+        
+        <!-- Estilo botón rojo -->
+        <Style Selector="Button.RedAccented">
+            <Setter Property="Background" Value="{DynamicResource RedButtonBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource RedButtonForegroundBrush}" />
+        </Style>
+
+        <Style Selector="Button.RedAccented:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource RedButtonForegroundBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource RedButtonBrush}" />
+        </Style>
+        
+        <!-- Estilos globales PathIcon -->
+        <Style Selector="PathIcon">
+            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+        </Style>
+
+        <Style Selector="ToggleButton PathIcon">
+            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+        </Style>
+
+        <Style Selector="ToggleButton:pointerover PathIcon">
+            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+        </Style>
+
+        <Style Selector="ToggleButton:checked PathIcon">
+            <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}"/>
+        </Style>
+        
+    </Application.Styles>
+    
+    <Application.Resources>
+        <!-- Tema Claro -->
+        <SolidColorBrush x:Key="PanelBackgroundBrushLight">#fff5f0</SolidColorBrush>
+        <SolidColorBrush x:Key="BorderBrushPrimaryLight">#FFAAAAAA</SolidColorBrush>
+        <SolidColorBrush x:Key="WindowBackgroundBrushLight">#fff7f3</SolidColorBrush>
+        <SolidColorBrush x:Key="ToggleButtonBorderLight">#1c1c1c</SolidColorBrush>
+
+        <!-- Tema Oscuro -->
+        <SolidColorBrush x:Key="PanelBackgroundBrushDark">#FF2A2A2A</SolidColorBrush>
+        <SolidColorBrush x:Key="BorderBrushPrimaryDark">#FF444444</SolidColorBrush>
+        <SolidColorBrush x:Key="WindowBackgroundBrushDark">#1c1c1c</SolidColorBrush>
+        <SolidColorBrush x:Key="ToggleButtonBorderDark">#fff7f3</SolidColorBrush>
+        
+    </Application.Resources>
+    
+</Application>

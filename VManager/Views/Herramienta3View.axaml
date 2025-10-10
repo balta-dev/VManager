@@ -241,6 +241,7 @@
                     </Canvas.Transitions>
 
                     <Button Content="{Binding L[VConvert.Buttons.Convert]}" 
+                            HorizontalContentAlignment="Center"
                             Classes="Accented"
                             IsEnabled="{Binding VideoPath, Converter={StaticResource ValidPathConverter}}"
                             FontSize="18"
@@ -261,6 +262,7 @@
                         </Transitions>
                     </Canvas.Transitions>
                     <Button Content="{Binding L[VConvert.Buttons.Cancel]}"
+                            HorizontalContentAlignment="Center"
                             IsEnabled="{Binding IsConverting}"
                             FontSize="12"
                             Command="{Binding ShowCancelDialogCommand}"
@@ -280,6 +282,7 @@
                     </Canvas.Transitions>
 
                     <ToggleButton Content="Mostrar archivo en carpeta"
+                                  HorizontalContentAlignment="Center"
                                   IsVisible="{Binding IsFileReadyVisible}"
                                   IsChecked="{Binding IsClicked, Mode=TwoWay}"
                                   Command="{Binding ShowFileInFolderCommand}"

@@ -7,7 +7,10 @@ using Avalonia.Input;
 using System.Linq;
 using System.Net.Http;
 using System.Reactive.Linq;
+using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -91,22 +94,68 @@ namespace VManager.Views
             }
         }
         
-        private void LaunchUpdater()
+        private static bool VersionsAreEqual(Version? a, Version? b)
         {
-            string updaterFile = Path.Combine(AppContext.BaseDirectory, 
+            if (a == null || b == null)
+                return false;
+
+            // Normalizamos build y revision si vienen como -1
+            int buildA = a.Build < 0 ? 0 : a.Build;
+            int buildB = b.Build < 0 ? 0 : b.Build;
+            int revA = a.Revision < 0 ? 0 : a.Revision;
+            int revB = b.Revision < 0 ? 0 : b.Revision;
+
+            return a.Major == b.Major &&
+                   a.Minor == b.Minor &&
+                   buildA == buildB &&
+                   revA == revB;
+        }
+        
+        private async void LaunchUpdater()
+        {
+            string updaterFile = Path.Combine(AppContext.BaseDirectory,
                 RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Updater.exe" : "Updater");
 
-            if (File.Exists(updaterFile))
+            string cacheFilePath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "VManager", "cache", "update_cache.json");
+
+            try
             {
-                Process.Start(new ProcessStartInfo
+                UpdateChecker.UpdateInfo? cached = null;
+
+                // Solo intentar leer si el archivo existe
+                if (File.Exists(cacheFilePath))
                 {
-                    FileName = updaterFile,
-                    UseShellExecute = false, // importante para que se abra la ventana UI
-                });
+                    var json = await File.ReadAllTextAsync(cacheFilePath);
+                    cached = JsonSerializer.Deserialize<UpdateChecker.UpdateInfo>(json);
+                }
+                
+                Console.WriteLine("Buscando actualizaciones...");
+                Console.WriteLine($"Version cacheada: {cached?.CurrentVersion}");
+                Console.WriteLine($"Version de Assembly: {Assembly.GetEntryAssembly()?.GetName().Version}");
+                
+                // Si no hay cache o las versiones no coinciden, lanzar updater
+                if (cached == null || VersionsAreEqual(cached.CurrentVersion, Assembly.GetEntryAssembly()?.GetName().Version!))
+                {
+                    Console.WriteLine("Empezando Updater...");
+                    if (File.Exists(updaterFile))
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = updaterFile,
+                            UseShellExecute = true,
+                        });
+                    }
+                    else
+                    {
+                        Console.WriteLine("Updater no encontrado.");
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("Updater no encontrado.");
+                Console.WriteLine($"Error al lanzar updater: {ex}");
             }
         }
         

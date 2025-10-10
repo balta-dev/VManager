@@ -134,6 +134,7 @@
         
         <!-- Botón extraer -->
         <Button Content="{Binding L[VAudiofy.Buttons.Extract]}" 
+                HorizontalContentAlignment="Center"
                 FontSize="18" 
                 Classes="Accented"
                 FontWeight="DemiBold"
@@ -145,6 +146,7 @@
                 HorizontalAlignment="Center"/>
         
         <Button Content="{Binding L[VAudiofy.Buttons.Cancel]}"
+                HorizontalContentAlignment="Center"
                 IsEnabled="{Binding IsConverting}"
                 FontSize="12"
                 Margin="0 -7 0 0"
@@ -156,6 +158,7 @@
 
         <!-- Mostrar archivo en carpeta -->
         <ToggleButton Content="Mostrar archivo en carpeta"
+                      HorizontalContentAlignment="Center"
                       IsVisible="{Binding IsFileReadyVisible}"
                       IsChecked="{Binding IsClicked, Mode=TwoWay}"
                       Command="{Binding ShowFileInFolderCommand}"

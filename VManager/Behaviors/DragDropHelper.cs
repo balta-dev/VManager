@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,6 +9,7 @@ using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using ReactiveUI;
 using System.ComponentModel;
+using Avalonia.Platform.Storage;
 
 namespace VManager.Behaviors
 {
@@ -75,36 +78,33 @@ namespace VManager.Behaviors
 
         private static void OnDragOver(object? sender, DragEventArgs e)
         {
-            if (!e.Data.Contains(DataFormats.Files))
+            if (!e.DataTransfer.Contains(DataFormat.File))
             {
                 e.DragEffects = DragDropEffects.None;
                 return;
             }
 
-            var files = e.Data.GetFiles();
+            var files = e.DataTransfer.TryGetFiles();
             if (files == null || !files.Any())
             {
                 e.DragEffects = DragDropEffects.None;
                 return;
             }
 
-            // Verify valid files
             if (sender is Control control)
             {
                 bool allowAudio = GetAllowAudio(control);
-                
+
                 bool hasValidFile = files.Any(file =>
                 {
                     var extension = System.IO.Path.GetExtension(file.Path.LocalPath).ToLowerInvariant();
-                    return VideoExtensions.Contains(extension) || 
+                    return VideoExtensions.Contains(extension) ||
                            (allowAudio && AudioExtensions.Contains(extension));
                 });
 
                 if (!hasValidFile)
                 {
-                    // RED VISUAL FEEDBACK
                     e.DragEffects = DragDropEffects.None;
-                    
                     if (sender is Border border)
                     {
                         if (border.GetValue(OriginalBackgroundProperty) == null)
@@ -117,21 +117,20 @@ namespace VManager.Behaviors
                 }
             }
 
-            // Valid
             e.DragEffects = DragDropEffects.Copy;
             e.Handled = true;
-            
-            // Green visual feedback
+
             if (sender is Border validBorder)
             {
                 if (validBorder.GetValue(OriginalBackgroundProperty) == null)
                 {
                     validBorder.SetValue(OriginalBackgroundProperty, validBorder.Background);
                 }
-                
+
                 validBorder.Background = new SolidColorBrush(Colors.LightGreen, 0.3);
             }
         }
+
 
         private static void OnDragLeave(object? sender, DragEventArgs e)
         {
@@ -155,66 +154,66 @@ namespace VManager.Behaviors
             if (sender is not Control control)
                 return;
 
-            var propName = GetDropTarget(control);
-            if (string.IsNullOrEmpty(propName))
+            var files = e.DataTransfer?.TryGetFiles() ?? Array.Empty<IStorageFile>();
+            if (!files.Any())
                 return;
 
-            var files = e.Data.GetFiles();
-            if (files == null || !files.Any())
-                return;
-
-            // Filter only video/audio
             bool allowAudio = GetAllowAudio(control);
-            
-            var validPaths = files.Where(file =>
-            {
-                var extension = System.IO.Path.GetExtension(file.Path.LocalPath).ToLowerInvariant();
-                return VideoExtensions.Contains(extension) || 
-                       (allowAudio && AudioExtensions.Contains(extension));
-            })
-            .Select(f => f.Path.LocalPath);
+
+            var validPaths = files
+                .Where(f =>
+                {
+                    var ext = System.IO.Path.GetExtension(f.Path.LocalPath).ToLowerInvariant();
+                    return VideoExtensions.Contains(ext) || (allowAudio && AudioExtensions.Contains(ext));
+                })
+                .Select(f => f.Path.LocalPath)
+                .ToList();
 
             if (!validPaths.Any())
             {
-                // No valid files (error feedback)
                 ShowErrorFeedback(control);
                 return;
             }
-
-            var joined = string.Join(" ", validPaths);
 
             var dc = FindDataContext(control);
             if (dc == null)
                 return;
 
-            var prop = dc.GetType().GetProperty(propName);
-            if (prop != null && prop.CanWrite)
+            // Intentamos obtener la propiedad VideoPaths (List<string>)
+            var listProp = dc.GetType().GetProperty("VideoPaths");
+            var singleProp = dc.GetType().GetProperty("VideoPath");
+
+            if (listProp != null && listProp.CanWrite)
             {
-                prop.SetValue(dc, joined);
-                
-                // force reactive notification
+                if (listProp.GetValue(dc) is List<string> currentList)
+                {
+                    currentList.AddRange(validPaths);
+                }
+                else
+                {
+                    listProp.SetValue(dc, new List<string>(validPaths));
+                }
+
+                // Forzar notificación ReactiveUI
                 if (dc is ReactiveObject reactiveObj)
                 {
-                    reactiveObj.RaisePropertyChanged(propName);
+                    reactiveObj.RaisePropertyChanged("VideoPaths");
                 }
-                else if (dc is INotifyPropertyChanged notifyObj)
-                {
-                    var propertyChangedField = dc.GetType()
-                        .GetField("PropertyChanged", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-                        
-                    if (propertyChangedField?.GetValue(dc) is PropertyChangedEventHandler handler)
-                    {
-                        handler.Invoke(dc, new PropertyChangedEventArgs(propName));
-                    }
-                }
-                
-                // success feedback! :)
-                ShowSuccessFeedback(control);
             }
 
+            if (singleProp != null && singleProp.CanWrite && validPaths.Any())
+            {
+                singleProp.SetValue(dc, validPaths.First());
+                if (dc is ReactiveObject reactiveObj)
+                {
+                    reactiveObj.RaisePropertyChanged("VideoPath");
+                }
+            }
+
+            ShowSuccessFeedback(control);
             e.Handled = true;
         }
-
+        
         private static async void ShowSuccessFeedback(Control control)
         {
             if (control is Border border)

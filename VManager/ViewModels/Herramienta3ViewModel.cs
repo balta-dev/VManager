@@ -109,32 +109,43 @@ namespace VManager.ViewModels
             if (!AvailableAudioCodecs.Contains(SelectedAudioCodec))
                 SelectedAudioCodec = AvailableAudioCodecs.FirstOrDefault()!;
         }
-
-        
         private async Task ConvertVideo()
         {
             HideFileReadyButton();
             _cts = new CancellationTokenSource();
 
+            if (VideoPaths.Count == 0)
+            {
+                Status = "No hay archivos seleccionados.";
+                this.RaisePropertyChanged(nameof(Status));
+                return;
+            }
+            
             try
             {
                 var processor = new VideoProcessor();
-
-                var progress = new Progress<double>(p =>
-                {
-                    Progress = (int)(p * 100);
-                    this.RaisePropertyChanged(nameof(Progress));
-                });
-
                 IsConverting = true;
                 IsOperationRunning = true;
+                
                 this.RaisePropertyChanged(nameof(IsConverting));
                 this.RaisePropertyChanged(nameof(IsOperationRunning));
 
+                int totalFiles = VideoPaths.Count;
+                int currentFileIndex = 0;
+                int successCount = 0;
+
                 foreach (var video in VideoPaths)
                 {
-                    Status = $"Procesando: {Path.GetFileName(video)}...";
+                    currentFileIndex++;
+                    Status = $"Convirtiendo ({currentFileIndex}/{totalFiles}): {Path.GetFileName(video)}...";
                     this.RaisePropertyChanged(nameof(Status));
+
+                    var progress = new Progress<double>(p =>
+                    {
+                        double globalProgress = ((currentFileIndex - 1) + p) / totalFiles;
+                        Progress = (int)(globalProgress * 100);
+                        this.RaisePropertyChanged(nameof(Progress));
+                    });
 
                     string outputPath = Path.Combine(
                         Path.GetDirectoryName(video)!,
@@ -155,25 +166,24 @@ namespace VManager.ViewModels
                     {
                         _ = SoundManager.Play("fail.wav");
                         Status = $"Error procesando {Path.GetFileName(video)}: {result.Message}";
-                        Progress = 0;
                         this.RaisePropertyChanged(nameof(Status));
-                        break; // Opcional: salir si un archivo falla
+                        break;
                     }
 
+                    successCount++;
                     _ = SoundManager.Play("success.wav");
                     SetLastCompressedFile(result.OutputPath);
                 }
 
-                // Mensaje final
-                if (VideoPaths.Count == 1)
-                    Status = $"Archivo procesado: {Path.GetFileName(VideoPaths[0])}";
-                else
-                    Status = $"Todos los archivos procesados. Último: {Path.GetFileName(VideoPaths[^1])}";
-
                 Progress = 100;
+                Status = successCount == totalFiles
+                    ? $"✓ {successCount} archivo{(successCount > 1 ? "s" : "")} convertido{(successCount > 1 ? "s" : "")} exitosamente"
+                    : $"Proceso interrumpido: {successCount}/{totalFiles} archivos completados";
+
                 IsConverting = false;
                 IsOperationRunning = false;
                 IsVideoPathSet = false;
+                
                 this.RaisePropertyChanged(nameof(Status));
                 this.RaisePropertyChanged(nameof(Progress));
                 this.RaisePropertyChanged(nameof(IsConverting));
@@ -187,6 +197,7 @@ namespace VManager.ViewModels
                 Progress = 0;
                 IsConverting = false;
                 IsOperationRunning = false;
+                
                 this.RaisePropertyChanged(nameof(Status));
                 this.RaisePropertyChanged(nameof(Progress));
                 this.RaisePropertyChanged(nameof(IsConverting));
@@ -198,8 +209,6 @@ namespace VManager.ViewModels
                 _cts = null;
             }
         }
-
         
     }
-    
 }

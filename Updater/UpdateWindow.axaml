@@ -1,0 +1,47 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="¡Actualización disponible!"
+        x:Class="Updater.UpdateWindow"
+        Width="500" Height="400"
+        MinWidth="200" MinHeight="50"
+        Background="{DynamicResource PanelBackgroundBrush}">
+    <!-- Scroll principal -->
+    <ScrollViewer Margin="10" VerticalScrollBarVisibility="Visible">
+        <StackPanel Spacing="15">
+            <TextBlock x:Name="AwaitUpdate" Text="Comprobando si hay actualizaciones disponibles..." HorizontalAlignment="Center" TextWrapping="Wrap"
+                       FontSize="15"
+                       FontWeight="Bold"
+                       Foreground="WhiteSmoke"/>
+            
+            <!-- Texto de versión -->
+            <TextBlock x:Name="VersionText" HorizontalAlignment="Center" TextWrapping="Wrap"
+                       FontSize="23"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource AccentBrush}"/>
+            
+            <!-- Panel de progreso y botón -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="5">
+                <Button x:Name="DownloadButton" Classes="Accented" IsVisible="False"
+                        Content="Descargar última versión"
+                        Width="200"
+                        Height="35"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Background="{DynamicResource AccentBrush}"
+                        FontSize="15"
+                        CornerRadius="6"/>
+            </StackPanel >
+            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="5">
+                <ProgressBar x:Name="ProgressBar" IsVisible="False" Height="5"></ProgressBar>
+                <TextBlock x:Name="ProgressText" IsVisible="False" VerticalAlignment="Center" Text="" FontSize="15"/>
+            </StackPanel>
+            
+                <!-- Release notes -->
+            <TextBlock x:Name="ReleaseNotesText"
+                       Opacity="0.85"
+                       FontSize="12"
+                       TextWrapping="Wrap"/>
+        </StackPanel>
+    </ScrollViewer>
+</Window>
