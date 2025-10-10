@@ -222,7 +222,7 @@
                             FontSize="18"
                             FontWeight="DemiBold"
                             Command="{Binding CompressCommand}" 
-                            Width="165"
+                            Width="170"
                             HotKey="Enter"
                             Margin="48,15,0,0" 
                             HorizontalAlignment="Center"/>

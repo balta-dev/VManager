@@ -141,7 +141,7 @@
                 IsEnabled="{Binding VideoPath, Converter={StaticResource ValidPathConverter}}"
                 Command="{Binding AudiofyCommand}" 
                 HotKey="Enter"
-                Width="135" 
+                Width="140" 
                 Margin="0,0,0,0" 
                 HorizontalAlignment="Center"/>
         
