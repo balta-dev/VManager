@@ -47,7 +47,7 @@ namespace VManager.Views
             
             LocalizationService.Instance.PropertyChanged += OnLocalizationChanged;
             
-            this.Opened += async (_, _) => await CheckUpdatesAsync();
+            this.Opened += async (_, _) => LaunchUpdater();
             this.Closing += MainWindow_Closing;
             this.KeyDown += OnKeyDown;
             MainSplitView.AddHandler(
@@ -91,127 +91,22 @@ namespace VManager.Views
             }
         }
         
-        private async Task CheckUpdatesAsync()
+        private void LaunchUpdater()
         {
-            var update = await UpdateChecker.CheckForUpdateAsync();
-            
-            if (update == null)
-            {
-                Console.WriteLine("No se pudo verificar actualizaciones (sin conexión y sin caché).");
-                return;
-            }
+            string updaterFile = Path.Combine(AppContext.BaseDirectory, 
+                RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Updater.exe" : "Updater");
 
-            Console.WriteLine($"Versión local: {update.CurrentVersion}");
-            Console.WriteLine($"Versión remota: {update.LatestVersion}");
-            Console.WriteLine($"Ultima vez comprobado: {update.LastChecked}");
-            if (!update.UpdateAvailable)
+            if (File.Exists(updaterFile))
             {
-                Console.WriteLine("No hay actualización disponible.");
-                return;
-            }
-            
-            if (update.UpdateAvailable && !string.IsNullOrEmpty(update.DownloadUrl))
-            {
-                var dialog = new Window
+                Process.Start(new ProcessStartInfo
                 {
-                    Title = "¡Actualización disponible!",
-                    Width = 500,
-                    Height = 400,
-                    Background = new SolidColorBrush(Color.Parse("#FF1E1E1E")),
-                    Foreground = new SolidColorBrush(Color.Parse("#FFFAFAFA")),
-                    Content = new StackPanel
-                    {
-                        Margin = new Thickness(10),
-                        Children =
-                        {
-                            new TextBlock
-                            {
-                                Text = $"Nueva versión {update.LatestVersion} disponible.",
-                                Margin = new Thickness(0,0,0,10),
-                                Foreground = new SolidColorBrush(Color.Parse("#FFFFE066")),
-                                FontSize = 23,
-                                FontWeight = FontWeight.Bold
-                            },
-                            new ScrollViewer
-                            {
-                                Height = 300,
-                                Content = new TextBlock
-                                {
-                                    Text = update.ReleaseNotes,
-                                    Opacity =  0.85,
-                                    TextWrapping = Avalonia.Media.TextWrapping.Wrap
-                                }
-                            },
-                            new Button
-                            {
-                                Content = "Descargar última versión",
-                                Classes = {"Accented"},
-                                FontSize = 15
-                                // Command se setea después
-                            }
-                        }
-                    }
-                };
-
-                var button = (dialog.Content as StackPanel)!.Children.OfType<Button>().First();
-                button.Command = ReactiveUI.ReactiveCommand.CreateFromTask(async () =>
-                {
-                    Console.WriteLine("Usuario presionó descargar. Descargando actualización...");
-
-                    string tempFolder = Path.Combine(Path.GetTempPath(), "VManager_Update");
-                    Directory.CreateDirectory(tempFolder);
-    
-                    Console.WriteLine($"Carpeta temporal creada: {tempFolder}");
-
-                    // Descargar
-                    using var client = new HttpClient();
-                    var fileBytes = await client.GetByteArrayAsync(update.DownloadUrl);
-
-                    string downloadedFile;
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        downloadedFile = Path.Combine(tempFolder, "update.zip");
-                        await File.WriteAllBytesAsync(downloadedFile, fileBytes);
-                        System.IO.Compression.ZipFile.ExtractToDirectory(downloadedFile, tempFolder);
-                    }
-                    else // Linux o macOS
-                    {
-                        downloadedFile = Path.Combine(tempFolder, "update.tar.gz");
-                        await File.WriteAllBytesAsync(downloadedFile, fileBytes);
-
-                        // Extraer con tar
-                        var tarProcess = new ProcessStartInfo
-                        {
-                            FileName = "tar",
-                            Arguments = $"-xzf \"{downloadedFile}\" -C \"{tempFolder}\"",
-                            UseShellExecute = false,
-                            CreateNoWindow = true
-                        };
-                        var process = Process.Start(tarProcess);
-                        await process!.WaitForExitAsync();
-                    }
-
-                    // Ahora sí lanzar el updater
-                    string updaterFileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) 
-                        ? "Updater.exe" 
-                        : "Updater";
-
-                    string updaterPath = Path.Combine(AppContext.BaseDirectory, updaterFileName);
-
-                    var psi = new ProcessStartInfo
-                    {
-                        FileName = updaterPath,
-                        Arguments = $"\"{AppContext.BaseDirectory}\" \"{tempFolder}\"",
-                        UseShellExecute = false,
-                    };
-                    Process.Start(psi);
-                    
-                    UpdateChecker.InvalidateCache();
-
-                    Environment.Exit(0);
-                }, outputScheduler: AvaloniaScheduler.Instance);
-
-                dialog.Show();
+                    FileName = updaterFile,
+                    UseShellExecute = false, // importante para que se abra la ventana UI
+                });
+            }
+            else
+            {
+                Console.WriteLine("Updater no encontrado.");
             }
         }
         

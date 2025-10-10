@@ -8,8 +8,8 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <ApplicationIcon>Assets\VManager.ico</ApplicationIcon>
-    <Version>1.4.1</Version>
-    <FileVersion>1.4.1.0</FileVersion>
+    <Version>1.3.9</Version>
+    <FileVersion>1.3.9.0</FileVersion>
     <Authors>Baltazar Franz</Authors>
     <Product>VManager</Product>
     <Company>Baltazar Franz</Company>
@@ -41,13 +41,13 @@
 
   <!-- Paquetes NuGet -->
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.3.5" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.3.5" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.5" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.5" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.5" />
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.5" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="Avalonia" Version="11.3.7" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.7" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.7" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.7" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.7" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.7" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="FFMpegCore" Version="5.2.0" />
     <PackageReference Include="NAudio" Version="2.2.1" />
   </ItemGroup>

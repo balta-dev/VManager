@@ -1,5 +1,8 @@
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Reactive.Linq;
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -18,7 +21,9 @@ public partial class App : Application
 {
     public override void Initialize()
     {
+        HandleUpdaterTempFolder();
         AvaloniaXamlLoader.Load(this);
+        
         // Suscribirse a cambios de tema para actualizar brushes automáticamente
         this.GetObservable(ActualThemeVariantProperty).Subscribe(_ => ApplyCustomTheme());
     }
@@ -54,4 +59,51 @@ public partial class App : Application
             Resources["BorderBrushPrimary"] = Resources["BorderBrushPrimaryLight"];
         }
     }
+    
+    private void HandleUpdaterTempFolder()
+    {
+        string tempFolder = Path.Combine(Path.GetTempPath(), "VManager_Update");
+        string updaterFileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "Updater.exe" : "Updater";
+        string tempUpdaterPath = Path.Combine(tempFolder, updaterFileName);
+        string targetUpdaterPath = Path.Combine(AppContext.BaseDirectory, updaterFileName);
+
+        if (!Directory.Exists(tempFolder))
+            return; // no hay nada que hacer
+
+        try
+        {
+            if (File.Exists(tempUpdaterPath))
+            {
+                Console.WriteLine("Actualizando Updater desde carpeta temporal...");
+
+                // 1️⃣ Matar Updater si está corriendo (por si acaso)
+                foreach (var p in Process.GetProcessesByName("Updater"))
+                {
+                    try
+                    {
+                        p.Kill();
+                        p.WaitForExit(5000);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"No se pudo cerrar Updater: {ex.Message}");
+                    }
+                }
+
+                // 2️⃣ Reemplazar Updater
+                File.Copy(tempUpdaterPath, targetUpdaterPath, overwrite: true);
+                Console.WriteLine("Updater reemplazado correctamente.");
+
+                // 3️⃣ Borrar carpeta temporal completa
+                Directory.Delete(tempFolder, true);
+                Console.WriteLine($"Carpeta temporal {tempFolder} eliminada.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al manejar carpeta temporal de Updater: {ex.Message}");
+        }
+    }
+
+
 }
