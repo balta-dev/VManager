@@ -35,6 +35,7 @@ public abstract class ViewModelBase : ReactiveObject
     private bool _isClicked;
     private bool _isOperationRunning;
     private bool _isDialogVisible;
+    private string _remainingTime = "00:00";
     public bool IsDialogVisible
     {
         get => _isDialogVisible;
@@ -43,7 +44,12 @@ public abstract class ViewModelBase : ReactiveObject
     public bool IsOperationRunning
     {
         get => _isOperationRunning;
-        set => this.RaiseAndSetIfChanged(ref _isOperationRunning, value);
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _isOperationRunning, value);
+            this.RaisePropertyChanged(nameof(ShouldShowRemainingTime));
+        }
+        
     }
     
     public string VideoPath
@@ -71,6 +77,20 @@ public abstract class ViewModelBase : ReactiveObject
         get => _progress;
         set => this.RaiseAndSetIfChanged(ref _progress, value);
     }
+    public string RemainingTime
+    {
+        get => _remainingTime;
+        set
+        {
+            if (_remainingTime != value)
+            {
+                _remainingTime = value;
+                this.RaisePropertyChanged(nameof(RemainingTime));
+            }
+        }
+    }
+    
+    public bool ShouldShowRemainingTime => IsOperationRunning && !ConfigurationService.Load().HideRemainingTime;
 
     public string Status
     {
@@ -246,6 +266,11 @@ public abstract class ViewModelBase : ReactiveObject
                 // Dispara PropertyChanged en todo el binding que use L
                 this.RaisePropertyChanged(nameof(LocalizationService));
             }
+        };
+        
+        ConfigurationService.HideRemainingTimeChanged += (_, _) =>
+        {
+            this.RaisePropertyChanged(nameof(ShouldShowRemainingTime));
         };
         
     }

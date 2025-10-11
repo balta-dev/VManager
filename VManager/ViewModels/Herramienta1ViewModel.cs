@@ -175,10 +175,12 @@ namespace VManager.ViewModels
                 this.RaisePropertyChanged(nameof(Status));
 
                 var processor = new VideoProcessor();
-                var progress = new Progress<double>(p =>
+                var progress = new Progress<IVideoProcessor.ProgressInfo>(info =>
                 {
-                    Progress = (int)(p * 100);
+                    Progress = (int)(info.Progress * 100);
+                    RemainingTime = info.Remaining.ToString(@"mm\:ss");
                     this.RaisePropertyChanged(nameof(Progress));
+                    this.RaisePropertyChanged(nameof(RemainingTime));
                 });
 
                 Status = "Cortando...";

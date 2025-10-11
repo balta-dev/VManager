@@ -2,8 +2,6 @@ using System;
 using System.IO;
 using System.Text.Json;
 
-namespace VManager.Services;
-
 public class ConfigurationService
 {
     private static readonly string ConfigPath = Path.Combine(
@@ -11,13 +9,33 @@ public class ConfigurationService
         "VManager",
         "config.json");
 
+    // Propiedad estática para acceso rápido
+    private static bool _hideRemainingTime;
+    public static bool HideRemainingTime
+    {
+        get => _hideRemainingTime;
+        private set
+        {
+            if (_hideRemainingTime != value)
+            {
+                _hideRemainingTime = value;
+                HideRemainingTimeChanged?.Invoke(null, value);
+            }
+        }
+    }
+
+    // Evento para notificar cambios
+    public static event EventHandler<bool>? HideRemainingTimeChanged;
+
     public class AppConfig
     {
-        public string Language { get; set; } = "Español";          // Idioma
-        public bool EnableSounds { get; set; } = true;             // Sonidos activados/desactivados
-        public bool EnableNotifications { get; set; } = true;      // Notificaciones activadas/desactivadas
-        public bool UseCustomIcon { get; set; } = true;            // Usar icono personalizado
+        public string Language { get; set; } = "Español";
+        public bool EnableSounds { get; set; } = true;
+        public bool EnableNotifications { get; set; } = true;
+        public bool UseCustomIcon { get; set; } = true;
+        public bool HideRemainingTime { get; set; }
     }
+
     public static AppConfig Load()
     {
         try
@@ -31,11 +49,15 @@ public class ConfigurationService
             }
 
             var json = File.ReadAllText(ConfigPath);
-            return JsonSerializer.Deserialize<AppConfig>(json) ?? new AppConfig();
+            var config = JsonSerializer.Deserialize<AppConfig>(json) ?? new AppConfig();
+            
+            // Actualizar propiedad estática
+            HideRemainingTime = config.HideRemainingTime;
+            
+            return config;
         }
         catch
         {
-            // Si algo falla, devolver configuración por defecto
             return new AppConfig();
         }
     }
@@ -47,10 +69,13 @@ public class ConfigurationService
             Directory.CreateDirectory(Path.GetDirectoryName(ConfigPath)!);
             var json = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(ConfigPath, json);
+            
+            // Actualizar propiedad estática
+            HideRemainingTime = config.HideRemainingTime;
         }
         catch
         {
-            // Manejar errores según convenga (log, notificación, etc.)
+            // Manejar errores según convenga
         }
     }
 }

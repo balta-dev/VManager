@@ -178,15 +178,20 @@
                     </Canvas.Transitions>
 
                     <Grid Margin="0,150,0,0" Width="{Binding GridWidth}" HorizontalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
-                        <ProgressBar Grid.Column="0" Minimum="0" Maximum="100" Foreground="{DynamicResource AccentBrush}"
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/> <!-- Tiempo restante -->
+                            <RowDefinition Height="Auto"/> <!-- Barra de progreso -->
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Barra de progreso -->
+                        <ProgressBar Grid.Row="1" Minimum="0" Maximum="100" 
+                                     Foreground="{DynamicResource AccentBrush}" ShowProgressText="True"
                                      Value="{Binding Progress}" Height="20"/>
-                        <TextBlock Grid.Column="1" Text="{Binding Progress, StringFormat={}{0}%}"
-                                   VerticalAlignment="Center" Margin="8,0,0,0"/>
+                        
+                        <!-- Tiempo restante encima de la barra -->
+                        <TextBlock Grid.Row="0" FontSize="10" IsVisible="{Binding ShouldShowRemainingTime}" Text="{Binding RemainingTime, StringFormat=Tiempo estimado restante: {0}}" 
+                                   HorizontalAlignment="Center" Margin="0,2,0,4"/>
+                        
                     </Grid>
                 </Canvas>    
                 

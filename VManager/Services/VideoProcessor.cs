@@ -14,7 +14,6 @@ namespace VManager.Services
     public class VideoProcessor : IVideoProcessor
     {
         private readonly string _ffmpegPath = FFmpegManager.FfmpegPath;
-
         public static class ErrorMessages
         {
             public const string FileNotFound = "Archivo no encontrado.";
@@ -57,7 +56,7 @@ namespace VManager.Services
             string outputPath,
             FFMpegArgumentProcessor args,
             double duration,
-            IProgress<double> progress,
+            IProgress<IVideoProcessor.ProgressInfo> progress,
             CancellationToken cancellationToken)
         {
             var process = new Process
@@ -108,9 +107,29 @@ namespace VManager.Services
                             if (line.Contains("time="))
                             {
                                 var timeMatch = Regex.Match(line, @"time=(\d{2}:\d{2}:\d{2}\.\d{2})");
+                                var speedMatch = Regex.Match(line, @"speed=(\d+(\.\d+)?)x");
+
                                 if (timeMatch.Success && TimeSpan.TryParse(timeMatch.Groups[1].Value, out var time))
                                 {
-                                    progress.Report(Math.Min(time.TotalSeconds / duration, 1.0));
+                                    double processed = time.TotalSeconds;
+                                    double progressValue = Math.Min(processed / duration, 1.0);
+
+                                    // tiempo restante del video
+                                    double remainingVideo = duration - processed;
+
+                                    // velocidad de procesamiento (1.0x = tiempo real)
+                                    double speed = speedMatch.Success 
+                                        ? double.Parse(speedMatch.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture) 
+                                        : 1.0;
+
+                                    // tiempo real estimado restante (ajustado por velocidad)
+                                    TimeSpan remainingReal = TimeSpan.FromSeconds(remainingVideo / speed);
+
+                                    // debug opcional
+                                    Console.WriteLine($"[DEBUG] Progreso: {progressValue:P2}, Restante real: {remainingReal}");
+
+                                    // reportamos progreso usando tu ProgressInfo
+                                    progress.Report(new IVideoProcessor.ProgressInfo(progressValue, remainingReal));
                                 }
                             }
                         }
@@ -165,7 +184,7 @@ namespace VManager.Services
             string outputPath,
             TimeSpan start,
             TimeSpan duration,
-            IProgress<double> progress,
+            IProgress<IVideoProcessor.ProgressInfo> progress,
             CancellationToken cancellationToken = default)
         {
             var analysisResult = await AnalyzeVideoAsync(inputPath);
@@ -213,7 +232,7 @@ namespace VManager.Services
             int compressionPercentage,
             string? videoCodec,
             string? audioCodec,
-            IProgress<double> progress,
+            IProgress<IVideoProcessor.ProgressInfo> progress,
             CancellationToken cancellationToken = default)
         {
             if (compressionPercentage <= 0 || compressionPercentage > 100)
@@ -258,7 +277,7 @@ namespace VManager.Services
             string? videoCodec,
             string? audioCodec,
             string selectedFormat,
-            IProgress<double> progress,
+            IProgress<IVideoProcessor.ProgressInfo> progress,
             CancellationToken cancellationToken = default)
         {
             var (selectedVideoCodec, selectedAudioCodec) = GetDefaultCodecs(videoCodec, audioCodec);
@@ -294,14 +313,14 @@ namespace VManager.Services
             string? videoCodec,
             string? audioCodec,
             string selectedAudioFormat,
-            IProgress<double> progress,
+            IProgress<IVideoProcessor.ProgressInfo> progress,
             CancellationToken cancellationToken = default)
         {
             Console.WriteLine($"[DEBUG] Audiofy - Origen: {inputPath}, Formato: '{selectedAudioFormat}'");
 
             if (string.IsNullOrEmpty(selectedAudioFormat))
                 return new ProcessingResult(false, ErrorMessages.InvalidAudioFormat);
-
+            
             var analysisResult = await AnalyzeVideoAsync(inputPath);
             if (!analysisResult.Success)
                 return new ProcessingResult(false, analysisResult.Message);

@@ -62,7 +62,7 @@
             <TextBlock Text="{Binding L[Configuration.Fields.HideRemainingTime]}"
                        FontSize="14"
                        VerticalAlignment="Center"/>
-            <CheckBox IsChecked="True" IsEnabled="False"/>
+            <CheckBox IsChecked="{Binding HideRemainingTime}"/>
           </StackPanel>
           
           <!-- Ocultar notificaciones  -->

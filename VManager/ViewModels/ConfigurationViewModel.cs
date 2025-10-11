@@ -26,6 +26,13 @@ namespace VManager.ViewModels
             get => _enableNotifications;
             set => this.RaiseAndSetIfChanged(ref _enableNotifications, value);
         }
+        
+        private bool _hideRemainingTime = true;
+        public bool HideRemainingTime
+        {
+            get => _hideRemainingTime;
+            set => this.RaiseAndSetIfChanged(ref _hideRemainingTime, value);
+        }
 
         private string _idiomaSeleccionado = "";
         public string IdiomaSeleccionado
@@ -101,6 +108,7 @@ namespace VManager.ViewModels
             EnableSounds = _config.EnableSounds;
             EnableNotifications = _config.EnableNotifications;
             UseCustomIcon = _config.UseCustomIcon;
+            HideRemainingTime = _config.HideRemainingTime;
 
             // Guardar cambios automáticamente
             // Suscribirse a cambios de EnableSounds y EnableNotifications
@@ -119,8 +127,9 @@ namespace VManager.ViewModels
                 });
 
             // Otros campos que quieras guardar automáticamente
-            this.WhenAnyValue(x => x.IdiomaSeleccionado, x => x.UseCustomIcon)
+            this.WhenAnyValue(x => x.IdiomaSeleccionado, x => x.UseCustomIcon,   x => x.HideRemainingTime)
                 .Subscribe(_ => SaveConfig());
+            
         }
 
         private void SaveConfig()
@@ -129,6 +138,7 @@ namespace VManager.ViewModels
             _config.EnableSounds = EnableSounds;
             _config.EnableNotifications = EnableNotifications;
             _config.UseCustomIcon = UseCustomIcon;
+            _config.HideRemainingTime = HideRemainingTime;
 
             ConfigurationService.Save(_config);
         }

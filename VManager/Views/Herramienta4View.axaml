@@ -117,14 +117,19 @@
 
         <!-- Barra de progreso + porcentaje -->
         <Grid Margin="0,20,0,0" HorizontalAlignment="Stretch">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-          </Grid.ColumnDefinitions>
-          <ProgressBar Grid.Column="0" Minimum="0" Maximum="100" 
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Tiempo restante -->
+            <RowDefinition Height="Auto"/> <!-- Barra -->
+          </Grid.RowDefinitions>
+          
+          <!-- Barra de progreso -->
+          <ProgressBar Grid.Row="1" Minimum="0" Maximum="100" ShowProgressText="True"
                        Value="{Binding Progress}" Height="20"/>
-          <TextBlock Grid.Column="1" Text="{Binding Progress, StringFormat={}{0}%}"
-                     VerticalAlignment="Center" Margin="8,0,0,0"/>
+          
+          <!-- Tiempo restante -->
+          <TextBlock Grid.Row="0" FontSize="10" IsVisible="{Binding ShouldShowRemainingTime}" Text="{Binding RemainingTime, StringFormat=Tiempo estimado restante: {0}}"
+                     HorizontalAlignment="Center" Margin="0,0,0,4"/>
+          
         </Grid>
 
         <!-- Estado -->

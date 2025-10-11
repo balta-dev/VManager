@@ -5,12 +5,13 @@ namespace VManager.Services
 {
     public interface IVideoProcessor
     {
+        public record ProgressInfo(double Progress, TimeSpan Remaining);
         Task<ProcessingResult> CutAsync(
             string inputPath,
             string outputPath,
             TimeSpan start,
             TimeSpan duration,
-            IProgress<double> progress,
+            IProgress<ProgressInfo> progress,
             CancellationToken cancellationToken = default);
 
         Task<ProcessingResult> CompressAsync(
@@ -19,7 +20,7 @@ namespace VManager.Services
             int compressionPercentage,
             string videoCodec,
             string audioCodec,
-            IProgress<double> progress,
+            IProgress<ProgressInfo> progress,
             CancellationToken cancellationToken = default);
 
         Task<ProcessingResult> ConvertAsync(
@@ -28,7 +29,7 @@ namespace VManager.Services
             string? videoCodec,
             string? audioCodec,
             string selectedFormat,
-            IProgress<double> progress,
+            IProgress<ProgressInfo> progress,
             CancellationToken cancellationToken = default);
     }
     //public record ProcessingResult(bool Success, string Message, string? OutputFile = null);

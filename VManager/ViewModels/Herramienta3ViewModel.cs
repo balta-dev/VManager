@@ -140,11 +140,13 @@ namespace VManager.ViewModels
                     Status = $"Convirtiendo ({currentFileIndex}/{totalFiles}): {Path.GetFileName(video)}...";
                     this.RaisePropertyChanged(nameof(Status));
 
-                    var progress = new Progress<double>(p =>
+                    var progress = new Progress<IVideoProcessor.ProgressInfo>(p =>
                     {
-                        double globalProgress = ((currentFileIndex - 1) + p) / totalFiles;
+                        double globalProgress = ((currentFileIndex - 1) + p.Progress) / totalFiles;
                         Progress = (int)(globalProgress * 100);
+                        RemainingTime = p.Remaining.ToString(@"mm\:ss");
                         this.RaisePropertyChanged(nameof(Progress));
+                        this.RaisePropertyChanged(nameof(RemainingTime));
                     });
 
                     string outputPath = Path.Combine(
@@ -177,7 +179,7 @@ namespace VManager.ViewModels
 
                 Progress = 100;
                 Status = successCount == totalFiles
-                    ? $"✓ {successCount} archivo{(successCount > 1 ? "s" : "")} convertido{(successCount > 1 ? "s" : "")} exitosamente"
+                    ? $"¡{successCount} archivo{(successCount > 1 ? "s" : "")} convertido{(successCount > 1 ? "s" : "")} exitosamente!"
                     : $"Proceso interrumpido: {successCount}/{totalFiles} archivos completados";
 
                 IsConverting = false;

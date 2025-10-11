@@ -34,6 +34,7 @@ namespace VManager.Controls
             public const double MovableOffset = 80;
             public const double BaseY = 150;
             public const double CharacterWidthEstimate = 6.9; // Restaurado de la versión anterior
+            public const double RemainingTimeOffset = -18;
         }
 
         public FluidWrapController(
@@ -65,6 +66,13 @@ namespace VManager.Controls
 
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
             //_mainCanvas.LayoutUpdated += (s, e) => Console.WriteLine("Layout actualizado");
+            
+            // Suscribirse al cambio de configuración
+            ConfigurationService.HideRemainingTimeChanged += (_, _) =>
+            {
+                Dispatcher.UIThread.Post(UpdateControlPositions);
+            };
+            
             InitializePositions();
         }
 
@@ -209,30 +217,35 @@ namespace VManager.Controls
             double canvasWidth = _mainCanvas.Bounds.Width;
             bool isSmallScreen = canvasWidth < LayoutConfig.ThresholdWidth;
             _viewModel.GridWidth = canvasWidth;
-            //Console.WriteLine($"Actualizando GridWidth a: {canvasWidth}, IsSmallScreen: {isSmallScreen}");
 
             foreach (var config in _secondaryControls)
             {
                 double top = _originalTops[config.Control] + (isSmallScreen ? LayoutConfig.MovableOffset : 0);
+        
+                // Ajustar top si es la barra de progreso y ShouldShowRemainingTime es false
+                if (config.Control == _secondaryControls[0].Control) // BarraProgreso
+                {
+                    bool shouldShow = _viewModel is ViewModelBase baseVm 
+                        ? baseVm.IsOperationRunning && !ConfigurationService.HideRemainingTime
+                        : !ConfigurationService.HideRemainingTime;
+            
+                    if (shouldShow)
+                    {
+                        top += LayoutConfig.RemainingTimeOffset; // +12
+                    }
+                }
+        
                 Canvas.SetTop(config.Control, top);
 
                 if (config.Control == _secondaryControls[0].Control) // BarraProgreso
                 {
                     Canvas.SetLeft(config.Control, 0);
-                    //Console.WriteLine($"Control: {config.Control.Name}, Left=0, CanvasWidth={canvasWidth}");
                 }
                 else
                 {
-                    double controlWidth = config.Control.DesiredSize.Width > 0
-                        ? config.Control.DesiredSize.Width
-                        : config.Control.Bounds.Width;
-
-                    double left = config.UseEstimatedWidth
-                        ? (canvasWidth - GetEstimatedTextWidth()) / 2
-                        : (canvasWidth - controlWidth) / 2;
-
+                    double controlWidth = config.Control.DesiredSize.Width > 0 ? config.Control.DesiredSize.Width : config.Control.Bounds.Width;
+                    double left = config.UseEstimatedWidth ? (canvasWidth - GetEstimatedTextWidth()) / 2 : (canvasWidth - controlWidth) / 2;
                     left = AdjustHorizontalCenter(config.Control, left);
-                    //Console.WriteLine($"Control: {config.Control.Name}, Left={left}, Width={controlWidth}, Offset={config.HorizontalOffset}");
                     Canvas.SetLeft(config.Control, left);
                 }
 

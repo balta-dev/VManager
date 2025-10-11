@@ -78,11 +78,22 @@ namespace VManager.ViewModels
                 {
                     currentFileIndex++;
                     
-                    var progress = new Progress<double>(p =>
+                    var progress = new Progress<IVideoProcessor.ProgressInfo>(p =>
                     {
-                        double globalProgress = ((currentFileIndex - 1) + p) / totalFiles;
+                        // Calculamos progreso global si tenés múltiples archivos
+                        double globalProgress = ((currentFileIndex - 1) + p.Progress) / totalFiles;
                         Progress = (int)(globalProgress * 100);
+
+                        // Aseguramos que Remaining nunca sea negativo
+                        var remaining = p.Remaining.TotalSeconds < 0 ? TimeSpan.Zero : p.Remaining;
+
+                        // Formateamos según duración
+                        RemainingTime = remaining.TotalHours >= 1
+                            ? remaining.ToString(@"hh\:mm\:ss")
+                            : remaining.ToString(@"mm\:ss");
+
                         this.RaisePropertyChanged(nameof(Progress));
+                        this.RaisePropertyChanged(nameof(RemainingTime));
                     });
 
                     string outputPath = GetOutputPath(videoPath);
@@ -124,7 +135,7 @@ namespace VManager.ViewModels
 
                 Progress = 100;
                 Status = successCount == totalFiles
-                    ? $"✓ {successCount} archivo{(successCount > 1 ? "s" : "")} procesado{(successCount > 1 ? "s" : "")} exitosamente"
+                    ? $"¡{successCount} archivo{(successCount > 1 ? "s" : "")} procesado{(successCount > 1 ? "s" : "")} exitosamente!"
                     : $"Proceso interrumpido: {successCount}/{totalFiles} archivos completados";
                 
                 this.RaisePropertyChanged(nameof(Status));
