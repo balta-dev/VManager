@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag para la release (ej: v1.3.2)'
+        description: 'Tag para la release (ej: v1.5.0)'
         required: true
-        default: 'v1.3.2'
+        default: 'v1.5.0'
 
 jobs:
   build:
@@ -52,8 +52,8 @@ jobs:
       - name: Publish VManager
         run: dotnet publish VManager/VManager.csproj -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
 
-      - name: Publish Updater (Trimmed)
-        run: dotnet publish Updater/Updater.csproj -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:PublishTrimmed=true -p:TrimMode=link
+      - name: Publish Updater
+        run: dotnet publish Updater/Updater.csproj -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
 
       - name: Create Archive
         run: ${{ matrix.archive-cmd }}
