@@ -17,18 +17,18 @@ public class Notifier
             if (_enabled != value)
             {
                 _enabled = value;
-                System.Console.WriteLine($"Sonidos {(value ? "activados" : "desactivados")}");
+                System.Console.WriteLine($"Notificaciones {(value ? "activadas" : "desactivadas")}");
             }
         }
     }
     
     public void ShowNotificationLinux(string title, string message)
     {
-        
+        var iconPath = Path.GetFullPath("Assets/VManager.ico");
         Process.Start(new ProcessStartInfo
         {
             FileName = "notify-send",
-            Arguments = $"\"{title}\" \"{message}\"",
+            Arguments = $"\"{title}\" \"{message}\" -i \"{iconPath}\"",
             UseShellExecute = true
         });
     }

@@ -12,8 +12,8 @@ namespace VManager.ViewModels
     {
         private double _gridWidth = 511;
         private double _heightBlock = 300;
-        private string _selectedVideoCodec = "";
-        private string _selectedAudioCodec = "";
+        public string _selectedVideoCodec = "";
+        public string _selectedAudioCodec = "";
         public List<string> _allVideoCodecs = new();
         public List<string> _allAudioCodecs = new();
         public ObservableCollection<string> AvailableVideoCodecs { get; } = new();

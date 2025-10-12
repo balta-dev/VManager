@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using Avalonia;
+using VManager.Views;
 
 namespace VManager.ViewModels;
 
@@ -104,7 +105,6 @@ public class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel()
     {
-        
         ToggleThemeCommand = ReactiveCommand.Create(ToggleTheme, outputScheduler: AvaloniaScheduler.Instance);
         OpenGitHubCommand = ReactiveCommand.Create(OpenGitHub, outputScheduler: AvaloniaScheduler.Instance);
         
@@ -199,8 +199,6 @@ public class MainWindowViewModel : ViewModelBase
             {
                 IsDarkTheme = theme == ThemeVariant.Dark;
             });
-
-        ToggleThemeCommand = ReactiveCommand.Create(ToggleTheme, outputScheduler: AvaloniaScheduler.Instance);
         
         if (_configuration is ConfigurationViewModel configVM)
         {
@@ -212,6 +210,8 @@ public class MainWindowViewModel : ViewModelBase
         }
         
     }
+    
+    public ConfigurationViewModel Configuration => _configuration; 
     
     private void ToggleTheme()
     {

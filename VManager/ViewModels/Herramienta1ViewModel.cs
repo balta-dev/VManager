@@ -138,6 +138,21 @@ namespace VManager.ViewModels
             return false;
         }
         
+        public override void ClearInfo()
+        {
+            // Primero ejecuta el ClearInfo del base
+            base.ClearInfo();
+
+            // Ahora resetea propiedades propias de Herramienta1
+            TiempoDesde = "";
+            TiempoHasta = "";
+            IsConverting = false;
+
+            this.RaisePropertyChanged(nameof(TiempoDesde));
+            this.RaisePropertyChanged(nameof(TiempoHasta));
+            this.RaisePropertyChanged(nameof(IsConverting));
+        }
+        
         private async Task CutVideo()
         {
             HideFileReadyButton();
@@ -148,6 +163,8 @@ namespace VManager.ViewModels
                 _ = SoundManager.Play("fail.wav");
                 Status = "Tiempo 'desde' inválido";
                 this.RaisePropertyChanged(nameof(Status));
+                TiempoDesde = "";
+                this.RaisePropertyChanged(nameof(TiempoDesde));
                 return;
             }
 
@@ -156,6 +173,8 @@ namespace VManager.ViewModels
                 _ = SoundManager.Play("fail.wav");
                 Status = "Tiempo 'hasta' inválido";
                 this.RaisePropertyChanged(nameof(Status));
+                TiempoHasta = "";
+                this.RaisePropertyChanged(nameof(TiempoHasta));
                 return;
             }
 

@@ -113,11 +113,16 @@
     "Title": "Settings",
     "Fields": {
       "Language": "Language:",
+      "Appearance": "Appearance",
       "ShowProfileIcon": "Show profile icon?",
+      "Accent": "Accent color:",
+      "Behaviour": "Behaviour",
       "HideRemainingTime": "Hide remaining time?",
-      "EnableDebug": "Enable log output (DEBUG)",
       "HideNotifications": "Hide notifications?",
-      "EnableSounds": "Disable sounds?"
+      "EnableSounds": "Disable sounds?",
+      "Advanced": "Advanced",
+      "EnableDebug": "Enable log output (DEBUG)",
+      "Hardware": "Recalculate hardware"
     }
   },
   "CancelDialog": {

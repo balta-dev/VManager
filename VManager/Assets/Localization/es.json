@@ -113,11 +113,16 @@
     "Title": "Configuraciones",
     "Fields": {
       "Language": "Idioma:",
+      "Appearance": "Apariencia",
       "ShowProfileIcon": "¿Mostrar ícono de perfil?",
+      "Accent": "Color de acento:",
+      "Behaviour": "Comportamiento",
       "HideRemainingTime": "¿Ocultar tiempo restante?",
-      "EnableDebug": "Habilitar salida de log (DEBUG)",
       "HideNotifications": "¿Ocultar notificaciones?",
-      "EnableSounds": "¿Desactivar sonidos?"
+      "EnableSounds": "¿Desactivar sonidos?",
+      "Advanced": "Avanzado",
+      "EnableDebug": "Habilitar salida de log (DEBUG)",
+      "Hardware": "Recalcular hardware"
     }
   },
   "CancelDialog": {

@@ -1,11 +1,18 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Reactive;
+using System.Reactive.Linq;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media;
+using Avalonia.ReactiveUI;
 using ReactiveUI;
 using VManager.Services;
+using VManager.Views;
 
 namespace VManager.ViewModels
 {
-    public class ConfigurationViewModel : ViewModelBase
+    public class ConfigurationViewModel : CodecViewModelBase
     {
         private bool isVideoPathSet; //por ser abstract
         public override bool IsVideoPathSet
@@ -89,7 +96,7 @@ namespace VManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref _enableSounds, value);
         }
         
-        private bool _useCustomIcon = true;
+        private bool _useCustomIcon = false;
         public bool UseCustomIcon
         {
             get => _useCustomIcon;
@@ -97,10 +104,30 @@ namespace VManager.ViewModels
             
         }
         
+        private Color? _selectedColor;
+        public Color? SelectedColor
+        {
+            get => _selectedColor;
+            set => this.RaiseAndSetIfChanged(ref _selectedColor, value);
+        }
+        public ReactiveCommand<Unit, Unit> RefreshCodecsCommand { get; }
+        public ReactiveCommand<Unit, Unit> ResetAccentColorCommand { get; }
+        
         private readonly ConfigurationService.AppConfig _config;
+        
         public ConfigurationViewModel()
         {
-            // Cargar configuración al inicio
+            RefreshCodecsCommand = ReactiveCommand.CreateFromTask(ReloadCodecsAsync, outputScheduler: AvaloniaScheduler.Instance);
+            ResetAccentColorCommand = ReactiveCommand.Create<Unit>(
+                () =>
+                {
+                    SelectedColor = null;
+                    SelectedColor = null; // necesito ponerlo por segunda vez, por algun motivo no funciona distinto
+                    return Unit.Default; // <- importante para que sea Unit
+                },
+                outputScheduler: AvaloniaScheduler.Instance
+            );
+            
             _config = ConfigurationService.Load();
 
             // Inicializar propiedades
@@ -109,6 +136,7 @@ namespace VManager.ViewModels
             EnableNotifications = _config.EnableNotifications;
             UseCustomIcon = _config.UseCustomIcon;
             HideRemainingTime = _config.HideRemainingTime;
+            SelectedColor = _config.SelectedColor;
 
             // Guardar cambios automáticamente
             // Suscribirse a cambios de EnableSounds y EnableNotifications
@@ -125,9 +153,9 @@ namespace VManager.ViewModels
                     Notifier.Enabled = val;         // Actúa en la app
                     SaveConfig();                   // Guarda en JSON
                 });
-
+            
             // Otros campos que quieras guardar automáticamente
-            this.WhenAnyValue(x => x.IdiomaSeleccionado, x => x.UseCustomIcon,   x => x.HideRemainingTime)
+            this.WhenAnyValue(x => x.IdiomaSeleccionado, x => x.UseCustomIcon, x => x.HideRemainingTime, x => x.SelectedColor)
                 .Subscribe(_ => SaveConfig());
             
         }
@@ -139,6 +167,7 @@ namespace VManager.ViewModels
             _config.EnableNotifications = EnableNotifications;
             _config.UseCustomIcon = UseCustomIcon;
             _config.HideRemainingTime = HideRemainingTime;
+            _config.SelectedColor = SelectedColor;
 
             ConfigurationService.Save(_config);
         }

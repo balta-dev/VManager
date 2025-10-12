@@ -1,6 +1,9 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using Avalonia.Media;
+using VManager.Services;
 
 public class ConfigurationService
 {
@@ -26,14 +29,23 @@ public class ConfigurationService
 
     // Evento para notificar cambios
     public static event EventHandler<bool>? HideRemainingTimeChanged;
+    
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        WriteIndented = true,
+        Converters = { new ColorJsonConverter() }
+    };
 
     public class AppConfig
     {
         public string Language { get; set; } = "Español";
         public bool EnableSounds { get; set; } = true;
         public bool EnableNotifications { get; set; } = true;
-        public bool UseCustomIcon { get; set; } = true;
+        public bool UseCustomIcon { get; set; }
         public bool HideRemainingTime { get; set; }
+        
+        [JsonConverter(typeof(ColorJsonConverter))]
+        public Color? SelectedColor { get; set; }
     }
 
     public static AppConfig Load()
@@ -49,7 +61,7 @@ public class ConfigurationService
             }
 
             var json = File.ReadAllText(ConfigPath);
-            var config = JsonSerializer.Deserialize<AppConfig>(json) ?? new AppConfig();
+            var config = JsonSerializer.Deserialize<AppConfig>(json, JsonOptions) ?? new AppConfig();
             
             // Actualizar propiedad estática
             HideRemainingTime = config.HideRemainingTime;
@@ -67,7 +79,7 @@ public class ConfigurationService
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(ConfigPath)!);
-            var json = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
+            var json = JsonSerializer.Serialize(config, JsonOptions);
             File.WriteAllText(ConfigPath, json);
             
             // Actualizar propiedad estática
@@ -78,4 +90,5 @@ public class ConfigurationService
             // Manejar errores según convenga
         }
     }
+    
 }

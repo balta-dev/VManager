@@ -20,6 +20,7 @@ using Avalonia.Media;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using ReactiveUI;
 using VManager.Services;
 using VManager.ViewModels;
 
@@ -28,6 +29,7 @@ namespace VManager.Views
  
     public partial class MainWindow : Window
     {
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -47,6 +49,16 @@ namespace VManager.Views
                 {
                     ApplyCustomAccent();
                 });
+            
+            this.Opened += (_, _) => {
+                
+                if (DataContext is MainWindowViewModel vm)
+                {
+                    var configVM = vm.Configuration; 
+                    configVM.WhenAnyValue(x => x.SelectedColor) 
+                        .Subscribe(_ => ApplyCustomAccent());
+                } 
+            };
             
             LocalizationService.Instance.PropertyChanged += OnLocalizationChanged;
             
@@ -202,11 +214,11 @@ namespace VManager.Views
             }
         }
         
-        private void ApplyCustomAccent(ThemeVariant? theme = null)
+        public void ApplyCustomAccent(ThemeVariant? theme = null)
         {
             var actualTheme = theme ?? ActualThemeVariant;
             var accent = GetSystemAccentColor();
-            var background = (actualTheme == ThemeVariant.Dark) ? Colors.Black : Colors.White;
+            
             var adjustedAccent = AdjustColorForAccentTheme(accent, actualTheme);
             var foreground = GetContrastingColor(adjustedAccent);
             Application.Current!.Resources["AccentBrush"] = new SolidColorBrush(adjustedAccent);
@@ -217,11 +229,25 @@ namespace VManager.Views
             Application.Current.Resources["RedButtonBrush"] = new SolidColorBrush(adjustedRed);
             var redForeground = GetContrastingColor(adjustedRed);
             Application.Current.Resources["RedButtonForegroundBrush"] = new SolidColorBrush(redForeground);
+            
         }
+        
         private Color GetSystemAccentColor()
         {
-            if (Application.Current!.TryGetResource("SystemAccentColor", null, out var value) && value is Color accent) 
+            // 1️⃣ Intentar obtener el color seleccionado del ViewModel, si existe
+            if (DataContext is MainWindowViewModel vm && vm.Configuration.SelectedColor.HasValue)
+            {
+                Console.WriteLine($"[GetSystemAccentColor] Usando color custom: {vm.Configuration.SelectedColor.Value}");
+                return vm.Configuration.SelectedColor.Value;
+            }
+
+            // 2️⃣ Intentar usar el recurso SystemAccentColor
+            if (Application.Current?.TryGetResource("SystemAccentColor", null, out var value) == true && value is Color accent)
+            {
+                Console.WriteLine($"[GetSystemAccentColor] Usando color de sistema: {accent}");
                 return accent;
+            }
+            
             
             return Color.FromArgb(0xFF, 0xFF, 0x00, 0x00); // acá es IMPOSIBLE que llegue
          
@@ -294,12 +320,19 @@ namespace VManager.Views
 
             // Si el color ajustado es muy oscuro (luminancia < umbral) y estamos en modo claro, forzar un ajuste adicional
             double luminance = GetRelativeLuminance(adjusted);
-            if (theme == ThemeVariant.Light && luminance < luminanceThreshold)
+            if ((theme == ThemeVariant.Light && luminance < luminanceThreshold) ||
+                (theme == ThemeVariant.Dark && luminance > 1 - luminanceThreshold))
             {
-                adjusted = LightenColor(adjusted, 0.3); // Aclarar un 30% si está demasiado oscuro en modo claro
+                adjusted = theme == ThemeVariant.Dark ? DarkenColor(adjusted, 0.3) : LightenColor(adjusted, 0.3);
             }
 
             return adjusted;
+        }
+        
+        private Color DarkenColor(Color color, double factor)
+        {
+            byte Adjust(byte c) => (byte)Math.Clamp(c * (1 - factor), 0, 255);
+            return new Color(color.A, Adjust(color.R), Adjust(color.G), Adjust(color.B));
         }
         
     }

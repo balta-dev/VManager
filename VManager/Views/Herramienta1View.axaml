@@ -179,8 +179,7 @@
                       IsVisible="{Binding IsFileReadyVisible}"
                       IsChecked="{Binding IsClicked, Mode=TwoWay}"
                       Command="{Binding ShowFileInFolderCommand}"
-                      HorizontalAlignment="Center"
-                      Margin="0,8,0,0">
+                      HorizontalAlignment="Center">
           <ToggleButton.Styles>
                             
             <!-- Hover -->

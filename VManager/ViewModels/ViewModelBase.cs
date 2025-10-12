@@ -336,7 +336,7 @@ public abstract class ViewModelBase : ReactiveObject
         IsOperationRunning = false;
     }
     public abstract bool IsVideoPathSet { get; set; }
-    public void ClearInfo()
+    public virtual void ClearInfo()
     {
         Status = "¡Actualizado!";
         Warning = "";
@@ -355,7 +355,7 @@ public abstract class ViewModelBase : ReactiveObject
         this.RaisePropertyChanged(nameof(IsVideoPathSet));
         this.RaisePropertyChanged(nameof(IsClicked));
         
-        _ = Task.Delay(2000).ContinueWith(_ =>
+        _ = Task.Delay(1500).ContinueWith(_ =>
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -363,7 +363,6 @@ public abstract class ViewModelBase : ReactiveObject
                 this.RaisePropertyChanged(nameof(Status));
             });
         });
-        
     }
     protected virtual bool AllowAudioFiles => false;
 
