@@ -27,13 +27,13 @@ jobs:
             archive-name: VManager-win-x64-self-contained.zip
             archive-cmd: 7z a VManager-win-x64-self-contained.zip -r ./VManager/bin/Release/net9.0/win-x64/publish/*
 
-          # Windows Framework-Dependent (No Self-Contained)
+          # Windows Framework-Dependent (no self)
           - os: windows-latest
             runtime: win-x64
             self-contained: false
             compression: ""
-            archive-name: VManager-win-x64-framework.zip
-            archive-cmd: 7z a VManager-win-x64-framework.zip -r ./VManager/bin/Release/net9.0/win-x64/publish/*
+            archive-name: VManager-win-x64.zip
+            archive-cmd: 7z a VManager-win-x64.zip -r ./VManager/bin/Release/net9.0/win-x64/publish/*
 
           # Linux Self-Contained
           - os: ubuntu-latest
