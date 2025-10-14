@@ -19,20 +19,32 @@ jobs:
     strategy:
       matrix:
         include:
+          # Windows Self-Contained
           - os: windows-latest
             runtime: win-x64
-            extension: .exe
-            archive: zip
-            archive-cmd: 7z a VManager-win-x64.zip -r ./VManager/bin/Release/net9.0/win-x64/publish/*
+            self-contained: true
+            archive-name: VManager-win-x64-self-contained.zip
+            archive-cmd: 7z a VManager-win-x64-self-contained.zip -r ./VManager/bin/Release/net9.0/win-x64/publish/*
+
+          # Windows Framework-Dependent
+          - os: windows-latest
+            runtime: win-x64
+            self-contained: false
+            archive-name: VManager-win-x64-framework.zip
+            archive-cmd: 7z a VManager-win-x64-framework.zip -r ./VManager/bin/Release/net9.0/win-x64/publish/*
+
+          # Linux Self-Contained
           - os: ubuntu-latest
             runtime: linux-x64
-            extension: ''
-            archive: tar.gz
+            self-contained: true
+            archive-name: VManager-linux-x64.tar.gz
             archive-cmd: tar -czf VManager-linux-x64.tar.gz -C ./VManager/bin/Release/net9.0/linux-x64/publish .
+
+          # macOS Self-Contained
           - os: macos-latest
             runtime: osx-x64
-            extension: ''
-            archive: tar.gz
+            self-contained: true
+            archive-name: VManager-osx-x64.tar.gz
             archive-cmd: tar -czf VManager-osx-x64.tar.gz -C ./VManager/bin/Release/net9.0/osx-x64/publish .
 
     steps:
@@ -50,10 +62,12 @@ jobs:
           dotnet restore Updater/Updater.csproj
 
       - name: Publish VManager
-        run: dotnet publish VManager/VManager.csproj -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
+        run: |
+          dotnet publish VManager/VManager.csproj -c Release -r ${{ matrix.runtime }} --self-contained ${{ matrix.self-contained }} -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
 
       - name: Publish Updater
-        run: dotnet publish Updater/Updater.csproj -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
+        run: |
+          dotnet publish Updater/Updater.csproj -c Release -r ${{ matrix.runtime }} --self-contained ${{ matrix.self-contained }} -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true
 
       - name: Create Archive
         run: ${{ matrix.archive-cmd }}
@@ -62,4 +76,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.tag || github.ref_name }}
-          files: VManager-${{ matrix.runtime }}.${{ matrix.archive }}
+          files: ${{ matrix.archive-name }}
