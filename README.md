@@ -45,7 +45,7 @@ VManager nace de la evolución de dos herramientas que desarrollé para uso en t
 3. Ejecuta `VManager.exe`
 4. ¡Listo para usar! ✅
 
-> **⚠️ Nota**: Si no sabes cual versión descargar, la que dice "self-contained" es probablemente la opción más segura. Aunque si estás seguro de tener .NET Framework, bajate la más liviana.
+> **⚠️ Nota**: Si llegas a tener algún problema es muy probable que te falte .NET Framework, para solucionarlo descargá la versión "self-contained".
 
 ---
 
