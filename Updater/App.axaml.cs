@@ -149,9 +149,15 @@ namespace Updater
             string tempFolder = Path.Combine(Path.GetTempPath(), "VManager_Update");
             Directory.CreateDirectory(tempFolder);
 
-            string downloadedFile = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                ? Path.Combine(tempFolder, "update.zip")
-                : Path.Combine(tempFolder, "update.tar.gz");
+            string extension = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? ".zip" : ".tar.gz";
+            string downloadedFile = Path.Combine(tempFolder, $"update{extension}");
+
+            // Verifica que la URL termine con la extensión esperada
+            if (!update.DownloadUrl.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
+            {
+                progressText.Text = "Error: Asset incompatible con la plataforma.";
+                return;
+            }
 
             var progress = new Progress<double>(p =>
             {
@@ -161,6 +167,7 @@ namespace Updater
 
             await DownloadFileWithProgressAsync(update.DownloadUrl, downloadedFile, progress);
 
+            // Resto del código sin cambios
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 System.IO.Compression.ZipFile.ExtractToDirectory(downloadedFile, tempFolder, overwriteFiles: true);
@@ -235,6 +242,25 @@ namespace Updater
             return a.Major == b.Major && a.Minor == b.Minor && buildA == buildB && revA == revB;
         }
 
+        public static class BuildInfo
+        {
+            public static bool IsSelfContained()
+            {
+                try
+                {
+                    var baseDir = AppContext.BaseDirectory;
+                    // Verifica múltiples archivos para mayor confiabilidad
+                    return File.Exists(Path.Combine(baseDir, "hostfxr.dll")) &&
+                           File.Exists(Path.Combine(baseDir, "coreclr.dll"));
+                }
+                catch
+                {
+                    // Asume framework-dependent si hay error
+                    return false;
+                }
+            }
+        }
+        
         private static async Task<UpdateInfo?> CheckForUpdateAsync()
         {
             if (File.Exists(CacheFilePath))
@@ -282,18 +308,30 @@ namespace Updater
                 var releaseNotes = root.GetProperty("body").GetString() ?? "";
 
                 string platform = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "win-x64" :
-                                  RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "linux-x64" :
-                                  "osx-x64";
+                                 RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "linux-x64" :
+                                 "osx-x64";
+
+                // Detecta si es self-contained
+                bool isSelfContained = BuildInfo.IsSelfContained();
+                string assetSuffix = isSelfContained ? "-self-contained" : "";
+                string expectedAssetName = $"VManager-{platform}{assetSuffix}"; // Ej: "VManager-win-x64-self-contained" o "VManager-win-x64"
 
                 string downloadUrl = "";
                 foreach (var asset in root.GetProperty("assets").EnumerateArray())
                 {
                     var name = asset.GetProperty("name").GetString() ?? "";
-                    if (name.Contains(platform, StringComparison.OrdinalIgnoreCase))
+                    if (name.Contains(expectedAssetName, StringComparison.OrdinalIgnoreCase) &&
+                        name.EndsWith(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? ".zip" : ".tar.gz", StringComparison.OrdinalIgnoreCase))
                     {
                         downloadUrl = asset.GetProperty("browser_download_url").GetString() ?? "";
                         break;
                     }
+                }
+
+                if (string.IsNullOrEmpty(downloadUrl))
+                {
+                    Console.WriteLine($"No se encontró un asset compatible para {expectedAssetName}");
+                    return null; // O lanza una excepción si prefieres
                 }
 
                 var updateInfo = new UpdateInfo
@@ -315,8 +353,9 @@ namespace Updater
 
                 return updateInfo;
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error verificando actualizaciones: {ex.Message}");
                 return null;
             }
         }

@@ -123,6 +123,16 @@ namespace VManager.Views
                    revA == revB;
         }
         
+        public class UpdateInfo
+        {
+            public required Version CurrentVersion { get; set; }
+            public required Version LatestVersion { get; set; }
+            public required string DownloadUrl { get; set; }
+            public required string ReleaseNotes { get; set; }
+            public DateTime LastChecked { get; set; }
+            public bool UpdateAvailable => LatestVersion > CurrentVersion;
+        }
+        
         private async void LaunchUpdater()
         {
             string updaterFile = Path.Combine(AppContext.BaseDirectory,
@@ -134,13 +144,13 @@ namespace VManager.Views
 
             try
             {
-                UpdateChecker.UpdateInfo? cached = null;
+                UpdateInfo? cached = null;
 
                 // Solo intentar leer si el archivo existe
                 if (File.Exists(cacheFilePath))
                 {
                     var json = await File.ReadAllTextAsync(cacheFilePath);
-                    cached = JsonSerializer.Deserialize<UpdateChecker.UpdateInfo>(json);
+                    cached = JsonSerializer.Deserialize<UpdateInfo>(json);
                 }
                 
                 Console.WriteLine("Buscando actualizaciones...");

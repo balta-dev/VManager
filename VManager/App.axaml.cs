@@ -104,6 +104,22 @@ public partial class App : Application
             Console.WriteLine($"Error al manejar carpeta temporal de Updater: {ex.Message}");
         }
     }
-
+    
+    public static class BuildInfo
+    {
+        public static bool IsSelfContained()
+        {
+            try
+            {
+                var baseDir = AppContext.BaseDirectory;
+                return File.Exists(Path.Combine(baseDir, "hostfxr.dll")) &&
+                       File.Exists(Path.Combine(baseDir, "coreclr.dll"));
+            }
+            catch
+            {
+                return false; // Por defecto, asume framework-dependent si hay error
+            }
+        }
+    }
 
 }
