@@ -148,7 +148,7 @@ namespace VManager.Views
                 Console.WriteLine($"Version de Assembly: {Assembly.GetEntryAssembly()?.GetName().Version}");
                 
                 // Si no hay cache o las versiones no coinciden, lanzar updater
-                if (cached == null || VersionsAreEqual(cached.CurrentVersion, Assembly.GetEntryAssembly()?.GetName().Version!))
+                if (cached == null || !VersionsAreEqual(cached.CurrentVersion, Assembly.GetEntryAssembly()?.GetName().Version!))
                 {
                     Console.WriteLine("Empezando Updater...");
                     if (File.Exists(updaterFile))
