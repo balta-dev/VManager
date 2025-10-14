@@ -1,14 +1,18 @@
-<img width="100" height="100" alt="VManager" src="https://github.com/user-attachments/assets/1035f7c9-dfe5-47d2-a21a-2c88e296e50b" />ㅤㅤ
-ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ
+<img width="100" height="100" alt="VManager" src="https://github.com/user-attachments/assets/8ac28b60-aaca-4af4-8883-728adf8a9952" />ㅤㅤ
+
+
 
 ## VManager
 ### Una herramienta **fácil de usar** y **rápida** para gestionar videos: recortar, comprimir, cambiar formato y más.
 
 VManager nace de la evolución de dos herramientas que desarrollé para uso en terminal ([`vcut`](https://github.com/balta-dev/vcut) y [`vcompr`](https://github.com/balta-dev/vcompr)), con el objetivo de facilitar aún más su uso general y hacer estas funcionalidades accesibles para el usuario promedio. 
 
-<img width="1281" height="834" alt="image" src="https://github.com/user-attachments/assets/188a6b69-3fde-4ca6-bd37-68f98c1456ea" />
-<img width="1279" height="827" alt="image" src="https://github.com/user-attachments/assets/2cbca789-016b-452e-b53d-a088c5f780ab" />
-<img width="1278" height="824" alt="image" src="https://github.com/user-attachments/assets/107d262d-a7fb-4544-8ab1-1546b029056c" />
+<img width="897" height="662" alt="image" src="https://github.com/user-attachments/assets/640c21ed-501a-4b8f-ab14-924c05250e09" />
+<img width="896" height="661" alt="image" src="https://github.com/user-attachments/assets/9375575f-1ffe-4d3e-8783-e7ed34b31fb5" />
+<img width="897" height="664" alt="image" src="https://github.com/user-attachments/assets/3cea5900-2a38-45ea-a33f-f8b3df4cc6d4" />
+
+
+
 
 
 
@@ -41,6 +45,8 @@ VManager nace de la evolución de dos herramientas que desarrollé para uso en t
 3. Ejecuta `VManager.exe`
 4. ¡Listo para usar! ✅
 
+> **⚠️ Nota**: Si no sabes cual versión descargar, la que dice "self-contained" es probablemente la opción más segura. Aunque si estás seguro de tener .NET Framework, bajate la más liviana.
+
 ---
 
 ### Linux 🐧
@@ -65,7 +71,7 @@ VManager nace de la evolución de dos herramientas que desarrollé para uso en t
    ```
 4. Ejecuta la aplicación
 
-> **⚠️ Nota**: Todavía no ha sido testeado en esta plataforma. También, según la documentación de Avalonia la función **Drag & Drop** si está disponible.
+> **⚠️ Nota**: Todavía no ha sido testeado en esta plataforma.
 
 ---
 
