@@ -111,6 +111,11 @@ public static class FFmpegManager
                            ?? throw new Exception($"Recurso {resourceName} no encontrado");
 
         string tempPath = Path.Combine(Path.GetTempPath(), targetFileName);
+        
+        var dir = Path.GetDirectoryName(tempPath); //por si no existe la carpeta Temp
+        if (!Directory.Exists(dir))
+            Directory.CreateDirectory(dir);
+        
         using var fs = File.Create(tempPath);
         stream.CopyTo(fs);
 
