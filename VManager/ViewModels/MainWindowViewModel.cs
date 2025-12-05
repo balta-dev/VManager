@@ -20,6 +20,7 @@ public class MainWindowViewModel : ViewModelBase
     private Herramienta2ViewModel _herramienta2;
     private Herramienta3ViewModel _herramienta3;
     private Herramienta4ViewModel _herramienta4;
+    private Herramienta5ViewModel _herramienta5;
     public ConfigurationViewModel _configuration;
     public List<ViewModelBase> Tools { get; }
     
@@ -58,6 +59,13 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _herramienta4Activa, value);
     }
     
+    private bool _herramienta5Activa;
+    public bool Herramienta5Activa
+    {
+        get => _herramienta5Activa;
+        set => this.RaiseAndSetIfChanged(ref _herramienta5Activa, value);
+    }
+    
     private bool _configuracionActiva;
     public bool ConfiguracionActiva
     {
@@ -80,6 +88,7 @@ public class MainWindowViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> GoToHerramienta3 { get; }
     
     public ReactiveCommand<Unit, Unit> GoToHerramienta4 { get; }
+    public ReactiveCommand<Unit, Unit> GoToHerramienta5 { get; }
     public ReactiveCommand<Unit, Unit> ToggleThemeCommand { get; }
     public ReactiveCommand<Unit, Unit> OpenGitHubCommand { get; }
     
@@ -112,6 +121,7 @@ public class MainWindowViewModel : ViewModelBase
         _herramienta2 = new Herramienta2ViewModel();
         _herramienta3 = new Herramienta3ViewModel();
         _herramienta4 = new Herramienta4ViewModel();
+        _herramienta5 = new Herramienta5ViewModel();
         _configuration = new ConfigurationViewModel();
         
         Tools = new List<ViewModelBase>
@@ -119,7 +129,8 @@ public class MainWindowViewModel : ViewModelBase
             _herramienta1,
             _herramienta2,
             _herramienta3,
-            _herramienta4
+            _herramienta4,
+            _herramienta5
         };
         
         GoToHerramienta1 = ReactiveCommand.Create(
@@ -129,6 +140,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta2Activa = false;
                 Herramienta3Activa = false;
                 Herramienta4Activa = false;
+                Herramienta5Activa = false;
                 ConfiguracionActiva = false;
                 CurrentView = _herramienta1;
                 return Unit.Default;
@@ -143,6 +155,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta1Activa = false;
                 Herramienta3Activa = false;
                 Herramienta4Activa = false;
+                Herramienta5Activa = false;
                 ConfiguracionActiva = false;
                 CurrentView = _herramienta2;
                 return Unit.Default;
@@ -157,6 +170,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta1Activa = false;
                 Herramienta2Activa = false;
                 Herramienta4Activa = false;
+                Herramienta5Activa = false;
                 ConfiguracionActiva = false;
                 CurrentView = _herramienta3;
                 return Unit.Default;
@@ -171,8 +185,24 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta1Activa = false;
                 Herramienta2Activa = false;
                 Herramienta3Activa = false;
+                Herramienta5Activa = false;
                 ConfiguracionActiva = false;
                 CurrentView = _herramienta4;
+                return Unit.Default;
+            },
+            outputScheduler: AvaloniaScheduler.Instance
+        );
+        
+        GoToHerramienta5 = ReactiveCommand.Create(
+            () =>
+            {
+                Herramienta5Activa = true;
+                Herramienta1Activa = false;
+                Herramienta2Activa = false;
+                Herramienta3Activa = false;
+                Herramienta4Activa = false;
+                ConfiguracionActiva = false;
+                CurrentView = _herramienta5;
                 return Unit.Default;
             },
             outputScheduler: AvaloniaScheduler.Instance
@@ -184,6 +214,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta2Activa = false;
                 Herramienta3Activa = false;
                 Herramienta4Activa = false;
+                Herramienta5Activa = false;
                 ConfiguracionActiva = true;
                 CurrentView = _configuration;
                 return Unit.Default;

@@ -34,6 +34,7 @@ sealed class Program
         Console.WriteLine("[DEBUG]: Iniciando VManager...");
         
         FFmpegManager.Initialize();
+        YtDlpManager.Initialize();
 
         // Arrancar Avalonia
         BuildAvaloniaApp()

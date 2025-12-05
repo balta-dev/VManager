@@ -49,6 +49,7 @@
   <!-- Binarios por plataforma (solo en Release) -->
   <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(IsWindows)' == 'true'">
     <EmbeddedResource Include="Binaries\Windows\ffmpeg.exe" />
+    <EmbeddedResource Include="Binaries\Windows\yt-dlp.exe" />
     <EmbeddedResource Include="Binaries\Windows\ffprobe.exe" />
     <None Remove="Binaries\Windows\ffplay.exe" />
   </ItemGroup>
@@ -56,12 +57,21 @@
   <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(IsLinux)' == 'true'">
     <EmbeddedResource Include="Binaries\Linux\ffmpeg" />
     <EmbeddedResource Include="Binaries\Linux\ffprobe" />
+    <EmbeddedResource Include="Binaries\Linux\yt-dlp" />
     <None Remove="Binaries\Linux\ffplay" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(IsMac)' == 'true'">
     <EmbeddedResource Include="Binaries\Mac\ffmpeg" />
     <EmbeddedResource Include="Binaries\Mac\ffprobe" />
+    <EmbeddedResource Include="Binaries\Mac\yt-dlp_macos" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\Herramienta5View.axaml.cs">
+      <DependentUpon>Herramienta5View.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

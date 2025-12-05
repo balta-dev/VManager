@@ -83,7 +83,7 @@
                             Height="16"
                             VerticalAlignment="Center"/>
                   <!-- Texto enlazado -->
-                  <TextBlock Text="{Binding L[VCut.Buttons.Browse]}" 
+                  <TextBlock Text="{Binding L[VAudiofy.Buttons.Browse]}" 
                              VerticalAlignment="Center"/>
                 </StackPanel>
               </Button.Content>

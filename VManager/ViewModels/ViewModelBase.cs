@@ -6,6 +6,7 @@ using FFMpegCore;
 using FFMpegCore.Enums;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -59,12 +60,13 @@ public abstract class ViewModelBase : ReactiveObject
     }
     
     // Nueva lista de archivos
-    private List<string> _videoPaths = new List<string>();
-    public List<string> VideoPaths
+    private ObservableCollection<string> _videoPaths = new();
+    public ObservableCollection<string> VideoPaths
     {
         get => _videoPaths;
         set => this.RaiseAndSetIfChanged(ref _videoPaths, value);
     }
+
 
     public string OutputPath
     {
@@ -382,8 +384,8 @@ public abstract class ViewModelBase : ReactiveObject
             return;
         }
 
-        var videoPatterns = new[] { "*.mp4", "*.mkv", "*.mov" };
-        var audioPatterns = new[] { "*.mp3", "*.wav", "*.ogg", "*.flac", "*.aac" };
+        var videoPatterns = new[] { "*.mp4", "*.mkv", "*.avi", "*.mov", "*.webm", "*.wmv", "*.flv", "*.3gp"};
+        var audioPatterns = new[] { "*.mp3", "*.ogg", "*.flac", "*.aac" };
 
         var filters = new List<FilePickerFileType>
         {
@@ -404,7 +406,9 @@ public abstract class ViewModelBase : ReactiveObject
 
         if (files.Count > 0)
         {
-            VideoPaths = files.Select(f => f.Path.LocalPath).ToList();
+            VideoPaths = new ObservableCollection<string>(
+                files.Select(f => f.Path.LocalPath)
+            );
             VideoPath = VideoPaths.First(); // Para la UI
             IsVideoPathSet = VideoPaths.Count > 0;
 

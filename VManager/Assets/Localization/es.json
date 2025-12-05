@@ -109,6 +109,19 @@
       "Format": "¿A qué formato?"
     }
   },
+  "VDownload": {
+    "Title": "Descarga de vídeos",
+    "Buttons": {
+      "Refresh": "Refrescar",
+      "Download": "Descargar video",
+      "Cancel": "CANCELAR",
+      "ShowFileInFolder": "Mostrar archivo en carpeta"
+    },
+    "Fields": {
+      "VideoPath": "URL del video",
+      "PasteVideo": "Por favor, pegue el link de Youtube aquí"
+    }
+  },
   "Configuration": {
     "Title": "Configuraciones",
     "Fields": {
