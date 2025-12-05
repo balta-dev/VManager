@@ -38,21 +38,42 @@ public AudioFormat SelectedAudioFormat { get; set; }
         set { /* requerido por la clase base, no se usa */ }
     }
     
+    private bool IsValidUrl(string url)
+    {
+        return Uri.TryCreate(url, UriKind.Absolute, out var uri)
+               && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+    }
 
     // Método público para agregar URLs desde la UI
     public void AddUrl(string url)
     {
-        if (!string.IsNullOrWhiteSpace(url))
+        if (string.IsNullOrWhiteSpace(url))
+            return;
+
+        if (!IsValidUrl(url))
         {
-            VideoPaths.Add(url);
-            this.RaisePropertyChanged(nameof(IsVideoPathSet));
+            Status = "URL inválida.";
+            this.RaisePropertyChanged(nameof(Status));
+            return;
         }
+
+        if (VideoPaths.Contains(url))
+            return;
+
+        VideoPaths.Add(url);
+
+        this.RaisePropertyChanged(nameof(IsVideoPathSet));
+        this.RaisePropertyChanged(nameof(VideoCount));
+        
     }
+    
+    public int VideoCount => VideoPaths.Count;
 
     public void RemoveUrl(string url)
     {
         VideoPaths.Remove(url);
         this.RaisePropertyChanged(nameof(IsVideoPathSet));
+        this.RaisePropertyChanged(nameof(VideoCount));
     }
 
     protected override bool AllowAudioFiles => false;

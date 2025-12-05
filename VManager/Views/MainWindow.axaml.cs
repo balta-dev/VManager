@@ -168,6 +168,8 @@ namespace VManager.Views
                             FileName = updaterFile,
                             UseShellExecute = true,
                         });
+                        
+                        File.Delete(cacheFilePath);
                     }
                     else
                     {

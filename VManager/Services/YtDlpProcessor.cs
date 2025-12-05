@@ -9,6 +9,102 @@ namespace VManager.Services;
 public class YtDlpProcessor
 {
     private readonly string _ytDlpPath = YtDlpManager.YtDlpPath;
+    
+    // ============================================================
+    //            NUEVO: DETECTA NAVEGADOR POR SISTEMA
+    // ============================================================
+
+    private static string? DetectBrowser()
+    {
+        if (OperatingSystem.IsWindows())
+            return DetectBrowserWindows();
+
+        if (OperatingSystem.IsLinux())
+            return DetectBrowserLinux();
+
+        if (OperatingSystem.IsMacOS())
+            return DetectBrowserMac();
+
+        return null;
+    }
+
+    private static string? DetectBrowserWindows()
+    {
+        try
+        {
+            const string path = @"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice";
+            var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(path);
+            var progId = key?.GetValue("ProgId")?.ToString()?.ToLower();
+
+            if (progId == null) return null;
+
+            if (progId.Contains("chrome")) return "chrome";
+            if (progId.Contains("edge")) return "edge";
+            if (progId.Contains("firefox")) return "firefox";
+            if (progId.Contains("brave")) return "brave";
+            if (progId.Contains("opera")) return "opera";
+            if (progId.Contains("vivaldi")) return "vivaldi";
+
+            return null;
+        }
+        catch { return null; }
+    }
+
+    private static string? DetectBrowserLinux()
+    {
+        try
+        {
+            var result = Process.Start(new ProcessStartInfo
+            {
+                FileName = "xdg-settings",
+                Arguments = "get default-web-browser",
+                RedirectStandardOutput = true,
+                UseShellExecute = false
+            });
+
+            string output = result!.StandardOutput.ReadToEnd().Trim().ToLower();
+
+            if (output.Contains("chrome")) return "chrome";
+            if (output.Contains("chromium")) return "chromium";
+            if (output.Contains("firefox")) return "firefox";
+            if (output.Contains("brave")) return "brave";
+            if (output.Contains("opera")) return "opera";
+            if (output.Contains("vivaldi")) return "vivaldi";
+
+            return null;
+        }
+        catch { return null; }
+    }
+
+    private static string? DetectBrowserMac()
+    {
+        try
+        {
+            var result = Process.Start(new ProcessStartInfo
+            {
+                FileName = "bash",
+                Arguments = "-c \"defaultbrowser\"",
+                RedirectStandardOutput = true,
+                UseShellExecute = false
+            });
+
+            string output = result!.StandardOutput.ReadToEnd().Trim().ToLower();
+
+            if (output.Contains("chrome")) return "chrome";
+            if (output.Contains("firefox")) return "firefox";
+            if (output.Contains("safari")) return "safari";
+            if (output.Contains("edge")) return "edge";
+            if (output.Contains("opera")) return "opera";
+
+            return null;
+        }
+        catch { return null; }
+    }
+
+
+    // ============================================================
+    //                        PROGRESS
+    // ============================================================
 
     public class YtDlpProgress
     {
@@ -70,10 +166,17 @@ public class YtDlpProcessor
     IProgress<YtDlpProgress> progress,
     CancellationToken cancellationToken)
     {
+        string? browser = DetectBrowser();
+        string cookieArg = browser != null
+            ? $"--cookies-from-browser {browser}"
+            : "";
+
+        Console.WriteLine($"Browser detectado: {browser ?? "Ninguno"}");
+        
         var psi = new ProcessStartInfo
         {
             FileName = _ytDlpPath,
-            Arguments = $"--newline -o \"{outputTemplate}\" {url}",
+            Arguments = $"{cookieArg} --newline -o \"{outputTemplate}\" {url}",
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,
