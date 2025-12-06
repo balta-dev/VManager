@@ -112,6 +112,13 @@ public abstract class ViewModelBase : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _isFileReadyVisible, value);
     }
     
+    private string _urlText;
+    public string UrlText
+    {
+        get => _urlText;
+        set => this.RaiseAndSetIfChanged(ref _urlText, value);
+    }
+    
     public ReactiveCommand<Unit, Unit> BrowseCommand { get; }
     public ReactiveCommand<Unit, Unit> ShowFileInFolderCommand { get; }
     public ReactiveCommand<Unit, Unit> ClearInfoCommand { get; }
@@ -348,6 +355,7 @@ public abstract class ViewModelBase : ReactiveObject
         IsFileReadyVisible = false;
         IsVideoPathSet = false;
         IsClicked = false;
+        UrlText = "";
         this.RaisePropertyChanged(nameof(Status));
         this.RaisePropertyChanged(nameof(Warning));
         this.RaisePropertyChanged(nameof(VideoPath));

@@ -67,6 +67,7 @@
             <Border Padding="2">
               <TextBox x:Name="UrlEntry"
                        Watermark="Pegá la URL aquí..."
+                       Text="{Binding UrlText, Mode=TwoWay}"
                        HorizontalAlignment="Stretch"/>
             </Border>
 
