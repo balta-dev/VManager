@@ -120,13 +120,14 @@ namespace VManager.ViewModels
             var flvEncoders  = new[] { "flv" }; // fallback encoder si lo hay
             var mpeg4Enc     = new[] { "mpeg4" };
             var h263Enc      = new[] { "h263" };
-
+            var dnxhrEnc     = new[] { "dnxhd", "dnxhr" };
             var aacEnc       = new[] { "aac" };
             var mp3Enc       = new[] { "libmp3lame" };
             var opusEnc      = new[] { "libopus" };
             var vorbisEnc    = new[] { "libvorbis" };
             var wmaEnc       = new[] { "wmav2" };
             var amrEnc       = new[] { "amr_nb", "amr_wb" };
+            var pcmEnc       = new[] { "pcm_s16le", "pcm_s24le", "pcm_f32le" };
 
             // Helper para filtrar por grupo si existe en la lista real
             List<string> FilterEncoders(IEnumerable<string> source, IEnumerable<string> group) =>
@@ -163,17 +164,58 @@ namespace VManager.ViewModels
                 case "mkv":
                 case "avi":
                     // Muy flexibles → no filtramos nada
+                    audioCodecs = OrderAudioCodecsByFormat(_allAudioCodecs.ToList(), "avi");
                     break;
 
                 case "mov":
-                    videoCodecs = FilterEncoders(videoCodecs, h264Encoders.Concat(h265Encoders));
-                    audioCodecs = FilterEncoders(audioCodecs, aacEnc);
+                    videoCodecs = FilterEncoders(videoCodecs, 
+                        dnxhrEnc.Concat(h264Encoders).Concat(h265Encoders));
+    
+                    audioCodecs = FilterEncoders(audioCodecs, pcmEnc.Concat(aacEnc));
+                    audioCodecs = OrderAudioCodecsByFormat(audioCodecs, "mov"); // NUEVO (usa el mismo método)
                     break;
             }
 
             return (videoCodecs, audioCodecs);
         }
 
+        
+        /// <summary>
+        /// Ordena los códecs poniendo los prioritarios primero
+        /// </summary>
+        private List<string> OrderAudioCodecsByFormat(List<string> codecs, string? format)
+        {
+            if (string.IsNullOrEmpty(format))
+                return codecs;
+    
+            switch (format.ToLower())
+            {
+                case "mov":
+                    return codecs.OrderByDescending(c =>
+                    {
+                        if (c.Contains("pcm_s24le")) return 100;
+                        if (c.Contains("pcm_s16le")) return 99;
+                        if (c.Contains("pcm_f32le")) return 98;
+                        if (c == "aac") return 50;
+                        return 0;
+                    }).ToList();
+        
+                case "avi":
+                    return codecs.OrderByDescending(c =>
+                    {
+                        if (c == "aac") return 100;
+                        if (c == "libmp3lame") return 90;
+                        if (c.Contains("pcm_s24le")) return 80;
+                        if (c.Contains("pcm_s16le")) return 70;
+                        if (c.Contains("pcm_f32le")) return 60;
+                        if (c == "flac") return 50;
+                        return 0;
+                    }).ToList();
+        
+                default:
+                    return codecs;
+            }
+        }
         
         /// <summary>
         /// Verifica si un códec de video y audio son compatibles entre sí

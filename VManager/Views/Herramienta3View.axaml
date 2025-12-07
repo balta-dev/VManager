@@ -108,7 +108,8 @@
           <TextBlock Text="{Binding L[VConvert.Fields.Format]}" FontSize="14" VerticalAlignment="Center"/>
           <ComboBox ItemsSource="{Binding SupportedVideoFormats}"
                     SelectedItem="{Binding SelectedFormat}"
-                    Width="100"/>
+                    MinWidth="80"
+                    MaxWidth="140"/>
           <Button x:Name="QuestionMark" Content="?" Width="30" FontWeight="Bold">
             <ToolTip.Tip>
               <TextBlock MaxWidth="400" TextWrapping="Wrap">
@@ -121,6 +122,8 @@
                 <Run Text="• MKV + cualquier audio (más flexible)"/>
                 <LineBreak/>
                 <Run Text="• WebM + Opus (optimizado web)"/>
+                <LineBreak/>
+                <Run Text="• MOV + PCM (DaVinci Resolve)"/>
                 <LineBreak/><LineBreak/>
                 <Run Text="Nota: FFmpeg puede combinar muchos formatos, pero algunas combinaciones podrían no reproducirse en todos los dispositivos."/>
               </TextBlock>

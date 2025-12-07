@@ -30,7 +30,7 @@ namespace VManager.Services
             return (videoCodec ?? "libx264", audioCodec ?? "aac");
         }
 
-        private async Task<AnalysisResult<IMediaAnalysis>> AnalyzeVideoAsync(string inputPath)
+        public async Task<AnalysisResult<IMediaAnalysis>> AnalyzeVideoAsync(string inputPath)
         {
             try
             {
@@ -178,6 +178,21 @@ namespace VManager.Services
                 return new ProcessingResult(false, $"Error: {ex.Message}");
             }
         }
+        
+        private bool IsDNxHRCodec(string codec)
+        {
+            return codec.Contains("dnxhd") || codec.Contains("dnxhr");
+        }
+
+        private void ConfigureDNxHROptions(FFMpegArgumentOptions opts, string videoCodec)
+        {
+            // DNxHR requiere configuraciones específicas
+            if (IsDNxHRCodec(videoCodec))
+            {
+                opts.WithCustomArgument("-profile:v dnxhr_hq") // HQ por defecto
+                    .WithCustomArgument("-pix_fmt yuv422p");
+            }
+        }
 
         public async Task<ProcessingResult> CutAsync(
             string inputPath,
@@ -281,6 +296,14 @@ namespace VManager.Services
             CancellationToken cancellationToken = default)
         {
             var (selectedVideoCodec, selectedAudioCodec) = GetDefaultCodecs(videoCodec, audioCodec);
+    
+            // NUEVO: Si es MOV y no especificó códec, usar DNxHR
+            if (selectedFormat.ToLower() == "mov" && string.IsNullOrEmpty(videoCodec))
+            {
+                selectedVideoCodec = "dnxhd";
+                selectedAudioCodec = "pcm_s24le"; // PCM 24-bit
+            }
+    
             var analysisResult = await AnalyzeVideoAsync(inputPath);
             if (!analysisResult.Success)
                 return new ProcessingResult(false, analysisResult.Message);
@@ -299,9 +322,18 @@ namespace VManager.Services
                 {
                     options
                         .WithVideoCodec(selectedVideoCodec)
-                        .WithAudioCodec(selectedAudioCodec)
-                        .WithAudioBitrate(128);
-                    ConfigureHardwareAcceleration(options, selectedVideoCodec);
+                        .WithAudioCodec(selectedAudioCodec);
+            
+                    // NUEVO: Configurar DNxHR si aplica
+                    if (IsDNxHRCodec(selectedVideoCodec))
+                    {
+                        ConfigureDNxHROptions(options, selectedVideoCodec);
+                    }
+                    else
+                    {
+                        options.WithAudioBitrate(128);
+                        ConfigureHardwareAcceleration(options, selectedVideoCodec);
+                    }
                 });
 
             return await ExecuteFFmpegProcessAsync(inputPath, outputPath, args, duration, progress, cancellationToken);

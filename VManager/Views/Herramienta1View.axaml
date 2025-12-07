@@ -100,7 +100,7 @@
                   <LineBreak/>
                   <Run Text="* Recortar desde 1:02:01. Recortar hasta 2:52:01"/>
                   <LineBreak/><LineBreak/>
-                  <Run Text="Nota: la duración maxima se recalcula si no es adecuada."/>
+                  <Run Text="Nota: la duración de recorte se recalcula si no es adecuada o está vacía."/>
                 </TextBlock>
               </ToolTip.Tip>
             </Button>

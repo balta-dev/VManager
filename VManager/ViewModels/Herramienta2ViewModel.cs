@@ -104,6 +104,19 @@ namespace VManager.ViewModels
             if (string.IsNullOrEmpty(videoCodec) || string.IsNullOrEmpty(audioCodec))
                 return true;
             
+            // NUEVO: DNxHR funciona mejor con PCM
+            if (videoCodec.Contains("dnxhd") || videoCodec.Contains("dnxhr"))
+            {
+                // DNxHR acepta PCM (ideal) o AAC
+                return audioCodec.Contains("pcm") || audioCodec == "aac";
+            }
+    
+            // PCM funciona con casi todo excepto WebM
+            if (audioCodec.Contains("pcm"))
+            {
+                return !(videoCodec.Contains("libvpx") || videoCodec.Contains("vp8") || videoCodec.Contains("vp9"));
+            }
+            
             // FLAC es compatible con casi todo EXCEPTO VP8/VP9 (WebM no lo soporta)
             if (audioCodec == "flac")
             {

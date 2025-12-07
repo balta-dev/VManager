@@ -46,6 +46,18 @@ public class ConfigurationService
         
         [JsonConverter(typeof(ColorJsonConverter))]
         public Color? SelectedColor { get; set; }
+        public string? ProfileImagePath { get; set; }
+        public string? PreferredDownloadFolder { get; set; }
+        
+        // === NUEVAS PROPIEDADES PARA COOKIES ===
+        /// <summary>Si true, la app intentará usar CookiesFilePath como --cookies para yt-dlp.</summary>
+        public bool UseCookiesFile { get; set; } = false;
+
+        /// <summary>Ruta absoluta del archivo cookies.txt seleccionado por el usuario.</summary>
+        public string? CookiesFilePath { get; set; }
+
+        /// <summary>Fecha en la que el usuario estableció/actualizó el archivo de cookies.</summary>
+        public DateTime? CookiesLastUpdated { get; set; }
     }
 
     public static AppConfig Load()

@@ -1,11 +1,15 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using FFMpegCore;
+
 namespace VManager.Services
 {
     public interface IVideoProcessor
     {
         public record ProgressInfo(double Progress, TimeSpan Remaining);
+
+        Task<AnalysisResult<IMediaAnalysis>> AnalyzeVideoAsync(string inputPath);
         Task<ProcessingResult> CutAsync(
             string inputPath,
             string outputPath,

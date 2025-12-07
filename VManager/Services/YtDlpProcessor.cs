@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -158,21 +162,96 @@ public class YtDlpProcessor
             progress?.Report(new YtDlpProgress(pct, "", ""));
         }
     }
+    
+    private string BuildCookiesArgument()
+    {
+        var config = ConfigurationService.Load();
 
+        // 1) Archivo de cookies
+        if (config.UseCookiesFile && !string.IsNullOrWhiteSpace(config.CookiesFilePath))
+        {
+            if (File.Exists(config.CookiesFilePath))
+            {
+                return $"--cookies \"{config.CookiesFilePath}\"";
+            }
+            else
+            {
+                Console.WriteLine("[YTDLP] Archivo de cookies configurado pero no existe.");
+            }
+        }
+
+        // 2) Cookies del navegador
+        string? browser = DetectBrowser();
+        if (browser != null)
+            return $"--cookies-from-browser {browser}";
+
+        // 3) Sin cookies
+        return "";
+    }
+
+    // ============================================================
+    //                   OBTENER INFO DEL VIDEO
+    // ============================================================
+
+    public async Task<VideoInfo?> GetVideoInfoAsync(string url, CancellationToken cancellationToken = default)
+    {
+        string cookieArg = BuildCookiesArgument();
+
+        var psi = new ProcessStartInfo
+        {
+            FileName = _ytDlpPath,
+            Arguments = $"{cookieArg} --dump-json --no-warnings \"{url}\"",
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        var process = new Process { StartInfo = psi };
+
+        try
+        {
+            process.Start();
+        
+            string json = await process.StandardOutput.ReadToEndAsync();
+            string error = await process.StandardError.ReadToEndAsync();
+        
+            await process.WaitForExitAsync(cancellationToken);
+
+            if (process.ExitCode != 0)
+            {
+                Console.WriteLine($"Error obteniendo info: {error}");
+                return null;
+            }
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+        
+            var info = JsonSerializer.Deserialize<VideoInfo>(json, options);
+            return info;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al obtener info del video: {ex.Message}");
+            return null;
+        }
+    }
+
+
+    // ============================================================
+    //                      DESCARGAR VIDEO
+    // ============================================================
     
     public async Task<ProcessingResult> DownloadAsync(
-    string url,
-    string outputTemplate,
-    IProgress<YtDlpProgress> progress,
-    CancellationToken cancellationToken)
+        string url,
+        string outputTemplate,
+        IProgress<YtDlpProgress> progress,
+        CancellationToken cancellationToken)
     {
-        string? browser = DetectBrowser();
-        string cookieArg = browser != null
-            ? $"--cookies-from-browser {browser}"
-            : "";
+        string cookieArg = BuildCookiesArgument();
 
-        Console.WriteLine($"Browser detectado: {browser ?? "Ninguno"}");
-        
         var psi = new ProcessStartInfo
         {
             FileName = _ytDlpPath,
@@ -219,4 +298,54 @@ public class YtDlpProcessor
         }
     }
 
+
+}
+
+// ============================================================
+//                    CLASES DE DATOS
+// ============================================================
+
+public class VideoInfo
+{
+    [JsonPropertyName("title")]
+    public string Title { get; set; } = string.Empty;
+    
+    [JsonPropertyName("duration")]
+    public int Duration { get; set; }
+    
+    [JsonPropertyName("thumbnail")]
+    public string Thumbnail { get; set; } = string.Empty;
+    
+    [JsonPropertyName("filesize")]
+    public long? FileSize { get; set; }
+    
+    [JsonPropertyName("formats")]
+    public List<FormatInfo> Formats { get; set; } = new();
+}
+
+public class FormatInfo
+{
+    [JsonPropertyName("format_id")]
+    public string FormatId { get; set; } = string.Empty;
+    
+    [JsonPropertyName("ext")]
+    public string Extension { get; set; } = string.Empty;
+    
+    [JsonPropertyName("resolution")]
+    public string? Resolution { get; set; }
+    
+    [JsonPropertyName("height")]
+    public int? Height { get; set; }
+    
+    [JsonPropertyName("width")]
+    public int? Width { get; set; }
+    
+    [JsonPropertyName("filesize")]
+    public long? FileSize { get; set; }
+    
+    [JsonPropertyName("vcodec")]
+    public string VideoCodec { get; set; } = string.Empty;
+    
+    [JsonPropertyName("acodec")]
+    public string AudioCodec { get; set; } = string.Empty;
 }

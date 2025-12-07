@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using ReactiveUI;
 using System.Reactive;
 using System.Reflection;
@@ -8,6 +9,8 @@ using System.Runtime.InteropServices;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using Avalonia;
+using Avalonia.Media.Imaging;
+using VManager.Services;
 using VManager.Views;
 
 namespace VManager.ViewModels;
@@ -107,6 +110,13 @@ public class MainWindowViewModel : ViewModelBase
     {
         get => _showCustomIcon;
         set => this.RaiseAndSetIfChanged(ref _showCustomIcon, value);
+    }
+    
+    private Bitmap? _userImage;
+    public Bitmap? UserImage
+    {
+        get => _userImage;
+        set => this.RaiseAndSetIfChanged(ref _userImage, value);
     }
     
     public string VersionText { get; } =
@@ -231,18 +241,62 @@ public class MainWindowViewModel : ViewModelBase
                 IsDarkTheme = theme == ThemeVariant.Dark;
             });
         
-        if (_configuration is ConfigurationViewModel configVM)
-        {
-            configVM.WhenAnyValue(x => x.UseCustomIcon)
-                .Subscribe(useCustom => ShowCustomIcon = useCustom);
-            
-            // Inicializar con el valor actual
-            ShowCustomIcon = configVM.UseCustomIcon;
-        }
+        // Cargar imagen inicial
+        LoadProfileImage();
+        
+        // Suscribirse a cambios en UseCustomIcon y ProfileImagePath
+        _configuration.WhenAnyValue(x => x.UseCustomIcon)
+            .Subscribe(useCustom => 
+            {
+                ShowCustomIcon = useCustom;
+                LoadProfileImage();
+            });
+        
+        _configuration.WhenAnyValue(x => x.ProfileImagePath)
+            .Subscribe(_ => LoadProfileImage());
         
     }
     
     public ConfigurationViewModel Configuration => _configuration; 
+    
+    public void LoadProfileImage()
+    {
+        var config = ConfigurationService.Load();
+        
+        if (config.UseCustomIcon)
+        {
+            var imagePath = config.ProfileImagePath ?? ProfileImageService.GetCurrentProfileImagePath();
+            
+            if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+            {
+                try
+                {
+                    UserImage = new Bitmap(imagePath);
+                    ShowCustomIcon = true;
+                }
+                catch
+                {
+                    UserImage = null;
+                    ShowCustomIcon = false;
+                }
+            }
+            else
+            {
+                UserImage = null;
+                ShowCustomIcon = false;
+            }
+        }
+        else
+        {
+            UserImage = null;
+            ShowCustomIcon = false;
+        }
+    }
+    
+    public void RefreshProfileImage()
+    {
+        LoadProfileImage();
+    }
     
     private void ToggleTheme()
     {

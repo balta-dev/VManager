@@ -1,10 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
 using VManager.Services;
@@ -14,7 +20,7 @@ namespace VManager.ViewModels
 {
     public class ConfigurationViewModel : CodecViewModelBase
     {
-        private bool isVideoPathSet; //por ser abstract
+        private bool isVideoPathSet;
         public override bool IsVideoPathSet
         {
             get => isVideoPathSet;
@@ -49,7 +55,6 @@ namespace VManager.ViewModels
             {
                 this.RaiseAndSetIfChanged(ref _idiomaSeleccionado, value);
 
-                // Cambiar el idioma de LocalizationService según la selección
                 switch (value)
                 {
                     case "Español":
@@ -62,7 +67,6 @@ namespace VManager.ViewModels
                         break;
                 }
 
-                // Notificar que los bindings podrían necesitar refrescar
                 this.RaisePropertyChanged(nameof(OpenConfig));
                 
                 var mainVM = App.Current?.ApplicationLifetime switch
@@ -74,11 +78,9 @@ namespace VManager.ViewModels
 
                 if (mainVM != null && mainVM.CurrentView == mainVM._configuration)
                 {
-                    // Reasigna la vista para forzar renderizado
                     mainVM.CurrentView = null;
                     mainVM.CurrentView = mainVM._configuration;
                 }
-                
             }
         }
 
@@ -101,7 +103,6 @@ namespace VManager.ViewModels
         {
             get => _useCustomIcon;
             set => this.RaiseAndSetIfChanged(ref _useCustomIcon, value);
-            
         }
         
         private Color? _selectedColor;
@@ -110,23 +111,131 @@ namespace VManager.ViewModels
             get => _selectedColor;
             set => this.RaiseAndSetIfChanged(ref _selectedColor, value);
         }
+        
+        private Bitmap? _profileImageBitmap;
+        public Bitmap? ProfileImageBitmap
+        {
+            get => _profileImageBitmap;
+            set => this.RaiseAndSetIfChanged(ref _profileImageBitmap, value);
+        }
+        
+        private string? _profileImagePath;
+        public string? ProfileImagePath
+        {
+            get => _profileImagePath;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _profileImagePath, value);
+                LoadProfileImageBitmap();
+            }
+        }
+        
+        private bool _hasProfileImage;
+        public bool HasProfileImage
+        {
+            get => _hasProfileImage;
+            set => this.RaiseAndSetIfChanged(ref _hasProfileImage, value);
+        }
+        
+        private string? _preferredDownloadFolder;
+        public string? PreferredDownloadFolder
+        {
+            get => _preferredDownloadFolder;
+            set => this.RaiseAndSetIfChanged(ref _preferredDownloadFolder, value);
+        }
+        
+        // --- Propiedades relacionadas con cookies ---
+        private bool _useCookiesFile;
+        public bool UseCookiesFile
+        {
+            get => _useCookiesFile;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _useCookiesFile, value);
+                SaveConfig();
+            }
+        }
+
+        private string? _cookiesFilePath;
+        public string? CookiesFilePath
+        {
+            get => _cookiesFilePath;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _cookiesFilePath, value);
+                this.RaisePropertyChanged(nameof(CookiesFilePath));
+            }
+        }
+
+        private DateTime? _cookiesLastUpdated;
+        public DateTime? CookiesLastUpdated
+        {
+            get => _cookiesLastUpdated;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _cookiesLastUpdated, value);
+                this.RaisePropertyChanged(nameof(CookiesLastUpdated));
+            }
+        }
+        
         public ReactiveCommand<Unit, Unit> RefreshCodecsCommand { get; }
         public ReactiveCommand<Unit, Unit> ResetAccentColorCommand { get; }
+        public ReactiveCommand<Unit, Unit> BrowseProfileImageCommand { get; }
+        public ReactiveCommand<Unit, Unit> RemoveProfileImageCommand { get; }
+        public ReactiveCommand<Unit, Unit> BrowseDownloadFolderCommand { get; }
+        public ReactiveCommand<Unit, Unit> BrowseCookiesFileCommand { get; }
+        public ReactiveCommand<Unit, Unit> RemoveCookiesFileCommand { get; }
+        
         
         private readonly ConfigurationService.AppConfig _config;
+        
+        private async Task BrowseDownloadFolderAsync()
+        {
+            TopLevel? topLevel = null;
+
+            if (App.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
+                desktop.MainWindow != null)
+            {
+                topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
+            }
+
+            if (topLevel == null)
+                return;
+
+            var folder = await topLevel.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
+            {
+                Title = "Seleccionar carpeta de descargas",
+                AllowMultiple = false
+            });
+
+            if (folder.Count > 0)
+            {
+                PreferredDownloadFolder = folder[0].Path.LocalPath;
+                SaveConfig();
+                Status = "Carpeta de descargas establecida.";
+                //_ = SoundManager.Play("success.wav");
+            }
+        }
         
         public ConfigurationViewModel()
         {
             RefreshCodecsCommand = ReactiveCommand.CreateFromTask(ReloadCodecsAsync, outputScheduler: AvaloniaScheduler.Instance);
+            
             ResetAccentColorCommand = ReactiveCommand.Create<Unit>(
                 () =>
                 {
                     SelectedColor = null;
-                    SelectedColor = null; // necesito ponerlo por segunda vez, por algun motivo no funciona distinto
-                    return Unit.Default; // <- importante para que sea Unit
+                    SelectedColor = null;
+                    return Unit.Default;
                 },
                 outputScheduler: AvaloniaScheduler.Instance
             );
+            
+            BrowseProfileImageCommand = ReactiveCommand.CreateFromTask(BrowseProfileImage, outputScheduler: AvaloniaScheduler.Instance);
+            RemoveProfileImageCommand = ReactiveCommand.CreateFromTask(RemoveProfileImage, outputScheduler: AvaloniaScheduler.Instance);
+            BrowseDownloadFolderCommand = ReactiveCommand.CreateFromTask(BrowseDownloadFolderAsync, outputScheduler: AvaloniaScheduler.Instance);
+            BrowseCookiesFileCommand = ReactiveCommand.CreateFromTask(BrowseCookiesFileAsync, outputScheduler: AvaloniaScheduler.Instance);
+            RemoveCookiesFileCommand = ReactiveCommand.CreateFromTask(RemoveCookiesFileAsync, outputScheduler: AvaloniaScheduler.Instance);
             
             _config = ConfigurationService.Load();
 
@@ -137,27 +246,196 @@ namespace VManager.ViewModels
             UseCustomIcon = _config.UseCustomIcon;
             HideRemainingTime = _config.HideRemainingTime;
             SelectedColor = _config.SelectedColor;
+            ProfileImagePath = _config.ProfileImagePath ?? ProfileImageService.GetCurrentProfileImagePath();
+            HasProfileImage = !string.IsNullOrEmpty(ProfileImagePath);
+            PreferredDownloadFolder = _config.PreferredDownloadFolder;
+            UseCookiesFile = _config.UseCookiesFile;
+            CookiesFilePath = _config.CookiesFilePath;
+            CookiesLastUpdated = _config.CookiesLastUpdated;
 
             // Guardar cambios automáticamente
-            // Suscribirse a cambios de EnableSounds y EnableNotifications
             this.WhenAnyValue(x => x.EnableSounds)
                 .Subscribe(val =>
                 {
-                    SoundManager.Enabled = val;     // Actúa en la app
-                    SaveConfig();                   // Guarda en JSON
+                    SoundManager.Enabled = val;
+                    SaveConfig();
                 });
 
             this.WhenAnyValue(x => x.EnableNotifications)
                 .Subscribe(val =>
                 {
-                    Notifier.Enabled = val;         // Actúa en la app
-                    SaveConfig();                   // Guarda en JSON
+                    Notifier.Enabled = val;
+                    SaveConfig();
                 });
             
-            // Otros campos que quieras guardar automáticamente
-            this.WhenAnyValue(x => x.IdiomaSeleccionado, x => x.UseCustomIcon, x => x.HideRemainingTime, x => x.SelectedColor)
+            this.WhenAnyValue(x => x.IdiomaSeleccionado, x => x.UseCustomIcon, x => x.HideRemainingTime, x => x.SelectedColor, x => x.ProfileImagePath)
                 .Subscribe(_ => SaveConfig());
             
+            this.WhenAnyValue(x => x.PreferredDownloadFolder)
+                .Subscribe(_ => SaveConfig());
+            
+            this.WhenAnyValue(x => x.UseCookiesFile)
+                .Subscribe(_ => SaveConfig());
+            
+            this.WhenAnyValue(x => x.CookiesFilePath)
+                .Subscribe(_ => SaveConfig());
+            
+        }
+        
+        private async Task BrowseCookiesFileAsync()
+        {
+            TopLevel? topLevel = null;
+            if (App.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop &&
+                desktop.MainWindow != null)
+            {
+                topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
+            }
+
+            if (topLevel == null)
+            {
+                Status = "No se pudo acceder a la ventana principal.";
+                this.RaisePropertyChanged(nameof(Status));
+                return;
+            }
+
+            var filters = new List<FilePickerFileType>
+            {
+                new FilePickerFileType("Cookies file") { Patterns = new[] { "*.txt", "*.cookies" } }
+            };
+
+            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Seleccionar archivo cookies.txt",
+                FileTypeFilter = filters,
+                AllowMultiple = false
+            });
+
+            if (files.Count > 0)
+            {
+                var local = files[0].Path.LocalPath;
+
+                // Validación mínima: existe y peso > 0
+                if (!File.Exists(local) || new FileInfo(local).Length == 0)
+                {
+                    Status = "Archivo inválido o vacío.";
+                    return;
+                }
+
+                CookiesFilePath = local;
+                CookiesLastUpdated = DateTime.Now;
+                UseCookiesFile = true;
+                Status = "Archivo de cookies establecido.";
+                SaveConfig();
+            }
+        }
+
+        private Task RemoveCookiesFileAsync()
+        {
+            CookiesFilePath = null;
+            CookiesLastUpdated = null;
+            UseCookiesFile = false;
+
+            Status = "Archivo de cookies eliminado.";
+            SaveConfig();
+            return Task.CompletedTask;
+        }
+
+        private async Task BrowseProfileImage()
+        {
+            TopLevel? topLevel = null;
+            if (App.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop &&
+                desktop.MainWindow != null)
+            {
+                topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
+            }
+
+            if (topLevel == null)
+            {
+                Status = "No se pudo acceder a la ventana principal.";
+                this.RaisePropertyChanged(nameof(Status));
+                return;
+            }
+
+            var imagePatterns = new[] { "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp", "*.tiff", "*.webp" };
+
+            var filters = new List<FilePickerFileType>
+            {
+                new FilePickerFileType("Imágenes") { Patterns = imagePatterns }
+            };
+
+            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Seleccionar imagen de perfil",
+                FileTypeFilter = filters,
+                AllowMultiple = false
+            });
+
+            if (files.Count > 0)
+            {
+                string selectedPath = files[0].Path.LocalPath;
+                
+                Status = "Validando imagen...";
+                this.RaisePropertyChanged(nameof(Status));
+
+                var result = await ProfileImageService.SaveProfileImageAsync(selectedPath);
+                
+                Status = result.Message;
+                if (result.Success)
+                {
+                    ProfileImagePath = result.Path;
+                    HasProfileImage = true;
+                }
+                
+                this.RaisePropertyChanged(nameof(Status));
+            }
+        }
+
+        private async Task RemoveProfileImage()
+        {
+            var result = ProfileImageService.DeleteProfileImage();
+            Status = result.Message;
+            if (result.Success)
+            {
+                ProfileImagePath = null;
+                HasProfileImage = false;
+            }
+            
+            this.RaisePropertyChanged(nameof(Status));
+        }
+        
+        private void LoadProfileImageBitmap()
+        {
+            if (!string.IsNullOrEmpty(ProfileImagePath) && File.Exists(ProfileImagePath))
+            {
+                try
+                {
+                    using var original = new Bitmap(ProfileImagePath);
+
+                    var scaled = new RenderTargetBitmap(new PixelSize(100, 100), new Vector(96, 96));
+
+                    using (var ctx = scaled.CreateDrawingContext())
+                    {
+                        ctx.DrawImage(
+                            original,
+                            new Rect(0, 0, original.PixelSize.Width, original.PixelSize.Height),
+                            new Rect(0, 0, 100, 100)
+                        );
+                    }
+
+                    ProfileImageBitmap = scaled;
+                    HasProfileImage = true;
+                }
+                catch
+                {
+                    ProfileImageBitmap = null;
+                    HasProfileImage = false;
+                }
+            }
+            else
+            {
+                ProfileImageBitmap = null;
+                HasProfileImage = false;
+            }
         }
 
         private void SaveConfig()
@@ -168,10 +446,14 @@ namespace VManager.ViewModels
             _config.UseCustomIcon = UseCustomIcon;
             _config.HideRemainingTime = HideRemainingTime;
             _config.SelectedColor = SelectedColor;
+            _config.ProfileImagePath = ProfileImagePath;
+            _config.PreferredDownloadFolder = PreferredDownloadFolder;
+            // === Guardar cookies ===
+            _config.UseCookiesFile = UseCookiesFile;
+            _config.CookiesFilePath = CookiesFilePath;
+            _config.CookiesLastUpdated = CookiesLastUpdated;
 
             ConfigurationService.Save(_config);
         }
-        
     }
-
 }

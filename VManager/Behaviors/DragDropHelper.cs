@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -10,6 +11,7 @@ using Avalonia.Animation.Easings;
 using ReactiveUI;
 using System.ComponentModel;
 using Avalonia.Platform.Storage;
+using DynamicData;
 
 namespace VManager.Behaviors
 {
@@ -30,6 +32,12 @@ namespace VManager.Behaviors
 
         public static string GetDropTarget(Control control) => control.GetValue(DropTargetProperty);
         public static void SetDropTarget(Control control, string value) => control.SetValue(DropTargetProperty, value);
+        
+        public static readonly AttachedProperty<bool> AllowTxtProperty =
+            AvaloniaProperty.RegisterAttached<Control, bool>(
+                "AllowTxt", typeof(DragDropHelper));
+        public static bool GetAllowTxt(Control control) => control.GetValue(AllowTxtProperty);
+        public static void SetAllowTxt(Control control, bool value) => control.SetValue(AllowTxtProperty, value);
 
         // Only video and audio
         private static readonly string[] VideoExtensions = 
@@ -42,7 +50,11 @@ namespace VManager.Behaviors
             ".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a"
         };
         
-
+        private static readonly string[] TextExtensions =
+        {
+            ".txt"
+        };
+        
         // Simple property to also enable audio
         public static readonly AttachedProperty<bool> AllowAudioProperty =
             AvaloniaProperty.RegisterAttached<Control, bool>(
@@ -94,13 +106,27 @@ namespace VManager.Behaviors
             if (sender is Control control)
             {
                 bool allowAudio = GetAllowAudio(control);
+                bool allowTxt = GetAllowTxt(control);
 
-                bool hasValidFile = files.Any(file =>
+                bool hasValidFile;
+                
+                if (allowTxt && !allowAudio) // solo TXT
                 {
-                    var extension = System.IO.Path.GetExtension(file.Path.LocalPath).ToLowerInvariant();
-                    return VideoExtensions.Contains(extension) ||
-                           (allowAudio && AudioExtensions.Contains(extension));
-                });
+                    hasValidFile = files.Any(file =>
+                    {
+                        var extension = System.IO.Path.GetExtension(file.Path.LocalPath).ToLowerInvariant();
+                        return TextExtensions.Contains(extension);
+                    });
+                }
+                else // videos y audios
+                {
+                    hasValidFile = files.Any(file =>
+                    {
+                        var extension = System.IO.Path.GetExtension(file.Path.LocalPath).ToLowerInvariant();
+                        return VideoExtensions.Contains(extension) ||
+                               (allowAudio && AudioExtensions.Contains(extension));
+                    });
+                }
 
                 if (!hasValidFile)
                 {
@@ -142,7 +168,7 @@ namespace VManager.Behaviors
                 if (mousePos.X >= 0 && mousePos.X <= border.Bounds.Width &&
                     mousePos.Y >= 0 && mousePos.Y <= border.Bounds.Height)
                     return;
-
+                
                 var originalBackground = border.GetValue(OriginalBackgroundProperty);
                 border.Background = originalBackground ?? Brushes.Transparent;
                 border.ClearValue(OriginalBackgroundProperty);
@@ -151,100 +177,201 @@ namespace VManager.Behaviors
 
         private static void OnDropFile(object? sender, DragEventArgs e)
         {
+            Console.WriteLine("=== OnDropFile iniciado ===");
+            
             if (sender is not Control control)
+            {
+                Console.WriteLine("Sender no es Control");
                 return;
+            }
+            
+            // IMPORTANTE: Limpiar el color del drag antes de procesar
+            if (sender is Border borderCleanup)
+            {
+                var originalBg = borderCleanup.GetValue(OriginalBackgroundProperty);
+                if (originalBg != null)
+                {
+                    Console.WriteLine($"Limpiando background original: {originalBg}");
+                    borderCleanup.Background = originalBg;
+                    borderCleanup.ClearValue(OriginalBackgroundProperty);
+                }
+                else
+                {
+                    Console.WriteLine("No hay OriginalBackgroundProperty guardado");
+                    // Si no hay original guardado, forzar a transparent
+                    borderCleanup.Background = Brushes.Transparent;
+                }
+            }
 
             var files = e.DataTransfer?.TryGetFiles() ?? Array.Empty<IStorageFile>();
             if (!files.Any())
+            {
+                Console.WriteLine("No hay archivos");
                 return;
+            }
+
+            Console.WriteLine($"Archivos detectados: {files.Count()}");
 
             bool allowAudio = GetAllowAudio(control);
+            bool allowTxt = GetAllowTxt(control);
 
-            var validPaths = files
-                .Where(f =>
-                {
-                    var ext = System.IO.Path.GetExtension(f.Path.LocalPath).ToLowerInvariant();
-                    return VideoExtensions.Contains(ext) || (allowAudio && AudioExtensions.Contains(ext));
-                })
-                .Select(f => f.Path.LocalPath)
-                .ToList();
+            Console.WriteLine($"AllowAudio: {allowAudio}, AllowTxt: {allowTxt}");
 
-            if (!validPaths.Any())
+            var dc = FindDataContext(control);
+            if (dc == null)
             {
+                Console.WriteLine("DataContext no encontrado");
                 ShowErrorFeedback(control);
                 return;
             }
 
-            var dc = FindDataContext(control);
-            if (dc == null)
-                return;
+            Console.WriteLine($"DataContext encontrado: {dc.GetType().Name}");
 
-            // Intentamos obtener la propiedad VideoPaths (List<string>)
-            var listProp = dc.GetType().GetProperty("VideoPaths");
-            var singleProp = dc.GetType().GetProperty("VideoPath");
-
-            if (listProp != null && listProp.CanWrite)
+            // Determinar el tipo de archivo que esperamos según las propiedades
+            if (allowTxt && !allowAudio) 
             {
-                if (listProp.GetValue(dc) is List<string> currentList)
+                Console.WriteLine("Modo TXT");
+                // Modo TXT: solo aceptar archivos .txt
+                var txtPaths = files
+                    .Where(f => TextExtensions.Contains(System.IO.Path.GetExtension(f.Path.LocalPath).ToLowerInvariant()))
+                    .Select(f => f.Path.LocalPath)
+                    .ToList();
+
+                Console.WriteLine($"Archivos TXT encontrados: {txtPaths.Count}");
+
+                if (!txtPaths.Any())
                 {
-                    currentList.AddRange(validPaths);
+                    Console.WriteLine("No hay archivos TXT válidos - mostrando error");
+                    ShowErrorFeedback(control);
+                    e.Handled = true; 
+                    Console.WriteLine("=== OnDropFile finalizado (TXT inválido) ===");
+                    return;
+                }
+
+                var cookiesProp = dc.GetType().GetProperty("CookiesFilePath");
+                Console.WriteLine($"CookiesFilePath existe: {cookiesProp != null}, CanWrite: {cookiesProp?.CanWrite}");
+                
+                if (cookiesProp != null && cookiesProp.CanWrite)
+                {
+                    cookiesProp.SetValue(dc, txtPaths.First());
+                    Console.WriteLine($"CookiesFilePath asignado: {txtPaths.First()}");
+                    if (dc is ReactiveObject reactiveObj)
+                        reactiveObj.RaisePropertyChanged("CookiesFilePath");
+                    
+                    ShowSuccessFeedback(control);
+                    e.Handled = true;
+                    Console.WriteLine("=== OnDropFile finalizado (TXT exitoso) ===");
                 }
                 else
                 {
-                    listProp.SetValue(dc, new List<string>(validPaths));
+                    Console.WriteLine("No se pudo asignar CookiesFilePath - mostrando error");
+                    ShowErrorFeedback(control);
+                    e.Handled = true;
+                    Console.WriteLine("=== OnDropFile finalizado (TXT error asignación) ===");
                 }
-
-                // Forzar notificación ReactiveUI
-                if (dc is ReactiveObject reactiveObj)
-                {
-                    reactiveObj.RaisePropertyChanged("VideoPaths");
-                }
+                return;
             }
-
-            if (singleProp != null && singleProp.CanWrite && validPaths.Any())
+            else 
             {
-                singleProp.SetValue(dc, validPaths.First());
-                if (dc is ReactiveObject reactiveObj)
+                Console.WriteLine("Modo Video/Audio");
+                // Modo Video/Audio
+                var validPaths = files
+                    .Where(f =>
+                    {
+                        var ext = System.IO.Path.GetExtension(f.Path.LocalPath).ToLowerInvariant();
+                        return VideoExtensions.Contains(ext) || (allowAudio && AudioExtensions.Contains(ext));
+                    })
+                    .Select(f => f.Path.LocalPath)
+                    .ToList();
+
+                if (!validPaths.Any())
                 {
-                    reactiveObj.RaisePropertyChanged("VideoPath");
+                    Console.WriteLine("No hay archivos video/audio válidos");
+                    ShowErrorFeedback(control);
+                    return;
                 }
+
+                Console.WriteLine($"Paths válidos: {validPaths.Count}");
+                foreach (var path in validPaths)
+                {
+                    Console.WriteLine($"  - {path}");
+                }
+
+                // Intentamos obtener la propiedad VideoPaths (ObservableCollection<string>)
+                var listProp = dc.GetType().GetProperty("VideoPaths");
+                var singleProp = dc.GetType().GetProperty("VideoPath");
+
+                Console.WriteLine($"VideoPaths existe: {listProp != null}, VideoPath existe: {singleProp != null}");
+
+                if (listProp != null && listProp.CanWrite)
+                {
+                    if (listProp.GetValue(dc) is ObservableCollection<string> currentList)
+                    {
+                        currentList.AddRange(validPaths);
+                        Console.WriteLine($"Agregados {validPaths.Count} items a lista existente");
+                    }
+                    else
+                    {
+                        listProp.SetValue(dc, new ObservableCollection<string>(validPaths));
+                        Console.WriteLine("Lista nueva creada y asignada");
+                    }
+
+                    // Forzar notificación ReactiveUI
+                    if (dc is ReactiveObject reactiveObj)
+                    {
+                        reactiveObj.RaisePropertyChanged("VideoPaths");
+                        Console.WriteLine("RaisePropertyChanged('VideoPaths') ejecutado");
+                    }
+                }
+
+                if (singleProp != null && singleProp.CanWrite && validPaths.Any())
+                {
+                    singleProp.SetValue(dc, validPaths.First());
+                    Console.WriteLine($"VideoPath asignado: {validPaths.First()}");
+                    if (dc is ReactiveObject reactiveObj)
+                    {
+                        reactiveObj.RaisePropertyChanged("VideoPath");
+                        Console.WriteLine("RaisePropertyChanged('VideoPath') ejecutado");
+                    }
+                }
+
+                Console.WriteLine("Mostrando success feedback");
+                ShowSuccessFeedback(control);
             }
 
-            ShowSuccessFeedback(control);
             e.Handled = true;
+            Console.WriteLine("=== OnDropFile finalizado ===");
         }
         
         private static async void ShowSuccessFeedback(Control control)
         {
+            Console.WriteLine("ShowSuccessFeedback iniciado");
             if (control is Border border)
             {
-                // Check for clean background
-                var originalBackground = border.GetValue(OriginalBackgroundProperty) ?? border.Background;
-                
                 // Green flash
                 border.Background = new SolidColorBrush(Colors.LightGreen, 0.6);
                 await System.Threading.Tasks.Task.Delay(200);
-                border.Background = originalBackground ?? Brushes.Transparent;
                 
-                // Clear reference
-                border.ClearValue(OriginalBackgroundProperty);
+                // Volver a transparente siempre
+                border.Background = Brushes.Transparent;
+                
+                Console.WriteLine("ShowSuccessFeedback completado");
             }
         }
 
         private static async void ShowErrorFeedback(Control control)
         {
+            Console.WriteLine("ShowErrorFeedback iniciado");
             if (control is Border border)
             {
-                // Check for clean background
-                var originalBackground = border.GetValue(OriginalBackgroundProperty) ?? border.Background;
-                
                 // Red flash
                 border.Background = new SolidColorBrush(Colors.LightCoral, 0.6);
                 await System.Threading.Tasks.Task.Delay(300);
-                border.Background = originalBackground ?? Brushes.Transparent;
                 
-                // Clear reference
-                border.ClearValue(OriginalBackgroundProperty);
+                // Volver a transparente siempre
+                border.Background = Brushes.Transparent;
+                
+                Console.WriteLine("ShowErrorFeedback completado");
             }
         }
 

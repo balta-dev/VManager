@@ -5,7 +5,7 @@
     "Shortcuts": {
       "Title": "Lista de Atajos:",
       "Items": {
-        "Item1Title": "Botones F1/F2/F3/F4:",
+        "Item1Title": "Botones 1/2/3/4/5:",
         "Item1Description": " Intercambian entre herramientas",
         "Item2Title": "Botón F5:",
         "Item2Description": " Refrescar pantalla",
@@ -16,7 +16,9 @@
         "Item5Title": "Enter:",
         "Item5Description": " Comenzar operación",
         "Item6Title": "Esc:",
-        "Item6Description": " Cancelar operación"
+        "Item6Description": " Cancelar operación",
+        "Item7Title": "O",
+        "Item7Description": " Ocultar o mostrar nombres"
       }
     },
     "Border": {
@@ -28,13 +30,15 @@
         "Item2Description": " comprime vídeos, priorizando tu GPU.",
         "Item3Title": "VCONV:",
         "Item3Description": " convierte entre distintos formatos de vídeo (ej. MKV → MP4).",
-        "Item4Title": "Y próximamente más:",
-        "Item4Description": " conversión de audio, múltiples archivos, etc."
+        "Item4Title": "VAUDIOFY",
+        "Item4Description": " transforma tus videos en audios o convierte entre formatos de audio.",
+        "Item5Title": "VDOWNLOAD",
+        "Item5Description": " descarga tus videos de tus plataformas favoritas."
       },
       "Title2": "¿Cómo lo uso?",
       "Items2": {
         "Item1Description": "Selecciona una de las herramientas arriba a la izquierda utilizando el mouse o el atajo de teclado",
-        "Item2Description": "Arrastra el vídeo al recuadro o selecciónalo con el botón 'Examinar'",
+        "Item2Description": "Arrastra el vídeo al recuadro o selecciónalo con el botón 'Buscar'",
         "Item3Description": "¡Procesa el vídeo con el botón y listo!"
       }
     }
@@ -98,7 +102,7 @@
     "Title": "Extracción/Conversión de Audio",
     "Buttons": {
       "Refresh": "Refrescar",
-      "Browse": "Examinar",
+      "Browse": "Buscar",
       "Extract": "Extraer audio",
       "Cancel": "CANCELAR",
       "ShowFileInFolder": "Mostrar archivo en carpeta"

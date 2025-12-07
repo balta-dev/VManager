@@ -22,7 +22,6 @@
     <Folder Include="Binaries\Linux\" />
     <Folder Include="Binaries\Mac\" />
     <Folder Include="Binaries\Windows\" />
-    <Folder Include="Models\" />
     <EmbeddedResource Include="Assets\Localization\*.json" />
   </ItemGroup>
 

@@ -4,7 +4,8 @@
              x:DataType="vm:ConfigurationViewModel"
              xmlns:vm="using:VManager.ViewModels"
              xmlns:cc="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.ColorPicker"
-             xmlns:services="clr-namespace:VManager.Services">
+             xmlns:services="clr-namespace:VManager.Services"
+             xmlns:behaviors="clr-namespace:VManager.Behaviors">
 
   <UserControl.Resources>
     <services:ValidPathConverter x:Key="ValidPathConverter" />
@@ -19,7 +20,10 @@
             Background="{DynamicResource PanelBackgroundBrush}"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            ClipToBounds="True">
+            ClipToBounds="True"
+            behaviors:DragDropHelper.EnableFileDrop="True"
+            behaviors:DragDropHelper.DropTarget="CookiesFilePath"
+            behaviors:DragDropHelper.AllowTxt="True">
 
       <ScrollViewer Padding="0"
                     VerticalScrollBarVisibility="Auto"
@@ -95,12 +99,72 @@
                           Command="{Binding ResetAccentColorCommand}" 
                           ToolTip.Tip="Resetear color de acento"/>
                 </StackPanel>
+                
+              <StackPanel Spacing="8" Margin="0,10,0,0">
+                <TextBlock Text="Imagen de perfil:"
+                           FontSize="14"
+                           FontWeight="DemiBold"
+                           VerticalAlignment="Center"/>
+                
+                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                  <!-- Previsualización de la imagen -->
+                  <Border Width="80" Height="80"
+                          CornerRadius="40"
+                          ClipToBounds="True"
+                          BorderBrush="{DynamicResource AccentBrush}"
+                          BorderThickness="2">
+                    <Border.IsVisible>
+                      <Binding Path="HasProfileImage" />
+                    </Border.IsVisible>
+                    <Image Source="{Binding ProfileImageBitmap}"
+                           Stretch="UniformToFill" />
+                  </Border>
+                  
+                  <!-- Placeholder cuando no hay imagen -->
+                  <Border Width="80" Height="80"
+                          CornerRadius="40"
+                          Background="{DynamicResource AccentBrush}"
+                          BorderBrush="{DynamicResource BorderBrushPrimary}"
+                          BorderThickness="2">
+                    <Border.IsVisible>
+                      <Binding Path="!HasProfileImage" />
+                    </Border.IsVisible>
+                    <PathIcon Width="40" Height="40"
+                              Foreground="White"
+                              Data="M12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2ZM12 5C13.66 5 15 6.34 15 8C15 9.66 13.66 11 12 11C10.34 11 9 9.66 9 8C9 6.34 10.34 5 12 5ZM12 19.2C9.5 19.2 7.29 17.92 6 15.98C6.03 13.99 10 12.9 12 12.9C13.99 12.9 17.97 13.99 18 15.98C16.71 17.92 14.5 19.2 12 19.2Z" />
+                  </Border>
+                  
+                  <StackPanel Spacing="5" VerticalAlignment="Center">
+                    <Button Content="Cargar imagen"
+                            Command="{Binding BrowseProfileImageCommand}"
+                            Width="150"
+                            FontSize="13"/>
+                    
+                    <Button Content="Eliminar imagen"
+                            Command="{Binding RemoveProfileImageCommand}"
+                            Width="150"
+                            FontSize="13"
+                            Classes="RedAccented">
+                      <Button.IsEnabled>
+                        <Binding Path="HasProfileImage" />
+                      </Button.IsEnabled>
+                    </Button>
+                    
+                    <TextBlock Text="JPG, PNG, GIF, BMP, TIFF, WebP"
+                               FontSize="10"
+                               Opacity="0.7"
+                               MaxWidth="150"
+                               TextWrapping="Wrap"/>
+                  </StackPanel>
+                </StackPanel>
+              </StackPanel>  
+                
               </StackPanel>
             </Border>
           </Expander>
 
           <!-- Comportamiento -->
-          <Expander IsExpanded="False"
+          <Expander IsExpanded="True"
                     HorizontalAlignment="Stretch">
             
             <Expander.Header>
@@ -120,6 +184,7 @@
               </Style>
             </Expander.Styles>
             <Border Padding="0">
+              
               <StackPanel Spacing="10">
 
                 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
@@ -142,13 +207,84 @@
                              VerticalAlignment="Center"/>
                   <CheckBox IsChecked="{Binding !EnableSounds, Mode=TwoWay}" />
                 </StackPanel>
+                
+                <!-- Carpeta preferida para guardar videos -->
+                <StackPanel Orientation="Vertical" Spacing="8" Margin="0 8 0 0" VerticalAlignment="Center">
+                  <TextBlock Text="Carpeta de descargas:"
+                             FontSize="14"
+                             VerticalAlignment="Center" />
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <TextBox Text="{Binding PreferredDownloadFolder, Mode=TwoWay}"
+                         Width="260"
+                         HorizontalAlignment="Left"
+                         IsReadOnly="True"/>
+                
+                <Button Content="Buscar..."
+                        Command="{Binding BrowseDownloadFolderCommand}"
+                        Width="90"/>
+                </StackPanel>
+                
+                <!-- Archivo de cookies para yt-dlp -->
+                <StackPanel Spacing="8" Margin="0,10,0,0">
+
+                  <TextBlock Text="Cookies de sesión:"
+                             FontSize="14"
+                             FontWeight="DemiBold"
+                             VerticalAlignment="Center"/>
+
+                  <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+
+                    <!-- Ruta del archivo -->
+                    <TextBox Text="{Binding CookiesFilePath}" 
+                             Width="260"
+                             IsReadOnly="True"
+                             Watermark="Ningún archivo seleccionado"/>
+
+                    <!-- Botón seleccionar cookies -->
+                    <Button Content="Buscar..."
+                            Width="90"
+                            Command="{Binding BrowseCookiesFileCommand}"/>
+                  </StackPanel>
+
+                  <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+
+                    <!-- Checkbox: activar uso del archivo -->
+                    <CheckBox IsChecked="{Binding UseCookiesFile, Mode=TwoWay}" />
+
+                    <TextBlock Text="Usar este archivo de cookies para yt-dlp"
+                               FontSize="13"
+                               VerticalAlignment="Center"/>
+                  </StackPanel>
+
+                  <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <!-- Fecha de actualización -->
+                    <!--<TextBlock Text="{Binding CookiesLastUpdated, StringFormat='Última actualización: {0:dd/MM/yyyy HH:mm}'}"
+                               FontSize="11"
+                               Opacity="0.7">
+                      <TextBlock IsVisible="{Binding CookiesLastUpdated, Converter={StaticResource ValidPathConverter}}"/>
+                    </TextBlock>-->
+
+                    <!-- Botón limpiar cookies -->
+                    <Button Content="Eliminar"
+                            Width="90"
+                            Classes="RedAccented"
+                            Command="{Binding RemoveCookiesFileCommand}">
+                      <Button.IsEnabled>
+                        <Binding Path="CookiesFilePath" Converter="{StaticResource ValidPathConverter}" />
+                      </Button.IsEnabled>
+                    </Button>
+                  </StackPanel>
+
+                </StackPanel>
 
               </StackPanel>
             </Border>
           </Expander>
 
           <!-- Avanzado -->
-          <Expander IsExpanded="False"
+          <Expander IsExpanded="True"
                     HorizontalAlignment="Stretch">
             
             <Expander.Header>

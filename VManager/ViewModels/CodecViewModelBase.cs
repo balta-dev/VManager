@@ -23,7 +23,7 @@ namespace VManager.ViewModels
             new VideoFormat { Extension = "mp4", DisplayName = ".mp4" },
             new VideoFormat { Extension = "mkv", DisplayName = ".mkv" },
             new VideoFormat { Extension = "avi", DisplayName = ".avi" },
-            new VideoFormat { Extension = "mov", DisplayName = ".mov" },
+            new VideoFormat { Extension = "mov", DisplayName = ".mov (DNxHR)" },
             new VideoFormat { Extension = "webm", DisplayName = ".webm" },
             new VideoFormat { Extension = "wmv", DisplayName = ".wmv" },
             new VideoFormat { Extension = "flv", DisplayName = ".flv" },
@@ -32,6 +32,9 @@ namespace VManager.ViewModels
         
         public ObservableCollection<AudioFormat> SupportedAudioFormats { get; } = new ObservableCollection<AudioFormat>
         {
+            new AudioFormat { Extension = "pcm_s24le", DisplayName = ".wav (PCM 24-bit)" },
+            new AudioFormat { Extension = "pcm_s16le", DisplayName = ".wav (PCM 16-bit)" },
+            new AudioFormat { Extension = "pcm_f32le", DisplayName = ".wav (PCM 32-bit float)" },
             new AudioFormat { Extension = "libmp3lame", DisplayName = ".mp3" },
             new AudioFormat { Extension = "aac", DisplayName = ".aac" },
             new AudioFormat { Extension = "flac", DisplayName = ".flac" },
@@ -80,6 +83,16 @@ namespace VManager.ViewModels
             _allVideoCodecs = cache.VideoCodecs.ToList();
             _allAudioCodecs = cache.AudioCodecs.ToList();
 
+            var pcmCodecs = new[] { "pcm_s16le", "pcm_s24le", "pcm_f32le" };
+            foreach (var pcm in pcmCodecs)
+            {
+                if (!_allAudioCodecs.Contains(pcm))
+                {
+                    _allAudioCodecs.Add(pcm);
+                    Console.WriteLine($"[DEBUG] PCM agregado manualmente: {pcm}");
+                }
+            }
+            
             AvailableVideoCodecs.Clear();
             foreach (var v in _allVideoCodecs)
                 AvailableVideoCodecs.Add(v);

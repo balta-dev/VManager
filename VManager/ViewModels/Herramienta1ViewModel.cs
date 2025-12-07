@@ -65,7 +65,7 @@ namespace VManager.ViewModels
                 return;
             }
 
-            var videoPatterns = new[] { "*.mp4", "*.mkv", "*.mov" };
+            var videoPatterns = new[] { "*.mp4", "*.mkv", "*.avi", "*.mov", "*.webm", "*.wmv", "*.flv", "*.3gp"};
 
             var filters = new List<FilePickerFileType>
             {
@@ -168,32 +168,66 @@ namespace VManager.ViewModels
                 return;
             }
 
-            if (!TryParseTime(TiempoHasta, out TimeSpan end))
+            // Obtener información del video primero para conocer su duración
+            Status = "Obteniendo información del video...";
+            this.RaisePropertyChanged(nameof(Status));
+            
+            var processor = new VideoProcessor();
+            var analysisResult = await processor.AnalyzeVideoAsync(VideoPath);
+            
+            if (!analysisResult.Success)
             {
                 _ = SoundManager.Play("fail.wav");
-                Status = "Tiempo 'hasta' inválido";
-                this.RaisePropertyChanged(nameof(Status));
-                TiempoHasta = "";
-                this.RaisePropertyChanged(nameof(TiempoHasta));
-                return;
-            }
-
-            if (end <= start)
-            {
-                _ = SoundManager.Play("fail.wav");
-                Status = "Tiempo 'hasta' debe ser mayor que tiempo 'desde'";
+                Status = analysisResult.Message;
                 this.RaisePropertyChanged(nameof(Status));
                 return;
             }
+            
+            var mediaInfo = analysisResult.Result!;
+            double totalDuration = mediaInfo.Duration.TotalSeconds;
 
-            TimeSpan duration = end - start;
+            TimeSpan duration;
+            
+            // Si TiempoHasta está vacío, usar hasta el final del video
+            if (string.IsNullOrWhiteSpace(TiempoHasta))
+            {
+                duration = TimeSpan.FromSeconds(totalDuration - start.TotalSeconds);
+                duration += TimeSpan.FromSeconds(1); // PARA TRIGGEREAR LA ADVERTENCIA DE REDIMENSIÓN AL CUTASYNC
+                
+                if (duration <= TimeSpan.Zero)
+                {
+                    _ = SoundManager.Play("fail.wav");
+                    Status = "El tiempo 'desde' excede la duración del video";
+                    this.RaisePropertyChanged(nameof(Status));
+                    return;
+                }
+            }
+            else
+            {
+                // Si TiempoHasta tiene valor, parsearlo y validar
+                if (!TryParseTime(TiempoHasta, out TimeSpan end))
+                {
+                    _ = SoundManager.Play("fail.wav");
+                    Status = "Tiempo 'hasta' inválido";
+                    this.RaisePropertyChanged(nameof(Status));
+                    TiempoHasta = "";
+                    this.RaisePropertyChanged(nameof(TiempoHasta));
+                    return;
+                }
+
+                if (end <= start)
+                {
+                    _ = SoundManager.Play("fail.wav");
+                    Status = "Tiempo 'hasta' debe ser mayor que tiempo 'desde'";
+                    this.RaisePropertyChanged(nameof(Status));
+                    return;
+                }
+
+                duration = end - start;
+            }
 
             try
             {
-                Status = "Obteniendo información del video...";
-                this.RaisePropertyChanged(nameof(Status));
-
-                var processor = new VideoProcessor();
                 var progress = new Progress<IVideoProcessor.ProgressInfo>(info =>
                 {
                     Progress = (int)(info.Progress * 100);
