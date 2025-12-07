@@ -324,10 +324,21 @@ namespace VManager.ViewModels
                     }
                     else
                     {
-                        video.HasError = true;
-                        video.Status = "✗ Error";
-                        _ = SoundManager.Play("fail.wav");
-                        Status = $"Error en {video.Title}: {result.Message}";
+                        if (_cts.IsCancellationRequested)
+                        {
+                            video.IsCanceled = true;
+                            video.Status = "⚠ Cancelado";
+                            video.Progress = 0;
+                            Status = $"Descarga cancelada: {video.Title}";
+                        }
+                        else
+                        {
+                            video.HasError = true;
+                            video.Status = "✗ Error";
+                            _ = SoundManager.Play("fail.wav");
+                            Status = $"Error en {video.Title}: {result.Message}";
+                        }
+
                         this.RaisePropertyChanged(nameof(Status));
                     }
                 }

@@ -245,13 +245,12 @@ public class YtDlpProcessor
     // ============================================================
     
     public async Task<ProcessingResult> DownloadAsync(
-        string url,
-        string outputTemplate,
-        IProgress<YtDlpProgress> progress,
-        CancellationToken cancellationToken)
+    string url,
+    string outputTemplate,
+    IProgress<YtDlpProgress> progress,
+    CancellationToken cancellationToken)
     {
         string cookieArg = BuildCookiesArgument();
-
         var psi = new ProcessStartInfo
         {
             FileName = _ytDlpPath,
@@ -266,39 +265,88 @@ public class YtDlpProcessor
 
         try
         {
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+            // Registrar cancelación para matar el proceso
+            linkedCts.Token.Register(() =>
+            {
+                if (!process.HasExited)
+                {
+                    try
+                    {
+                        process.Kill(entireProcessTree: true);
+                        Console.WriteLine("[DEBUG] Proceso yt-dlp cancelado.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("[DEBUG] Error matando proceso: " + ex.Message);
+                    }
+
+                    // Borrar archivo parcial
+                    if (File.Exists(outputTemplate))
+                    {
+                        try
+                        {
+                            File.Delete(outputTemplate);
+                            Console.WriteLine("[DEBUG] Archivo parcial eliminado tras cancelación.");
+                        }
+                        catch (IOException ex)
+                        {
+                            Console.WriteLine("[DEBUG] No se pudo eliminar archivo parcial: " + ex.Message);
+                        }
+                    }
+                }
+            });
+
             process.Start();
 
+            // Leer stdout y stderr con respeto al token
             Task readStdout = Task.Run(async () =>
             {
                 using var r = process.StandardOutput;
                 string? line;
                 while ((line = await r.ReadLineAsync()) != null)
+                {
+                    linkedCts.Token.ThrowIfCancellationRequested();
                     ProcessYtDlpLine(line, progress);
-            });
+                }
+            }, linkedCts.Token);
 
             Task readStderr = Task.Run(async () =>
             {
                 using var r = process.StandardError;
                 string? line;
                 while ((line = await r.ReadLineAsync()) != null)
+                {
+                    linkedCts.Token.ThrowIfCancellationRequested();
                     ProcessYtDlpLine(line, progress);
-            });
+                }
+            }, linkedCts.Token);
 
             await Task.WhenAll(readStdout, readStderr);
-            await process.WaitForExitAsync(cancellationToken);
+            await process.WaitForExitAsync(linkedCts.Token);
+
+            if (linkedCts.Token.IsCancellationRequested)
+            {
+                return new ProcessingResult(false, "Operación cancelada por el usuario.");
+            }
 
             if (process.ExitCode == 0)
                 return new ProcessingResult(true, "Descarga completada");
 
             return new ProcessingResult(false, "Error ejecutando yt-dlp");
         }
+        catch (OperationCanceledException)
+        {
+            return new ProcessingResult(false, "Operación cancelada por el usuario.");
+        }
         catch (Exception ex)
         {
             return new ProcessingResult(false, $"Error: {ex.Message}");
         }
+        
     }
-
-
+    
 }
 
 // ============================================================
