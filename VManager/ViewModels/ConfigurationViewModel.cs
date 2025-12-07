@@ -149,22 +149,14 @@ namespace VManager.ViewModels
         public bool UseCookiesFile
         {
             get => _useCookiesFile;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _useCookiesFile, value);
-                SaveConfig();
-            }
+            set => this.RaiseAndSetIfChanged(ref _useCookiesFile, value);
         }
 
         private string? _cookiesFilePath;
         public string? CookiesFilePath
         {
             get => _cookiesFilePath;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _cookiesFilePath, value);
-                this.RaisePropertyChanged(nameof(CookiesFilePath));
-            }
+            set => this.RaiseAndSetIfChanged(ref _cookiesFilePath, value);
         }
 
         private DateTime? _cookiesLastUpdated;
@@ -211,7 +203,7 @@ namespace VManager.ViewModels
             if (folder.Count > 0)
             {
                 PreferredDownloadFolder = folder[0].Path.LocalPath;
-                SaveConfig();
+                this.RaisePropertyChanged(nameof(PreferredDownloadFolder));
                 Status = "Carpeta de descargas establecida.";
                 //_ = SoundManager.Play("success.wav");
             }
@@ -272,12 +264,6 @@ namespace VManager.ViewModels
                 .Subscribe(_ => SaveConfig());
             
             this.WhenAnyValue(x => x.PreferredDownloadFolder)
-                .Subscribe(_ => SaveConfig());
-            
-            this.WhenAnyValue(x => x.UseCookiesFile)
-                .Subscribe(_ => SaveConfig());
-            
-            this.WhenAnyValue(x => x.CookiesFilePath)
                 .Subscribe(_ => SaveConfig());
             
         }
