@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="VManager.Views.GuideVDownloadView">
+
+    <StackPanel Spacing="16">
+
+        <TextBlock Text="VDownload — Descargar videos"
+                   FontSize="22"
+                   FontWeight="Bold"
+                   TextWrapping="Wrap"/>
+
+        <TextBlock TextWrapping="Wrap" FontSize="15">
+            VDownload permite descargar uno o varios videos de múltiples plataformas de internet, como Youtube o Tiktok.
+        </TextBlock>
+
+        <StackPanel Spacing="8">
+            <TextBlock FontSize="16" FontWeight="SemiBold" Text="Cómo usar:"/>
+
+            <TextBlock TextWrapping="Wrap" FontSize="14">1. Copiá el link y pegalo en el recuadro.</TextBlock>
+            <TextBlock TextWrapping="Wrap" FontSize="14">2. Presioná el botón 'Agregar' para sumarlo a la lista.</TextBlock>
+            <TextBlock TextWrapping="Wrap" FontSize="14">3. Seleccioná la resolución deseada.</TextBlock>
+            <TextBlock TextWrapping="Wrap" FontSize="14">4. Presioná Enter o el botón 'Descargar Video'.</TextBlock>
+            <TextBlock TextWrapping="Wrap" FontSize="14">5. Esperá a que se procese en segundo plano.</TextBlock>
+        </StackPanel>
+
+        <!-- GIF acá -->
+        <!-- 
+    <Image Source="/Assets/guides/vcut.gif" Stretch="Uniform"/>
+    -->
+        
+        <StackPanel Spacing="8">
+            <TextBlock FontSize="16" FontWeight="SemiBold" Text="Notas:"/>
+            
+            <TextBlock TextWrapping="Wrap" FontSize="14">a) todavía no está implementado múltiples formatos de video o sólo audio.</TextBlock>
+            <TextBlock TextWrapping="Wrap" FontSize="14">b) puede encontrarse con bugs por la novedad de la implementación de la herramienta. Está enormemente agradecido si reportas el bug en Github.</TextBlock>
+        </StackPanel>
+
+    </StackPanel>
+</UserControl>

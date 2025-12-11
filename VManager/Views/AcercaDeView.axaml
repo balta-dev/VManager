@@ -104,35 +104,35 @@ Permite recortar, convertir, comprimir y extraer audio sin configuraciones compl
                          FontSize="15"
                          Foreground="{DynamicResource AccentColorBrush}"
                          Text="VCut — Recortar videos"
-                         />
+                         PointerPressed="OpenGuideVCut"/>
 
               <TextBlock TextDecorations="Underline"
                          Cursor="Hand"
                          FontSize="15"
                          Foreground="{DynamicResource AccentColorBrush}"
                          Text="VCompress — Comprimir y optimizar"
-                         />
+                         PointerPressed="OpenGuideVCompress"/>
 
               <TextBlock TextDecorations="Underline"
                          Cursor="Hand"
                          FontSize="15"
                          Foreground="{DynamicResource AccentColorBrush}"
                          Text="VConvert — Conversión de formatos"
-                         />
+                         PointerPressed="OpenGuideVConvert"/>
 
               <TextBlock TextDecorations="Underline"
                          Cursor="Hand"
                          FontSize="15"
                          Foreground="{DynamicResource AccentColorBrush}"
                          Text="VAudiofy — Extraer audio"
-                         />
+                         PointerPressed="OpenGuideVAudiofy"/>
 
               <TextBlock TextDecorations="Underline"
                          Cursor="Hand"
                          FontSize="15"
                          Foreground="{DynamicResource AccentColorBrush}"
                          Text="VDownload — Descargar videos"
-                         />
+                         PointerPressed="OpenGuideVDownload"/>
             </StackPanel>
           </StackPanel>
 

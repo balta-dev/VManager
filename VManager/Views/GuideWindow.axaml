@@ -1,0 +1,13 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="VManager.Views.GuideWindow"
+        Width="700" Height="600"
+        CanResize="True"
+        Background="{DynamicResource PanelBackgroundBrush}"
+        Title="Guía de herramienta">
+
+    <Border Padding="20">
+        <ContentControl x:Name="ContentArea"/>
+    </Border>
+
+</Window>

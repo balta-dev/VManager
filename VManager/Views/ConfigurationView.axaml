@@ -219,7 +219,8 @@
                 <TextBox Text="{Binding PreferredDownloadFolder, Mode=TwoWay}"
                          Width="260"
                          HorizontalAlignment="Left"
-                         IsReadOnly="True"/>
+                         IsReadOnly="True"
+                         Watermark="Escritorio (default)"/>
                 
                 <Button Content="Buscar..."
                         Command="{Binding BrowseDownloadFolderCommand}"

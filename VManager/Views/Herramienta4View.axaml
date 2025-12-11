@@ -32,7 +32,8 @@
         <TextBlock Text="{Binding L[VAudiofy.Title]}" 
                    FontSize="30" 
                    HorizontalAlignment="Center" 
-                   FontWeight="Bold"/>
+                   FontWeight="Bold"
+                   PointerPressed="OpenGuideVAudiofy"/>
         
         <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center" Margin="0 0 0 35">
           <!-- 

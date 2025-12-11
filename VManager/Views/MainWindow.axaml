@@ -46,7 +46,7 @@
                               Height="32"
                               HotKey="O"
                               Name="QuestionMark"
-                              Margin="0 0 0 10"
+                              Margin="0 8 0 15"
                               HorizontalAlignment="Left"
                               IsChecked="{Binding IsPaneOpen, ElementName=MainSplitView}">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -128,7 +128,7 @@
                 <!-- AcercaDe -->
                 <ToggleButton IsChecked="{Binding AcercaDeActivo}"
                               Command="{Binding GoToAcercaDe}"
-                              Margin="0 10 0 0">
+                              Margin="0 0 0 0">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <PathIcon Width="18"
                                   Height="18"

@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="VManager.Views.GuideVConvertView">
+
+    <StackPanel Spacing="16">
+
+        <TextBlock Text="VConvert — Conversión de formatos"
+                   FontSize="22"
+                   FontWeight="Bold"
+                   TextWrapping="Wrap"/>
+
+        <TextBlock TextWrapping="Wrap" FontSize="15">
+            VCompress permite convertir formatos de uno o más videos de forma rápida.
+        </TextBlock>
+
+        <StackPanel Spacing="8">
+            <TextBlock TextWrapping="Wrap" FontSize="16" FontWeight="SemiBold" Text="Cómo usar:"/>
+
+            <TextBlock TextWrapping="Wrap" FontSize="14">1. Seleccioná o arrastrá uno o más archivos de video.</TextBlock>
+            <TextBlock TextWrapping="Wrap" FontSize="14">2. Seleccioná el formato deseado.</TextBlock>
+            <TextBlock TextWrapping="Wrap" FontSize="14">3. (opcional) Seleccioná el Codec de Video y/o Audio preferido.</TextBlock>
+            <TextBlock TextWrapping="Wrap" FontSize="14">4. Presioná Enter o el botón 'Convertir Video'.</TextBlock>
+            <TextBlock TextWrapping="Wrap" FontSize="14">5. Esperá a que se procese en segundo plano.</TextBlock>
+        </StackPanel>
+
+        <!-- GIF acá -->
+        <!-- 
+    <Image Source="/Assets/guides/vcut.gif" Stretch="Uniform"/>
+    -->
+        
+        <StackPanel Spacing="8">
+            <TextBlock FontSize="16" FontWeight="SemiBold" Text="Notas:"/>
+            
+            <TextBlock TextWrapping="Wrap" FontSize="14">a) el códec de video está ordenado por importancia. La opción predeterminada va a ser, en
+            el caso de estar disponible, uno o varios codificadores diseñados específicamente para su sistema operativo y su tarjeta gráfica (Nvidia/AMD/Intel).</TextBlock>
+            <TextBlock TextWrapping="Wrap" FontSize="14">b) en el caso de ser posible, sólo se remuxea: es decir que no necesita recodificar el vídeo, lo que puede acelerar el proceso.</TextBlock>
+        </StackPanel>
+
+    </StackPanel>
+</UserControl>

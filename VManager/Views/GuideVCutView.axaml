@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="VManager.Views.GuideVCutView">
+
+    <StackPanel Spacing="16">
+
+        <TextBlock Text="VCut — Recortar videos"
+                   FontSize="22"
+                   FontWeight="Bold"
+                   TextWrapping="Wrap"/>
+
+        <TextBlock TextWrapping="Wrap" FontSize="15">
+            VCut permite recortar uno o más videos de forma rápida usando un punto de inicio y de fin.
+        </TextBlock>
+
+        <StackPanel Spacing="8">
+            <TextBlock TextWrapping="Wrap"  FontSize="16" FontWeight="SemiBold" Text="Cómo usar:"/>
+
+            <TextBlock TextWrapping="Wrap"  FontSize="14">1. Seleccioná o arrastrá un archivo de video.</TextBlock>
+            <TextBlock TextWrapping="Wrap"  FontSize="14">2. Escribí el tiempo de inicio y fin del recorte.</TextBlock>
+            <TextBlock TextWrapping="Wrap"  FontSize="14">3. Presioná Enter o el botón 'Recortar Video'.</TextBlock>
+            <TextBlock TextWrapping="Wrap"  FontSize="14">4. Esperá a que se procese en segundo plano.</TextBlock>
+        </StackPanel>
+
+        <!-- GIF acá -->
+        <!-- 
+    <Image Source="/Assets/guides/vcut.gif" Stretch="Uniform"/>
+    -->
+        
+        <StackPanel Spacing="8">
+            <TextBlock FontSize="16" FontWeight="SemiBold" Text="Notas:"/>
+
+            <TextBlock TextWrapping="Wrap"  FontSize="14">a) la manera de introducir el tiempo es a gusto, es decir, si quieres
+            cortar entre el segundo 30 y el segundo 45 es directo. Así también, se puede 
+            cortar desde el segundo 15 hasta el minuto 1:03 o 27:09.</TextBlock>
+            <TextBlock TextWrapping="Wrap"  FontSize="14">b) la duración final de recorte es 
+                automáticamente calculada si el tiempo final es mayor que la duración del video</TextBlock>
+            <TextBlock TextWrapping="Wrap"  FontSize="14">c) si no se especifica el tiempo final, se intuye que debe ser al final del video</TextBlock>
+        </StackPanel>
+
+    </StackPanel>
+</UserControl>

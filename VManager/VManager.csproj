@@ -75,6 +75,28 @@
       <DependentUpon>AcercaDeView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\GuideWindow.axaml.cs">
+      <DependentUpon>GuideWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\GuideVCutView.axaml.cs">
+      <DependentUpon>GuideVcutView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\GuideVCompressView.axaml.cs">
+      <DependentUpon>GuideVcompressView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\GuideVConvertView.axaml.cs">
+      <DependentUpon>GuideVConvertView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\GuideVAudiofyView.axaml.cs">
+      <DependentUpon>GuideVAudiofyView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\GuideVDownloadView.axaml.cs">
+      <DependentUpon>GuideVDownloadView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

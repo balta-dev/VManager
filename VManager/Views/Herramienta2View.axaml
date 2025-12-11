@@ -30,7 +30,8 @@
             <TextBlock Text="{Binding L[VCompress.Title]}" 
                        FontSize="30"
                        HorizontalAlignment="Center" 
-                       FontWeight="Bold"/>
+                       FontWeight="Bold"
+                       PointerPressed="OpenGuideVCompress"/>
             
           <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center" Margin="0 0 0 35">
               <!-- 
