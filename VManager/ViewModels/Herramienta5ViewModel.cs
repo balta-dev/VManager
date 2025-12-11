@@ -192,7 +192,7 @@ namespace VManager.ViewModels
             }
         }
 
-        private string FormatDuration(int seconds)
+        private string FormatDuration(double seconds)
         {
             var ts = TimeSpan.FromSeconds(seconds);
             if (ts.TotalHours >= 1)

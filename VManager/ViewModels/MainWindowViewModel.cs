@@ -6,6 +6,7 @@ using ReactiveUI;
 using System.Reactive;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows.Input;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using Avalonia;
@@ -25,6 +26,7 @@ public class MainWindowViewModel : ViewModelBase
     private Herramienta4ViewModel _herramienta4;
     private Herramienta5ViewModel _herramienta5;
     public ConfigurationViewModel _configuration;
+    private AcercaDeViewModel  _acercaDe;
     public List<ViewModelBase> Tools { get; }
     
     private bool isVideoPathSet;
@@ -75,6 +77,13 @@ public class MainWindowViewModel : ViewModelBase
         get => _configuracionActiva;
         set => this.RaiseAndSetIfChanged(ref _configuracionActiva, value);
     }
+
+    private bool _acercaDeActivo;
+    public bool AcercaDeActivo
+    {
+        get => _acercaDeActivo;
+        set => this.RaiseAndSetIfChanged(ref _acercaDeActivo, value);
+    }
     
     private ViewModelBase? _currentView;
     public ViewModelBase? CurrentView
@@ -92,6 +101,9 @@ public class MainWindowViewModel : ViewModelBase
     
     public ReactiveCommand<Unit, Unit> GoToHerramienta4 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta5 { get; }
+    
+    public ReactiveCommand<Unit, Unit> GoToAcercaDe { get; }
+
     public ReactiveCommand<Unit, Unit> ToggleThemeCommand { get; }
     public ReactiveCommand<Unit, Unit> OpenGitHubCommand { get; }
     
@@ -133,6 +145,7 @@ public class MainWindowViewModel : ViewModelBase
         _herramienta4 = new Herramienta4ViewModel();
         _herramienta5 = new Herramienta5ViewModel();
         _configuration = new ConfigurationViewModel();
+        _acercaDe = new AcercaDeViewModel();
         
         Tools = new List<ViewModelBase>
         {
@@ -152,6 +165,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta4Activa = false;
                 Herramienta5Activa = false;
                 ConfiguracionActiva = false;
+                AcercaDeActivo = false;
                 CurrentView = _herramienta1;
                 return Unit.Default;
             },
@@ -167,6 +181,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta4Activa = false;
                 Herramienta5Activa = false;
                 ConfiguracionActiva = false;
+                AcercaDeActivo = false;
                 CurrentView = _herramienta2;
                 return Unit.Default;
             },
@@ -182,6 +197,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta4Activa = false;
                 Herramienta5Activa = false;
                 ConfiguracionActiva = false;
+                AcercaDeActivo = false;
                 CurrentView = _herramienta3;
                 return Unit.Default;
             },
@@ -197,6 +213,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta3Activa = false;
                 Herramienta5Activa = false;
                 ConfiguracionActiva = false;
+                AcercaDeActivo = false;
                 CurrentView = _herramienta4;
                 return Unit.Default;
             },
@@ -212,6 +229,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta3Activa = false;
                 Herramienta4Activa = false;
                 ConfiguracionActiva = false;
+                AcercaDeActivo = false;
                 CurrentView = _herramienta5;
                 return Unit.Default;
             },
@@ -226,7 +244,23 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta4Activa = false;
                 Herramienta5Activa = false;
                 ConfiguracionActiva = true;
+                AcercaDeActivo = false;
                 CurrentView = _configuration;
+                return Unit.Default;
+            },
+            outputScheduler: AvaloniaScheduler.Instance
+        );
+        
+        GoToAcercaDe = ReactiveCommand.Create(() =>
+            {
+                AcercaDeActivo = true;
+                Herramienta1Activa = false;
+                Herramienta2Activa = false;
+                Herramienta3Activa = false;
+                Herramienta4Activa = false;
+                Herramienta5Activa = false;
+                ConfiguracionActiva = false;
+                CurrentView = _acercaDe;
                 return Unit.Default;
             },
             outputScheduler: AvaloniaScheduler.Instance

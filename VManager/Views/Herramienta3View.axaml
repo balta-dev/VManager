@@ -34,7 +34,7 @@
 
         <!-- Título -->
         <TextBlock Text="{Binding L[VConvert.Title]}" 
-                   FontSize="25" 
+                   FontSize="30" 
                    HorizontalAlignment="Center" 
                    FontWeight="Bold"/>
 

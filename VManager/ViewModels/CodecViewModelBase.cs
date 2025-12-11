@@ -89,7 +89,7 @@ namespace VManager.ViewModels
                 if (!_allAudioCodecs.Contains(pcm))
                 {
                     _allAudioCodecs.Add(pcm);
-                    Console.WriteLine($"[DEBUG] PCM agregado manualmente: {pcm}");
+                    //Console.WriteLine($"[DEBUG] PCM agregado manualmente: {pcm}");
                 }
             }
             

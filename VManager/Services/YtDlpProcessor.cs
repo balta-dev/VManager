@@ -359,7 +359,7 @@ public class VideoInfo
     public string Title { get; set; } = string.Empty;
     
     [JsonPropertyName("duration")]
-    public int Duration { get; set; }
+    public double Duration { get; set; }
     
     [JsonPropertyName("thumbnail")]
     public string Thumbnail { get; set; } = string.Empty;

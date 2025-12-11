@@ -33,6 +33,7 @@ namespace VManager.Views
         public MainWindow()
         {
             InitializeComponent();
+            
             SoundBehavior.Attach(this);
             _ = SoundManager.Play("dummy.wav");
             
@@ -97,12 +98,43 @@ namespace VManager.Views
         
         private void OnKeyDown(object? sender, KeyEventArgs e)
         {
+            var focused = TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement();
+
+            // Si estás en un TextBox → NO disparamos hotkeys
+            if (focused is TextBox)
+                return;
+            
             if (e.Key == Key.Enter && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
             {
                 if (this.WindowState == WindowState.FullScreen)
                     this.WindowState = WindowState.Normal;
                 else
                     this.WindowState = WindowState.FullScreen;
+            }
+            
+            if (DataContext is not MainWindowViewModel vm)
+                return;
+
+            switch (e.Key)
+            {
+                case Key.D1:
+                    vm.GoToHerramienta1.Execute().Subscribe();
+                    break;
+                case Key.D2:
+                    vm.GoToHerramienta2.Execute().Subscribe();
+                    break;
+                case Key.D3:
+                    vm.GoToHerramienta3.Execute().Subscribe();
+                    break;
+                case Key.D4:
+                    vm.GoToHerramienta4.Execute().Subscribe();
+                    break;
+                case Key.D5:
+                    vm.GoToHerramienta5.Execute().Subscribe();
+                    break;
+                case Key.D6:
+                    vm.GoToAcercaDe.Execute().Subscribe();
+                    break;
             }
         }
         

@@ -62,7 +62,7 @@
                 <!-- Herramienta 1 - VCut -->
                 <ToggleButton IsChecked="{Binding Herramienta1Activa}"
                               Command="{Binding GoToHerramienta1}"
-                              HotKey="D1">
+                              >
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <PathIcon Width="18"
                                   Height="18"
@@ -76,7 +76,7 @@
                 <!-- Herramienta 2 - VCompress -->
                 <ToggleButton IsChecked="{Binding Herramienta2Activa}"
                               Command="{Binding GoToHerramienta2}"
-                              HotKey="D2">
+                              >
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <PathIcon Width="18"
                                   Height="18"
@@ -89,7 +89,7 @@
                 <!-- Herramienta 3 - VConvert -->
                 <ToggleButton IsChecked="{Binding Herramienta3Activa}"
                               Command="{Binding GoToHerramienta3}"
-                              HotKey="D3">
+                              >
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <PathIcon Width="18"
                                   Height="18"
@@ -102,7 +102,7 @@
                 <!-- Herramienta 4 - VAudiofy -->
                 <ToggleButton IsChecked="{Binding Herramienta4Activa}"
                               Command="{Binding GoToHerramienta4}"
-                              HotKey="D4">
+                              >
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <PathIcon Width="18"
                                   Height="18"
@@ -115,13 +115,26 @@
                 <!-- Herramienta 5 - VDownload -->
                 <ToggleButton IsChecked="{Binding Herramienta5Activa}"
                               Command="{Binding GoToHerramienta5}"
-                              HotKey="D5">
+                              >
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <PathIcon Width="18"
                                   Height="18"
                                   VerticalAlignment="Center"
                                   Data="M34.4401 16.1009C34.4506 16.1912 34.5267 16.2603 34.6175 16.2602C38.6957 16.2602 42.0017 19.5577 42.0017 23.6253C42.0017 27.6929 38.6957 30.9904 34.6175 30.9904H29.2491C28.56 30.9904 28.0015 30.4318 28.0015 29.7428C28.0015 29.0537 28.56 28.4952 29.2491 28.4952H34.8059C37.3999 28.4952 39.5028 26.3814 39.5028 23.7738C39.5028 21.1663 37.3999 19.0525 34.8059 19.0525L33.3853 19.0525C32.634 19.0525 31.9778 18.4604 31.9778 17.7058C31.9778 12.882 28.2639 9.49518 24.0028 9.49518C19.7417 9.49518 16.0278 12.9431 16.0278 17.7058C16.0278 18.4604 15.3716 19.0525 14.6203 19.0525L13.1997 19.0525C10.6057 19.0525 8.50276 21.1663 8.50276 23.7738C8.50276 26.3814 10.6057 28.4952 13.1997 28.4952H18.7539C19.4429 28.4952 20.0015 29.0537 20.0015 29.7428C20.0015 30.4318 19.4429 30.9904 18.7539 30.9904H13.3881C9.30991 30.9904 6.00391 27.6929 6.00391 23.6253C6.00391 19.5577 9.30991 16.2602 13.3881 16.2602C13.479 16.2603 13.555 16.1911 13.5655 16.1009C14.1491 11.0749 17.7319 7 24.0028 7C30.2733 7 33.8589 11.1069 34.4401 16.1009Z M30.8343 34.977L25.1775 40.6339C24.6893 41.122 23.8978 41.122 23.4097 40.6339L17.7528 34.977C17.2647 34.4889 17.2647 33.6974 17.7528 33.2093C18.241 32.7211 19.0324 32.7211 19.5206 33.2093L22.9997 36.69L23.0007 23.386L23.0071 23.2582C23.0711 22.6279 23.6035 22.136 24.2507 22.136L24.3785 22.1425C25.0088 22.2065 25.5007 22.7388 25.5007 23.386L25.4997 36.776L29.0665 33.2093C29.5547 32.7211 30.3462 32.7211 30.8343 33.2093C31.3225 33.6974 31.3225 34.4889 30.8343 34.977Z" />
                         <TextBlock Width="100" Text="  VDownload" Margin="5,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </ToggleButton>
+                
+                <!-- AcercaDe -->
+                <ToggleButton IsChecked="{Binding AcercaDeActivo}"
+                              Command="{Binding GoToAcercaDe}"
+                              Margin="0 10 0 0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <PathIcon Width="18"
+                                  Height="18"
+                                  VerticalAlignment="Center"
+                                  Data="M35.7502,28 C38.0276853,28 39.8876578,29.7909151 39.9950978,32.0427546 L40,32.2487 L40,33 C40,36.7555 38.0583,39.5669 35.0798,41.3802 C32.1509,43.1633 28.2139,44 24,44 C19.7861,44 15.8491,43.1633 12.9202,41.3802 C10.0319285,39.6218485 8.11862909,36.9249713 8.00532378,33.3388068 L8,33 L8,32.2489 C8,29.9703471 9.79294995,28.1122272 12.0440313,28.0048972 L12.2499,28 L35.7502,28 Z M35.7502,30.5 L12.2499,30.5 C11.331345,30.5 10.5787597,31.2066575 10.5057976,32.1054618 L10.5,32.2489 L10.5,33 C10.5,35.7444 11.8602,37.8081 14.2202,39.2448 C16.6297,40.7117 20.0677,41.5 24,41.5 C27.9323,41.5 31.3703,40.7117 33.7798,39.2448 C36.0555143,37.8594107 37.4015676,35.8910074 37.4948116,33.2914406 L37.5,33 L37.5,32.2488 C37.5,31.331195 36.7934328,30.5787475 35.8937801,30.5057968 L35.7502,30.5 Z M24,4 C29.5228,4 34,8.47715 34,14 C34,19.5228 29.5228,24 24,24 C18.4772,24 14,19.5228 14,14 C14,8.47715 18.4772,4 24,4 Z M24,6.5 C19.8579,6.5 16.5,9.85786 16.5,14 C16.5,18.1421 19.8579,21.5 24,21.5 C28.1421,21.5 31.5,18.1421 31.5,14 C31.5,9.85786 28.1421,6.5 24,6.5 Z" />
+                        <TextBlock Width="100" Text="  Acerca De" Margin="5,0,0,0" VerticalAlignment="Center" />
                     </StackPanel>
                 </ToggleButton>
                 

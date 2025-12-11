@@ -71,6 +71,10 @@
       <DependentUpon>Herramienta5View.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\AcercaDeView.axaml.cs">
+      <DependentUpon>AcercaDeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

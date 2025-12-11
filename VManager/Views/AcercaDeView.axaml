@@ -1,0 +1,206 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="VManager.Views.AcercaDeView"
+             x:DataType="vm:AcercaDeViewModel"
+             xmlns:vm="using:VManager.ViewModels">
+
+  <Grid>
+    <Border BorderBrush="{DynamicResource BorderBrushPrimary}"
+            BorderThickness="2"
+            CornerRadius="10"
+            Background="{DynamicResource PanelBackgroundBrush}"
+            Margin="0,20,20,0"
+            ClipToBounds="True">
+
+      <ScrollViewer VerticalScrollBarVisibility="Auto"
+                    HorizontalScrollBarVisibility="Disabled"
+                    Background="Transparent">
+
+        <StackPanel Margin="20" Spacing="10">
+
+          <!-- 1) Título -->
+          <TextBlock Text="Acerca De"
+                     FontSize="34"
+                     FontWeight="Bold"
+                     Margin="0 0 0 10" />
+          
+          <TextBlock Text="¿Qué es 'VManager'?"
+                     FontSize="20"
+                     FontWeight="Bold"
+                     Foreground="{DynamicResource AccentBrush}" />
+
+          <!-- 2) Descripción -->
+          <TextBlock TextWrapping="Wrap"
+                     FontSize="14"
+                     Text="VManager es un conjunto de herramientas diseñadas para procesar video de manera rápida, directa y eficiente. 
+Permite recortar, convertir, comprimir y extraer audio sin configuraciones complejas y con una interfaz centrada en la simplicidad y productividad." />
+
+          <!-- 3) Privacidad -->
+          <StackPanel Spacing="6" Margin="0 15 0 0">
+              <TextBlock Text="Privacidad"
+                         FontSize="20" FontWeight="Bold"
+                         Foreground="{DynamicResource AccentBrush}"/>
+
+              <TextBlock FontSize="14" TextWrapping="Wrap">
+                  VManager no recopila, almacena ni transmite ningún tipo de dato personal o archivo del usuario. 
+                  Todo el procesamiento ocurre localmente en tu dispositivo.
+              </TextBlock>
+          </StackPanel>
+          
+          <Border DockPanel.Dock="Top" Margin="0,15,0,0"
+                  BorderBrush="{DynamicResource BorderBrushPrimary}" 
+                  BorderThickness="2" 
+                  CornerRadius="10" 
+                  Padding="20 0 20 0" 
+                  Background="{DynamicResource PanelBackgroundBrush}"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Center"
+                  ClipToBounds="True">
+          
+          <!-- 4) Lista de atajos -->
+          <StackPanel DockPanel.Dock="Top"  HorizontalAlignment="Center" Opacity="0.75">
+              <TextBlock Text="{Binding L[General.Shortcuts.Title]}" FontWeight="SemiBold" FontSize="22" Margin="0,20,0,5" HorizontalAlignment="Center" />
+              <TextBlock FontSize="15" Margin="0,5,0,0" HorizontalAlignment="Center">
+                  <Run FontWeight="Bold" Text="{Binding L[General.Shortcuts.Items.Item1Title]}" />
+                  <Run Text="{Binding L[General.Shortcuts.Items.Item1Description]}"  />
+              </TextBlock>
+              <TextBlock FontSize="15" Margin="0,5,0,0" HorizontalAlignment="Center">
+                  <Run FontWeight="Bold" Text="{Binding L[General.Shortcuts.Items.Item2Title]}" />
+                  <Run Text="{Binding L[General.Shortcuts.Items.Item2Description]}" />
+              </TextBlock>
+              <TextBlock FontSize="15" Margin="0,5,0,0" HorizontalAlignment="Center">
+                  <Run FontWeight="Bold" Text="{Binding L[General.Shortcuts.Items.Item3Title]}" />
+                  <Run Text="{Binding L[General.Shortcuts.Items.Item3Description]}" />
+              </TextBlock>
+              <TextBlock FontSize="15" Margin="0,5,0,0" HorizontalAlignment="Center">
+                  <Run FontWeight="Bold" Text="{Binding L[General.Shortcuts.Items.Item4Title]}" />
+                  <Run Text="{Binding L[General.Shortcuts.Items.Item4Description]}" />
+              </TextBlock>
+              <TextBlock FontSize="15" Margin="0,5,0,0" HorizontalAlignment="Center">
+                  <Run FontWeight="Bold" Text="{Binding L[General.Shortcuts.Items.Item5Title]}" />
+                  <Run Text="{Binding L[General.Shortcuts.Items.Item5Description]}" />
+              </TextBlock>
+              <TextBlock FontSize="15" Margin="0,5,0,20" HorizontalAlignment="Center">
+                  <Run FontWeight="Bold" Text="{Binding L[General.Shortcuts.Items.Item6Title]}" />
+                  <Run Text="{Binding L[General.Shortcuts.Items.Item6Description]}" />
+              </TextBlock>
+          </StackPanel>
+          
+          </Border>
+
+          <!-- 5) Cómo usar cada herramienta -->
+          <StackPanel Spacing="10">
+            <TextBlock Text="Guías de cada herramienta"
+                       Margin="0 15 0 0"
+                       FontSize="20" FontWeight="Bold"
+                       Foreground="{DynamicResource AccentBrush}"/>
+
+            <TextBlock Text="Seleccioná una guía para aprender cómo usar cada módulo."
+                       FontSize="14" Opacity="0.8"/>
+
+            <StackPanel Spacing="6">
+              <TextBlock TextDecorations="Underline"
+                         Cursor="Hand"
+                         FontSize="15"
+                         Foreground="{DynamicResource AccentColorBrush}"
+                         Text="VCut — Recortar videos"
+                         />
+
+              <TextBlock TextDecorations="Underline"
+                         Cursor="Hand"
+                         FontSize="15"
+                         Foreground="{DynamicResource AccentColorBrush}"
+                         Text="VCompress — Comprimir y optimizar"
+                         />
+
+              <TextBlock TextDecorations="Underline"
+                         Cursor="Hand"
+                         FontSize="15"
+                         Foreground="{DynamicResource AccentColorBrush}"
+                         Text="VConvert — Conversión de formatos"
+                         />
+
+              <TextBlock TextDecorations="Underline"
+                         Cursor="Hand"
+                         FontSize="15"
+                         Foreground="{DynamicResource AccentColorBrush}"
+                         Text="VAudiofy — Extraer audio"
+                         />
+
+              <TextBlock TextDecorations="Underline"
+                         Cursor="Hand"
+                         FontSize="15"
+                         Foreground="{DynamicResource AccentColorBrush}"
+                         Text="VDownload — Descargar videos"
+                         />
+            </StackPanel>
+          </StackPanel>
+
+          <!-- 7) Créditos -->
+          <StackPanel Spacing="6">
+            <TextBlock Text="Créditos"
+                       Margin="0 15 0 0"
+                       FontSize="20" FontWeight="SemiBold"
+                       Foreground="{DynamicResource AccentBrush}"/>
+
+            <TextBlock FontSize="14" TextWrapping="Wrap">
+              Desarrollado por Franz Baltazar. Por favor, tenga en cuenta que es posible encontrarse con bugs o errores y es completamente normal porque es mantenido por únicamente una sola persona
+            </TextBlock>
+
+            <!-- 8) Contacto / redes -->
+            <StackPanel Spacing="4">
+              <TextBlock TextDecorations="Underline"
+                         Cursor="Hand"
+                         FontSize="15"
+                         Foreground="{DynamicResource AccentColorBrush}"
+                         Text="LinkedIn – Franz Baltazar"
+                         PointerPressed="OpenLinkedIn"/>
+
+              <TextBlock TextDecorations="Underline"
+                         Cursor="Hand"
+                         FontSize="15"
+                         Foreground="{DynamicResource AccentColorBrush}"
+                         Text="GitHub – balta-dev"
+                         PointerPressed="OpenGithubProfile"/>
+
+              <TextBlock TextDecorations="Underline"
+                         Cursor="Hand"
+                         FontSize="15"
+                         Foreground="{DynamicResource AccentColorBrush}"
+                         Text="Instagram – @baltafranz"
+                         PointerPressed="OpenInstagram"/>
+            </StackPanel>
+          </StackPanel>
+
+          <!-- 9) Repositorio -->
+          <StackPanel Spacing="6">
+            <TextBlock Text="Repositorio del Proyecto"
+                       FontSize="20" FontWeight="SemiBold"
+                       Margin="0 15 0 0"
+                       Foreground="{DynamicResource AccentBrush}"/>
+            
+            <TextBlock Text="GitHub — VManager"
+                       FontSize="15"
+                       TextDecorations="Underline"
+                       Foreground="{DynamicResource AccentColorBrush}"
+                       Cursor="Hand"
+                       PointerPressed="OpenGitHub"/>
+          </StackPanel>
+
+          <!-- 10) Licencia -->
+          <StackPanel Spacing="6">
+            <TextBlock Text="Licencia"
+                       Margin="0 15 0 0"
+                       FontSize="20" FontWeight="SemiBold"
+                       Foreground="{DynamicResource AccentBrush}"/>
+
+            <TextBlock TextWrapping="Wrap" FontSize="14">
+              VManager es software libre distribuido bajo la licencia MIT.
+            </TextBlock>
+          </StackPanel>
+
+        </StackPanel>
+      </ScrollViewer>
+    </Border>
+  </Grid>
+</UserControl>
