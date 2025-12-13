@@ -1,31 +1,36 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="VManager.Views.GuideVAudiofyView">
+             xmlns:vm="using:VManager.ViewModels"
+             x:Class="VManager.Views.GuideVAudiofyView"
+             x:DataType="vm:AcercaDeViewModel">
 
     <StackPanel Spacing="16">
 
-        <TextBlock Text="VAudiofy — Extraer audio"
+        <TextBlock Text="{Binding L[Guide.VAudiofy.Title]}"
                    FontSize="22"
                    FontWeight="Bold"
                    TextWrapping="Wrap"/>
 
-        <TextBlock TextWrapping="Wrap" FontSize="15">
-            VCompress permite convertir formatos de uno o más audios de forma rápida, o extraer el audio de uno o más vídeos.
-        </TextBlock>
+        <TextBlock Text="{Binding L[Guide.VAudiofy.Description]}"
+                   TextWrapping="Wrap"
+                   FontSize="15"/>
 
         <StackPanel Spacing="8">
-            <TextBlock TextWrapping="Wrap" FontSize="16" FontWeight="SemiBold" Text="Cómo usar:"/>
+            <TextBlock Text="{Binding L[Guide.VAudiofy.HowTo.Title]}"
+                       TextWrapping="Wrap"
+                       FontSize="16"
+                       FontWeight="SemiBold"/>
 
-            <TextBlock TextWrapping="Wrap" FontSize="14">1. Seleccioná o arrastrá uno o más archivos de audio o vídeo.</TextBlock>
-            <TextBlock TextWrapping="Wrap" FontSize="14">2. Seleccioná el formato deseado.</TextBlock>
-            <TextBlock TextWrapping="Wrap" FontSize="14">3. Presioná Enter o el botón 'Extraer audio'.</TextBlock>
-            <TextBlock TextWrapping="Wrap" FontSize="14">4. Esperá a que se procese en segundo plano.</TextBlock>
+            <TextBlock Text="{Binding L[Guide.VAudiofy.HowTo.Step1]}" TextWrapping="Wrap" FontSize="14"/>
+            <TextBlock Text="{Binding L[Guide.VAudiofy.HowTo.Step2]}" TextWrapping="Wrap" FontSize="14"/>
+            <TextBlock Text="{Binding L[Guide.VAudiofy.HowTo.Step3]}" TextWrapping="Wrap" FontSize="14"/>
+            <TextBlock Text="{Binding L[Guide.VAudiofy.HowTo.Step4]}" TextWrapping="Wrap" FontSize="14"/>
         </StackPanel>
 
         <!-- GIF acá -->
         <!-- 
-    <Image Source="/Assets/guides/vcut.gif" Stretch="Uniform"/>
-    -->
+        <Image Source="/Assets/guides/vaudiofy.gif" Stretch="Uniform"/>
+        -->
 
     </StackPanel>
 </UserControl>

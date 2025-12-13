@@ -1,38 +1,138 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="VManager.Views.GuideVDownloadView">
+             xmlns:vm="using:VManager.ViewModels"
+             x:Class="VManager.Views.GuideVDownloadView"
+             x:DataType="vm:AcercaDeViewModel">
 
     <StackPanel Spacing="16">
 
-        <TextBlock Text="VDownload — Descargar videos"
+        <!-- Title -->
+        <TextBlock Text="{Binding L[Guide.VDownload.title]}"
                    FontSize="22"
                    FontWeight="Bold"
                    TextWrapping="Wrap"/>
 
-        <TextBlock TextWrapping="Wrap" FontSize="15">
-            VDownload permite descargar uno o varios videos de múltiples plataformas de internet, como Youtube o Tiktok.
-        </TextBlock>
+        <!-- Description -->
+        <TextBlock Text="{Binding L[Guide.VDownload.description]}"
+                   FontSize="15"
+                   TextWrapping="Wrap"/>
 
+        <!-- How To -->
         <StackPanel Spacing="8">
-            <TextBlock FontSize="16" FontWeight="SemiBold" Text="Cómo usar:"/>
+            <TextBlock Text="{Binding L[Guide.VDownload.howTo.title]}"
+                       FontSize="16"
+                       FontWeight="SemiBold"/>
 
-            <TextBlock TextWrapping="Wrap" FontSize="14">1. Copiá el link y pegalo en el recuadro.</TextBlock>
-            <TextBlock TextWrapping="Wrap" FontSize="14">2. Presioná el botón 'Agregar' para sumarlo a la lista.</TextBlock>
-            <TextBlock TextWrapping="Wrap" FontSize="14">3. Seleccioná la resolución deseada.</TextBlock>
-            <TextBlock TextWrapping="Wrap" FontSize="14">4. Presioná Enter o el botón 'Descargar Video'.</TextBlock>
-            <TextBlock TextWrapping="Wrap" FontSize="14">5. Esperá a que se procese en segundo plano.</TextBlock>
+            <TextBlock Text="{Binding L[Guide.VDownload.howTo.step1]}" FontSize="14" TextWrapping="Wrap"/>
+            <TextBlock Text="{Binding L[Guide.VDownload.howTo.step2]}" FontSize="14" TextWrapping="Wrap"/>
+            <TextBlock Text="{Binding L[Guide.VDownload.howTo.step3]}" FontSize="14" TextWrapping="Wrap"/>
+            <TextBlock Text="{Binding L[Guide.VDownload.howTo.step4]}" FontSize="14" TextWrapping="Wrap"/>
+            <TextBlock Text="{Binding L[Guide.VDownload.howTo.step5]}" FontSize="14" TextWrapping="Wrap"/>
         </StackPanel>
 
-        <!-- GIF acá -->
-        <!-- 
-    <Image Source="/Assets/guides/vcut.gif" Stretch="Uniform"/>
-    -->
-        
+        <!-- Troubleshooting -->
         <StackPanel Spacing="8">
-            <TextBlock FontSize="16" FontWeight="SemiBold" Text="Notas:"/>
+            <TextBlock Text="{Binding L[Guide.VDownload.troubleshooting.title]}"
+                       FontSize="16"
+                       FontWeight="SemiBold"/>
+
+            <TextBlock Text="{Binding L[Guide.VDownload.troubleshooting.youtube.problem]}"
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       TextWrapping="Wrap"/>
+
+            <TextBlock Text="{Binding L[Guide.VDownload.troubleshooting.youtube.description]}"
+                       FontSize="14"
+                       TextWrapping="Wrap"/>
+
+            <TextBlock Text="{Binding L[Guide.VDownload.troubleshooting.youtube.solution]}"
+                       FontSize="14"
+                       TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- OS Instructions -->
+
+        <!-- Windows -->
+        <StackPanel Spacing="8"
+                    IsVisible="{Binding IsWindows}">
+
+            <TextBlock Text="Windows"
+                       FontSize="16"
+                       FontWeight="SemiBold"/>
+
+            <WrapPanel Orientation="Horizontal"
+                       VerticalAlignment="Center">
+
+                <TextBlock Text="{Binding L[Guide.VDownload.osInstructions.windows.edge.description]}"
+                           FontSize="14"
+                           TextWrapping="NoWrap"/>
+
+                <TextBlock Text=" "
+                           FontSize="14"/>
+
+                <TextBlock Text="cookies.txt"
+                           FontSize="14"
+                           Foreground="DodgerBlue"
+                           FontWeight="Bold"
+                           Cursor="Hand"
+                           PointerPressed="OpenEdgeCookies"/>
+
+                <TextBlock Text="."
+                           FontSize="14"/>
+            </WrapPanel>
             
-            <TextBlock TextWrapping="Wrap" FontSize="14">a) todavía no está implementado múltiples formatos de video o sólo audio.</TextBlock>
-            <TextBlock TextWrapping="Wrap" FontSize="14">b) puede encontrarse con bugs por la novedad de la implementación de la herramienta. Está enormemente agradecido si reportas el bug en Github.</TextBlock>
+            <WrapPanel Orientation="Horizontal"
+                       VerticalAlignment="Center">
+
+                <TextBlock Text="{Binding L[Guide.VDownload.osInstructions.windows.chrome.description]}"
+                           FontSize="14"
+                           TextWrapping="NoWrap"/>
+                
+                <TextBlock Text=" "
+                           FontSize="14"/>
+
+                <TextBlock Text="Get cookies.txt LOCALLY"
+                           FontSize="14"
+                           Foreground="DodgerBlue"
+                           FontWeight="Bold"
+                           Cursor="Hand"
+                           PointerPressed="OpenChromeCookies"/>
+
+                <TextBlock Text="."
+                           FontSize="14"/>
+            </WrapPanel>
+
+            <TextBlock Text="{Binding L[Guide.VDownload.osInstructions.windows.otherBrowsers]}"
+                       FontSize="14"
+                       TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- Linux / macOS -->
+        <StackPanel Spacing="8"
+                    IsVisible="{Binding IsLinuxMac}">
+
+            <TextBlock Text="Linux / macOS"
+                       FontSize="16"
+                       FontWeight="SemiBold"/>
+
+            <TextBlock Text="{Binding L[Guide.VDownload.osInstructions.linuxMac.description]}"
+                       FontSize="14"
+                       TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- Limitations -->
+        <StackPanel Spacing="8">
+            <TextBlock Text="{Binding L[Guide.VDownload.limitations.title]}"
+                       FontSize="16"
+                       FontWeight="SemiBold"/>
+
+            <TextBlock Text="{Binding L[Guide.VDownload.limitations.item1]}"
+                       FontSize="14"
+                       TextWrapping="Wrap"/>
+
+            <TextBlock Text="{Binding L[Guide.VDownload.limitations.item2]}"
+                       FontSize="14"
+                       TextWrapping="Wrap"/>
         </StackPanel>
 
     </StackPanel>

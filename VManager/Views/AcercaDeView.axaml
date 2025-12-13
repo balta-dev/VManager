@@ -19,12 +19,12 @@
         <StackPanel Margin="20" Spacing="10">
 
           <!-- 1) Título -->
-          <TextBlock Text="Acerca De"
+          <TextBlock Text="{Binding L[AcercaDe.Title]}"
                      FontSize="34"
                      FontWeight="Bold"
                      Margin="0 0 0 10" />
           
-          <TextBlock Text="¿Qué es 'VManager'?"
+          <TextBlock Text="{Binding L[AcercaDe.WhatIs.Title]}"
                      FontSize="20"
                      FontWeight="Bold"
                      Foreground="{DynamicResource AccentBrush}" />
@@ -32,19 +32,16 @@
           <!-- 2) Descripción -->
           <TextBlock TextWrapping="Wrap"
                      FontSize="14"
-                     Text="VManager es un conjunto de herramientas diseñadas para procesar video de manera rápida, directa y eficiente. 
-Permite recortar, convertir, comprimir y extraer audio sin configuraciones complejas y con una interfaz centrada en la simplicidad y productividad." />
+                     Text="{Binding L[AcercaDe.WhatIs.Description]}" />
 
           <!-- 3) Privacidad -->
           <StackPanel Spacing="6" Margin="0 15 0 0">
-              <TextBlock Text="Privacidad"
+              <TextBlock Text="{Binding L[AcercaDe.Privacy.Title]}"
                          FontSize="20" FontWeight="Bold"
                          Foreground="{DynamicResource AccentBrush}"/>
 
-              <TextBlock FontSize="14" TextWrapping="Wrap">
-                  VManager no recopila, almacena ni transmite ningún tipo de dato personal o archivo del usuario. 
-                  Todo el procesamiento ocurre localmente en tu dispositivo.
-              </TextBlock>
+              <TextBlock FontSize="14" TextWrapping="Wrap"
+                         Text="{Binding L[AcercaDe.Privacy.Description]}" />
           </StackPanel>
           
           <Border DockPanel.Dock="Top" Margin="0,15,0,0"
@@ -88,98 +85,99 @@ Permite recortar, convertir, comprimir y extraer audio sin configuraciones compl
           
           </Border>
 
-          <!-- 5) Cómo usar cada herramienta -->
+          <!-- 5) Guías -->
           <StackPanel Spacing="10">
-            <TextBlock Text="Guías de cada herramienta"
+            <TextBlock Text="{Binding L[AcercaDe.Guides.Title]}"
                        Margin="0 15 0 0"
                        FontSize="20" FontWeight="Bold"
                        Foreground="{DynamicResource AccentBrush}"/>
 
-            <TextBlock Text="Seleccioná una guía para aprender cómo usar cada módulo."
+            <TextBlock Text="{Binding L[AcercaDe.Guides.Description]}"
                        FontSize="14" Opacity="0.8"/>
 
             <StackPanel Spacing="6">
+
               <TextBlock TextDecorations="Underline"
                          Cursor="Hand"
                          FontSize="15"
                          Foreground="{DynamicResource AccentColorBrush}"
-                         Text="VCut — Recortar videos"
+                         Text="{Binding L[AcercaDe.Guides.VCut]}"
                          PointerPressed="OpenGuideVCut"/>
 
               <TextBlock TextDecorations="Underline"
                          Cursor="Hand"
                          FontSize="15"
                          Foreground="{DynamicResource AccentColorBrush}"
-                         Text="VCompress — Comprimir y optimizar"
+                         Text="{Binding L[AcercaDe.Guides.VCompress]}"
                          PointerPressed="OpenGuideVCompress"/>
 
               <TextBlock TextDecorations="Underline"
                          Cursor="Hand"
                          FontSize="15"
                          Foreground="{DynamicResource AccentColorBrush}"
-                         Text="VConvert — Conversión de formatos"
+                         Text="{Binding L[AcercaDe.Guides.VConvert]}"
                          PointerPressed="OpenGuideVConvert"/>
 
               <TextBlock TextDecorations="Underline"
                          Cursor="Hand"
                          FontSize="15"
                          Foreground="{DynamicResource AccentColorBrush}"
-                         Text="VAudiofy — Extraer audio"
+                         Text="{Binding L[AcercaDe.Guides.VAudiofy]}"
                          PointerPressed="OpenGuideVAudiofy"/>
 
               <TextBlock TextDecorations="Underline"
                          Cursor="Hand"
                          FontSize="15"
                          Foreground="{DynamicResource AccentColorBrush}"
-                         Text="VDownload — Descargar videos"
+                         Text="{Binding L[AcercaDe.Guides.VDownload]}"
                          PointerPressed="OpenGuideVDownload"/>
+
             </StackPanel>
           </StackPanel>
 
           <!-- 7) Créditos -->
           <StackPanel Spacing="6">
-            <TextBlock Text="Créditos"
+            <TextBlock Text="{Binding L[AcercaDe.Credits.Title]}"
                        Margin="0 15 0 0"
                        FontSize="20" FontWeight="SemiBold"
                        Foreground="{DynamicResource AccentBrush}"/>
 
-            <TextBlock FontSize="14" TextWrapping="Wrap">
-              Desarrollado por Franz Baltazar. Por favor, tenga en cuenta que es posible encontrarse con bugs o errores y es completamente normal porque es mantenido por únicamente una sola persona
-            </TextBlock>
+            <TextBlock FontSize="14" TextWrapping="Wrap"
+                       Text="{Binding L[AcercaDe.Credits.Description]}" />
 
-            <!-- 8) Contacto / redes -->
+            <!-- 8) Redes -->
             <StackPanel Spacing="4">
               <TextBlock TextDecorations="Underline"
                          Cursor="Hand"
                          FontSize="15"
                          Foreground="{DynamicResource AccentColorBrush}"
-                         Text="LinkedIn – Franz Baltazar"
+                         Text="{Binding L[AcercaDe.Credits.LinkedIn]}"
                          PointerPressed="OpenLinkedIn"/>
 
               <TextBlock TextDecorations="Underline"
                          Cursor="Hand"
                          FontSize="15"
                          Foreground="{DynamicResource AccentColorBrush}"
-                         Text="GitHub – balta-dev"
+                         Text="{Binding L[AcercaDe.Credits.GitHubUser]}"
                          PointerPressed="OpenGithubProfile"/>
 
               <TextBlock TextDecorations="Underline"
                          Cursor="Hand"
                          FontSize="15"
                          Foreground="{DynamicResource AccentColorBrush}"
-                         Text="Instagram – @baltafranz"
+                         Text="{Binding L[AcercaDe.Credits.Instagram]}"
                          PointerPressed="OpenInstagram"/>
             </StackPanel>
           </StackPanel>
 
           <!-- 9) Repositorio -->
           <StackPanel Spacing="6">
-            <TextBlock Text="Repositorio del Proyecto"
+            <TextBlock Text="{Binding L[AcercaDe.Repository.Title]}"
                        FontSize="20" FontWeight="SemiBold"
                        Margin="0 15 0 0"
                        Foreground="{DynamicResource AccentBrush}"/>
             
-            <TextBlock Text="GitHub — VManager"
+            <TextBlock Text="{Binding L[AcercaDe.Repository.Link]}"
                        FontSize="15"
                        TextDecorations="Underline"
                        Foreground="{DynamicResource AccentColorBrush}"
@@ -189,14 +187,13 @@ Permite recortar, convertir, comprimir y extraer audio sin configuraciones compl
 
           <!-- 10) Licencia -->
           <StackPanel Spacing="6">
-            <TextBlock Text="Licencia"
+            <TextBlock Text="{Binding L[AcercaDe.License.Title]}"
                        Margin="0 15 0 0"
                        FontSize="20" FontWeight="SemiBold"
                        Foreground="{DynamicResource AccentBrush}"/>
 
-            <TextBlock TextWrapping="Wrap" FontSize="14">
-              VManager es software libre distribuido bajo la licencia MIT.
-            </TextBlock>
+            <TextBlock TextWrapping="Wrap" FontSize="14"
+                       Text="{Binding L[AcercaDe.License.Description]}" />
           </StackPanel>
 
         </StackPanel>

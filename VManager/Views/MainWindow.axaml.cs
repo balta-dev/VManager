@@ -268,6 +268,10 @@ namespace VManager.Views
             Application.Current!.Resources["AccentBrush"] = new SolidColorBrush(adjustedAccent);
             Application.Current.Resources["AccentForegroundBrush"] = new SolidColorBrush(foreground);
 
+            // Derivados para hover/pressed
+            Application.Current.Resources["AccentBrushLight"] = new SolidColorBrush(LightenColor(adjustedAccent, 0.3)); // hover
+            Application.Current.Resources["AccentBrushDark"] = new SolidColorBrush(DarkenColor(adjustedAccent, 0.15));   // pressed
+            
             var redButton = Color.FromArgb(0xFF, 0xBF, 0x24, 0x24);
             var adjustedRed = AdjustColorForAccentTheme(redButton, actualTheme);
             Application.Current.Resources["RedButtonBrush"] = new SolidColorBrush(adjustedRed);

@@ -43,11 +43,36 @@ namespace VManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref _isConverting, value);
         }
         
+        private VideoDownloadItem? _selectedVideo;
+        public VideoDownloadItem? SelectedVideo
+        {
+            get => _selectedVideo;
+            set => this.RaiseAndSetIfChanged(ref _selectedVideo, value);
+        }
+        
+        private bool _showDownloadHelp;
+        public bool ShowDownloadHelp
+        {
+            get => _showDownloadHelp;
+            set => this.RaiseAndSetIfChanged(ref _showDownloadHelp, value);
+        }
+        
+        public override void ClearInfo()
+        {
+            // Primero ejecuta el ClearInfo del base
+            base.ClearInfo();
+            
+            SelectedVideo = null;
+            this.RaisePropertyChanged(nameof(SelectedVideo));
+            
+        }
+        
         private readonly ConfigurationService.AppConfig _config;
 
         public ReactiveCommand<Unit, Unit> DownloadCommand { get; }
         public ReactiveCommand<string, Unit> AddUrlCommand { get; }
         public ReactiveCommand<VideoDownloadItem, Unit> RemoveUrlCommand { get; }
+        public ReactiveCommand<Unit, Unit> HideDownloadHelpCommand { get; }
 
         public Herramienta5ViewModel()
         {
@@ -55,6 +80,10 @@ namespace VManager.ViewModels
             DownloadCommand = ReactiveCommand.CreateFromTask(DownloadVideos, outputScheduler: AvaloniaScheduler.Instance);
             AddUrlCommand = ReactiveCommand.Create<string>(AddUrl, outputScheduler: AvaloniaScheduler.Instance);
             RemoveUrlCommand = ReactiveCommand.Create<VideoDownloadItem>(RemoveUrl, outputScheduler: AvaloniaScheduler.Instance);
+            HideDownloadHelpCommand = ReactiveCommand.Create(
+                () => { ShowDownloadHelp = false; },
+                outputScheduler: AvaloniaScheduler.Instance
+            );
             SelectedAudioFormat = SupportedAudioFormats[0]; // mp3
         }
 
@@ -80,7 +109,7 @@ namespace VManager.ViewModels
 
             if (!IsValidUrl(url))
             {
-                Status = "URL inválida.";
+                Status = L["VideoStatus.NotURL"];
                 this.RaisePropertyChanged(nameof(Status));
                 return;
             }
@@ -88,7 +117,7 @@ namespace VManager.ViewModels
             // Verificar si ya existe
             if (Videos.Any(v => v.Url == url))
             {
-                Status = "Este video ya está en la lista.";
+                Status = L["VideoStatus.AlreadyOnList"];
                 this.RaisePropertyChanged(nameof(Status));
                 return;
             }
@@ -97,7 +126,7 @@ namespace VManager.ViewModels
             var videoItem = new VideoDownloadItem
             {
                 Url = url,
-                Title = "Obteniendo información...",
+                Title = L["VideoStatus.RetrievingInfo"],
                 IsLoading = true
             };
 
@@ -121,9 +150,10 @@ namespace VManager.ViewModels
                 if (info == null)
                 {
                     videoItem.HasError = true;
-                    videoItem.ErrorMessage = "No se pudo obtener información";
-                    videoItem.Title = "Error al cargar video";
+                    videoItem.ErrorMessage = L["VideoStatus.ErrorNoInfo"];
+                    videoItem.Title = L["VideoStatus.ErrorNoInfo"];
                     videoItem.IsLoading = false;
+                    ShowDownloadHelp = true;
                     return;
                 }
 
@@ -132,22 +162,22 @@ namespace VManager.ViewModels
                 videoItem.Duration = FormatDuration(info.Duration);
                 videoItem.ThumbnailUrl = info.Thumbnail;
                 videoItem.FileSize = info.FileSize;
-
-                // Cargar formatos disponibles - VERSIÓN QUE FUNCIONA
-                var seenResolutions = new System.Collections.Generic.HashSet<string>();
-                var formatList = new System.Collections.Generic.List<VManager.Models.VideoFormat>();
                 
+                // Cargar formatos disponibles - CON AUDIO
+                var seenResolutions = new HashSet<string>();
+                var formatList = new List<VManager.Models.VideoFormat>();
+
+                // 1. Formatos de VIDEO+AUDIO
                 foreach (var f in info.Formats
-                    .Where(fmt => !string.IsNullOrEmpty(fmt.VideoCodec) && 
-                                 fmt.VideoCodec != "none" && 
-                                 !string.IsNullOrEmpty(fmt.AudioCodec) && 
-                                 fmt.AudioCodec != "none" && 
-                                 fmt.Height.HasValue)
-                    .OrderByDescending(fmt => fmt.Height))
+                             .Where(fmt => !string.IsNullOrEmpty(fmt.VideoCodec) && 
+                                           fmt.VideoCodec != "none" && 
+                                           !string.IsNullOrEmpty(fmt.AudioCodec) && 
+                                           fmt.AudioCodec != "none" && 
+                                           fmt.Height.HasValue)
+                             .OrderByDescending(fmt => fmt.Height))
                 {
                     string resolution = $"{f.Height}p";
-                    
-                    // Solo agregar si no hemos visto esta resolución
+    
                     if (seenResolutions.Add(resolution))
                     {
                         formatList.Add(new VManager.Models.VideoFormat
@@ -160,8 +190,49 @@ namespace VManager.ViewModels
                     }
                 }
                 
+                //////////////////////// 2. Formatos de SOLO AUDIO (NO FUNCIONA) ////////////////////////////////
+                //var seenAudioFormats = new HashSet<string>();
+                //foreach (var f in info.Formats
+                //             .Where(fmt => fmt.VideoCodec != null && fmt.VideoCodec.Equals("none", StringComparison.OrdinalIgnoreCase))
+                //             .Where(fmt => !string.IsNullOrEmpty(fmt.AudioCodec) && !fmt.AudioCodec.Equals("none", StringComparison.OrdinalIgnoreCase))
+                //             .OrderByDescending(fmt => fmt.Abr ?? 0))
+                //{
+                //    string audioDesc = f.Abr.HasValue 
+                //        ? $"Audio {Math.Round(f.Abr.Value)}kbps" 
+                //        : "Audio";
+                //    
+                //    string uniqueKey = $"{audioDesc}_{f.Extension}";
+    
+                //    if (seenAudioFormats.Add(uniqueKey))
+                //    {
+                //        formatList.Add(new VManager.Models.VideoFormat
+                //        {
+                //            FormatId = f.FormatId,
+                //            Resolution = audioDesc,
+                //            Extension = f.Extension,
+                //            FileSize = f.FileSize
+                //        });
+                //    }
+                //}
+                /////////////////////////////////////////////////////////////////////////////////////////////
+                
+                formatList.Add(new VManager.Models.VideoFormat
+                {
+                    FormatId = "0",
+                    Resolution = "audio",
+                    Extension = "mp3",
+                    FileSize = null
+                });
+                
+                formatList.Add(new VManager.Models.VideoFormat
+                {
+                    FormatId = "1",
+                    Resolution = "audio",
+                    Extension = "wav",
+                    FileSize = null
+                });
+                
                 videoItem.AvailableFormats = new ObservableCollection<VManager.Models.VideoFormat>(formatList);
-
                 // Seleccionar formato por defecto
                 videoItem.SelectedFormat = videoItem.AvailableFormats.FirstOrDefault();
 
@@ -186,7 +257,7 @@ namespace VManager.ViewModels
             {
                 videoItem.HasError = true;
                 videoItem.ErrorMessage = ex.Message;
-                videoItem.Title = "Error al cargar información";
+                videoItem.Title = L["VideoStatus.ErrorNoInfo"];
                 videoItem.IsLoading = false;
                 Console.WriteLine($"Error cargando info: {ex}");
             }
@@ -204,7 +275,7 @@ namespace VManager.ViewModels
         {
             if (video.IsDownloading)
             {
-                Status = "No se puede eliminar un video mientras se está descargando.";
+                Status = L["VideoStatus.CantDeleteWhileDownloading"];
                 this.RaisePropertyChanged(nameof(Status));
                 return;
             }
@@ -225,13 +296,15 @@ namespace VManager.ViewModels
         {
             if (Videos.Count == 0)
             {
-                Status = "No hay videos para descargar.";
+                Status = L["VideoStatus.NoVideo"];
                 this.RaisePropertyChanged(nameof(Status));
                 return;
             }
 
             HideFileReadyButton();
             _cts = new CancellationTokenSource();
+            Progress = 0;
+            this.RaisePropertyChanged(nameof(Progress));
 
             try
             {
@@ -239,7 +312,6 @@ namespace VManager.ViewModels
 
                 IsConverting = true;
                 IsOperationRunning = true;
-                Progress = 0;
 
                 int total = Videos.Count;
                 int index = 0;
@@ -284,7 +356,7 @@ namespace VManager.ViewModels
                         Progress = (int)globalProgress;
                         RemainingTime = p.Eta;
 
-                        Status = $"Descargando {index}/{total}: {video.Title}";
+                        Status = $"{L["VideoStatus.Downloading"]} {index}/{total}: {video.Title}";
                         this.RaisePropertyChanged(nameof(Progress));
                         this.RaisePropertyChanged(nameof(RemainingTime));
                         this.RaisePropertyChanged(nameof(Status));
@@ -295,16 +367,24 @@ namespace VManager.ViewModels
                         ? _config.PreferredDownloadFolder
                         : Environment.GetFolderPath(Environment.SpecialFolder.Desktop); // fallback seguro
 
+                    string extension = video.SelectedFormat?.FormatId switch
+                    {
+                        "0" => "mp3",
+                        "1" => "wav",
+                        _ => "mp4"
+                    };
+
                     string outputTemplate = Path.Combine(
                         downloadFolder,
-                        $"%(title)s.mp4"
+                        $"%(title)s.{extension}"
                     );
 
                     var result = await processor.DownloadAsync(
                         video.Url,
                         outputTemplate,
                         progress,
-                        _cts.Token
+                        _cts.Token,
+                        video.SelectedFormat?.FormatId
                     );
 
                     video.IsDownloading = false;
@@ -313,30 +393,30 @@ namespace VManager.ViewModels
                     {
                         success++;
                         video.IsCompleted = true;
-                        video.Status = "✓ Completado";
+                        video.Status = L["VideoStatus.Completed"];
                         video.Progress = 100;
 
                         var notifier = new Notifier();
-                        notifier.ShowFileConvertedNotification("Descargado", result.OutputPath);
+                        notifier.ShowFileConvertedNotification("Descargado", outputTemplate);
 
                         _ = SoundManager.Play("success.wav");
-                        SetLastCompressedFile(result.OutputPath);
+                        SetLastCompressedFile(outputTemplate);
                     }
                     else
                     {
                         if (_cts.IsCancellationRequested)
                         {
                             video.IsCanceled = true;
-                            video.Status = "⚠ Cancelado";
+                            video.Status = L["VideoStatus.Canceled"];
                             video.Progress = 0;
-                            Status = $"Descarga cancelada: {video.Title}";
+                            Status = $"{L["VideoStatus.Canceled"]} {success}/{total}";
                         }
                         else
                         {
                             video.HasError = true;
-                            video.Status = "✗ Error";
+                            video.Status = L["VideoStatus.Error"];
                             _ = SoundManager.Play("fail.wav");
-                            Status = $"Error en {video.Title}: {result.Message}";
+                            Status = $"{L["VideoStatus.Error"]} {video.Title}: {result.Message}";
                         }
 
                         this.RaisePropertyChanged(nameof(Status));
@@ -344,15 +424,13 @@ namespace VManager.ViewModels
                 }
 
                 Progress = 100;
-                Status = $"Completado {success}/{total} descargas";
-                this.RaisePropertyChanged(nameof(Status));
+                Status = $"{L["VideoStatus.Completed"]} {success}/{total} {L["VideoStatus.Downloads"]}";
             }
             catch (OperationCanceledException)
             {
                 _ = SoundManager.Play("fail.wav");
-                Status = "Operación cancelada.";
+                Status = L["VideoStatus.OperationCanceled"];
                 Progress = 0;
-                this.RaisePropertyChanged(nameof(Status));
             }
             finally
             {
@@ -361,7 +439,8 @@ namespace VManager.ViewModels
 
                 _cts?.Dispose();
                 _cts = null;
-
+                this.RaisePropertyChanged(nameof(Status));
+                this.RaisePropertyChanged(nameof(Progress));
                 this.RaisePropertyChanged(nameof(IsConverting));
                 this.RaisePropertyChanged(nameof(IsOperationRunning));
             }

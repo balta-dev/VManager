@@ -310,7 +310,7 @@ namespace VManager.ViewModels
 
             if (VideoPaths.Count == 0)
             {
-                Status = "No hay archivos seleccionados.";
+                Status = L["VConvert.Fields.NoFiles"];
                 return;
             }
             
@@ -327,7 +327,13 @@ namespace VManager.ViewModels
                 foreach (var video in VideoPaths)
                 {
                     currentFileIndex++;
-                    Status = $"Convirtiendo ({currentFileIndex}/{totalFiles}): {Path.GetFileName(video)}...";
+
+                    Status = string.Format(
+                        L["VConvert.Fields.Converting"],
+                        currentFileIndex,
+                        totalFiles,
+                        Path.GetFileName(video)
+                    );
 
                     var progress = new Progress<IVideoProcessor.ProgressInfo>(p =>
                     {
@@ -338,7 +344,7 @@ namespace VManager.ViewModels
 
                     string outputPath = Path.Combine(
                         Path.GetDirectoryName(video)!,
-                        Path.GetFileNameWithoutExtension(video) + $"-VCONV.{SelectedFormat?.Extension}"
+                        Path.GetFileNameWithoutExtension(video) + $"{L["VConvert.Fields.OutputSuffix"]}.{SelectedFormat?.Extension}"
                     );
 
                     var result = await processor.ConvertAsync(
@@ -354,21 +360,44 @@ namespace VManager.ViewModels
                     if (!result.Success)
                     {
                         _ = SoundManager.Play("fail.wav");
-                        Status = $"Error procesando {Path.GetFileName(video)}: {result.Message}";
+                        Status = string.Format(
+                            L["VConvert.Fields.Error"],
+                            Path.GetFileName(video),
+                            result.Message
+                        );
                         break;
                     }
 
                     successCount++;
                     _ = SoundManager.Play("success.wav");
                     SetLastCompressedFile(result.OutputPath);
-                    Notifier _notifier = new Notifier();
-                    _notifier.ShowFileConvertedNotification(result.Message, result.OutputPath);
+
+                    Notifier notifier = new Notifier();
+                    notifier.ShowFileConvertedNotification(
+                        string.Format(L["VConvert.Fields.NotificationMessage"], result.Message),
+                        result.OutputPath
+                    );
                 }
 
                 Progress = 100;
-                Status = successCount == totalFiles
-                    ? $"¡{successCount} archivo{(successCount > 1 ? "s" : "")} convertido{(successCount > 1 ? "s" : "")} exitosamente!"
-                    : $"Proceso interrumpido: {successCount}/{totalFiles} archivos completados";
+
+                if (successCount == totalFiles)
+                {
+                    Status = string.Format(
+                        L["VConvert.Fields.CompletedAll"],
+                        successCount,
+                        successCount > 1 ? "s" : "",
+                        successCount > 1 ? "s" : ""
+                    );
+                }
+                else
+                {
+                    Status = string.Format(
+                        L["VConvert.Fields.CompletedPartial"],
+                        successCount,
+                        totalFiles
+                    );
+                }
 
                 IsConverting = false;
                 IsOperationRunning = false;
@@ -377,7 +406,7 @@ namespace VManager.ViewModels
             catch (OperationCanceledException)
             {
                 _ = SoundManager.Play("fail.wav");
-                Status = "Conversión cancelada por el usuario.";
+                Status = L["VConvert.Fields.Canceled"];
                 Progress = 0;
                 IsConverting = false;
                 IsOperationRunning = false;

@@ -62,49 +62,63 @@ public static class YtDlpManager
     // ==============================================
     private static async Task TryAutoUpdateAsync()
     {
+        var lockFilePath = Path.Combine(Path.GetTempPath(), "yt-dlp_update.lock");
+
         try
         {
-            using Mutex mutex = new(false, MutexName, out bool created);
-
-            if (!mutex.WaitOne(2000))
+            // Verificar si ya existe el archivo de lock
+            if (File.Exists(lockFilePath))
             {
                 Console.WriteLine("[YTDLP] Otro proceso está actualizando yt-dlp.");
                 return;
             }
 
-            Console.WriteLine("[YTDLP] Intentando actualización automática…");
+            // Crear el archivo de lock para evitar que otro proceso lo ejecute
+            File.Create(lockFilePath).Dispose(); // Crea el archivo y lo cierra
 
-            var psi = new ProcessStartInfo
+            try
             {
-                FileName = YtDlpPath,
-                Arguments = "-U",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
+                Console.WriteLine("[YTDLP] Intentando actualización automática…");
 
-            var p = Process.Start(psi);
-            if (p != null)
-            {
-                string stdout = await p.StandardOutput.ReadToEndAsync();
-                string stderr = await p.StandardError.ReadToEndAsync();
-                await p.WaitForExitAsync();
+                var psi = new ProcessStartInfo
+                {
+                    FileName = YtDlpPath,
+                    Arguments = "-U",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
 
-                Console.WriteLine("[YTDLP] OUT: " + stdout);
-                Console.WriteLine("[YTDLP] ERR: " + stderr);
+                using var p = Process.Start(psi);
+                if (p != null)
+                {
+                    string stdout = await p.StandardOutput.ReadToEndAsync();
+                    string stderr = await p.StandardError.ReadToEndAsync();
+                    await p.WaitForExitAsync();
 
-                if (p.ExitCode == 0)
-                    Console.WriteLine("[YTDLP] Actualización completada o ya actualizado.");
-                else
-                    Console.WriteLine("[YTDLP] Falló la actualización, se usa versión embebida.");
+                    if (!string.IsNullOrEmpty(stdout)) Console.WriteLine("[YTDLP] stdout: " + stdout);
+                    if (!string.IsNullOrEmpty(stderr)) Console.WriteLine("[YTDLP] stderr: " + stderr);
+
+                    Console.WriteLine(p.ExitCode == 0
+                        ? "[YTDLP] Actualización completada o ya actualizado."
+                        : "[YTDLP] Falló la actualización, se usa versión embebida.");
+                }
             }
-
-            mutex.ReleaseMutex();
+            catch (Exception ex)
+            {
+                Console.WriteLine("[YTDLP] ERROR en auto-update: " + ex.Message);
+            }
+            finally
+            {
+                // Eliminar el archivo de lock al finalizar
+                File.Delete(lockFilePath);
+            }
         }
         catch (Exception ex)
         {
-            Console.WriteLine("[YTDLP] ERROR en auto-update: " + ex.Message);
+            Console.WriteLine("[YTDLP] ERROR al intentar crear el archivo de lock: " + ex.Message);
         }
     }
+
 }

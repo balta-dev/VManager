@@ -35,6 +35,7 @@
         <!-- Título -->
         <TextBlock Text="{Binding L[VConvert.Title]}" 
                    FontSize="30" 
+                   Cursor="Hand"
                    HorizontalAlignment="Center" 
                    FontWeight="Bold"
                    PointerPressed="OpenGuideVConvert"/>
@@ -74,12 +75,13 @@
         <StackPanel Spacing="6" HorizontalAlignment="Stretch">
           <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
             <TextBlock Text="{Binding L[VConvert.Fields.SelectVideo]}" 
-                       FontSize="14" 
+                       FontSize="14"
                        VerticalAlignment="Center"/>
         
             <Button Command="{Binding BrowseCommand}" 
                     HotKey="B" 
                     Width="100"
+                    Classes="Accented"
                     HorizontalAlignment="Center">
               <Button.Content>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="6">
@@ -89,7 +91,7 @@
                             Height="16"
                             VerticalAlignment="Center"/>
                   <!-- Texto enlazado -->
-                  <TextBlock Text="{Binding L[VConvert.Buttons.Browse]}" 
+                  <TextBlock Text="{Binding L[VConvert.Buttons.Browse]}" FontWeight="SemiBold"
                              VerticalAlignment="Center"/>
                 </StackPanel>
               </Button.Content>
@@ -112,23 +114,25 @@
                     MinWidth="80"
                     MaxWidth="140"/>
           <Button x:Name="QuestionMark" Content="?" Width="30" FontWeight="Bold">
-            <ToolTip.Tip>
-              <TextBlock MaxWidth="400" TextWrapping="Wrap">
-                <Run Text="Selecciona el formato de salida para tu video."/>
-                <LineBreak/><LineBreak/>
-                <Run Text="Recomendaciones:"/>
-                <LineBreak/>
-                <Run Text="• MP4 + AAC (máxima compatibilidad)"/>
-                <LineBreak/>
-                <Run Text="• MKV + cualquier audio (más flexible)"/>
-                <LineBreak/>
-                <Run Text="• WebM + Opus (optimizado web)"/>
-                <LineBreak/>
-                <Run Text="• MOV + PCM (DaVinci Resolve)"/>
-                <LineBreak/><LineBreak/>
-                <Run Text="Nota: FFmpeg puede combinar muchos formatos, pero algunas combinaciones podrían no reproducirse en todos los dispositivos."/>
-              </TextBlock>
-            </ToolTip.Tip>
+              <ToolTip.Tip>
+                  <TextBlock MaxWidth="400" TextWrapping="Wrap">
+                      <Run Text="{Binding L[VConvert.Tips.FormatSelection]}"/>
+                      <LineBreak/><LineBreak/>
+
+                      <Run Text="{Binding L[VConvert.Tips.RecommendationsTitle]}"/>
+                      <LineBreak/>
+                      <Run Text="{Binding L[VConvert.Tips.RecMP4]}"/>
+                      <LineBreak/>
+                      <Run Text="{Binding L[VConvert.Tips.RecMKV]}"/>
+                      <LineBreak/>
+                      <Run Text="{Binding L[VConvert.Tips.RecWebM]}"/>
+                      <LineBreak/>
+                      <Run Text="{Binding L[VConvert.Tips.RecMOV]}"/>
+                      <LineBreak/><LineBreak/>
+
+                      <Run Text="{Binding L[VConvert.Tips.FormatNote]}"/>
+                  </TextBlock>
+              </ToolTip.Tip>
           </Button>
         </StackPanel>
         
@@ -149,15 +153,18 @@
                         <Button x:Name="QuestionMark6" Content="?" Width="30" FontWeight="Bold">
                             <ToolTip.Tip>
                                 <TextBlock MaxWidth="400" TextWrapping="Wrap">
-                                    <Run Text="La opción predeterminada es la mejor para la mayoría de los casos."/>
+                                    <Run Text="{Binding L[VConvert.Tips.VideoCodecInfo]}"/>
                                     <LineBreak/><LineBreak/>
-                                    <Run Text="Se prioriza la aceleración por hardware (que se utilice tu GPU)."/>
+
+                                    <Run Text="{Binding L[VConvert.Tips.VideoCodecHW]}"/>
                                     <LineBreak/><LineBreak/>
-                                    <Run Text="Un códec de video básicamente comprime y descomprime video para ahorrar espacio o transmitir más rápido."/>
+
+                                    <Run Text="{Binding L[VConvert.Tips.VideoCodecDefinition]}"/>
                                     <LineBreak/><LineBreak/>
-                                    <Run Text="Si prefieres usar la CPU en lugar de la GPU, usa codecs como 'libx264'."/>
+
+                                    <Run Text="{Binding L[VConvert.Tips.VideoCodecCPU]}"/>
                                     <LineBreak/>
-                                    <Run Text="La ventaja de usar la CPU es que provee la mejor calidad. La desventaja es que es mucho más lento."/>
+                                    <Run Text="{Binding L[VConvert.Tips.VideoCodecTradeoff]}"/>
                                 </TextBlock>
                             </ToolTip.Tip>
                         </Button>
@@ -183,11 +190,13 @@
                             <Button x:Name="QuestionMark7" Content="?" Width="30" FontWeight="Bold">
                                 <ToolTip.Tip>
                                     <TextBlock MaxWidth="400" TextWrapping="Wrap">
-                                        <Run Text="La opción predeterminada es la mejor para la mayoría de los casos."/>
+                                        <Run Text="{Binding L[VConvert.Tips.AudioCodecInfo]}"/>
                                         <LineBreak/><LineBreak/>
-                                        <Run Text="Un códec de audio básicamente comprime y descomprime audio para ahorrar espacio o transmitir más rápido."/>
+
+                                        <Run Text="{Binding L[VConvert.Tips.AudioCodecDefinition]}"/>
                                         <LineBreak/><LineBreak/>
-                                        <Run Text="FLAC permite una calidad de audio excepcional, con la desventaja de consumir mucho espacio de almacenamiento."/>
+
+                                        <Run Text="{Binding L[VConvert.Tips.AudioCodecFLAC]}"/>
                                     </TextBlock>
                                 </ToolTip.Tip>
                             </Button>
@@ -301,7 +310,7 @@
                             
                             <!-- Hover -->
                             <Style Selector="ToggleButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-                                <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+                                <Setter Property="Background" Value="{DynamicResource AccentBrushLight}" />
                                 <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
                             </Style>
 
@@ -316,6 +325,11 @@
                                 <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
                                 <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
                             </Style>
+                            <Style Selector="ToggleButton:checked:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                                <Setter Property="Background" Value="{DynamicResource AccentBrushLight}" />
+                                <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
+                            </Style>
+            
                         </ToggleButton.Styles>
                     </ToggleButton>
                 </Canvas>   

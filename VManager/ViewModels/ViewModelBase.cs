@@ -348,7 +348,7 @@ public abstract class ViewModelBase : ReactiveObject
     public abstract bool IsVideoPathSet { get; set; }
     public virtual void ClearInfo()
     {
-        Status = "¡Actualizado!";
+        Status = L["General.Refreshed"];
         Warning = "";
         VideoPath = "";
         Progress = 0;
@@ -388,7 +388,7 @@ public abstract class ViewModelBase : ReactiveObject
 
         if (topLevel == null)
         {
-            Status = "No se pudo acceder a la ventana principal.";
+            Status = L["Configuration.Fields.MainWindowFail"];
             this.RaisePropertyChanged(nameof(Status));
             return;
         }

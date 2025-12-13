@@ -58,7 +58,7 @@ namespace VManager.ViewModels
             
             if (VideoPaths.Count == 0)
             {
-                Status = "No hay archivos seleccionados.";
+                Status = L["VAudiofy.Fields.NoFiles"];
                 this.RaisePropertyChanged(nameof(Status));
                 return;
             }
@@ -101,8 +101,8 @@ namespace VManager.ViewModels
                     bool isAudioInput = extension is ".mp3" or ".wav" or ".flac" or ".ogg" or ".m4a";
 
                     Status = isAudioInput
-                        ? $"Convirtiendo audio ({currentFileIndex}/{totalFiles}): {Path.GetFileName(videoPath)}..."
-                        : $"Extrayendo audio ({currentFileIndex}/{totalFiles}): {Path.GetFileName(videoPath)}...";
+                        ? $"{L["VAudiofy.Fields.ConvertingAudio"]} ({currentFileIndex}/{totalFiles}): {Path.GetFileName(videoPath)}..."
+                        : $"{L["VAudiofy.Fields.ExtractingAudio"]} ({currentFileIndex}/{totalFiles}): {Path.GetFileName(videoPath)}...";
                     this.RaisePropertyChanged(nameof(Status));
 
                     var result = await processor.AudiofyAsync(
@@ -134,9 +134,9 @@ namespace VManager.ViewModels
                 }
 
                 Progress = 100;
-                Status = successCount == totalFiles
-                    ? $"¡{successCount} archivo{(successCount > 1 ? "s" : "")} procesado{(successCount > 1 ? "s" : "")} exitosamente!"
-                    : $"Proceso interrumpido: {successCount}/{totalFiles} archivos completados";
+                if (successCount == 1) Status = L["VAudiofy.Fields.ProcessedSingular"];
+                else if (successCount == totalFiles) Status = string.Format(L["VAudiofy.Fields.ProcessedPlural"], successCount);
+                else Status = $"{L["VAudiofy.Fields.Interrupted"]}: {string.Format(L["VAudiofy.Fields.InterruptedDetail"], successCount, totalFiles)}";
                 
                 this.RaisePropertyChanged(nameof(Status));
                 this.RaisePropertyChanged(nameof(Progress));
@@ -144,7 +144,7 @@ namespace VManager.ViewModels
             catch (OperationCanceledException)
             {
                 _ = SoundManager.Play("fail.wav");
-                Status = "Operación cancelada.";
+                Status = L["VAudiofy.Fields.Canceled"];
                 Progress = 0;
                 this.RaisePropertyChanged(nameof(Status));
                 this.RaisePropertyChanged(nameof(Progress));

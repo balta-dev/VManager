@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using VManager.ViewModels;
 
 namespace VManager.Views
 {
@@ -8,6 +9,7 @@ namespace VManager.Views
         public GuideVCompressView()
         {
             InitializeComponent();
+            DataContext = new AcercaDeViewModel();
         }
         
     }

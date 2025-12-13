@@ -57,15 +57,11 @@ namespace VManager.ViewModels
 
                 switch (value)
                 {
-                    case "Español":
-                        LocalizationService.Instance.CurrentLanguage = "es";
-                        OpenConfig = $"¡Bienvenid@, {char.ToUpper(Environment.UserName[0]) + Environment.UserName.Substring(1)}! ¿Qué necesitas cambiar? :)";
-                        break;
-                    case "English":
-                        LocalizationService.Instance.CurrentLanguage = "en";
-                        OpenConfig = $"Welcome, {char.ToUpper(Environment.UserName[0]) + Environment.UserName.Substring(1)}! What do you want to change? :)";
-                        break;
+                    case "Español": LocalizationService.Instance.CurrentLanguage = "es"; break;
+                    case "English": LocalizationService.Instance.CurrentLanguage = "en"; break;
                 }
+                
+                OpenConfig = string.Format(L["Configuration.Fields.Welcome"], (Environment.UserName[0]) + Environment.UserName.Substring(1));
 
                 this.RaisePropertyChanged(nameof(OpenConfig));
                 
@@ -192,20 +188,21 @@ namespace VManager.ViewModels
             }
 
             if (topLevel == null)
+            {
+                Status = L["Configuration.Fields.MainWindowFail"];
                 return;
+            }
 
             var folder = await topLevel.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
             {
-                Title = "Seleccionar carpeta de descargas",
+                Title = L["Configuration.Fields.BrowseDownloadFolder"],
                 AllowMultiple = false
             });
 
             if (folder.Count > 0)
             {
                 PreferredDownloadFolder = folder[0].Path.LocalPath;
-                this.RaisePropertyChanged(nameof(PreferredDownloadFolder));
-                Status = "Carpeta de descargas establecida.";
-                //_ = SoundManager.Play("success.wav");
+                Status = L["Configuration.Fields.DownloadFolderSet"];
             }
         }
         
@@ -271,6 +268,7 @@ namespace VManager.ViewModels
         private async Task BrowseCookiesFileAsync()
         {
             TopLevel? topLevel = null;
+
             if (App.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop &&
                 desktop.MainWindow != null)
             {
@@ -279,19 +277,18 @@ namespace VManager.ViewModels
 
             if (topLevel == null)
             {
-                Status = "No se pudo acceder a la ventana principal.";
-                this.RaisePropertyChanged(nameof(Status));
+                Status = L["Configuration.Fields.MainWindowFail"];
                 return;
             }
 
             var filters = new List<FilePickerFileType>
             {
-                new FilePickerFileType("Cookies file") { Patterns = new[] { "*.txt", "*.cookies" } }
+                new FilePickerFileType(L["Configuration.Fields.CookiesFile"]) { Patterns = new[] { "*.txt", "*.cookies" } }
             };
 
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                Title = "Seleccionar archivo cookies.txt",
+                Title = L["Configuration.Fields.BrowseCookies"],
                 FileTypeFilter = filters,
                 AllowMultiple = false
             });
@@ -300,17 +297,16 @@ namespace VManager.ViewModels
             {
                 var local = files[0].Path.LocalPath;
 
-                // Validación mínima: existe y peso > 0
                 if (!File.Exists(local) || new FileInfo(local).Length == 0)
                 {
-                    Status = "Archivo inválido o vacío.";
+                    Status = L["Configuration.Fields.InvalidCookiesFile"];
                     return;
                 }
 
                 CookiesFilePath = local;
                 CookiesLastUpdated = DateTime.Now;
                 UseCookiesFile = true;
-                Status = "Archivo de cookies establecido.";
+                Status = L["Configuration.Fields.CookiesSet"];
                 SaveConfig();
             }
         }
@@ -321,7 +317,7 @@ namespace VManager.ViewModels
             CookiesLastUpdated = null;
             UseCookiesFile = false;
 
-            Status = "Archivo de cookies eliminado.";
+            Status = L["Configuration.Fields.CookiesRemoved"];
             SaveConfig();
             return Task.CompletedTask;
         }
@@ -329,6 +325,7 @@ namespace VManager.ViewModels
         private async Task BrowseProfileImage()
         {
             TopLevel? topLevel = null;
+
             if (App.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop &&
                 desktop.MainWindow != null)
             {
@@ -337,8 +334,7 @@ namespace VManager.ViewModels
 
             if (topLevel == null)
             {
-                Status = "No se pudo acceder a la ventana principal.";
-                this.RaisePropertyChanged(nameof(Status));
+                Status = L["Configuration.Fields.MainWindowFail"];
                 return;
             }
 
@@ -346,12 +342,12 @@ namespace VManager.ViewModels
 
             var filters = new List<FilePickerFileType>
             {
-                new FilePickerFileType("Imágenes") { Patterns = imagePatterns }
+                new FilePickerFileType(L["Configuration.Fields.Images"]) { Patterns = imagePatterns }
             };
 
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                Title = "Seleccionar imagen de perfil",
+                Title = L["Configuration.Fields.BrowseProfileImage"],
                 FileTypeFilter = filters,
                 AllowMultiple = false
             });
@@ -359,34 +355,30 @@ namespace VManager.ViewModels
             if (files.Count > 0)
             {
                 string selectedPath = files[0].Path.LocalPath;
-                
-                Status = "Validando imagen...";
-                this.RaisePropertyChanged(nameof(Status));
+
+                Status = L["Configuration.Fields.ValidatingImage"];
 
                 var result = await ProfileImageService.SaveProfileImageAsync(selectedPath);
-                
+
                 Status = result.Message;
                 if (result.Success)
                 {
                     ProfileImagePath = result.Path;
                     HasProfileImage = true;
                 }
-                
-                this.RaisePropertyChanged(nameof(Status));
             }
         }
 
         private async Task RemoveProfileImage()
         {
             var result = ProfileImageService.DeleteProfileImage();
-            Status = result.Message;
+            Status = L["Configuration.Fields.ProfileImageRemoved"];
+
             if (result.Success)
             {
                 ProfileImagePath = null;
                 HasProfileImage = false;
             }
-            
-            this.RaisePropertyChanged(nameof(Status));
         }
         
         private void LoadProfileImageBitmap()

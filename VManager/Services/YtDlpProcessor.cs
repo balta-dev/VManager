@@ -239,7 +239,6 @@ public class YtDlpProcessor
         }
     }
 
-
     // ============================================================
     //                      DESCARGAR VIDEO
     // ============================================================
@@ -248,13 +247,35 @@ public class YtDlpProcessor
     string url,
     string outputTemplate,
     IProgress<YtDlpProgress> progress,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken,
+    string? formatId = null)
     {
         string cookieArg = BuildCookiesArgument();
+        
+        string args = $"{cookieArg} --newline -o \"{outputTemplate}\"";
+
+        if (!string.IsNullOrEmpty(formatId))
+        {
+            if (formatId == "0") // mp3
+            {
+                args += " -x --audio-format mp3";
+            }
+            else if (formatId == "1") // wav
+            {
+                args += " -x --audio-format wav";
+            }
+            else
+            {
+                args += $" -f {formatId}";
+            }
+        }
+
+        args += $" {url}";
+        
         var psi = new ProcessStartInfo
         {
             FileName = _ytDlpPath,
-            Arguments = $"{cookieArg} --newline -o \"{outputTemplate}\" {url}",
+            Arguments = args,
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,
@@ -396,4 +417,14 @@ public class FormatInfo
     
     [JsonPropertyName("acodec")]
     public string AudioCodec { get; set; } = string.Empty;
+    
+    // AGREGAR ESTAS PROPIEDADES PARA AUDIO
+    [JsonPropertyName("abr")]
+    public double? Abr { get; set; } // Audio bitrate
+    
+    [JsonPropertyName("format_note")]
+    public string? FormatNote { get; set; } // Descripción del formato
+    
+    [JsonPropertyName("asr")]
+    public int? Asr { get; set; } // Audio sample rate
 }

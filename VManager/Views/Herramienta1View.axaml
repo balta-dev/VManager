@@ -30,6 +30,7 @@
         <!-- Título -->
         <TextBlock Text="{Binding L[VCut.Title]}" 
                    FontSize="30"
+                   Cursor="Hand"
                    HorizontalAlignment="Center" 
                    FontWeight="Bold"
                    PointerPressed="OpenGuideVCut"/>
@@ -74,6 +75,7 @@
             <Button Command="{Binding BrowseSingleVideoCommand}" 
                     HotKey="B" 
                     Width="100"
+                    Classes="Accented"
                     HorizontalAlignment="Center">
               <Button.Content>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="6">
@@ -83,7 +85,7 @@
                             Height="16"
                             VerticalAlignment="Center"/>
                   <!-- Texto enlazado -->
-                  <TextBlock Text="{Binding L[VCut.Buttons.Browse]}" 
+                  <TextBlock Text="{Binding L[VCut.Buttons.Browse]}" FontWeight="SemiBold"
                              VerticalAlignment="Center"/>
                 </StackPanel>
               </Button.Content>
@@ -91,17 +93,17 @@
             <Button x:Name="QuestionMarkDesde" Content="?" Width="30" FontWeight="Bold">
               <ToolTip.Tip>
                 <TextBlock MaxWidth="400" TextWrapping="Wrap">
-                  <Run Text="Se acepta formato en segundos y/o tiempo tradicional (hh:mm:ss)."/>
+                  <Run Text="{Binding L[VCut.Tips.FormatSelection]}"/>
                   <LineBreak/>
-                  <Run Text="Siempre y cuando sean tiempos válidos, puedes utilizarlo como tú desees."/>
+                  <Run Text="{Binding L[VCut.Tips.ValidInput]}"/>
                   <LineBreak/><LineBreak/>
-                  <Run Text="Ejemplos de uso:"/>
+                  <Run Text="{Binding L[VCut.Tips.ExamplesTitle]}"/>
                   <LineBreak/>
-                  <Run Text="* Recortar desde 23. Recortar hasta 2:01"/>
+                  <Run Text="{Binding L[VCut.Tips.ExampleTrim1]}"/>
                   <LineBreak/>
-                  <Run Text="* Recortar desde 1:02:01. Recortar hasta 2:52:01"/>
+                  <Run Text="{Binding L[VCut.Tips.ExampleTrim2]}"/>
                   <LineBreak/><LineBreak/>
-                  <Run Text="Nota: la duración de recorte se recalcula si no es adecuada o está vacía."/>
+                  <Run Text="{Binding L[VCut.Tips.NoteDuration]}"/>
                 </TextBlock>
               </ToolTip.Tip>
             </Button>
@@ -185,7 +187,7 @@
                             
             <!-- Hover -->
             <Style Selector="ToggleButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-              <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+              <Setter Property="Background" Value="{DynamicResource AccentBrushLight}" />
               <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
             </Style>
 
@@ -200,6 +202,11 @@
               <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
               <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
             </Style>
+            <Style Selector="ToggleButton:checked:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+              <Setter Property="Background" Value="{DynamicResource AccentBrushLight}" />
+              <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
+            </Style>
+            
           </ToggleButton.Styles>
         </ToggleButton>
 

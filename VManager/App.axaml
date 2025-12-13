@@ -27,6 +27,12 @@
             <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
         </Style>
         
+        <Style Selector="Button.Accented:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource AccentBrushDark}" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+        </Style>
+        
         <!-- Estilo botón rojo -->
         <Style Selector="Button.RedAccented">
             <Setter Property="Background" Value="{DynamicResource RedButtonBrush}" />
@@ -36,24 +42,113 @@
         <Style Selector="Button.RedAccented:pointerover /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="{DynamicResource RedButtonForegroundBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource RedButtonBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource RedButtonBrush}"/>
+        </Style>
+        
+        <Style Selector="Button.RedAccented:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource RedButtonBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource RedButtonForegroundBrush}" />
         </Style>
         
         <!-- Estilos globales PathIcon -->
-        <Style Selector="PathIcon">
-            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+        <Style Selector="PathIcon:not(.NoAccent)">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource AccentBrush}"/>
+        </Style>
+        
+        <!-- ============================= -->
+        <!-- ToggleButton -->
+        <!-- ============================= -->
+
+        <!-- Normal -->
+        <Style Selector="ToggleButton PathIcon:not(.NoAccent)">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource AccentBrush}"/>
         </Style>
 
-        <Style Selector="ToggleButton PathIcon">
-            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+        <!-- Hover -->
+        <Style Selector="ToggleButton:pointerover PathIcon:not(.NoAccent)">
+            <Setter Property="Foreground"
+                    Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
         </Style>
 
-        <Style Selector="ToggleButton:pointerover PathIcon">
-            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+        <!-- Checked -->
+        <Style Selector="ToggleButton:checked PathIcon:not(.NoAccent)">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource AccentForegroundBrush}"/>
+        </Style>
+        
+        <!-- Checked -->
+        <Style Selector="ToggleButton:pressed PathIcon:not(.NoAccent)">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource AccentForegroundBrush}"/>
         </Style>
 
-        <Style Selector="ToggleButton:checked PathIcon">
-            <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}"/>
+        <!-- ============================= -->
+        <!-- Button.Accented -->
+        <!-- ============================= -->
+
+        <!-- Normal -->
+        <Style Selector="Button.Accented PathIcon:not(.NoAccent)">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource AccentForegroundBrush}"/>
         </Style>
+
+        <!-- Hover -->
+        <Style Selector="Button.Accented:pointerover PathIcon:not(.NoAccent)">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource AccentBrushLight}"/>
+        </Style>
+
+        <!-- Pressed (recomendado) -->
+        <Style Selector="Button.Accented:pressed PathIcon:not(.NoAccent)">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource AccentForegroundBrush}"/>
+            <Setter Property="Background"
+                    Value="{DynamicResource AccentBrushDark}"/>
+        </Style>
+        
+        <!-- ============================= -->
+        <!-- CHECKBOX -->
+        <!-- ============================= -->
+        
+        <Style Selector="CheckBox:checked /template/ Border#NormalRectangle">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+        </Style>
+
+        <Style Selector="CheckBox:checked:pointerover /template/ Border#NormalRectangle">
+            <Setter Property="Background" Value="{DynamicResource AccentBrushLight}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrushLight}" />
+        </Style>
+
+        <Style Selector="CheckBox:checked:pressed /template/ Border#NormalRectangle">
+            <Setter Property="Background" Value="{DynamicResource AccentBrushDark}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrushDark}" />
+        </Style>
+
+        <Style Selector="CheckBox:checked:disabled /template/ Border#NormalRectangle">
+            <Setter Property="Background" Value="{DynamicResource CheckBoxCheckBackgroundFillCheckedDisabled}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource CheckBoxCheckBackgroundStrokeCheckedDisabled}" />
+        </Style>
+        
+        <!-- ============================= -->
+        <!-- LISTBOX -->
+        <!-- ============================= -->
+
+        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        
+        <!-- ProgresBar global -->
+        <Style Selector="ProgressBar">
+            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+        </Style>
+        
         <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
         
     </Application.Styles>

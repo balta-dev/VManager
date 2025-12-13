@@ -29,6 +29,7 @@
             <!-- Título -->
             <TextBlock Text="{Binding L[VCompress.Title]}" 
                        FontSize="30"
+                       Cursor="Hand"
                        HorizontalAlignment="Center" 
                        FontWeight="Bold"
                        PointerPressed="OpenGuideVCompress"/>
@@ -73,6 +74,7 @@
             <Button Command="{Binding BrowseCommand}" 
                     HotKey="B" 
                     Width="100"
+                    Classes="Accented"
                     HorizontalAlignment="Center">
               <Button.Content>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="6">
@@ -82,7 +84,7 @@
                             Height="16"
                             VerticalAlignment="Center"/>
                   <!-- Texto enlazado -->
-                  <TextBlock Text="{Binding L[VCompress.Buttons.Browse]}" 
+                  <TextBlock Text="{Binding L[VCompress.Buttons.Browse]}" FontWeight="SemiBold"
                              VerticalAlignment="Center"/>
                 </StackPanel>
               </Button.Content>
@@ -121,15 +123,15 @@
                         <Button x:Name="QuestionMark6" Content="?" Width="30" FontWeight="Bold">
                             <ToolTip.Tip>
                                 <TextBlock MaxWidth="400" TextWrapping="Wrap">
-                                    <Run Text="La opción predeterminada es la mejor para la mayoría de los casos."/>
+                                    <Run Text="{Binding L[VCompress.Tips.VideoCodecInfo]}"/>
                                     <LineBreak/><LineBreak/>
-                                    <Run Text="Se prioriza la aceleración por hardware (que se utilice tu GPU)."/>
+                                    <Run Text="{Binding L[VCompress.Tips.VideoCodecHW]}"/>
                                     <LineBreak/><LineBreak/>
-                                    <Run Text="Un códec de video básicamente comprime y descomprime video para ahorrar espacio o transmitir más rápido."/>
+                                    <Run Text="{Binding L[VCompress.Tips.VideoCodecDefinition]}"/>
                                     <LineBreak/><LineBreak/>
-                                    <Run Text="Si prefieres usar la CPU en lugar de la GPU, usa codecs como 'libx264'."/>
+                                    <Run Text="{Binding L[VCompress.Tips.VideoCodecCPU]}"/>
                                     <LineBreak/>
-                                    <Run Text="La ventaja de usar la CPU es que provee la mejor calidad. La desventaja es que es mucho más lento."/>
+                                    <Run Text="{Binding L[VCompress.Tips.VideoCodecTradeoff]}"/>
                                 </TextBlock>
                             </ToolTip.Tip>
                         </Button>
@@ -155,11 +157,11 @@
                             <Button x:Name="QuestionMark7" Content="?" Width="30" FontWeight="Bold">
                                 <ToolTip.Tip>
                                     <TextBlock MaxWidth="400" TextWrapping="Wrap">
-                                        <Run Text="La opción predeterminada es la mejor para la mayoría de los casos."/>
+                                        <Run Text="{Binding L[VCompress.Tips.AudioCodecInfo]}"/>
                                         <LineBreak/><LineBreak/>
-                                        <Run Text="Un códec de audio básicamente comprime y descomprime audio para ahorrar espacio o transmitir más rápido."/>
+                                        <Run Text="{Binding L[VCompress.Tips.AudioCodecDefinition]}"/>
                                         <LineBreak/><LineBreak/>
-                                        <Run Text="FLAC permite una calidad de audio excepcional, con la desventaja de consumir mucho espacio de almacenamiento."/>
+                                        <Run Text="{Binding L[VCompress.Tips.AudioCodecFLAC]}"/>
                                     </TextBlock>
                                 </ToolTip.Tip>
                             </Button>
@@ -273,7 +275,7 @@
                             
                             <!-- Hover -->
                             <Style Selector="ToggleButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-                                <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+                                <Setter Property="Background" Value="{DynamicResource AccentBrushLight}" />
                                 <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
                             </Style>
 
@@ -288,6 +290,11 @@
                                 <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
                                 <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
                             </Style>
+                            <Style Selector="ToggleButton:checked:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                                <Setter Property="Background" Value="{DynamicResource AccentBrushLight}" />
+                                <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
+                            </Style>
+            
                         </ToggleButton.Styles>
                     </ToggleButton>
                 </Canvas>   

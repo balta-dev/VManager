@@ -200,15 +200,16 @@ namespace VManager.ViewModels
             HideFileReadyButton();
             _cts = new CancellationTokenSource();
 
-            if (!int.TryParse(PorcentajeCompresionUsuario, out int percentValue) || percentValue <= 0 || percentValue > 100)
+            if (!int.TryParse(PorcentajeCompresionUsuario, out int percentValue) ||
+                percentValue <= 0 || percentValue > 100)
             {
-                Status = "Porcentaje inválido.";
+                Status = L["VCompress.Fields.InvalidPercent"];
                 return;
             }
 
             if (VideoPaths.Count == 0)
             {
-                Status = "No hay archivos seleccionados.";
+                Status = L["VCompress.Fields.NoFiles"];
                 return;
             }
 
@@ -225,7 +226,13 @@ namespace VManager.ViewModels
                 foreach (var video in VideoPaths)
                 {
                     currentFileIndex++;
-                    Status = $"Comprimiendo ({currentFileIndex}/{totalFiles}): {Path.GetFileName(video)}...";
+
+                    Status = string.Format(
+                        L["VCompress.Fields.Compressing"],
+                        currentFileIndex,
+                        totalFiles,
+                        Path.GetFileName(video)
+                    );
 
                     var progress = new Progress<IVideoProcessor.ProgressInfo>(p =>
                     {
@@ -236,7 +243,9 @@ namespace VManager.ViewModels
 
                     string outputPath = Path.Combine(
                         Path.GetDirectoryName(video)!,
-                        Path.GetFileNameWithoutExtension(video) + $"-COMP-{percentValue}{Path.GetExtension(video)}"
+                        Path.GetFileNameWithoutExtension(video) +
+                        "-" + string.Format(L["VCompress.Fields.OutputSuffix"], percentValue) +
+                        Path.GetExtension(video)
                     );
 
                     var result = await processor.CompressAsync(
@@ -252,21 +261,39 @@ namespace VManager.ViewModels
                     if (!result.Success)
                     {
                         _ = SoundManager.Play("fail.wav");
-                        Status = $"Error procesando {Path.GetFileName(video)}: {result.Message}";
+                        Status = string.Format(
+                            L["VCompress.Fields.Error"],
+                            Path.GetFileName(video),
+                            result.Message
+                        );
                         break;
                     }
 
                     successCount++;
                     _ = SoundManager.Play("success.wav");
                     SetLastCompressedFile(result.OutputPath);
-                    Notifier _notifier = new Notifier();
-                    _notifier.ShowFileConvertedNotification(result.Message, result.OutputPath);
+
+                    Notifier n = new Notifier();
+                    n.ShowFileConvertedNotification(
+                        string.Format(L["VCompress.Fields.NotificationMessage"], result.Message),
+                        result.OutputPath
+                    );
                 }
 
                 Progress = 100;
+
                 Status = successCount == totalFiles
-                    ? $"¡{successCount} archivo{(successCount > 1 ? "s" : "")} comprimido{(successCount > 1 ? "s" : "")} exitosamente!"
-                    : $"Proceso interrumpido: {successCount}/{totalFiles} archivos completados";
+                    ? string.Format(
+                        L["VCompress.Fields.CompletedAll"],
+                        successCount,
+                        successCount > 1 ? "s" : "",
+                        successCount > 1 ? "s" : ""
+                    )
+                    : string.Format(
+                        L["VCompress.Fields.CompletedPartial"],
+                        successCount,
+                        totalFiles
+                    );
 
                 IsConverting = false;
                 IsOperationRunning = false;
@@ -275,7 +302,7 @@ namespace VManager.ViewModels
             catch (OperationCanceledException)
             {
                 _ = SoundManager.Play("fail.wav");
-                Status = "Compresión cancelada por el usuario.";
+                Status = L["VCompress.Fields.Canceled"];
                 Progress = 0;
                 IsConverting = false;
                 IsOperationRunning = false;

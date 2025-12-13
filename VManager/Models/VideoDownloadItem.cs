@@ -8,7 +8,7 @@ namespace VManager.Models
 {
     public class VideoDownloadItem : INotifyPropertyChanged
     {
-        private string _title = "Cargando...";
+        private string _title = "...";
         private string _duration = string.Empty;
         private string _thumbnailUrl = string.Empty;
         private long? _fileSize;
@@ -76,7 +76,15 @@ namespace VManager.Models
         public VideoFormat? SelectedFormat
         {
             get => _selectedFormat;
-            set { _selectedFormat = value; OnPropertyChanged(); }
+            set
+            {
+                _selectedFormat = value;
+                OnPropertyChanged();
+                // Si cambia el formato, habilitar la descarga nuevamente
+                IsCompleted = false;
+                Progress = 0;
+                Status = "";
+            }
         }
 
 

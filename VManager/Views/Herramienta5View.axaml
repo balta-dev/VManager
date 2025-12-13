@@ -32,11 +32,36 @@
 
       <ScrollViewer Padding="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Background="Transparent">
       
-        <StackPanel Margin="20" Spacing="12" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Margin="20 20 20 0" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
 
+          <!-- POPUP DE AYUDA DE DESCARGA -->
+          <Border x:Name="DownloadHelpBorder"
+                  Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                  CornerRadius="6"
+                  Padding="10"
+                  Margin="0,-20,0,20"
+                  IsVisible="{Binding ShowDownloadHelp}"
+                  PointerPressed="DownloadHelpBorder_PointerPressed">
+            <Border.Transitions>
+              <Transitions>
+                <DoubleTransition Property="Height" Duration="0:0:0.6"/>
+              </Transitions>
+            </Border.Transitions>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+              <TextBlock VerticalAlignment="Center" FontSize="14" Text="¿Problemas para descargar?"/>
+              <TextBlock VerticalAlignment="Center" FontSize="14" Text="Haz click aquí"
+                         Foreground="DodgerBlue"
+                         TextDecorations="Underline"
+                         Cursor="Hand"
+                         PointerPressed="OpenGuideVDownload" />
+            </StackPanel>
+          </Border>
+          <!-- ===================================== -->
+          
           <!-- Título -->
           <TextBlock Text="{Binding L[VDownload.Title]}" 
-                     FontSize="30" 
+                     FontSize="30"
+                     Cursor="Hand"
                      HorizontalAlignment="Center" 
                      FontWeight="Bold"
                      PointerPressed="OpenGuideVDownload"/>
@@ -58,19 +83,20 @@
           </StackPanel>
 
           <!-- Entrada de URL -->
-          <StackPanel Spacing="8" HorizontalAlignment="Stretch" MaxWidth="600">
+          <StackPanel Spacing="2" HorizontalAlignment="Stretch" MaxWidth="600">
 
           <!-- Título con icono -->
           <StackPanel Orientation="Horizontal"
                       HorizontalAlignment="Center"
-                      Spacing="6">
+                      Spacing="6"
+                      Margin="0 20 0 10">
               <PathIcon Width="18"
                         Height="18"
+                        Classes="NoAccent"
                         Data="M15.9862 3.99944C15.8616 2.87472 14.9079 2 13.75 2H10.25C9.09205 2 8.13841 2.87472 8.01379 3.99944L6.25 4C5.00736 4 4 5.00736 4 6.25V19.75C4 20.9926 5.00736 22 6.25 22H10.9996C10.6634 21.5523 10.4005 21.0464 10.2289 20.5H6.25C5.83579 20.5 5.5 20.1642 5.5 19.75V6.25C5.5 5.83579 5.83579 5.5 6.25 5.5L8.37902 5.5002C8.78267 6.1031 9.46997 6.5 10.25 6.5H13.75C14.5284 6.5 15.2145 6.10471 15.6185 5.50391H17.5023V5.50002L17.75 5.5C18.1642 5.5 18.5 5.83579 18.5 6.25V14H20V6.25C20 5.00736 18.9926 4 17.75 4L15.9862 3.99944ZM10.25 3.5H13.75C14.1642 3.5 14.5 3.83579 14.5 4.25C14.5 4.66421 14.1642 5 13.75 5H10.25C9.83579 5 9.5 4.66421 9.5 4.25C9.5 3.83579 9.83579 3.5 10.25 3.5Z M19 15C21.2091 15 23 16.7909 23 19C23 21.1422 21.316 22.8911 19.1996 22.9951L19 23C18.5858 23 18.25 22.6642 18.25 22.25C18.25 21.8703 18.5322 21.5565 18.8982 21.5068L19 21.5C20.3807 21.5 21.5 20.3807 21.5 19C21.5 17.6745 20.4685 16.59 19.1644 16.5053L19 16.5C18.5858 16.5 18.25 16.1642 18.25 15.75C18.25 15.3703 18.5322 15.0565 18.8982 15.0068L19 15Z M15 15C15.4142 15 15.75 15.3358 15.75 15.75C15.75 16.1297 15.4678 16.4435 15.1018 16.4932L15 16.5C13.6193 16.5 12.5 17.6193 12.5 19C12.5 20.3255 13.5315 21.41 14.8356 21.4947L15 21.5C15.4142 21.5 15.75 21.8358 15.75 22.25C15.75 22.6297 15.4678 22.9435 15.1018 22.9932L15 23C12.7909 23 11 21.2091 11 19C11 16.8578 12.684 15.1089 14.8004 15.0049L15 15Z M15.25 18.25H18.75C19.1642 18.25 19.5 18.5858 19.5 19C19.5 19.3797 19.2178 19.6935 18.8518 19.7432L18.75 19.75H15.25C14.8358 19.75 14.5 19.4142 14.5 19C14.5 18.6203 14.7822 18.3065 15.1482 18.2568L15.25 18.25Z"/>
 
-              <TextBlock Text="Pegar URL de video"
-                         FontSize="14"
-                         FontWeight="SemiBold"/>
+              <TextBlock Text="{Binding L[VDownload.Fields.PasteVideo]}"
+                         FontSize="14"/>
           </StackPanel>
 
 
@@ -82,18 +108,32 @@
                        HorizontalAlignment="Stretch"/>
 
               <Button Grid.Column="1"
-                      Content="➕ Agregar"
                       Command="{Binding AddUrlCommand}"
                       CommandParameter="{Binding UrlText}"
-                      Width="100"/>
+                      Margin="10 0 0 0"
+                      Width="100"
+                      Classes="Accented">
+
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <PathIcon Width="16" Height="16"
+                            Data="M3 5.25C3 4.00736 4.00736 3 5.25 3H18.75C19.9926 3 21 4.00736 21 5.25V12.0218C20.5368 11.7253 20.0335 11.4858 19.5 11.3135V5.25C19.5 4.83579 19.1642 4.5 18.75 4.5H5.25C4.83579 4.5 4.5 4.83579 4.5 5.25V18.75C4.5 19.1642 4.83579 19.5 5.25 19.5H11.3135C11.4858 20.0335 11.7253 20.5368 12.0218 21H5.25C4.00736 21 3 19.9926 3 18.75V5.25Z M10.7803 7.71967C11.0732 8.01256 11.0732 8.48744 10.7803 8.78033L8.78033 10.7803C8.48744 11.0732 8.01256 11.0732 7.71967 10.7803L6.71967 9.78033C6.42678 9.48744 6.42678 9.01256 6.71967 8.71967C7.01256 8.42678 7.48744 8.42678 7.78033 8.71967L8.25 9.18934L9.71967 7.71967C10.0126 7.42678 10.4874 7.42678 10.7803 7.71967Z M10.7803 13.2197C11.0732 13.5126 11.0732 13.9874 10.7803 14.2803L8.78033 16.2803C8.48744 16.5732 8.01256 16.5732 7.71967 16.2803L6.71967 15.2803C6.42678 14.9874 6.42678 14.5126 6.71967 14.2197C7.01256 13.9268 7.48744 13.9268 7.78033 14.2197L8.25 14.6893L9.71967 13.2197C10.0126 12.9268 10.4874 12.9268 10.7803 13.2197Z M17.5 12C20.5376 12 23 14.4624 23 17.5C23 20.5376 20.5376 23 17.5 23C14.4624 23 12 20.5376 12 17.5C12 14.4624 14.4624 12 17.5 12ZM18.0011 20.5035L18.0006 18H20.503C20.7792 18 21.003 17.7762 21.003 17.5C21.003 17.2239 20.7792 17 20.503 17H18.0005L18 14.4993C18 14.2231 17.7761 13.9993 17.5 13.9993C17.2239 13.9993 17 14.2231 17 14.4993L17.0005 17H14.4961C14.22 17 13.9961 17.2239 13.9961 17.5C13.9961 17.7762 14.22 18 14.4961 18H17.0006L17.0011 20.5035C17.0011 20.7797 17.225 21.0035 17.5011 21.0035C17.7773 21.0035 18.0011 20.7797 18.0011 20.5035Z M13.25 8.5C12.8358 8.5 12.5 8.83579 12.5 9.25C12.5 9.66421 12.8358 10 13.25 10H16.75C17.1642 10 17.5 9.66421 17.5 9.25C17.5 8.83579 17.1642 8.5 16.75 8.5H13.25Z"/>
+                  <TextBlock Text="{Binding L[VDownload.Buttons.Add]}" FontWeight="SemiBold"/> 
+                </StackPanel>
+
+              </Button>
+            
           </Grid>
 
           <!-- Contador -->
-          <TextBlock Text="{Binding VideoCount, StringFormat='Videos en cola: {0}'}"
-                     FontSize="12"
+          <TextBlock FontSize="12"
                      Opacity="0.8"
                      HorizontalAlignment="Center"
-                     Margin="0,4,0,0"/>
+                     Margin="0,25,0,0">
+            <Run Text="{Binding L[VDownload.Fields.Queue]}" />
+            <Run Text=":" />
+            <Run Text="{Binding VideoCount}" />
+          </TextBlock>
+          
       </StackPanel>
 
 
@@ -101,138 +141,145 @@
           <Border BorderBrush="{DynamicResource BorderBrushPrimary}"
                   BorderThickness="1"
                   CornerRadius="8"
-                  Margin="0,10,0,0"
+                  Margin="0,0,0,0"
                   MinHeight="50"
-                  MaxHeight="400"
+                  MaxHeight="150"
                   MaxWidth="700">
 
             <ListBox ItemsSource="{Binding Videos}"
-                     x:Name="VideoListBox"
-                     Background="Transparent"
-                     BorderThickness="0"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+             x:Name="VideoListBox"
+             SelectedItem="{Binding SelectedVideo}"
+             Background="Transparent"
+             BorderThickness="0"
+             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
               <ListBox.ItemTemplate>
                 <DataTemplate DataType="models:VideoDownloadItem">
-                  <Border Padding="10"
-                          CornerRadius="6"
-                          BorderBrush="#333"
-                          BorderThickness="1"
-                          Margin="4"
-                          MaxWidth="600">
-
-                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="80,*,Auto">
-                      
-                      <!-- Thumbnail -->
-                      <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
-                              Width="70" Height="50"
-                              CornerRadius="4"
-                              ClipToBounds="True"
-                              Background="#222"
-                              Margin="0,0,10,0">
-  
-                        <Panel>
-                          <!-- Thumbnail Image -->
-                          <Image Source="{Binding ThumbnailBitmap}"
-                                 Stretch="UniformToFill"
-                                 IsVisible="{Binding ThumbnailBitmap, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-    
-                          <!-- Loading Indicator -->
-                          <TextBlock Text="⏳"
-                                     FontSize="20"
-                                     HorizontalAlignment="Center"
-                                     VerticalAlignment="Center"
-                                     IsVisible="{Binding IsLoading}"/>
-    
-                          <!-- Error Indicator -->
-                          <TextBlock Text="❌"
-                                     FontSize="20"
-                                     HorizontalAlignment="Center"
-                                     VerticalAlignment="Center"
-                                     IsVisible="{Binding HasError}"/>
-                        </Panel>
-  
-                      </Border>
-
-                      <!-- Título y detalles -->
-                      <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
-                        <TextBlock Text="{Binding Title}"
-                                   FontWeight="SemiBold"
-                                   FontSize="13"
-                                   TextTrimming="CharacterEllipsis"
-                                   MaxLines="1"
-                                   ToolTip.Tip="{Binding Title}"/>
+                    <Border Padding="10"
+                            CornerRadius="6"
+                            BorderBrush="#333"
+                            BorderThickness="1"
+                            Margin="4"
+                            MaxWidth="600">
                         
-                        <StackPanel Orientation="Horizontal" Spacing="10" Opacity="0.7">
-                          <TextBlock Text="{Binding Duration, StringFormat='⏱️ {0}'}"
-                                     FontSize="11"
-                                     IsVisible="{Binding Duration, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-                          <TextBlock Text="{Binding FileSizeFormatted, StringFormat='💾 {0}'}"
-                                     FontSize="11"
-                                     IsVisible="{Binding FileSize, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-                        </StackPanel>
-                      </StackPanel>
+                        <Panel>
+                            <!-- Contenido principal -->
+                            <Grid RowDefinitions="Auto,Auto,Auto">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="*" MaxWidth="400"/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
+                                  
+                                <!-- Thumbnail -->
+                                <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
+                                        Width="90" Height="70"
+                                        CornerRadius="4"
+                                        ClipToBounds="True"
+                                        Background="#222"
+                                        Margin="4,0,15,0">
 
-                      <!-- Selector de calidad -->
-                      <ComboBox Grid.Row="1" Grid.Column="1"
-                                ItemsSource="{Binding AvailableFormats}"
-                                SelectedItem="{Binding SelectedFormat}"
-                                Margin="0,4,0,0"
-                                HorizontalAlignment="Left"
-                                IsVisible="{Binding !IsLoading}">
-                        <ComboBox.ItemTemplate>
-                          <DataTemplate DataType="models:VideoFormat">
-                            <TextBlock Text="{Binding DisplayName}"/>
-                          </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                      </ComboBox>
+                                    <Panel>
+                                        <Image Source="{Binding ThumbnailBitmap}"
+                                               Stretch="UniformToFill"
+                                               IsVisible="{Binding ThumbnailBitmap, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 
-                      <!-- Barra de progreso individual -->
-                      <ProgressBar Grid.Row="2" Grid.Column="1"
-                                   Value="{Binding Progress}"
-                                   Height="4"
-                                   Margin="0,6,0,0"
-                                   IsVisible="{Binding IsDownloading}"
-                                   Foreground="{DynamicResource AccentBrush}"/>
-                      
-                      <!-- Estado -->
-                      <TextBlock Grid.Row="2" Grid.Column="1"
-                                 Text="{Binding Status}"
-                                 FontSize="10"
-                                 Opacity="0.7"
-                                 Margin="0,6,0,0"
-                                 IsVisible="{Binding Status, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                                        <PathIcon Width="20" Height="20"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  IsVisible="{Binding IsLoading}"
+                                                  Data="M4,2 L20,2 L20,4 L18,4 L14,10 L14,14 L18,20 L20,20 L20,22 L4,22 L4,20 L6,20 L10,14 L10,10 L6,4 L4,4 Z M8,6 L16,6 L12,10 Z M8,18 L16,18 L15,16 L9,16 Z M11,10 L13,10 L13,14 L11,14 Z M11.5,11 C11.7,11 11.8,11.2 11.8,11.4 C11.8,11.6 11.7,11.8 11.5,11.8 C11.3,11.8 11.2,11.6 11.2,11.4 C11.2,11.2 11.3,11 11.5,11 Z M12,12.5 C12.2,12.5 12.3,12.7 12.3,12.9 C12.3,13.1 12.2,13.3 12,13.3 C11.8,13.3 11.7,13.1 11.7,12.9 C11.7,12.7 11.8,12.5 12,12.5 Z" />
 
-                      <!-- Botón eliminar -->
-                      <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
-                              Width="32"
-                              Height="32"
-                              Padding="0"
-                              Content="✕"
-                              FontSize="16"
-                              VerticalAlignment="Center"
-                              VerticalContentAlignment="Center"
-                              HorizontalContentAlignment="Center"
-                              Background="#b22b2b"
-                              Foreground="White"
-                              BorderThickness="0"
-                              CornerRadius="4"
-                              Command="{Binding #Root.((vm:Herramienta5ViewModel)DataContext).RemoveUrlCommand}"
-                              CommandParameter="{Binding}"
-                              IsEnabled="{Binding !IsDownloading}">
-                        <Button.Styles>
-                          <Style Selector="Button:pointerover /template/ Border">
-                            <Setter Property="Background" Value="#d43b3b"/>
-                          </Style>
-                        </Button.Styles>
-                      </Button>
+                                        <PathIcon Width="20" Height="20"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  IsVisible="{Binding HasError}"
+                                                  Data="M12,2 C17.523,2 22,6.478 22,12 C22,17.522 17.523,22 12,22 C6.477,22 2,17.522 2,12 C2,6.478 6.477,2 12,2 Z M12,3.667 C7.405,3.667 3.667,7.405 3.667,12 C3.667,16.595 7.405,20.333 12,20.333 C16.595,20.333 20.333,16.595 20.333,12 C20.333,7.405 16.595,3.667 12,3.667 Z M11.9986626,14.5022358 C12.5502088,14.5022358 12.9973253,14.9493523 12.9973253,15.5008984 C12.9973253,16.0524446 12.5502088,16.4995611 11.9986626,16.4995611 C11.4471165,16.4995611 11,16.0524446 11,15.5008984 C11,14.9493523 11.4471165,14.5022358 11.9986626,14.5022358 Z M11.9944624,7 C12.3741581,6.99969679 12.6881788,7.28159963 12.7381342,7.64763535 L12.745062,7.7494004 L12.7486629,12.2509944 C12.7489937,12.6652079 12.4134759,13.0012627 11.9992625,13.0015945 C11.6195668,13.0018977 11.3055461,12.7199949 11.2555909,12.3539592 L11.2486629,12.2521941 L11.245062,7.7506001 C11.2447312,7.33638667 11.580249,7.00033178 11.9944624,7 Z" />
+                                    </Panel>
+                                </Border>
 
-                    </Grid>
+                                <!-- Título y detalles -->
+                                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                                    <TextBlock Text="{Binding Title}"
+                                               FontWeight="SemiBold"
+                                               FontSize="13"
+                                               TextTrimming="CharacterEllipsis"
+                                               MaxLines="1"
+                                               ToolTip.Tip="{Binding Title}"/>
+                                    
+                                    <StackPanel Orientation="Horizontal" Spacing="10" Opacity="0.7">
+                                        <!-- Duración -->
+                                        <StackPanel Orientation="Horizontal" Spacing="4"
+                                                    IsVisible="{Binding Duration, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                                            <PathIcon Width="12" Height="12" Classes="NoAccent" Data="M24,5 C34.4934102,5 43,13.5065898 43,24 C43,34.4934102 34.4934102,43 24,43 C13.5065898,43 5,34.4934102 5,24 C5,13.5065898 13.5065898,5 24,5 Z M24,7.5 C14.8873016,7.5 7.5,14.8873016 7.5,24 C7.5,33.1126984 14.8873016,40.5 24,40.5 C33.1126984,40.5 40.5,33.1126984 40.5,24 C40.5,14.8873016 33.1126984,7.5 24,7.5 Z M22.75,12 C23.3972087,12 23.9295339,12.4918747 23.9935464,13.1221948 L24,13.25 L24,24 L30.75,24 C31.4403559,24 32,24.5596441 32,25.25 C32,25.8972087 31.5081253,26.4295339 30.8778052,26.4935464 L30.75,26.5 L22.75,26.5 C22.1027913,26.5 21.5704661,26.0081253 21.5064536,25.3778052 L21.5,25.25 L21.5,13.25 C21.5,12.5596441 22.0596441,12 22.75,12 Z"/>
+                                            <TextBlock Text="{Binding Duration}" FontSize="11"/>
+                                        </StackPanel>
 
-                  </Border>
+                                        <!-- Tamaño -->
+                                        <StackPanel Orientation="Horizontal" Spacing="4"
+                                                    IsVisible="{Binding FileSize, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                            <PathIcon Width="12" Height="12" Classes="NoAccent" Data="M3 5.75C3 4.23122 4.23122 3 5.75 3H15.7145C16.5764 3 17.4031 3.34241 18.0126 3.9519L20.0481 5.98744C20.6576 6.59693 21 7.42358 21 8.28553V18.25C21 19.7688 19.7688 21 18.25 21H5.75C4.23122 21 3 19.7688 3 18.25V5.75ZM5.75 4.5C5.05964 4.5 4.5 5.05964 4.5 5.75V18.25C4.5 18.9404 5.05964 19.5 5.75 19.5H6V14.25C6 13.0074 7.00736 12 8.25 12H15.75C16.9926 12 18 13.0074 18 14.25V19.5H18.25C18.9404 19.5 19.5 18.9404 19.5 18.25V8.28553C19.5 7.8214 19.3156 7.37629 18.9874 7.0481L16.9519 5.01256C16.6918 4.75246 16.3582 4.58269 16 4.52344V7.25C16 8.49264 14.9926 9.5 13.75 9.5H9.25C8.00736 9.5 7 8.49264 7 7.25V4.5H5.75ZM16.5 19.5V14.25C16.5 13.8358 16.1642 13.5 15.75 13.5H8.25C7.83579 13.5 7.5 13.8358 7.5 14.25V19.5H16.5ZM8.5 4.5V7.25C8.5 7.66421 8.83579 8 9.25 8H13.75C14.1642 8 14.5 7.66421 14.5 7.25V4.5H8.5Z"/>
+                                            <TextBlock Text="{Binding FileSizeFormatted}" FontSize="11"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- Selector de calidad -->
+                                <ComboBox Grid.Row="1" Grid.Column="1"
+                                          ItemsSource="{Binding AvailableFormats}"
+                                          SelectedItem="{Binding SelectedFormat, Mode=TwoWay}"
+                                          Margin="0,4,0,0"
+                                          HorizontalAlignment="Left"
+                                          IsVisible="{Binding !IsLoading}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate DataType="models:VideoFormat">
+                                            <TextBlock Text="{Binding DisplayName}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+
+                                <!-- Progreso -->
+                                <ProgressBar Grid.Row="2" Grid.Column="1"
+                                             Value="{Binding Progress}"
+                                             Height="4"
+                                             Margin="0,6,0,0"
+                                             IsVisible="{Binding IsDownloading}"
+                                             Foreground="{DynamicResource AccentBrush}"/>
+
+                                <!-- Estado -->
+                                <TextBlock Grid.Row="2" Grid.Column="1"
+                                           Text="{Binding Status}"
+                                           FontSize="10"
+                                           Opacity="0.7"
+                                           Margin="0,6,0,0"
+                                           IsVisible="{Binding Status, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+                            </Grid>
+
+                            <!-- Botón eliminar (posición absoluta) -->
+                            <Button Width="24"
+                                    Height="24"
+                                    Padding="0"
+                                    Content="X"
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    VerticalAlignment="Top"
+                                    HorizontalAlignment="Right"
+                                    VerticalContentAlignment="Center"
+                                    HorizontalContentAlignment="Center"
+                                    Background="#b22b2b"
+                                    Foreground="White"
+                                    Classes="RedAccented"
+                                    BorderThickness="0"
+                                    CornerRadius="4"
+                                    Command="{Binding #Root.((vm:Herramienta5ViewModel)DataContext).RemoveUrlCommand}"
+                                    CommandParameter="{Binding}"
+                                    IsEnabled="{Binding !IsDownloading}">
+                            </Button>
+                        </Panel>
+                    </Border>
                 </DataTemplate>
               </ListBox.ItemTemplate>
-
             </ListBox>
           </Border>
 
@@ -243,12 +290,29 @@
               <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
-            <TextBlock Grid.Row="0" 
-                       FontSize="10" 
-                       IsVisible="{Binding ShouldShowRemainingTime}" 
-                       Text="{Binding RemainingTime, StringFormat='⏱️ Tiempo restante: {0}'}"
-                       HorizontalAlignment="Center" 
-                       Margin="0,0,0,4"/>
+            <StackPanel Grid.Row="0"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,0,4"
+                        IsVisible="{Binding ShouldShowRemainingTime}"
+                        Spacing="6"
+                        VerticalAlignment="Center">
+
+              <!-- ICONO: Path (asegurate de ajustar el Data a tu icono preferido) -->
+              <Path Width="14"
+                    Height="14"
+                    Stretch="Uniform"
+                    VerticalAlignment="Center"
+                    Data="M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 1 1 0-16zm-.5 4v4.25l3.5 2.1-.75 1.23L11 13V8h1z"
+                    Fill="{DynamicResource AccentBrush}" />
+
+              <!-- TEXTO: Run para la cadena localizada + Run para el tiempo -->
+              <TextBlock FontSize="10" VerticalAlignment="Center">
+                <Run Text="{Binding L[VDownload.Fields.Remaining]}" />
+                <Run Text=":" />
+                <Run Text="{Binding RemainingTime}" />
+              </TextBlock>
+            </StackPanel>
             
             <ProgressBar Grid.Row="1" 
                          Minimum="0" 

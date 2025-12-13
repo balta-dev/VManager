@@ -30,7 +30,8 @@
 
         <!-- Título -->
         <TextBlock Text="{Binding L[VAudiofy.Title]}" 
-                   FontSize="30" 
+                   FontSize="30"
+                   Cursor="Hand"
                    HorizontalAlignment="Center" 
                    FontWeight="Bold"
                    PointerPressed="OpenGuideVAudiofy"/>
@@ -69,12 +70,13 @@
         <StackPanel Spacing="6" HorizontalAlignment="Stretch">
           <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
             <TextBlock Text="{Binding L[VAudiofy.Fields.SelectVideo]}" 
-                       FontSize="14" 
+                       FontSize="14"
                        VerticalAlignment="Center"/>
         
             <Button Command="{Binding BrowseCommand}" 
                     HotKey="B" 
                     Width="100"
+                    Classes="Accented"
                     HorizontalAlignment="Center">
               <Button.Content>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="6">
@@ -84,7 +86,7 @@
                             Height="16"
                             VerticalAlignment="Center"/>
                   <!-- Texto enlazado -->
-                  <TextBlock Text="{Binding L[VAudiofy.Buttons.Browse]}" 
+                  <TextBlock Text="{Binding L[VAudiofy.Buttons.Browse]}" FontWeight="SemiBold"
                              VerticalAlignment="Center"/>
                 </StackPanel>
               </Button.Content>
@@ -109,11 +111,11 @@
           <Button x:Name="QuestionMark" Content="?" Width="30" FontWeight="Bold">
             <ToolTip.Tip>
               <TextBlock MaxWidth="400" TextWrapping="Wrap">
-                <Run Text="Selecciona el formato de salida del audio."/>
+                <Run Text="{Binding L[VAudiofy.Tips.FormatSelection]}"/>
                 <LineBreak/><LineBreak/>
-                <Run Text="Nota: Si estás dudando para .ogg: Opus es más nuevo y eficiente, Vorbis es de legado. "/>
+                <Run Text="{Binding L[VAudiofy.Tips.FormatNote1]}"/>
                 <LineBreak/>
-                <Run Text="WAV está ordenado por orden de probabilidad de necesidad. Es recomendable la primera opción si no sabés cual elegir."/>
+                <Run Text="{Binding L[VAudiofy.Tips.FormatNote2]}"/>
               </TextBlock>
             </ToolTip.Tip>
           </Button>
@@ -177,7 +179,7 @@
                             
             <!-- Hover -->
             <Style Selector="ToggleButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-              <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+              <Setter Property="Background" Value="{DynamicResource AccentBrushLight}" />
               <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
             </Style>
 
@@ -192,7 +194,13 @@
               <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
               <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
             </Style>
+            <Style Selector="ToggleButton:checked:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+              <Setter Property="Background" Value="{DynamicResource AccentBrushLight}" />
+              <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
+            </Style>
+            
           </ToggleButton.Styles>
+          
         </ToggleButton>
 
       </StackPanel>

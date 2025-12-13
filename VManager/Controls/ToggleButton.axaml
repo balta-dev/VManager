@@ -111,6 +111,13 @@
     </Style>
 
     <!--- AccentBrush para el Background. El contrario para el font -->
+    
+    <Style Selector="^:pressed:not(:checked) /template/ ContentPresenter#PART_ContentPresenter">
+        
+        <Setter Property="BorderBrush" Value="{DynamicResource ToggleButtonBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
+    </Style>  
+    
     <Style Selector="^:checked">
       <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource AccentBrush}" /> 
@@ -119,13 +126,13 @@
       </Style>
 
       <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource ToggleButtonBackgroundCheckedPointerOver}" />
+        <Setter Property="Background" Value="{DynamicResource AccentBrushLight}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ToggleButtonBorderBrushCheckedPointerOver}" />
         <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
       </Style>
 
       <Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource ToggleButtonBackgroundChecked}" />
+        <Setter Property="Background" Value="{DynamicResource AccentBrushDark}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ToggleButtonBorderBrushChecked}" />
         <Setter Property="Foreground" Value="{DynamicResource ToggleButtonForegroundChecked}" />
       </Style>

@@ -52,6 +52,7 @@ namespace VManager.ViewModels
         private async Task BrowseSingleVideo()
         {
             TopLevel? topLevel = null;
+
             if (App.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop &&
                 desktop.MainWindow != null)
             {
@@ -60,12 +61,12 @@ namespace VManager.ViewModels
 
             if (topLevel == null)
             {
-                Status = "No se pudo acceder a la ventana principal.";
+                Status = L["VCut.Fields.NoMainWindow"];
                 this.RaisePropertyChanged(nameof(Status));
                 return;
             }
 
-            var videoPatterns = new[] { "*.mp4", "*.mkv", "*.avi", "*.mov", "*.webm", "*.wmv", "*.flv", "*.3gp"};
+            var videoPatterns = new[] { "*.mp4", "*.mkv", "*.avi", "*.mov", "*.webm", "*.wmv", "*.flv", "*.3gp" };
 
             var filters = new List<FilePickerFileType>
             {
@@ -74,9 +75,9 @@ namespace VManager.ViewModels
 
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                Title = "Seleccionar video",
+                Title = L["VCut.Fields.BrowseTitle"],
                 FileTypeFilter = filters,
-                AllowMultiple = false //este método existe solo por esto
+                AllowMultiple = false
             });
 
             if (files.Count > 0)
@@ -161,56 +162,53 @@ namespace VManager.ViewModels
             if (!TryParseTime(TiempoDesde, out TimeSpan start))
             {
                 _ = SoundManager.Play("fail.wav");
-                Status = "Tiempo 'desde' inválido";
-                this.RaisePropertyChanged(nameof(Status));
+                Status = L["VCut.Fields.InvalidFrom"];
                 TiempoDesde = "";
+                this.RaisePropertyChanged(nameof(Status));
                 this.RaisePropertyChanged(nameof(TiempoDesde));
                 return;
             }
 
-            // Obtener información del video primero para conocer su duración
-            Status = "Obteniendo información del video...";
+            Status = L["VCut.Fields.ObtainingInfo"];
             this.RaisePropertyChanged(nameof(Status));
-            
+
             var processor = new VideoProcessor();
             var analysisResult = await processor.AnalyzeVideoAsync(VideoPath);
-            
+
             if (!analysisResult.Success)
             {
                 _ = SoundManager.Play("fail.wav");
-                Status = analysisResult.Message;
+                Status = string.Format(L["VCut.Fields.Error"], analysisResult.Message);
                 this.RaisePropertyChanged(nameof(Status));
                 return;
             }
-            
+
             var mediaInfo = analysisResult.Result!;
             double totalDuration = mediaInfo.Duration.TotalSeconds;
 
             TimeSpan duration;
-            
-            // Si TiempoHasta está vacío, usar hasta el final del video
+
             if (string.IsNullOrWhiteSpace(TiempoHasta))
             {
                 duration = TimeSpan.FromSeconds(totalDuration - start.TotalSeconds);
-                duration += TimeSpan.FromSeconds(1); // PARA TRIGGEREAR LA ADVERTENCIA DE REDIMENSIÓN AL CUTASYNC
-                
+                duration += TimeSpan.FromSeconds(1);
+
                 if (duration <= TimeSpan.Zero)
                 {
                     _ = SoundManager.Play("fail.wav");
-                    Status = "El tiempo 'desde' excede la duración del video";
+                    Status = L["VCut.Fields.ExceedsLength"];
                     this.RaisePropertyChanged(nameof(Status));
                     return;
                 }
             }
             else
             {
-                // Si TiempoHasta tiene valor, parsearlo y validar
                 if (!TryParseTime(TiempoHasta, out TimeSpan end))
                 {
                     _ = SoundManager.Play("fail.wav");
-                    Status = "Tiempo 'hasta' inválido";
-                    this.RaisePropertyChanged(nameof(Status));
+                    Status = L["VCut.Fields.InvalidTo"];
                     TiempoHasta = "";
+                    this.RaisePropertyChanged(nameof(Status));
                     this.RaisePropertyChanged(nameof(TiempoHasta));
                     return;
                 }
@@ -218,7 +216,7 @@ namespace VManager.ViewModels
                 if (end <= start)
                 {
                     _ = SoundManager.Play("fail.wav");
-                    Status = "Tiempo 'hasta' debe ser mayor que tiempo 'desde'";
+                    Status = L["VCut.Fields.EndBeforeStart"];
                     this.RaisePropertyChanged(nameof(Status));
                     return;
                 }
@@ -236,9 +234,10 @@ namespace VManager.ViewModels
                     this.RaisePropertyChanged(nameof(RemainingTime));
                 });
 
-                Status = "Cortando...";
+                Status = L["VCut.Fields.Cutting"];
                 IsConverting = true;
                 IsOperationRunning = true;
+
                 this.RaisePropertyChanged(nameof(Status));
                 this.RaisePropertyChanged(nameof(IsConverting));
                 this.RaisePropertyChanged(nameof(IsOperationRunning));
@@ -249,20 +248,25 @@ namespace VManager.ViewModels
                     start,
                     duration,
                     progress,
-                    _cts.Token 
+                    _cts.Token
                 );
 
                 if (result.Success)
                 {
-                    Notifier _notifier = new Notifier();
-                    _notifier.ShowFileConvertedNotification(result.Message, result.OutputPath);
-                    
+                    Notifier notifier = new Notifier();
+                    notifier.ShowFileConvertedNotification(
+                        string.Format(L["VCut.Fields.NotificationMessage"], result.Message),
+                        result.OutputPath
+                    );
+
                     _ = SoundManager.Play("success.wav");
                     SetLastCompressedFile(result.OutputPath);
-                    Status = result.Message;
+
+                    Status = string.Format(L["VCut.Fields.Completed"], result.Message);
                     Warning = result.Warning;
                     Progress = 100;
-                    OutputPath = "Archivo: " + result.OutputPath;
+                    OutputPath = string.Format(L["VCut.Fields.OutputLabel"], result.OutputPath);
+
                     this.RaisePropertyChanged(nameof(Status));
                     this.RaisePropertyChanged(nameof(Progress));
                     this.RaisePropertyChanged(nameof(OutputPath));
@@ -271,8 +275,9 @@ namespace VManager.ViewModels
                 else
                 {
                     _ = SoundManager.Play("fail.wav");
-                    Status = result.Message;
+                    Status = string.Format(L["VCut.Fields.Error"], result.Message);
                     Progress = 0;
+
                     this.RaisePropertyChanged(nameof(Status));
                     this.RaisePropertyChanged(nameof(Progress));
                 }
@@ -280,8 +285,9 @@ namespace VManager.ViewModels
             catch (OperationCanceledException)
             {
                 await SoundManager.Play("fail.wav");
-                Status = "Corte cancelado por el usuario.";
+                Status = L["VCut.Fields.CutCanceled"];
                 Progress = 0;
+
                 this.RaisePropertyChanged(nameof(Status));
                 this.RaisePropertyChanged(nameof(Progress));
             }
