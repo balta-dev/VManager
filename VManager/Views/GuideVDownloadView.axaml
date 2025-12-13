@@ -108,16 +108,36 @@
         </StackPanel>
 
         <!-- Linux / macOS -->
-        <StackPanel Spacing="8"
-                    IsVisible="{Binding IsLinuxMac}">
+        <!-- Linux / macOS -->
+        <StackPanel IsVisible="{Binding IsLinuxMac}" Spacing="8">
 
             <TextBlock Text="Linux / macOS"
                        FontSize="16"
                        FontWeight="SemiBold"/>
 
-            <TextBlock Text="{Binding L[Guide.VDownload.osInstructions.linuxMac.description]}"
-                       FontSize="14"
-                       TextWrapping="Wrap"/>
+            <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="{Binding L[Guide.VDownload.osInstructions.linuxMac.description]}"
+                           FontSize="14"
+                           TextWrapping="Wrap"/>
+
+                <TextBlock Text="{Binding L[Guide.VDownload.osInstructions.linuxMac.suggestion]}"
+                           FontSize="14"
+                           TextWrapping="Wrap"/>
+                
+                <TextBlock Text=" "
+                           FontSize="14"/>
+
+                <TextBlock Text="Get cookies.txt LOCALLY"
+                           FontSize="14"
+                           Foreground="DodgerBlue"
+                           FontWeight="Bold"
+                           Cursor="Hand"
+                           PointerPressed="OpenChromeCookies"/>
+
+                <TextBlock Text="."
+                           FontSize="14"/>
+            </WrapPanel>
+
         </StackPanel>
 
         <!-- Limitations -->
@@ -134,6 +154,7 @@
                        FontSize="14"
                        TextWrapping="Wrap"/>
         </StackPanel>
-
+        
     </StackPanel>
+        
 </UserControl>

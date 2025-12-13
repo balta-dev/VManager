@@ -210,6 +210,10 @@
       "PasteVideo": "Pegar URL de vídeo",
       "Queue":"Vídeos en cola",
       "Remaining": "Tiempo restante"
+    },
+    "Popup": {
+      "Problem?": "¿Problemas para descargar?",
+      "ClickHere": "Haz click aquí"
     }
   },
   "Configuration": {
@@ -296,7 +300,7 @@
         "youtube": {
           "problem": "Restricción de edad o alto tráfico",
           "description": "YouTube activa un mecanismo anti-bot que requiere iniciar sesión, además navegadores como Edge y Chrome encriptan las cookies.",
-          "solution": "Es necesario utilizar cookies del navegador con una sesión activa para que VDownload pueda obtener la información del video."
+          "solution": "Es necesario utilizar cookies del navegador con una sesión activa para que VDownload pueda obtener la información del video. Diríjase a Configuración para configurarlo."
         }
       },
       "osInstructions": {
@@ -310,7 +314,8 @@
           "otherBrowsers": "Probablemente cualquier otro navegador (excepto Firefox) es compatible con extensiones de Chrome y requiere su uso."
         },
         "linuxMac": {
-          "description": "No hay problemas conocidos, aunque se recomienda usar un archivo de cookies para acelerar el proceso."
+          "description": "No hay problemas conocidos, aunque se recomienda usar un archivo de cookies para acelerar el proceso.",
+          "suggestion": "Puede instalar la extensión"
         }
       },
       "limitations": {

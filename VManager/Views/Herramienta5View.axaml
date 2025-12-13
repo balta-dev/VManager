@@ -45,11 +45,12 @@
             <Border.Transitions>
               <Transitions>
                 <DoubleTransition Property="Height" Duration="0:0:0.6"/>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.25"/>
               </Transitions>
             </Border.Transitions>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-              <TextBlock VerticalAlignment="Center" FontSize="14" Text="¿Problemas para descargar?"/>
-              <TextBlock VerticalAlignment="Center" FontSize="14" Text="Haz click aquí"
+              <TextBlock VerticalAlignment="Center" FontSize="14" Text="{Binding L[VDownload.Popup.Problem?]}"/>
+              <TextBlock VerticalAlignment="Center" FontSize="14" Text="{Binding L[VDownload.Popup.ClickHere]}"
                          Foreground="DodgerBlue"
                          TextDecorations="Underline"
                          Cursor="Hand"
