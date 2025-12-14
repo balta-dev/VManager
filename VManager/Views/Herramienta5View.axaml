@@ -24,7 +24,7 @@
             BorderThickness="2" 
             CornerRadius="10" 
             Padding="0" 
-            Margin="0,10,20,0"
+            Margin="0,20,20,0"
             Background="{DynamicResource PanelBackgroundBrush}"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
@@ -112,7 +112,6 @@
                       Command="{Binding AddUrlCommand}"
                       CommandParameter="{Binding UrlText}"
                       Margin="10 0 0 0"
-                      Width="100"
                       Classes="Accented">
 
                 <StackPanel Orientation="Horizontal" Spacing="6">
@@ -268,10 +267,8 @@
                                     HorizontalAlignment="Right"
                                     VerticalContentAlignment="Center"
                                     HorizontalContentAlignment="Center"
-                                    Background="#b22b2b"
-                                    Foreground="White"
                                     Classes="RedAccented"
-                                    BorderThickness="0"
+                                    BorderThickness="1"
                                     CornerRadius="4"
                                     Command="{Binding #Root.((vm:Herramienta5ViewModel)DataContext).RemoveUrlCommand}"
                                     CommandParameter="{Binding}"
@@ -347,6 +344,7 @@
                     HorizontalContentAlignment="Center"
                     IsEnabled="{Binding IsConverting}"
                     FontSize="12"
+                    Margin="0 -7 0 0"
                     Command="{Binding ShowCancelDialogCommand}"
                     Classes="RedAccented"
                     HotKey="Escape"
@@ -378,6 +376,9 @@
             </ToggleButton.Styles>
           </ToggleButton>
 
+          <StackPanel Height="40">
+          </StackPanel>
+          
         </StackPanel>
       </ScrollViewer>
     </Border>

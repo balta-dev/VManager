@@ -108,7 +108,6 @@
         </StackPanel>
 
         <!-- Linux / macOS -->
-        <!-- Linux / macOS -->
         <StackPanel IsVisible="{Binding IsLinuxMac}" Spacing="8">
 
             <TextBlock Text="Linux / macOS"

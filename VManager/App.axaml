@@ -149,6 +149,26 @@
             <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
         </Style>
         
+        <!-- ============================= -->
+        <!-- COMBOBOX -->
+        <!-- ============================= -->
+
+        <!-- ComboBoxItem Selected -->
+        <Style Selector="ComboBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource AccentBrushDark}" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
+        </Style>
+
+        <Style Selector="ComboBoxItem:selected:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource AccentBrushLight}" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
+        </Style>
+
+        <Style Selector="ComboBoxItem:selected:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource AccentBrushDark}" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
+        </Style>
+        
         <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
         
     </Application.Styles>

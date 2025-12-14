@@ -5,6 +5,16 @@
     "ShowHide": "Hide",
     "Refreshed": "Refreshed!",
     "Loading": "Loading...",
+    "WelcomePanel": {
+      "GuideInfo": "For detailed guides and more information about the app, click the",
+      "AboutButton": "About",
+      "InSidebar": "button in the sidebar.",
+      "QuickShortcuts": "Quick shortcuts:",
+      "PressText": "Press",
+      "ToSwitchTools": "to change the tool",
+      "OrText": "or",
+      "ForConfiguration": "to open settings."
+    },
     "Shortcuts": {
       "Title": "Shortcut List:",
       "Items": {
@@ -20,8 +30,10 @@
         "Item5Description": " Start operation",
         "Item6Title": "Esc:",
         "Item6Description": " Cancel operation",
-        "Item7Title": "O",
-        "Item7Description": " Hide or show names"
+        "Item7Title": "O:",
+        "Item7Description": " Hide or show names",
+        "Item8Title": "C:",
+        "Item8Description": " Open settings"
       }
     },
     "Border": {
@@ -33,9 +45,9 @@
         "Item2Description": " compresses videos, prioritizing your GPU.",
         "Item3Title": "VCONV:",
         "Item3Description": " converts between different video formats (e.g. MKV → MP4).",
-        "Item4Title": "VAUDIOFY",
+        "Item4Title": "VAUDIOFY:",
         "Item4Description": " turns your videos into audio or converts between audio formats.",
-        "Item5Title": "VDOWNLOAD",
+        "Item5Title": "VDOWNLOAD:",
         "Item5Description": " downloads videos from your favorite platforms."
       },
       "Title2": "How do I use it?",
@@ -47,7 +59,7 @@
     }
   },
   "Footer": {
-    "Title": "Created by Baltazar Franz ❤",
+    "Title": "Created by Baltazar Franz",
     "Version": "Version:",
     "Support": "This project is maintained by a single person, so if you'd like to contribute you can click the button below."
   },
@@ -81,11 +93,11 @@
       "NotificationMessage": "{0}"
     },
     "Tips": {
-      "FormatSelection": "  You can use seconds and/or traditional time format (hh:mm:ss).",
-      "ValidInput": "  As long as the times are valid, use whichever format you prefer.",
+      "FormatSelection": "You can use seconds and/or traditional time format (hh:mm:ss).",
+      "ValidInput": "As long as the times are valid, use whichever format you prefer.",
       "ExamplesTitle": "Usage examples:",
-      "ExampleTrim1": "  • Trim from 23 seconds to 2:01",
-      "ExampleTrim2": "  • Trim from 1:02:01 to 2:52:01",
+      "ExampleTrim1": "• Trim from 23 seconds to 2:01",
+      "ExampleTrim2": "• Trim from 1:02:01 to 2:52:01",
       "NoteDuration": "Note: trim duration is automatically recalculated if invalid or empty."
     }
   },
@@ -193,8 +205,8 @@
     },
     "Tips": {
       "FormatSelection": "Choose the output audio format.",
-      "FormatNote1": "Opus is newer and more efficient; Vorbis is legacy.",
-      "FormatNote2": "WAV formats are ordered by likelihood of use. Choose the first one if you're unsure."
+      "FormatNote1": "WAV formats are ordered by likelihood of use. Choose the first one if you're unsure.",
+      "FormatNote2": "Opus is newer and more efficient; Vorbis is legacy."
     }
   },
   "VDownload": {

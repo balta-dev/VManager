@@ -1,10 +1,20 @@
 {
   "General": {
     "WelcomeMessage": "¡Bienvenido a VManager!",
-    "AppDescription": "VManager es un kit de herramientas multifunción potente y sencillo de utilizar que te permite cortar, comprimir, y convertir formatos de vídeo.",
+    "AppDescription": "VManager es un kit de herramientas multifunción potente y sencillo de utilizar que te permite cortar, comprimir, y convertir formatos de video.",
     "ShowHide": "Ocultar",
     "Refreshed": "¡Actualizado!",
     "Loading": "Cargando...",
+    "WelcomePanel": {
+      "GuideInfo": "Para guías detalladas y más información de la aplicación, haz clic en el botón",
+      "AboutButton": "Acerca De",
+      "InSidebar": "en la barra lateral.",
+      "QuickShortcuts": "Atajos rápidos:",
+      "PressText": "Presioná",
+      "ToSwitchTools": "para cambiar de herramienta",
+      "OrText": "o",
+      "ForConfiguration": "para entrar a la configuración."
+    },
     "Shortcuts": {
       "Title": "Lista de Atajos:",
       "Items": {
@@ -13,41 +23,43 @@
         "Item2Title": "Botón F5:",
         "Item2Description": " Refrescar pantalla",
         "Item3Title": "B:",
-        "Item3Description": " Buscar vídeo",
+        "Item3Description": " Buscar video",
         "Item4Title": "T:",
         "Item4Description": " Cambiar tema oscuro/claro",
         "Item5Title": "Enter:",
         "Item5Description": " Comenzar operación",
         "Item6Title": "Esc:",
         "Item6Description": " Cancelar operación",
-        "Item7Title": "O",
-        "Item7Description": " Ocultar o mostrar nombres"
+        "Item7Title": "O:",
+        "Item7Description": " Ocultar o mostrar nombres",
+        "Item8Title": "C:",
+        "Item8Description": " Abrir configuraciones"
       }
     },
     "Border": {
       "Title1": "¿Qué ofrece este programa?",
       "Items1": {
         "Item1Title": "VCUT:",
-        "Item1Description": " recorta rápidamente vídeos.",
+        "Item1Description": " recorta rápidamente viideos.",
         "Item2Title": "VCOMPR:",
-        "Item2Description": " comprime vídeos, priorizando tu GPU.",
+        "Item2Description": " comprime videos, priorizando tu GPU.",
         "Item3Title": "VCONV:",
-        "Item3Description": " convierte entre distintos formatos de vídeo (ej. MKV → MP4).",
-        "Item4Title": "VAUDIOFY",
+        "Item3Description": " convierte entre distintos formatos de video (ej. MKV → MP4).",
+        "Item4Title": "VAUDIOFY:",
         "Item4Description": " transforma tus videos en audios o convierte entre formatos de audio.",
-        "Item5Title": "VDOWNLOAD",
+        "Item5Title": "VDOWNLOAD:",
         "Item5Description": " descarga tus videos de tus plataformas favoritas."
       },
       "Title2": "¿Cómo lo uso?",
       "Items2": {
         "Item1Description": "Selecciona una de las herramientas arriba a la izquierda utilizando el mouse o el atajo de teclado",
-        "Item2Description": "Arrastra el vídeo al recuadro o selecciónalo con el botón 'Buscar'",
-        "Item3Description": "¡Procesa el vídeo con el botón y listo!"
+        "Item2Description": "Arrastra el video al recuadro o selecciónalo con el botón 'Buscar'",
+        "Item3Description": "¡Procesa el video con el botón y listo!"
       }
     }
   },
   "Footer": {
-    "Title": "Creado por Baltazar Franz ❤",
+    "Title": "Creado por Baltazar Franz",
     "Version": "Versión:",
     "Support": "Este proyecto es mantenido por una única persona, así que si te gustaría contribuir al proyecto puedes darle al botón de abajo."
   },
@@ -56,7 +68,7 @@
     "Buttons": {
       "Refresh": "Refrescar",
       "Browse": "Buscar",
-      "Cut": "Cortar vídeo",
+      "Cut": "Cortar video",
       "Cancel": "CANCELAR",
       "ShowFileInFolder": "Mostrar archivo en carpeta"
     },
@@ -81,11 +93,11 @@
       "NotificationMessage": "{0}"
     },
     "Tips": {
-      "FormatSelection": "  Se acepta formato en segundos y/o tiempo tradicional (hh:mm:ss).",
-      "ValidInput": "  Siempre y cuando sean tiempos válidos, puedes utilizarlo como tú desees.",
+      "FormatSelection": "Se acepta formato en segundos y/o tiempo tradicional (hh:mm:ss).",
+      "ValidInput": "Siempre y cuando sean tiempos válidos, puedes utilizarlo como tú desees.",
       "ExamplesTitle": "Ejemplos de uso:",
-      "ExampleTrim1": "  • Recortar desde 23. Recortar hasta 2:01",
-      "ExampleTrim2": "  • Recortar desde 1:02:01. Recortar hasta 2:52:01",
+      "ExampleTrim1": "• Recortar desde 23. Recortar hasta 2:01",
+      "ExampleTrim2": "• Recortar desde 1:02:01. Recortar hasta 2:52:01",
       "NoteDuration": "Nota: la duración de recorte se recalcula si no es adecuada o está vacía."
     }
   },
@@ -94,7 +106,7 @@
     "Buttons": {
       "Refresh": "Refrescar",
       "Browse": "Buscar",
-      "Compress": "Comprimir vídeo",
+      "Compress": "Comprimir video",
       "Cancel": "CANCELAR",
       "ShowFileInFolder": "Mostrar archivo en carpeta"
     },
@@ -193,12 +205,12 @@
     },
     "Tips": {
       "FormatSelection": "Selecciona el formato de salida del audio.",
-      "FormatNote1": "Opus es más nuevo y eficiente; Vorbis es de legado.",
-      "FormatNote2": "WAV está ordenado por orden de probabilidad de uso. Se recomienda la primera opción si no sabés cuál elegir."
+      "FormatNote1": "WAV está ordenado por orden de probabilidad de uso. Se recomienda la primera opción si no sabés cuál elegir.",
+      "FormatNote2": "Opus es más nuevo y eficiente; Vorbis es de legado."
     }
   },
   "VDownload": {
-    "Title": "Descarga de vídeos",
+    "Title": "Descarga de videos",
     "Buttons": {
       "Refresh": "Refrescar",
       "Add": "Agregar",
@@ -207,8 +219,8 @@
       "ShowFileInFolder": "Mostrar archivo en carpeta"
     },
     "Fields": {
-      "PasteVideo": "Pegar URL de vídeo",
-      "Queue":"Vídeos en cola",
+      "PasteVideo": "Pegar URL de video",
+      "Queue":"Videos en cola",
       "Remaining": "Tiempo restante"
     },
     "Popup": {
@@ -338,7 +350,7 @@
       "Notes": {
         "Title": "Notas:",
         "A": "El códec de video está ordenado por importancia. La opción predeterminada va a ser, en el caso de estar disponible, uno o varios codificadores diseñados específicamente para su sistema operativo y su tarjeta gráfica (Nvidia/AMD/Intel).",
-        "B": "En el caso de ser posible, sólo se remuxea: es decir que no necesita recodificar el vídeo, lo que puede acelerar el proceso."
+        "B": "En el caso de ser posible, sólo se remuxea: es decir que no necesita recodificar el video, lo que puede acelerar el proceso."
       }
     },
     "VCompress": {
@@ -356,15 +368,15 @@
         "Title": "Notas:",
         "A": "El 'porcentaje de calidad' se refiere al peso final del proceso en comparación al peso original. Muchas veces un porcentaje de 25% resulta en una calidad muy aceptable y una reducción significativa del peso del archivo.",
         "B": "El códec de video está ordenado por importancia. La opción predeterminada va a ser, en el caso de estar disponible, uno o varios codificadores diseñados específicamente para su sistema operativo y su tarjeta gráfica (Nvidia/AMD/Intel).",
-        "C": "En el caso de ser posible, sólo se remuxea: es decir que no necesita recodificar el vídeo, lo que puede acelerar el proceso."
+        "C": "En el caso de ser posible, sólo se remuxea: es decir que no necesita recodificar el video, lo que puede acelerar el proceso."
       }
     },
     "VAudiofy": {
       "Title": "VAudiofy — Extraer audio",
-      "Description": "VAudiofy permite convertir formatos de uno o más audios de forma rápida, o extraer el audio de uno o más vídeos.",
+      "Description": "VAudiofy permite convertir formatos de uno o más audios de forma rápida, o extraer el audio de uno o más videos.",
       "HowTo": {
         "Title": "Cómo usar:",
-        "Step1": "1) Seleccioná o arrastrá uno o más archivos de audio o vídeo.",
+        "Step1": "1) Seleccioná o arrastrá uno o más archivos de audio o video.",
         "Step2": "2) Seleccioná el formato deseado.",
         "Step3": "3) Presioná Enter o el botón 'Extraer audio'.",
         "Step4": "4) Esperá a que se procese en segundo plano."

@@ -15,7 +15,7 @@
             BorderThickness="2" 
             CornerRadius="10" 
             Padding="0" 
-            Margin="0,10,20,0"
+            Margin="0,20,20,0"
             Background="{DynamicResource PanelBackgroundBrush}"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
@@ -25,7 +25,7 @@
 
       <ScrollViewer Padding="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Background="Transparent">
       
-      <StackPanel Margin="0" Spacing="12" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <StackPanel Margin="20" Spacing="12" HorizontalAlignment="Center" VerticalAlignment="Center">
 
         <!-- Título -->
         <TextBlock Text="{Binding L[VCut.Title]}" 
@@ -148,9 +148,9 @@
         </Grid>
 
         <!-- Estado -->
-        <TextBlock Text="{Binding Status}" FontSize="12" Margin="0,3,0,0" HorizontalAlignment="Center"/>
-        <TextBlock Text="{Binding OutputPath}" FontSize="12" Margin="0,-4,0,0" HorizontalAlignment="Center"/>
-        <TextBlock Text="{Binding Warning}" FontSize="12" Margin="0,-6,0,0" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding Status}" FontSize="12" Margin="0,-2,0,0" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding OutputPath}" FontSize="12" Margin="0,-6,0,0" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding Warning}" FontSize="12" Margin="0,-8,0,0" HorizontalAlignment="Center"/>
         
         <!-- Botón recortar -->
         <Button Content="{Binding L[VCut.Buttons.Cut]}" 
@@ -169,7 +169,7 @@
                 HorizontalContentAlignment="Center"
                 IsEnabled="{Binding IsConverting}"
                 FontSize="12"
-                Margin="0 -7 0 0"
+                Margin="0 -9 0 0"
                 Command="{Binding ShowCancelDialogCommand}"
                 Classes="RedAccented"
                 HotKey="Escape"
@@ -209,8 +209,11 @@
             
           </ToggleButton.Styles>
         </ToggleButton>
+        
+        <StackPanel Height="20">
+        </StackPanel>
 
-      </StackPanel>
+        </StackPanel>
       </ScrollViewer>
     </Border>
   </Grid>

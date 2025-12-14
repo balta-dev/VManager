@@ -153,7 +153,7 @@
                     <TextBlock Text="JPG, PNG, GIF, BMP, TIFF, WebP"
                                FontSize="10"
                                Opacity="0.7"
-                               MaxWidth="150"
+                               MaxWidth="160"
                                TextWrapping="Wrap"/>
                   </StackPanel>
                 </StackPanel>
