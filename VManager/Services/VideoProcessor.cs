@@ -230,6 +230,7 @@ namespace VManager.Services
                 .FromFileInput(inputPath, false, options => options.Seek(start))
                 .OutputToFile(outputPath, overwrite: true, options =>
                     options
+                        .WithCustomArgument("-map 0")
                         .WithVideoCodec("copy")
                         .WithAudioCodec("copy")
                         .WithDuration(duration));
@@ -276,6 +277,7 @@ namespace VManager.Services
                 .OutputToFile(outputPath, overwrite: true, options =>
                 {
                     options
+                        .WithCustomArgument("-map 0")
                         .WithVideoCodec(selectedVideoCodec)
                         .WithVideoBitrate(targetBitrate)
                         .WithAudioCodec(selectedAudioCodec)
@@ -321,6 +323,7 @@ namespace VManager.Services
                 .OutputToFile(outputPath, overwrite: true, options =>
                 {
                     options
+                        .WithCustomArgument("-map 0")
                         .WithVideoCodec(selectedVideoCodec)
                         .WithAudioCodec(selectedAudioCodec);
             
@@ -377,12 +380,18 @@ namespace VManager.Services
                 .OutputToFile(outputPath, overwrite: true, options =>
                 {
                     options.WithCustomArgument("-vn");
+                    options.WithCustomArgument("-map 0:a");
+
                     if (processingDecision.Action == AudioProcessingAction.Copy)
+                    {
                         options.WithAudioCodec("copy");
+                    }
                     else
+                    {
                         options
                             .WithAudioCodec(processingDecision.Codec)
                             .WithAudioBitrate(processingDecision.Bitrate);
+                    }
                 });
 
             var result = await ExecuteFFmpegProcessAsync(inputPath, outputPath, args, duration, progress, cancellationToken);
