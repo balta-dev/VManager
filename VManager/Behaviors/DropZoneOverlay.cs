@@ -72,7 +72,7 @@ namespace VManager.Behaviors
             // Crear un Border que cubra exactamente el área del targetBorder
             _overlayBorder = new Border
             {
-                Background = new SolidColorBrush(Color.FromArgb(100, 0, 0, 0)), // Semi-transparente oscuro
+                Background = new SolidColorBrush(Color.FromArgb(150, 0, 0, 0)), // Semi-transparente oscuro
                 CornerRadius = _targetBorder.CornerRadius,
                 ZIndex = 9999, // Asegurar que esté encima
                 IsHitTestVisible = true // Bloquear interacción
