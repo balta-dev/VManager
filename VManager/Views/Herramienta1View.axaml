@@ -12,6 +12,7 @@
   
   <Grid ClipToBounds="True">
     <Border BorderBrush="{DynamicResource BorderBrushPrimary}" 
+            x:Name="DropZoneBorder"
             BorderThickness="2" 
             CornerRadius="10" 
             Padding="0" 
@@ -43,6 +44,9 @@
                     FontSize="10"
                     Command="{Binding RefreshCodecsCommand}"
                     Width="112"/>-->
+          
+          <Button HotKey="D" IsVisible="False" Content="Activar DD" Command="{Binding OpenTerminalCommand}">
+            </Button>
             
           <Button 
                   Command="{Binding ClearInfoCommand}"
