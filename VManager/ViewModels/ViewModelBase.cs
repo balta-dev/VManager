@@ -223,11 +223,14 @@ public abstract class ViewModelBase : ReactiveObject
             return;
         }
 
-        Console.WriteLine($"✅ Archivo recibido: '{droppedFile}'");
-
+        var filePaths = droppedFile.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        
         // Asignar al ViewModel
-        FileAssignLogic.AssignVideoFiles(this, new[] { droppedFile });
-        VideoPath = droppedFile;
+        FileAssignLogic.AssignVideoFiles(this, filePaths);
+        if (filePaths.Length == 1)
+        {
+            VideoPath = filePaths[0];
+        }
 
         Console.WriteLine("=== Proceso completado ===");
     }

@@ -51,7 +51,7 @@ namespace VManager.Behaviors
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"⚠️ Error en X11 window: {ex.Message}");
+                    Console.WriteLine($"Error en X11 window: {ex.Message}");
                 }
                 return result;
             }

@@ -366,6 +366,8 @@ namespace VManager.ViewModels
                     string downloadFolder = !string.IsNullOrWhiteSpace(_config.PreferredDownloadFolder)
                         ? _config.PreferredDownloadFolder
                         : Environment.GetFolderPath(Environment.SpecialFolder.Desktop); // fallback seguro
+                    
+                    this.RaisePropertyChanged(nameof(_config.PreferredDownloadFolder));
 
                     string extension = video.SelectedFormat?.FormatId switch
                     {

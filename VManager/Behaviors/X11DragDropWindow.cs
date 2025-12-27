@@ -1,4 +1,5 @@
     using System;
+    using System.Collections.Generic;
     using System.Runtime.InteropServices;
     using System.Linq;
     using System.Threading.Tasks;
@@ -6,6 +7,7 @@
     using Avalonia.Controls;
     using Avalonia.Threading;
     using VManager.Behaviors;
+    using VManager.Views;
 
     public class X11DragDropWindow
     {
@@ -234,7 +236,7 @@
         private IntPtr xdndFinished;
         private IntPtr xdndSelection;
         private IntPtr textUriList;
-        private string? droppedFile;
+        private List<string> droppedFiles = new List<string>();
         private bool isDone;
         private Window? parentWindow;
         private DispatcherTimer? positionTimer;
@@ -244,6 +246,17 @@
         private int MarginRight = 20;
         private int MarginTop = 90;
         private int MarginBottom = 65;
+        
+        //Formatos aceptados
+        static readonly string[] VideoExtensions =
+        {
+            ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".3gp"
+        };
+
+        static readonly string[] AudioExtensions =
+        {
+            ".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a"
+        };
         
         // Propiedades para almacenar el contexto actual del UserControl
         private string? currentViewName;
@@ -270,9 +283,11 @@
             return name;
         }
         
-        public Task<string?> ShowAndWaitForDropAsync(Window parent)
+        public Task<string?> ShowAndWaitForDropAsync(Window parent, string viewName, object? dataContext)
         {
             parentWindow = parent;
+            currentViewName = viewName;        
+            currentDataContext = dataContext;  
 
             var tcs = new TaskCompletionSource<string?>(
                 TaskCreationOptions.RunContinuationsAsynchronously
@@ -433,7 +448,7 @@
 
                 StopPositionTracking();
 
-                return droppedFile;
+                return droppedFiles.Count > 0 ? string.Join("\n", droppedFiles) : null;
             }
             finally
             {
@@ -590,9 +605,8 @@
                         // 0xff1b es el keysym de ESC
                         if (keysym.ToInt64() == 0xff1b || keysym.ToInt64() == 0xFF1B)
                         {
-                            Console.WriteLine("ESC detectado en X11 - cerrando ventana");
+                            Console.WriteLine("ESC detectado - cerrando con archivo/s actual/es");
                             isDone = true;
-                            droppedFile = null; // Cancelar drop
                             break;
                         }
                     }
@@ -708,38 +722,63 @@
                     XFree(propData);
 
                     var uris = data.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                    var firstUri = uris.FirstOrDefault();
+                    int maxFiles = GetMaxFilesForView();
+                    int remainingSlots = maxFiles - droppedFiles.Count;
 
-                    if (!string.IsNullOrEmpty(firstUri))
+                    if (remainingSlots <= 0)
                     {
-                        if (firstUri.StartsWith("file://"))
-                            droppedFile = Uri.UnescapeDataString(firstUri.Substring(7));
-                        else if (firstUri.StartsWith("'file://") && firstUri.EndsWith("'"))
-                            droppedFile = Uri.UnescapeDataString(firstUri.Substring(8, firstUri.Length - 9));
-                        else
-                            droppedFile = firstUri;
-                
-                        // Validar extensión del archivo
-                        string ext = System.IO.Path.GetExtension(droppedFile).ToLowerInvariant();
-                
-                        // Acá validás según tu lógica (video/audio/txt)
-                        bool isValid = IsFileValid(ext);
-                
-                        if (isValid)
+                        Console.WriteLine($"Ya tienes {droppedFiles.Count} archivos (máximo: {maxFiles})");
+                        X11DragFeedback.NotifyDropError();
+                    }
+                    else
+                    {
+                        // Tomar solo los que caben
+                        var filesToAdd = uris.Take(remainingSlots).ToList();
+                        
+                        foreach (var uri in filesToAdd)
                         {
-                            dropSuccess = true;
+                            string filePath;
+                            if (uri.StartsWith("file://"))
+                                filePath = Uri.UnescapeDataString(uri.Substring(7));
+                            else if (uri.StartsWith("'file://") && uri.EndsWith("'"))
+                                filePath = Uri.UnescapeDataString(uri.Substring(8, uri.Length - 9));
+                            else
+                                filePath = uri;
+
+                            string ext = System.IO.Path.GetExtension(filePath).ToLowerInvariant();
+                            
+                            if (IsFileValid(ext))
+                            {
+                                droppedFiles.Add(filePath);
+                                Console.WriteLine($"Archivo {droppedFiles.Count}/{maxFiles}: {System.IO.Path.GetFileName(filePath)}");
+                                dropSuccess = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Extensión inválida: {ext}");
+                            }
+                        }
+
+                        if (dropSuccess)
+                        {
                             X11DragFeedback.NotifyDropSuccess();
+                            
+                            // Cerrar solo si llegamos al máximo
+                            if (droppedFiles.Count >= maxFiles)
+                            {
+                                Console.WriteLine($"✓ Límite alcanzado: {droppedFiles.Count}/{maxFiles} archivos");
+                                isDone = true;
+                            }
                         }
                         else
                         {
-                            droppedFile = null;
                             X11DragFeedback.NotifyDropError();
                         }
                     }
                 }
             }
-    
-            if (!dropSuccess && droppedFile == null)
+
+            if (!dropSuccess && droppedFiles.Count == 0)
             {
                 X11DragFeedback.NotifyDropError();
             }
@@ -787,26 +826,42 @@
         // Método helper para validar archivos
         private bool IsFileValid(string extension)
         {
-            // Acá ponés tu lógica según el contexto actual
-            // Podés usar ReadParentContext() para determinar qué aceptar
-    
+
             string[] validExtensions;
-    
-            // Si es Herramienta que acepta TXT
-            if (currentViewName == "ConfiguracionView")
+            
+            Console.WriteLine($"currentViewName = '{currentViewName}'");
+            
+            switch (currentViewName)
             {
-                validExtensions = new[] { ".txt" };
-            }
-            else
-            {
-                // Videos y audios
-                validExtensions = new[] 
-                { 
-                    ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".3gp",
-                    ".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a"
-                };
+                case nameof(ConfigurationView):
+                    validExtensions = new[] { ".txt" };
+                    break;
+
+                case nameof(Herramienta1View):
+                    validExtensions = VideoExtensions;
+                    break;
+
+                default:
+                    validExtensions = VideoExtensions.Concat(AudioExtensions).ToArray();
+                    break;
             }
     
             return validExtensions.Contains(extension);
+        }
+        
+        // Filtrar por cantidad
+        private int GetMaxFilesForView()
+        {
+            switch (currentViewName)
+            {
+                case nameof(Herramienta1View):
+                    return 1; // Solo 1 archivo
+        
+                case nameof(ConfigurationView):
+                    return 1; // Solo 1 archivo .txt
+        
+                default:
+                    return int.MaxValue; // Sin límite por defecto
+            }
         }
     }
