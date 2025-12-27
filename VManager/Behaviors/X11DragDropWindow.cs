@@ -105,6 +105,9 @@
         [DllImport("libX11.so.6")]
         private static extern int XLookupString(ref XKeyEvent event_struct, 
             IntPtr buffer_return, int bytes_buffer, out IntPtr keysym_return, IntPtr status_in_out);
+        
+        [DllImport("libX11")]
+        private static extern int XDestroyWindow(IntPtr display, IntPtr window);
 
         // Constantes
         private const long ExposureMask = 1L << 15;
@@ -127,6 +130,7 @@
         private const int KeyPress = 2;
         private const long KeyReleaseMask = 1L << 1;
         private const long KeyPressMask = 1L << 0;
+        private readonly X11Thread x11;
 
         // Estructuras X11
         [StructLayout(LayoutKind.Explicit, Size = 192)]
@@ -248,6 +252,11 @@
         // Propiedades públicas para acceder al estado actual
         public string? CurrentViewName => currentViewName;
         public object? CurrentDataContext => currentDataContext;
+        
+        public X11DragDropWindow(X11Thread thread)
+        {
+            x11 = thread;
+        }
         private string GetAtomName(IntPtr atom)
         {
             if (display == IntPtr.Zero || atom == IntPtr.Zero)
@@ -261,25 +270,38 @@
             return name;
         }
         
-        public async Task<string?> ShowAndWaitForDropAsync(Window parent)
+        public Task<string?> ShowAndWaitForDropAsync(Window parent)
         {
             parentWindow = parent;
-            
-            return await Task.Run(() =>
+
+            var tcs = new TaskCompletionSource<string?>(
+                TaskCreationOptions.RunContinuationsAsynchronously
+            );
+
+            x11.Invoke(() =>
             {
-                return ShowAndWaitForDropInternal();
+                try
+                {
+                    var result = ShowAndWaitForDropInternal();
+                    tcs.TrySetResult(result);
+                }
+                catch (Exception ex)
+                {
+                    tcs.TrySetException(ex);
+                }
             });
-            
+
+            return tcs.Task;
         }
         
         private string? ShowAndWaitForDropInternal()
         {
             display = XOpenDisplay(IntPtr.Zero);
-            if (display == IntPtr.Zero)
-            {
-                Console.WriteLine("No se pudo abrir X display");
-                return null;
-            }
+                if (display == IntPtr.Zero)
+                {
+                    Console.WriteLine("No se pudo abrir X display");
+                    return null;
+                }
 
             try
             {
@@ -386,6 +408,7 @@
                 }
 
                 XSelectInput(display, window, ExposureMask | StructureNotifyMask | KeyPressMask);
+                
                 XMapWindow(display, window);
                 
                 // Hacemos que toda la ventana sea input-transparent
@@ -395,6 +418,9 @@
                 wmProtocols = XInternAtom(display, "WM_PROTOCOLS", false);
                 wmDeleteWindow = XInternAtom(display, "WM_DELETE_WINDOW", false);
                 XSetWMProtocols(display, window, new IntPtr[] { wmDeleteWindow }, 1);
+                
+                if (display == IntPtr.Zero || window == IntPtr.Zero)
+                    return null;
                 
                 // Asegurar que esté arriba
                 XRaiseWindow(display, window);
@@ -411,8 +437,14 @@
             }
             finally
             {
-                if (display != IntPtr.Zero)
-                    XCloseDisplay(display);
+                isDone = true;
+                if (display != IntPtr.Zero && window != IntPtr.Zero)
+                {
+                    XDestroyWindow(display, window);
+                    XFlush(display);
+                    window = IntPtr.Zero;
+                    
+                }
             }
         }
 
@@ -502,13 +534,15 @@
                     // Actualizar en X11
                     Task.Run(() =>
                     {
+                        if (display == IntPtr.Zero || window == IntPtr.Zero)
+                            return;
                         try
                         {
                             XMoveResizeWindow(display, window, x, y, width, height);
                             XRaiseWindow(display, window);
                             XFlush(display);
                         }
-                        catch { }
+                        catch { Console.WriteLine("No se pudo actualizar ventana"); }
                     });
                 };
 
@@ -528,7 +562,7 @@
                 });
             }
         }
-
+        
         private void ProcessEvents()
         {
             XEvent ev = new XEvent();
@@ -734,7 +768,7 @@
             XSendEvent(display, sourceWindow, false, 0, ref finishedEvent);
             XFlush(display);
 
-            System.Threading.Thread.Sleep(200);
+            System.Threading.Thread.Sleep(150);
             isDone = true;
         }
 

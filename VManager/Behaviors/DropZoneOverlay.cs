@@ -13,7 +13,6 @@ namespace VManager.Behaviors
         private Border? _overlayBorder;
         private Border? _targetBorder;
         private Panel? _parentPanel;
-        private X11DragDropWindow? _x11Window;
         private bool _isActive = false;
         
         public bool IsActive => _isActive;
@@ -45,11 +44,10 @@ namespace VManager.Behaviors
             try
             {
                 // Activar ventana X11
-                _x11Window = new X11DragDropWindow();
                 string? result = null;
                 try
                 {
-                    result = await _x11Window.ShowAndWaitForDropAsync(parentWindow);
+                    result = await X11DragDropManager.Instance.ShowAsync(parentWindow);
                 }
                 catch (Exception ex)
                 {
@@ -156,15 +154,10 @@ namespace VManager.Behaviors
         {
             if (e.Key == Key.Escape)
             {
-                Console.WriteLine("ESC presionado - cerrando drop zone");
-                
-                if (_x11Window != null)
-                { 
-                    _x11Window?.Close(); 
-                    e.Handled = true;
-                    return;
-                }
-                Console.WriteLine("VENTANA X11 NO EXISTE");
+                X11DragDropManager.Instance.ForceClose();
+                SafeRemoveOverlay();
+                _isActive = false;
+                e.Handled = true;
             }
         }
         
@@ -183,12 +176,8 @@ namespace VManager.Behaviors
             if (!_isActive) return;
             Console.WriteLine("Forzando cierre de ventana X11...");
             SafeRemoveOverlay();
-
-            if (_x11Window != null)
-            {
-                _x11Window.Close();
-                _x11Window = null;
-            }
+            X11DragDropManager.Instance.ForceClose();
+            _isActive = false;
         }
     }
 }
