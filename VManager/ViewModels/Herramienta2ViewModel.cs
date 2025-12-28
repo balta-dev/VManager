@@ -273,8 +273,8 @@ namespace VManager.ViewModels
                     _ = SoundManager.Play("success.wav");
                     SetLastCompressedFile(result.OutputPath);
 
-                    Notifier n = new Notifier();
-                    n.ShowFileConvertedNotification(
+                    Notifier notifier = new Notifier();
+                    notifier.ShowFileConvertedNotification(
                         string.Format(L["VCompress.Fields.NotificationMessage"], result.Message),
                         result.OutputPath
                     );

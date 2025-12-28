@@ -24,16 +24,18 @@
         "Item2Description": " Refresh screen",
         "Item3Title": "B:",
         "Item3Description": " Browse video",
-        "Item4Title": "T:",
-        "Item4Description": " Toggle dark/light theme",
-        "Item5Title": "Enter:",
-        "Item5Description": " Start operation",
-        "Item6Title": "Esc:",
-        "Item6Description": " Cancel operation",
-        "Item7Title": "O:",
-        "Item7Description": " Hide or show names",
-        "Item8Title": "C:",
-        "Item8Description": " Open settings"
+        "Item4Title": "D:",
+        "Item4Description": " Enable drag and drop files in tool",
+        "Item5Title": "T:",
+        "Item5Description": " Toggle dark/light theme",
+        "Item6Title": "Enter:",
+        "Item6Description": " Start operation",
+        "Item7Title": "Esc:",
+        "Item7Description": " Cancel operation",
+        "Item8Title": "O:",
+        "Item8Description": " Hide or show names",
+        "Item9Title": "C:",
+        "Item9Description": " Open settings"
       }
     },
     "Border": {

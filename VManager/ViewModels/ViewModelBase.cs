@@ -5,6 +5,7 @@ using Avalonia.ReactiveUI;
 using FFMpegCore;
 using FFMpegCore.Enums;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -17,6 +18,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Platform.Storage;
@@ -123,6 +125,11 @@ public abstract class ViewModelBase : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _urlText, value);
     }
     
+    protected static readonly bool IsLinux =
+        RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+    
+    protected bool IsLinuxPlatform => IsLinux;
+    
     public ReactiveCommand<Unit, Unit> BrowseCommand { get; }
     public ReactiveCommand<Unit, Unit> ShowFileInFolderCommand { get; }
     public ReactiveCommand<Unit, Unit> ClearInfoCommand { get; }
@@ -135,180 +142,83 @@ public abstract class ViewModelBase : ReactiveObject
     
     protected CancellationTokenSource? _cts;
     
-    // Uso en tu código existente 
-    /*
-    public async Task OpenX11DragDropWindow()
-    {
-        Console.WriteLine("=== Iniciando ventana de drag & drop ===");
-
-        await ActivarDropZone();
-        
-        var dropWindow = new X11DragDropWindow();
-        var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-        var path = await dropWindow.ShowAndWaitForDropAsync(mainWindow); // ← nuevo método
-
-        Console.WriteLine($"=== Ventana cerrada, path recibido: '{path}' ===");
-
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            Console.WriteLine("✗ Path vacío o nulo, abortando");
-            return;
-        }
-
-        Console.WriteLine($"✓ Asignando archivo: '{path}'");
-
-        // Asignar al ViewModel
-        var dc = this;
-        FileAssignLogic.AssignVideoFiles(dc, new[] { path });
-
-        Console.WriteLine("=== Proceso completado ===");
-    }
-    */
-    
     private async Task OpenX11DragDropWindow()
-{
-    Console.WriteLine("=== Iniciando drag & drop con overlay ===");
-    
-    var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-    if (mainWindow == null)
     {
-        Console.WriteLine("⚠️ No se encontró MainWindow");
-        return;
-    }
-
-    var contentArea = mainWindow.FindControl<ContentControl>("ContentArea");
-    if (contentArea == null)
-    {
-        Console.WriteLine("⚠️ No se encontró ContentArea");
-        return;
-    }
-
-    var currentView = contentArea.GetVisualDescendants()
-        .OfType<UserControl>()
-        .FirstOrDefault();
-
-    if (currentView == null)
-    {
-        Console.WriteLine("⚠️ No se encontró la vista renderizada");
-        return;
-    }
-
-    var border = currentView.FindControl<Border>("DropZoneBorder");
-    if (border == null)
-    {
-        Console.WriteLine("⚠️ No se encontró DropZoneBorder");
-        return;
-    }
-
-    Console.WriteLine("✓ DropZoneBorder encontrado, mostrando overlay con ventana X11...");
-
-    // Suscribirse a cambios de view para cerrar el overlay si se navega
-    IDisposable? viewChangeSubscription = contentArea.GetObservable(ContentControl.ContentProperty)
-        .Subscribe(_ =>
-        {
-            if (_dropZoneOverlay.IsActive)
-            {
-                Console.WriteLine("⚠️ Cambio de view detectado, cerrando overlay...");
-                _dropZoneOverlay.ForceClose();
-            }
-        });
-
-    try
-    {
-        string? droppedFile = await _dropZoneOverlay.ShowAsync(mainWindow, border);
-
-        if (string.IsNullOrWhiteSpace(droppedFile))
-        {
-            Console.WriteLine("✗ Path vacío o drop cancelado");
-            return;
-        }
-
-        var filePaths = droppedFile.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        if (!IsLinuxPlatform) return;
         
-        // Asignar al ViewModel
-        FileAssignLogic.AssignVideoFiles(this, filePaths);
-        if (filePaths.Length == 1)
+        Console.WriteLine("=== Iniciando drag & drop con overlay ===");
+        
+        var mainWindow = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+        if (mainWindow == null)
         {
-            VideoPath = filePaths[0];
-        }
-
-        Console.WriteLine("=== Proceso completado ===");
-    }
-    finally
-    {
-        // Limpiar suscripción
-        viewChangeSubscription?.Dispose();
-    }
-}
-
-    
-    /*
-    public async Task ActivarDropZone()
-    {
-        if (_dropZoneOverlay.IsActive)
-        {
-            Console.WriteLine("Drop zone ya está activo");
+            Console.WriteLine("No se encontró MainWindow");
             return;
         }
-    
-        var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-            ? desktop.MainWindow
-            : null;
-    
-        if (mainWindow == null) return;
-    
+
         var contentArea = mainWindow.FindControl<ContentControl>("ContentArea");
-    
         if (contentArea == null)
         {
-            Console.WriteLine("⚠️ No se encontró ContentArea");
+            Console.WriteLine("No se encontró ContentArea");
             return;
         }
-    
-        // El ContentControl tiene un ContentPresenter que renderiza el DataTemplate
-        // Buscar la View real en los hijos visuales del ContentControl
+
         var currentView = contentArea.GetVisualDescendants()
             .OfType<UserControl>()
             .FirstOrDefault();
-    
+
         if (currentView == null)
         {
-            // Si no es UserControl, buscar cualquier Control que tenga el DropZoneBorder
-            Console.WriteLine("NO ESTAS EN UNA VISTA");
-        }
-    
-        if (currentView == null)
-        {
-            Console.WriteLine("⚠️ No se encontró la vista renderizada");
+            Console.WriteLine("No se encontró la vista renderizada");
             return;
         }
-    
-        Console.WriteLine($"✓ Vista encontrada: {currentView.GetType().Name}");
-    
+
         var border = currentView.FindControl<Border>("DropZoneBorder");
-    
         if (border == null)
         {
-            Console.WriteLine("⚠️ No se encontró DropZoneBorder");
+            Console.WriteLine("No se encontró DropZoneBorder");
             return;
         }
-    
-        Console.WriteLine($"✓ DropZoneBorder encontrado");
-    
-        string? droppedFile = await _dropZoneOverlay.ShowAsync(mainWindow, border);
-    
-        if (droppedFile != null)
+
+        Console.WriteLine("DropZoneBorder encontrado, mostrando overlay con ventana X11...");
+
+        // Suscribirse a cambios de view para cerrar el overlay si se navega
+        IDisposable? viewChangeSubscription = contentArea.GetObservable(ContentControl.ContentProperty)
+            .Subscribe(_ =>
+            {
+                if (_dropZoneOverlay.IsActive)
+                {
+                    Console.WriteLine("Cambio de view detectado, cerrando overlay...");
+                    _dropZoneOverlay.ForceClose();
+                }
+            });
+
+        try
         {
-            Console.WriteLine($"✅ Archivo recibido: {droppedFile}");
-            VideoPath = droppedFile;
+            string? droppedFile = await _dropZoneOverlay.ShowAsync(mainWindow, border);
+
+            if (string.IsNullOrWhiteSpace(droppedFile))
+            {
+                Console.WriteLine("Path vacío o drop cancelado");
+                return;
+            }
+
+            var filePaths = droppedFile.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            
+            // Asignar al ViewModel
+            FileAssignLogic.AssignVideoFiles(this, filePaths);
+            if (filePaths.Length == 1)
+            {
+                VideoPath = filePaths[0];
+            }
+
+            Console.WriteLine("=== Proceso completado ===");
         }
-        else
+        finally
         {
-            Console.WriteLine("❌ Drop cancelado");
+            // Limpiar suscripción
+            viewChangeSubscription?.Dispose();
         }
     }
-    
-    */
     
     public class UserProfileImageService
     {
@@ -447,9 +357,12 @@ public abstract class ViewModelBase : ReactiveObject
             () => ShowCancelDialog(), // <- Usar la versión sin retorno
             outputScheduler: AvaloniaScheduler.Instance
         );
-        OpenTerminalCommand =
-            ReactiveCommand.CreateFromTask(OpenX11DragDropWindow,
-                outputScheduler: AvaloniaScheduler.Instance);
+        
+        if (IsLinuxPlatform)
+        {
+            OpenTerminalCommand = ReactiveCommand.CreateFromTask(
+                OpenX11DragDropWindow, outputScheduler: AvaloniaScheduler.Instance);
+        }
         
         UserImage = UserProfileImageService.GetUserProfileImage()!;
         

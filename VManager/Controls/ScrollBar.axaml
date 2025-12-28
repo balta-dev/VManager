@@ -4,7 +4,7 @@
                     x:ClassModifier="internal">
 
   <!-- Tamaño de las ScrollBars reducido -->
-  <sys:Double x:Key="ScrollBarSize">8</sys:Double>
+  <sys:Double x:Key="ScrollBarSize">12</sys:Double>
 
   <Design.PreviewWith>
     <Border Padding="20">
@@ -42,13 +42,13 @@
     </Setter>
 
     <Style Selector="^:pointerover /template/ Border">
-      <Setter Property="Background" Value="{DynamicResource ScrollBarThumbFillPointerOver}" />
+      <Setter Property="Background" Value="{DynamicResource AccentBrushLight}" />
     </Style>
     <Style Selector="^:pressed  /template/ Border">
-      <Setter Property="Background" Value="{DynamicResource ScrollBarThumbFillPressed}" />
+      <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
     </Style>
     <Style Selector="^:disabled  /template/ Border">
-      <Setter Property="Background" Value="{DynamicResource ScrollBarThumbFillDisabled}" />
+      <Setter Property="Background" Value="{DynamicResource AccentBrushDark}" />
     </Style>
   </ControlTheme>
 
@@ -279,7 +279,7 @@
   </Style>
   <Style Selector="^ /template/ Thumb">
     <Setter Property="RenderTransform" Value="none" />
-    <Setter Property="Background" Value="{DynamicResource ScrollBarPanningThumbBackground}" />
+    <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
   </Style>
   <Style Selector="^ /template/ RepeatButton">
     <Setter Property="Opacity" Value="0" />
@@ -297,7 +297,7 @@
         <Setter Property="Opacity" Value="0.3" />
       </Style>
       <Style Selector="^ /template/ Thumb">
-        <Setter Property="Background" Value="{DynamicResource ScrollBarPanningThumbBackground}" />
+        <Setter Property="Background" Value="{DynamicResource AccentBrushDark}" />
         <Setter Property="RenderTransform" Value="none" />
       </Style>
     </Style>

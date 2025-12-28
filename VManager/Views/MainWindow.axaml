@@ -11,7 +11,7 @@
         Icon="/Assets/VManager.ico"
         Title="VManager"
         MinWidth="500" MinHeight="400"
-        Width="900" Height="695"
+        Width="900" Height="720"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource WindowBackgroundBrush}">
 

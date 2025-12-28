@@ -50,7 +50,7 @@
                     Command="{Binding RefreshCodecsCommand}"
                     Width="112"/>-->
             
-            <Button HotKey="D" IsVisible="False" Content="Activar DD" Command="{Binding OpenTerminalCommand}">
+            <Button HotKey="D" IsVisible="False" IsEnabled="{Binding IsLinuxPlatform}" Content="Activar DD" Command="{Binding OpenTerminalCommand}">
             </Button>
             
             <Button 

@@ -24,16 +24,18 @@
         "Item2Description": " Refrescar pantalla",
         "Item3Title": "B:",
         "Item3Description": " Buscar video",
-        "Item4Title": "T:",
-        "Item4Description": " Cambiar tema oscuro/claro",
-        "Item5Title": "Enter:",
-        "Item5Description": " Comenzar operación",
-        "Item6Title": "Esc:",
-        "Item6Description": " Cancelar operación",
-        "Item7Title": "O:",
-        "Item7Description": " Ocultar o mostrar nombres",
-        "Item8Title": "C:",
-        "Item8Description": " Abrir configuraciones"
+        "Item4Title": "D:",
+        "Item4Description": " Activar arrastrar/soltar archivos en herramienta",
+        "Item5Title": "T:",
+        "Item5Description": " Cambiar tema oscuro/claro",
+        "Item6Title": "Enter:",
+        "Item6Description": " Comenzar operación",
+        "Item7Title": "Esc:",
+        "Item7Description": " Cancelar operación",
+        "Item8Title": "O:",
+        "Item8Description": " Ocultar o mostrar nombres",
+        "Item9Title": "C:",
+        "Item9Description": " Abrir configuraciones"
       }
     },
     "Border": {

@@ -69,7 +69,7 @@
                   <Run FontWeight="Bold" Text="{Binding L[General.Shortcuts.Items.Item3Title]}" />
                   <Run Text="{Binding L[General.Shortcuts.Items.Item3Description]}" />
               </TextBlock>
-              <TextBlock FontSize="15" Margin="0,5,0,0" HorizontalAlignment="Center">
+              <TextBlock FontSize="15" Margin="0,5,0,0" HorizontalAlignment="Center" IsVisible="{Binding IsLinuxPlatform}">
                   <Run FontWeight="Bold" Text="{Binding L[General.Shortcuts.Items.Item4Title]}" />
                   <Run Text="{Binding L[General.Shortcuts.Items.Item4Description]}" />
               </TextBlock>
@@ -85,9 +85,13 @@
                   <Run FontWeight="Bold" Text="{Binding L[General.Shortcuts.Items.Item7Title]}" />
                   <Run Text="{Binding L[General.Shortcuts.Items.Item7Description]}" />
               </TextBlock>
-              <TextBlock FontSize="15" Margin="0,5,0,20" HorizontalAlignment="Center">
+              <TextBlock FontSize="15" Margin="0,5,0,0" HorizontalAlignment="Center">
                   <Run FontWeight="Bold" Text="{Binding L[General.Shortcuts.Items.Item8Title]}" />
                   <Run Text="{Binding L[General.Shortcuts.Items.Item8Description]}" />
+              </TextBlock>
+              <TextBlock FontSize="15" Margin="0,5,0,20" HorizontalAlignment="Center"> 
+                  <Run FontWeight="Bold" Text="{Binding L[General.Shortcuts.Items.Item9Title]}" />
+                  <Run Text="{Binding L[General.Shortcuts.Items.Item9Description]}" />
               </TextBlock>
           </StackPanel>
           
