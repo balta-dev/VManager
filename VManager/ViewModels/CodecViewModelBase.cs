@@ -39,7 +39,8 @@ namespace VManager.ViewModels
             new AudioFormat { Extension = "aac", DisplayName = ".aac" },
             new AudioFormat { Extension = "flac", DisplayName = ".flac" },
             new AudioFormat { Extension = "libopus", DisplayName = ".ogg (OPUS)" },
-            new AudioFormat { Extension = "libvorbis", DisplayName = ".ogg (VORBIS)" }
+            new AudioFormat { Extension = "libvorbis", DisplayName = ".ogg (VORBIS)" },
+            new AudioFormat { Extension = "wmav2", DisplayName = ".wma (WMA v2)" }
         };
 
         public string SelectedVideoCodec

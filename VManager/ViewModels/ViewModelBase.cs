@@ -491,7 +491,7 @@ public abstract class ViewModelBase : ReactiveObject
         }
 
         var videoPatterns = new[] { "*.mp4", "*.mkv", "*.avi", "*.mov", "*.webm", "*.wmv", "*.flv", "*.3gp"};
-        var audioPatterns = new[] { "*.mp3", "*.ogg", "*.flac", "*.aac" };
+        var audioPatterns = new[] { "*.mp3", "*.ogg", "*.flac", "*.aac", ".wav", ".wma" };
 
         var filters = new List<FilePickerFileType>
         {

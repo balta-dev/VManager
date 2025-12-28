@@ -255,7 +255,7 @@
 
         static readonly string[] AudioExtensions =
         {
-            ".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a"
+            ".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma"
         };
         
         // Propiedades para almacenar el contexto actual del UserControl

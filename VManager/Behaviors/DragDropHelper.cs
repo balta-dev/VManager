@@ -47,7 +47,7 @@ namespace VManager.Behaviors
         
         private static readonly string[] AudioExtensions = 
         {
-            ".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a"
+            ".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma"
         };
         
         private static readonly string[] TextExtensions =
