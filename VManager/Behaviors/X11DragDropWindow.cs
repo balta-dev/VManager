@@ -493,7 +493,7 @@
             {
                 positionTimer = new DispatcherTimer
                 {
-                    Interval = TimeSpan.FromMilliseconds(16) // 60FPS -> 16*16 ~= 3.75 FPS
+                    Interval = TimeSpan.FromMilliseconds(16*4) // 60FPS -> 16*4 ~= 15 FPS
                 };
 
                 positionTimer.Tick += (s, e) =>

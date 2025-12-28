@@ -24,7 +24,13 @@ public static class FileAssignLogic
         if (listProp?.CanWrite == true)
         {
             if (listProp.GetValue(dataContext) is ObservableCollection<string> list)
-                list.AddRange(validPaths);
+            {
+                var toAdd = validPaths.Except(list).ToList();
+                if (toAdd.Count == 0)
+                    return false;
+
+                list.AddRange(toAdd);
+            }
             else
                 listProp.SetValue(dataContext, new ObservableCollection<string>(validPaths));
 
