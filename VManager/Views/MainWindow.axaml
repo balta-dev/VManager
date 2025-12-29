@@ -25,7 +25,7 @@
                    IsPaneOpen="True"
                    DisplayMode="CompactInline"
                    CompactPaneLength="56"
-                   OpenPaneLength="145"
+                   OpenPaneLength="160"
                    PaneBackground="{DynamicResource WindowBackgroundBrush}"
                    BorderBrush="White"
                    BorderThickness="4">

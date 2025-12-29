@@ -29,8 +29,14 @@ namespace VManager.ViewModels
         
         public ObservableCollection<string> Idiomas { get; } = new()
         {
+            "English",
             "Español",
-            "English"
+            "Français",
+            "Português",
+            "Русский",
+            "عربي",
+            "日本語",
+            "中文"
         };
         
         private bool _enableNotifications = true;
@@ -57,8 +63,14 @@ namespace VManager.ViewModels
 
                 switch (value)
                 {
-                    case "Español": LocalizationService.Instance.CurrentLanguage = "es"; break;
                     case "English": LocalizationService.Instance.CurrentLanguage = "en"; break;
+                    case "Español": LocalizationService.Instance.CurrentLanguage = "es"; break;
+                    case "Français": LocalizationService.Instance.CurrentLanguage = "fr"; break;
+                    case "Português": LocalizationService.Instance.CurrentLanguage = "pt"; break;
+                    case "Русский": LocalizationService.Instance.CurrentLanguage = "ru"; break;
+                    case "عربي": LocalizationService.Instance.CurrentLanguage = "ar"; break;
+                    case "日本語": LocalizationService.Instance.CurrentLanguage = "jp"; break;
+                    case "中文": LocalizationService.Instance.CurrentLanguage = "zh"; break;
                 }
                 
                 OpenConfig = string.Format(L["Configuration.Fields.Welcome"], (Environment.UserName[0]) + Environment.UserName.Substring(1));
