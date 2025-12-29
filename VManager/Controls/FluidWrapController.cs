@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using ReactiveUI;
+using VManager.Services;
 using VManager.ViewModels;
 
 namespace VManager.Controls
@@ -68,10 +70,8 @@ namespace VManager.Controls
             //_mainCanvas.LayoutUpdated += (s, e) => Console.WriteLine("Layout actualizado");
             
             // Suscribirse al cambio de configuración
-            ConfigurationService.HideRemainingTimeChanged += (_, _) =>
-            {
-                Dispatcher.UIThread.Post(UpdateControlPositions);
-            };
+            ConfigurationService.Current.WhenAnyValue(x => x.HideRemainingTime)
+                .Subscribe(_ => Dispatcher.UIThread.Post(UpdateControlPositions));
             
             InitializePositions();
         }
@@ -226,8 +226,8 @@ namespace VManager.Controls
                 if (config.Control == _secondaryControls[0].Control) // BarraProgreso
                 {
                     bool shouldShow = _viewModel is ViewModelBase baseVm 
-                        ? baseVm.IsOperationRunning && !ConfigurationService.HideRemainingTime
-                        : !ConfigurationService.HideRemainingTime;
+                        ? baseVm.IsOperationRunning && !ConfigurationService.Current.HideRemainingTime
+                        : !ConfigurationService.Current.HideRemainingTime;
             
                     if (shouldShow)
                     {

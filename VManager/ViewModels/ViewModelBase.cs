@@ -98,7 +98,7 @@ public abstract class ViewModelBase : ReactiveObject
         }
     }
     
-    public bool ShouldShowRemainingTime => IsOperationRunning && !ConfigurationService.Load().HideRemainingTime;
+    public bool ShouldShowRemainingTime => IsOperationRunning && !ConfigurationService.Current.HideRemainingTime;
 
     public string Status
     {
@@ -375,10 +375,8 @@ public abstract class ViewModelBase : ReactiveObject
             }
         };
         
-        ConfigurationService.HideRemainingTimeChanged += (_, _) =>
-        {
-            this.RaisePropertyChanged(nameof(ShouldShowRemainingTime));
-        };
+        ConfigurationService.Current?.WhenAnyValue(x => x.HideRemainingTime)
+            .Subscribe(_ => this.RaisePropertyChanged(nameof(ShouldShowRemainingTime)));
         
     }
     

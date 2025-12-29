@@ -295,7 +295,7 @@ public class MainWindowViewModel : ViewModelBase
     
     public void LoadProfileImage()
     {
-        var config = ConfigurationService.Load();
+        var config = ConfigurationService.Current;
         
         if (config.UseCustomIcon)
         {

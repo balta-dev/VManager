@@ -76,7 +76,7 @@ namespace VManager.ViewModels
 
         public Herramienta5ViewModel()
         {
-            _config = ConfigurationService.Load();
+            _config = ConfigurationService.Current;
             DownloadCommand = ReactiveCommand.CreateFromTask(DownloadVideos, outputScheduler: AvaloniaScheduler.Instance);
             AddUrlCommand = ReactiveCommand.Create<string>(AddUrl, outputScheduler: AvaloniaScheduler.Instance);
             RemoveUrlCommand = ReactiveCommand.Create<VideoDownloadItem>(RemoveUrl, outputScheduler: AvaloniaScheduler.Instance);
@@ -366,8 +366,6 @@ namespace VManager.ViewModels
                     string downloadFolder = !string.IsNullOrWhiteSpace(_config.PreferredDownloadFolder)
                         ? _config.PreferredDownloadFolder
                         : Environment.GetFolderPath(Environment.SpecialFolder.Desktop); // fallback seguro
-                    
-                    this.RaisePropertyChanged(nameof(_config.PreferredDownloadFolder));
 
                     string extension = video.SelectedFormat?.FormatId switch
                     {

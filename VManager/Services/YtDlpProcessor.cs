@@ -165,7 +165,7 @@ public class YtDlpProcessor
     
     private string BuildCookiesArgument()
     {
-        var config = ConfigurationService.Load();
+        var config = ConfigurationService.Current;
 
         // 1) Archivo de cookies
         if (config.UseCookiesFile && !string.IsNullOrWhiteSpace(config.CookiesFilePath))

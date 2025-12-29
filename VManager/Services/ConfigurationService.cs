@@ -3,64 +3,111 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Avalonia.Media;
-using VManager.Services;
+using ReactiveUI;
 
-public class ConfigurationService
+namespace VManager.Services;
+
+public static class ConfigurationService
 {
     private static readonly string ConfigPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "VManager",
         "config.json");
 
-    // Propiedad estática para acceso rápido
-    private static bool _hideRemainingTime;
-    public static bool HideRemainingTime
-    {
-        get => _hideRemainingTime;
-        private set
-        {
-            if (_hideRemainingTime != value)
-            {
-                _hideRemainingTime = value;
-                HideRemainingTimeChanged?.Invoke(null, value);
-            }
-        }
-    }
-
-    // Evento para notificar cambios
-    public static event EventHandler<bool>? HideRemainingTimeChanged;
-    
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         WriteIndented = true,
         Converters = { new ColorJsonConverter() }
     };
 
-    public class AppConfig
+    // --- Instancia única compartida ---
+    public static AppConfig Current { get; private set; } = LoadInternal();
+
+    // --- Clase de configuración ---
+    public class AppConfig : ReactiveObject
     {
-        public string Language { get; set; } = "Español";
-        public bool EnableSounds { get; set; } = true;
-        public bool EnableNotifications { get; set; } = true;
-        public bool UseCustomIcon { get; set; }
-        public bool HideRemainingTime { get; set; }
-        
+        private string _language = "Español";
+        public string Language
+        {
+            get => _language;
+            set => this.RaiseAndSetIfChanged(ref _language, value);
+        }
+
+        private bool _enableSounds = true;
+        public bool EnableSounds
+        {
+            get => _enableSounds;
+            set => this.RaiseAndSetIfChanged(ref _enableSounds, value);
+        }
+
+        private bool _enableNotifications = true;
+        public bool EnableNotifications
+        {
+            get => _enableNotifications;
+            set => this.RaiseAndSetIfChanged(ref _enableNotifications, value);
+        }
+
+        private bool _useCustomIcon;
+        public bool UseCustomIcon
+        {
+            get => _useCustomIcon;
+            set => this.RaiseAndSetIfChanged(ref _useCustomIcon, value);
+        }
+
+        private bool _hideRemainingTime;
+        public bool HideRemainingTime
+        {
+            get => _hideRemainingTime;
+            set => this.RaiseAndSetIfChanged(ref _hideRemainingTime, value);
+        }
+
+        private Color? _selectedColor;
         [JsonConverter(typeof(ColorJsonConverter))]
-        public Color? SelectedColor { get; set; }
-        public string? ProfileImagePath { get; set; }
-        public string? PreferredDownloadFolder { get; set; }
-        
-        // === NUEVAS PROPIEDADES PARA COOKIES ===
-        /// <summary>Si true, la app intentará usar CookiesFilePath como --cookies para yt-dlp.</summary>
-        public bool UseCookiesFile { get; set; } = false;
+        public Color? SelectedColor
+        {
+            get => _selectedColor;
+            set => this.RaiseAndSetIfChanged(ref _selectedColor, value);
+        }
 
-        /// <summary>Ruta absoluta del archivo cookies.txt seleccionado por el usuario.</summary>
-        public string? CookiesFilePath { get; set; }
+        private string? _profileImagePath;
+        public string? ProfileImagePath
+        {
+            get => _profileImagePath;
+            set => this.RaiseAndSetIfChanged(ref _profileImagePath, value);
+        }
 
-        /// <summary>Fecha en la que el usuario estableció/actualizó el archivo de cookies.</summary>
-        public DateTime? CookiesLastUpdated { get; set; }
+        private string? _preferredDownloadFolder;
+        public string? PreferredDownloadFolder
+        {
+            get => _preferredDownloadFolder;
+            set => this.RaiseAndSetIfChanged(ref _preferredDownloadFolder, value);
+        }
+
+        // === Cookies ===
+        private bool _useCookiesFile;
+        public bool UseCookiesFile
+        {
+            get => _useCookiesFile;
+            set => this.RaiseAndSetIfChanged(ref _useCookiesFile, value);
+        }
+
+        private string? _cookiesFilePath;
+        public string? CookiesFilePath
+        {
+            get => _cookiesFilePath;
+            set => this.RaiseAndSetIfChanged(ref _cookiesFilePath, value);
+        }
+
+        private DateTime? _cookiesLastUpdated;
+        public DateTime? CookiesLastUpdated
+        {
+            get => _cookiesLastUpdated;
+            set => this.RaiseAndSetIfChanged(ref _cookiesLastUpdated, value);
+        }
     }
 
-    public static AppConfig Load()
+    // --- Cargar desde disco ---
+    private static AppConfig LoadInternal()
     {
         try
         {
@@ -74,16 +121,18 @@ public class ConfigurationService
 
             var json = File.ReadAllText(ConfigPath);
             var config = JsonSerializer.Deserialize<AppConfig>(json, JsonOptions) ?? new AppConfig();
-            
-            // Actualizar propiedad estática
-            HideRemainingTime = config.HideRemainingTime;
-            
             return config;
         }
         catch
         {
             return new AppConfig();
         }
+    }
+
+    // --- Guardar en disco ---
+    public static void Save()
+    {
+        Save(Current);
     }
 
     public static void Save(AppConfig config)
@@ -93,14 +142,10 @@ public class ConfigurationService
             Directory.CreateDirectory(Path.GetDirectoryName(ConfigPath)!);
             var json = JsonSerializer.Serialize(config, JsonOptions);
             File.WriteAllText(ConfigPath, json);
-            
-            // Actualizar propiedad estática
-            HideRemainingTime = config.HideRemainingTime;
         }
         catch
         {
             // Manejar errores según convenga
         }
     }
-    
 }

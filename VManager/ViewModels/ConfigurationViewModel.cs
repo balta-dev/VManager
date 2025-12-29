@@ -226,7 +226,7 @@ namespace VManager.ViewModels
             BrowseCookiesFileCommand = ReactiveCommand.CreateFromTask(BrowseCookiesFileAsync, outputScheduler: AvaloniaScheduler.Instance);
             RemoveCookiesFileCommand = ReactiveCommand.CreateFromTask(RemoveCookiesFileAsync, outputScheduler: AvaloniaScheduler.Instance);
             
-            _config = ConfigurationService.Load();
+            _config = ConfigurationService.Current;
 
             // Inicializar propiedades
             IdiomaSeleccionado = _config.Language;
@@ -257,11 +257,9 @@ namespace VManager.ViewModels
                     SaveConfig();
                 });
             
-            this.WhenAnyValue(x => x.IdiomaSeleccionado, x => x.UseCustomIcon, x => x.HideRemainingTime, x => x.SelectedColor, x => x.ProfileImagePath)
+            this.WhenAnyValue(x => x.IdiomaSeleccionado, x => x.UseCustomIcon, x => x.HideRemainingTime, x => x.SelectedColor, x => x.ProfileImagePath, x => x.PreferredDownloadFolder)
                 .Subscribe(_ => SaveConfig());
             
-            this.WhenAnyValue(x => x.PreferredDownloadFolder)
-                .Subscribe(_ => SaveConfig());
             
         }
         
