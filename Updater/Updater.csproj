@@ -15,8 +15,4 @@
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.7" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\VManager\VManager.csproj" />
-  </ItemGroup>
-
 </Project>
