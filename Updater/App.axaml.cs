@@ -323,6 +323,7 @@ namespace Updater
                 
                 if (downloadButton != null && progressBar != null && progressText != null)
                 {
+                    downloadButton.Content = UpdaterLocalization.T("DownloadLatest");
                     downloadButton.IsVisible = true;
                     progressBar.IsVisible = true;
                     progressText.IsVisible = true;

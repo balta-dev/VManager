@@ -30,9 +30,6 @@ namespace Updater
 
             this.FindControl<TextBlock>("AwaitUpdate")!.Text =
                 App.UpdaterLocalization.T("CheckingUpdates");
-
-            this.FindControl<Button>("DownloadButton")!.Content =
-                App.UpdaterLocalization.T("DownloadLatest");
             
             var accentObs = this.GetResourceObservable("SystemAccentColor")!
                 .OfType<Color>()

@@ -20,18 +20,17 @@
                        FontWeight="Bold"
                        Foreground="{DynamicResource AccentBrush}"/>
             
-            <!-- Panel de progreso y botón -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="5">
-                <Button x:Name="DownloadButton" Classes="Accented" IsVisible="False"
-                        Content=""
-                        Width="200"
-                        Height="35"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Background="{DynamicResource AccentBrush}"
-                        FontSize="15"
-                        CornerRadius="6"/>
-            </StackPanel >
+            <!-- Botón de descargar -->
+            <Button x:Name="DownloadButton" Classes="Accented" IsVisible="False"
+                    Content=""
+                    Height="35"
+                    Padding="20,5"
+                    HorizontalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Background="{DynamicResource AccentBrush}"
+                    FontSize="15"
+                    CornerRadius="6"/>
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="5">
                 <ProgressBar x:Name="ProgressBar" IsVisible="False" Height="5"></ProgressBar>

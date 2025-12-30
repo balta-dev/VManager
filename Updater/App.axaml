@@ -16,7 +16,6 @@
             <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
             <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="Padding" Value="0 0 0 1" />
         </Style>
         
         <!-- Estilo botón rojo -->
