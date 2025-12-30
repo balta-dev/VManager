@@ -42,7 +42,7 @@
       "Title1": "¿Qué ofrece este programa?",
       "Items1": {
         "Item1Title": "VCUT:",
-        "Item1Description": " recorta rápidamente viideos.",
+        "Item1Description": " recorta rápidamente videos/audios.",
         "Item2Title": "VCOMPR:",
         "Item2Description": " comprime videos, priorizando tu GPU.",
         "Item3Title": "VCONV:",
@@ -66,7 +66,7 @@
     "Support": "Este proyecto es mantenido por una única persona, así que si te gustaría contribuir al proyecto puedes darle al botón de abajo."
   },
   "VCut": {
-    "Title": "Recorte de Video",
+    "Title": "Recorte de Video/Audio",
     "Buttons": {
       "Refresh": "Refrescar",
       "Browse": "Buscar",
@@ -282,13 +282,13 @@
   "Guide": {
       "WindowTitle": "Guía de herramienta",
       "VCut": {
-        "Title": "VCut — Recortar videos",
-        "Description": "VCut permite recortar uno o más videos de forma rápida usando un punto de inicio y de fin.",
+        "Title": "VCut — Recortar video/audio",
+        "Description": "VCut permite recortar un video/audio de forma rápida usando un punto de inicio y de fin.",
         "HowTo": {
           "Title": "Cómo usar:",
-          "Step1": "1) Seleccioná o arrastrá un archivo de video.",
+          "Step1": "1) Seleccioná o arrastrá un archivo de video/audio.",
           "Step2": "2) Escribí el tiempo de inicio y fin del recorte.",
-          "Step3": "3) Presioná Enter o el botón 'Recortar Video'.",
+          "Step3": "3) Presioná Enter o el botón 'Recortar'.",
           "Step4": "4) Esperá a que se procese en segundo plano."
         },
         "Notes": {
@@ -398,7 +398,7 @@
     "Guides": {
       "Title": "Guías de cada herramienta",
       "Description": "Seleccioná una guía para aprender cómo usar cada módulo.",
-      "VCut": "VCut — Recortar videos",
+      "VCut": "VCut — Recortar videos/audios",
       "VCompress": "VCompress — Comprimir y optimizar",
       "VConvert": "VConvert — Conversión de formatos",
       "VAudiofy": "VAudiofy — Extraer audio",
@@ -434,5 +434,12 @@
     "Downloads": "descargas",
     "CantDeleteWhileDownloading": "No se puede eliminar un video mientras se está descargando.",
     "OperationCanceled": "Operación cancelada."
+  },
+  "Notifier": {
+    "FileProcessed": "¡El archivo {0} fue procesado exitosamente!"
+  },
+  "Overlay": {
+    "DropHere": "Arrastra tu archivo aquí",
+    "CancelHint": "o presiona ESC para cancelar"
   }
 }

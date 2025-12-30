@@ -41,6 +41,7 @@ namespace VManager.ViewModels
             get => isVideoPathSet;
             set => this.RaiseAndSetIfChanged(ref isVideoPathSet, value);
         }
+        protected override bool AllowAudioFiles => true;
         public ReactiveCommand<Unit, Unit> CutCommand { get; }
         public ReactiveCommand<Unit, Unit> BrowseSingleVideoCommand { get; }
         public Herramienta1ViewModel()
@@ -67,11 +68,17 @@ namespace VManager.ViewModels
             }
 
             var videoPatterns = new[] { "*.mp4", "*.mkv", "*.avi", "*.mov", "*.webm", "*.wmv", "*.flv", "*.3gp" };
+            var audioPatterns = new[] { "*.mp3", "*.ogg", "*.flac", "*.aac", ".wav", ".wma" };
 
             var filters = new List<FilePickerFileType>
             {
                 new FilePickerFileType("Videos") { Patterns = videoPatterns }
             };
+            
+            if (AllowAudioFiles)
+            {
+                filters.Add(new FilePickerFileType("Audios") { Patterns = audioPatterns });
+            }
 
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {

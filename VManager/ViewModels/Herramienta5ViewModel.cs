@@ -190,32 +190,6 @@ namespace VManager.ViewModels
                     }
                 }
                 
-                //////////////////////// 2. Formatos de SOLO AUDIO (NO FUNCIONA) ////////////////////////////////
-                //var seenAudioFormats = new HashSet<string>();
-                //foreach (var f in info.Formats
-                //             .Where(fmt => fmt.VideoCodec != null && fmt.VideoCodec.Equals("none", StringComparison.OrdinalIgnoreCase))
-                //             .Where(fmt => !string.IsNullOrEmpty(fmt.AudioCodec) && !fmt.AudioCodec.Equals("none", StringComparison.OrdinalIgnoreCase))
-                //             .OrderByDescending(fmt => fmt.Abr ?? 0))
-                //{
-                //    string audioDesc = f.Abr.HasValue 
-                //        ? $"Audio {Math.Round(f.Abr.Value)}kbps" 
-                //        : "Audio";
-                //    
-                //    string uniqueKey = $"{audioDesc}_{f.Extension}";
-    
-                //    if (seenAudioFormats.Add(uniqueKey))
-                //    {
-                //        formatList.Add(new VManager.Models.VideoFormat
-                //        {
-                //            FormatId = f.FormatId,
-                //            Resolution = audioDesc,
-                //            Extension = f.Extension,
-                //            FileSize = f.FileSize
-                //        });
-                //    }
-                //}
-                /////////////////////////////////////////////////////////////////////////////////////////////
-                
                 formatList.Add(new VManager.Models.VideoFormat
                 {
                     FormatId = "0",
@@ -376,7 +350,7 @@ namespace VManager.ViewModels
 
                     string outputTemplate = Path.Combine(
                         downloadFolder,
-                        $"%(title)s.{extension}"
+                        $"{video.Title}.{extension}"
                     );
 
                     var result = await processor.DownloadAsync(
@@ -397,7 +371,7 @@ namespace VManager.ViewModels
                         video.Progress = 100;
 
                         var notifier = new Notifier();
-                        notifier.ShowFileConvertedNotification("Descargado", outputTemplate);
+                        notifier.ShowFileConvertedNotification($"{L["VideoStatus.Downloaded"]} {video.Title}",  outputTemplate);
 
                         _ = SoundManager.Play("success.wav");
                         SetLastCompressedFile(outputTemplate);

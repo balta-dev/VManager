@@ -104,6 +104,14 @@ public static class ConfigurationService
             get => _cookiesLastUpdated;
             set => this.RaiseAndSetIfChanged(ref _cookiesLastUpdated, value);
         }
+        
+        // === Log ===
+        private bool _log;
+        public bool Log
+        {
+            get => _log;
+            set => this.RaiseAndSetIfChanged(ref _log, value);
+        }
     }
 
     // --- Cargar desde disco ---

@@ -1,16 +1,16 @@
 {
   "General": {
     "WelcomeMessage": "欢迎来到 VManager！",
-    "AppDescription": "VManager 是一款功能强大且易于使用的多功能工具包，可让您剪切、压缩和转换视频格式。",
+    "AppDescription": "VManager 是一款强大且易用的多功能工具包，可让您剪切、压缩和转换视频格式。",
     "ShowHide": "隐藏",
     "Refreshed": "已刷新！",
     "Loading": "加载中...",
     "WelcomePanel": {
-      "GuideInfo": "有关应用程序的详细指南和更多信息，请点击",
+      "GuideInfo": "如需详细指南和更多应用信息，请点击",
       "AboutButton": "关于",
       "InSidebar": "侧边栏中的按钮。",
       "QuickShortcuts": "快速快捷键：",
-      "PressText": "按",
+      "PressText": "按下",
       "ToSwitchTools": "切换工具",
       "OrText": "或",
       "ForConfiguration": "打开设置。"
@@ -18,55 +18,55 @@
     "Shortcuts": {
       "Title": "快捷键列表：",
       "Items": {
-        "Item1Title": "按钮 1/2/3/4/5：",
-        "Item1Description": "切换工具",
+        "Item1Title": "按键 1/2/3/4/5：",
+        "Item1Description": " 切换工具",
         "Item2Title": "F5：",
-        "Item2Description": "刷新屏幕",
+        "Item2Description": " 刷新屏幕",
         "Item3Title": "B：",
-        "Item3Description": "浏览视频",
+        "Item3Description": " 浏览视频",
         "Item4Title": "D：",
-        "Item4Description": "在工具中启用拖放文件",
+        "Item4Description": " 在工具中启用拖放文件",
         "Item5Title": "T：",
-        "Item5Description": "切换深色/浅色主题",
+        "Item5Description": " 切换深色/浅色主题",
         "Item6Title": "Enter：",
-        "Item6Description": "开始操作",
+        "Item6Description": " 开始操作",
         "Item7Title": "Esc：",
-        "Item7Description": "取消操作",
+        "Item7Description": " 取消操作",
         "Item8Title": "O：",
-        "Item8Description": "隐藏或显示名称",
+        "Item8Description": " 隐藏或显示名称",
         "Item9Title": "C：",
-        "Item9Description": "打开设置"
+        "Item9Description": " 打开设置"
       }
     },
     "Border": {
-      "Title1": "这个程序提供了什么？",
+      "Title1": "这个程序提供什么功能？",
       "Items1": {
         "Item1Title": "VCUT：",
-        "Item1Description": "快速剪切视频。",
+        "Item1Description": " 快速剪切视频/音频。",
         "Item2Title": "VCOMPR：",
-        "Item2Description": "压缩视频，优先使用您的 GPU。",
+        "Item2Description": " 压缩视频，优先使用您的 GPU。",
         "Item3Title": "VCONV：",
-        "Item3Description": "在不同视频格式之间转换（例如 MKV → MP4）。",
+        "Item3Description": " 在不同视频格式之间转换（如 MKV → MP4）。",
         "Item4Title": "VAUDIOFY：",
-        "Item4Description": "将您的视频转换为音频或在音频格式之间转换。",
+        "Item4Description": " 将视频转为音频或在音频格式之间转换。",
         "Item5Title": "VDOWNLOAD：",
-        "Item5Description": "从您喜欢的平台下载视频。"
+        "Item5Description": " 从您喜欢的平台下载视频。"
       },
       "Title2": "如何使用？",
       "Items2": {
         "Item1Description": "使用鼠标或键盘快捷键在左上角选择一个工具",
         "Item2Description": "将视频拖入框中或使用“浏览”按钮选择",
-        "Item3Description": "使用按钮处理视频，就完成了！"
+        "Item3Description": "点击按钮处理视频即可完成！"
       }
     }
   },
   "Footer": {
     "Title": "由 Baltazar Franz 创建",
     "Version": "版本：",
-    "Support": "这个项目由一人维护，因此如果您想贡献，可以点击下面的按钮。"
+    "Support": "本项目由一人维护，如果您想贡献力量，可以点击下方按钮。"
   },
   "VCut": {
-    "Title": "视频剪切",
+    "Title": "视频/音频剪切",
     "Buttons": {
       "Refresh": "刷新",
       "Browse": "浏览",
@@ -80,12 +80,12 @@
       "TrimFrom": "从：",
       "TrimTo": "到：",
       "ObtainingInfo": "正在获取视频信息...",
-      "InvalidFrom": "无效的“从”时间",
-      "InvalidTo": "无效的“到”时间",
+      "InvalidFrom": "“从”时间无效",
+      "InvalidTo": "“到”时间无效",
       "EndBeforeStart": "“到”时间必须大于“从”时间",
       "ExceedsLength": "“从”时间超过视频时长",
-      "Cutting": "正在剪切...",
-      "CutCanceled": "剪切被用户取消。",
+      "Cutting": "剪切中...",
+      "CutCanceled": "用户取消了剪切。",
       "NoMainWindow": "无法访问主窗口。",
       "BrowseTitle": "选择视频",
       "Error": "错误：{0}",
@@ -95,12 +95,12 @@
       "NotificationMessage": "{0}"
     },
     "Tips": {
-      "FormatSelection": "您可以使用秒数和/或传统时间格式（hh:mm:ss）。",
-      "ValidInput": "只要时间有效，您可以随意选择格式。",
+      "FormatSelection": "可以使用秒数和/或传统时间格式（hh:mm:ss）。",
+      "ValidInput": "只要时间有效，您可以使用任何喜欢的格式。",
       "ExamplesTitle": "使用示例：",
       "ExampleTrim1": "• 从 23 秒剪切到 2:01",
       "ExampleTrim2": "• 从 1:02:01 剪切到 2:52:01",
-      "NoteDuration": "注意：如果无效或为空，将自动重新计算剪切时长。"
+      "NoteDuration": "注意：如果无效或为空，剪切时长会自动重新计算。"
     }
   },
   "VCompress": {
@@ -119,25 +119,25 @@
       "VideoPath": "视频路径",
       "Quality": "质量百分比：",
       "NoFiles": "未选择文件。",
-      "InvalidPercent": "无效的百分比。",
-      "Compressing": "正在压缩 ({0}/{1})：{2}...",
+      "InvalidPercent": "无效百分比。",
+      "Compressing": "压缩中 ({0}/{1})：{2}...",
       "Error": "处理 {0} 时出错：{1}",
-      "CompletedAll": "{0} 个文件{1}压缩成功！",
-      "CompletedPartial": "进程中断：{0}/{1} 个文件完成",
-      "Canceled": "压缩被用户取消。",
+      "CompletedAll": "成功压缩 {0} 个文件！",
+      "CompletedPartial": "进程中断：已完成 {0}/{1} 个文件",
+      "Canceled": "用户取消了压缩。",
       "NotificationTitle": "文件已压缩",
       "NotificationMessage": "{0}",
       "OutputSuffix": "-COMP-{0}"
     },
     "Tips": {
-      "VideoCodecInfo": "默认选项适用于大多数情况。",
-      "VideoCodecHW": "当可用时，优先使用硬件加速（GPU）。",
-      "VideoCodecDefinition": "视频编解码器压缩和解压缩视频以节省空间或更快传输。",
-      "VideoCodecCPU": "如果您更喜欢 CPU 编码，请使用如 'libx264' 的编解码器。",
-      "VideoCodecTradeoff": "CPU 提供最佳质量，但速度显著较慢。",
-      "AudioCodecInfo": "默认选项适用于大多数情况。",
-      "AudioCodecDefinition": "音频编解码器压缩和解压缩声音以节省空间或更快传输。",
-      "AudioCodecFLAC": "FLAC 提供出色的音频质量，但文件大得多。"
+      "VideoCodecInfo": "大多数情况下默认选项最佳。",
+      "VideoCodecHW": "可用时优先使用硬件加速（GPU）。",
+      "VideoCodecDefinition": "视频编解码器压缩和解压视频以节省空间或加快流传输。",
+      "VideoCodecCPU": "如果偏好 CPU 编码，请使用如 'libx264' 的编解码器。",
+      "VideoCodecTradeoff": "CPU 提供最佳质量，但速度明显慢很多。",
+      "AudioCodecInfo": "大多数情况下默认选项最佳。",
+      "AudioCodecDefinition": "音频编解码器压缩和解压声音以节省空间或加快流传输。",
+      "AudioCodecFLAC": "FLAC 提供卓越音频质量，但文件体积大得多。"
     }
   },
   "VConvert": {
@@ -156,11 +156,11 @@
       "VideoCodec": "视频编解码器：",
       "AudioCodec": "音频编解码器：",
       "NoFiles": "未选择文件。",
-      "Converting": "正在转换 ({0}/{1})：{2}...",
+      "Converting": "转换中 ({0}/{1})：{2}...",
       "Error": "处理 {0} 时出错：{1}",
-      "CompletedAll": "{0} 个文件{1}转换成功！",
-      "CompletedPartial": "进程中断：{0}/{1} 个文件完成",
-      "Canceled": "转换被用户取消。",
+      "CompletedAll": "成功转换 {0} 个文件！",
+      "CompletedPartial": "进程中断：已完成 {0}/{1} 个文件",
+      "Canceled": "用户取消了转换。",
       "NotificationTitle": "文件已转换",
       "NotificationMessage": "{0}",
       "OutputSuffix": "-VCONV"
@@ -170,17 +170,17 @@
       "RecommendationsTitle": "推荐：",
       "RecMP4": "• MP4 + AAC（最大兼容性）",
       "RecMKV": "• MKV + 任意音频（最灵活）",
-      "RecWebM": "• WebM + Opus（针对网络优化）",
-      "RecMOV": "• MOV + PCM（适合 DaVinci Resolve）",
-      "FormatNote": "注意：FFmpeg 支持许多组合，但有些可能不兼容所有设备。",
-      "VideoCodecInfo": "默认选项适用于大多数情况。",
-      "VideoCodecHW": "优先使用硬件加速。",
-      "VideoCodecDefinition": "视频编解码器压缩/解压缩视频以节省空间或更快传输。",
-      "VideoCodecCPU": "对于 CPU 编码，选择如 'libx264' 的编解码器。",
-      "VideoCodecTradeoff": "CPU 提供更好质量，但速度慢得多。",
+      "RecWebM": "• WebM + Opus（网页优化）",
+      "RecMOV": "• MOV + PCM（DaVinci Resolve 理想）",
+      "FormatNote": "注意：FFmpeg 支持许多组合，但某些组合可能不兼容所有设备。",
+      "VideoCodecInfo": "大多数情况下默认选项最佳。",
+      "VideoCodecHW": "优先使用硬件加速（GPU）。",
+      "VideoCodecDefinition": "视频编解码器压缩/解压视频以节省空间或加快流传输。",
+      "VideoCodecCPU": "CPU 编码请选择如 'libx264' 的编解码器。",
+      "VideoCodecTradeoff": "CPU 提供更好质量，但速度慢很多。",
       "AudioCodecInfo": "默认选项适用于大多数情况。",
-      "AudioCodecDefinition": "音频编解码器压缩/解压缩音频以节省空间或更快传输。",
-      "AudioCodecFLAC": "FLAC 提供出色质量，但占用更多空间。"
+      "AudioCodecDefinition": "音频编解码器压缩/解压音频以节省空间或加快流传输。",
+      "AudioCodecFLAC": "FLAC 提供卓越质量，但占用更多空间。"
     }
   },
   "VAudiofy": {
@@ -196,19 +196,19 @@
       "SelectVideo": "选择视频/音频：",
       "VideoPath": "视频/音频路径",
       "Format": "目标格式？",
-      "ConvertingAudio": "正在转换音频",
-      "ExtractingAudio": "正在提取音频",
+      "ConvertingAudio": "音频转换中",
+      "ExtractingAudio": "音频提取中",
       "ProcessedSingular": "1 个文件处理成功！",
       "ProcessedPlural": "{0} 个文件处理成功！",
       "Interrupted": "进程中断",
-      "InterruptedDetail": "{0}/{1} 个文件完成",
-      "Canceled": "操作取消",
+      "InterruptedDetail": "已完成 {0}/{1} 个文件",
+      "Canceled": "操作已取消",
       "NoFiles": "未选择文件"
     },
     "Tips": {
       "FormatSelection": "选择输出音频格式。",
-      "FormatNote1": "WAV 格式按使用可能性排序。如果不确定，请选择第一个。",
-      "FormatNote2": "Opus 是更新的、更高效的；Vorbis 是旧版的。"
+      "FormatNote1": "WAV 格式按使用概率排序。如果不确定，请选第一个。",
+      "FormatNote2": "Opus 更新的更高效；Vorbis 是旧版。"
     }
   },
   "VDownload": {
@@ -236,40 +236,40 @@
       "Language": "语言：",
       "Appearance": "外观",
       "ShowProfileIcon": "显示个人资料图标？",
-      "Accent": "强调颜色：",
+      "Accent": "强调色：",
       "Behaviour": "行为",
       "HideRemainingTime": "隐藏剩余时间？",
       "HideNotifications": "隐藏通知？",
       "EnableSounds": "禁用声音？",
       "Advanced": "高级",
-      "EnableDebug": "启用日志输出 (DEBUG)",
+      "EnableDebug": "启用日志输出（DEBUG）",
       "Hardware": "重新计算硬件",
       "DefaultDownloadFolder": "桌面（默认）",
       "DownloadFolder": "下载文件夹：",
-      "DownloadFolderSet": "下载文件夹已设置。",
+      "DownloadFolderSet": "已设置下载文件夹。",
       "ProfileImage": "个人资料图片",
       "BrowseProfileImage": "加载图片",
       "Browse": "浏览...",
       "DeleteProfileImage": "删除图片",
-      "CookiesFile": "会话 Cookie：",
+      "CookiesFile": "会话 Cookie 文件：",
       "BrowseCookies": "选择 Cookie 文件",
       "NoCookies": "未选择文件",
       "Delete": "移除",
-      "UseCookieFile": "为 yt-dlp 使用此 Cookie 文件",
+      "UseCookieFile": "对 yt-dlp 使用此 Cookie 文件",
       "InvalidCookiesFile": "无效或空文件。",
-      "CookiesSet": "Cookie 文件已设置。",
-      "CookiesRemoved": "Cookie 文件已移除。",
-      "ValidatingImage": "正在验证图片...",
-      "ProfileImageSet": "个人资料图片已设置。",
-      "ProfileImageRemoved": "个人资料图片已移除。",
+      "CookiesSet": "已设置 Cookie 文件。",
+      "CookiesRemoved": "已移除 Cookie 文件。",
+      "ValidatingImage": "验证图片中...",
+      "ProfileImageSet": "已设置个人资料图片。",
+      "ProfileImageRemoved": "已移除个人资料图片。",
       "MainWindowFail": "无法访问主窗口。",
-      "Welcome": "欢迎，{0}！您想更改什么？:)"
+      "Welcome": "欢迎，{0}！您想更改什么？ :)"
     },
     "Tips": {
       "Hardware1": "此按钮会并行启动多个 FFmpeg 实例来检查",
       "Hardware2": "多种视频编解码器的兼容性，然后保存到下拉列表中。",
-      "Hardware3": "除非您知道自己在做什么，否则不推荐按此按钮...",
-      "Hardware4": "如果您更换 GPU 或遇到问题时可能有用，但请注意这会给您的电脑带来压力。"
+      "Hardware3": "除非您知道自己在做什么，否则不建议按此按钮...",
+      "Hardware4": "更换 GPU 或遇到问题时有用，但会给电脑带来较大负载。"
     }
   },
   "CancelDialog": {
@@ -282,123 +282,123 @@
   "Guide": {
     "WindowTitle": "工具指南",
     "VCut": {
-      "Title": "VCut — 剪切视频",
-      "Description": "VCut 允许您使用起点和终点快速剪切一个或多个视频。",
+      "Title": "VCut — 剪切视频/音频",
+      "Description": "VCut 可让您通过指定起点和终点快速剪切视频或音频。",
       "HowTo": {
-        "Title": "如何使用：",
-        "Step1": "1) 选择或拖放视频文件。",
-        "Step2": "2) 输入剪切的起始和结束时间。",
-        "Step3": "3) 按 Enter 或点击“剪切视频”。",
+        "Title": "使用方法：",
+        "Step1": "1) 选择或拖入视频/音频文件。",
+        "Step2": "2) 输入剪切的起点和终点时间。",
+        "Step3": "3) 按 Enter 或点击“剪切”。",
         "Step4": "4) 等待后台处理完成。"
       },
       "Notes": {
         "Title": "注意：",
-        "A": "您可以随意输入时间：仅秒数，或完整 hh:mm:ss 格式。",
-        "B": "如果结束时间超过视频长度，将自动调整为视频结尾。",
-        "C": "如果未提供结束时间，将剪切到视频结尾。"
+        "A": "时间可以随意输入：仅秒数或完整 hh:mm:ss 格式。",
+        "B": "如果终点时间超过视频长度，会自动调整为视频末尾。",
+        "C": "如果未提供终点时间，将剪切到视频末尾。"
       }
     },
     "VCompress": {
       "Title": "VCompress — 压缩与优化",
-      "Description": "VCompress 允许您快速压缩一个或多个视频，当可能时优先使用您的 GPU。",
+      "Description": "VCompress 可让您快速压缩一个或多个视频，尽可能优先使用 GPU。",
       "HowTo": {
-        "Title": "如何使用：",
-        "Step1": "1) 选择或拖放一个或多个视频文件。",
-        "Step2": "2) 输入所需的质量百分比。",
-        "Step3": "3) （可选）选择首选的视频/音频编解码器。",
+        "Title": "使用方法：",
+        "Step1": "1) 选择或拖入一个或多个视频文件。",
+        "Step2": "2) 输入期望的质量百分比。",
+        "Step3": "3) （可选）选择首选视频/音频编解码器。",
         "Step4": "4) 按 Enter 或点击“压缩视频”。",
         "Step5": "5) 等待后台处理。"
       },
       "Notes": {
         "Title": "注意：",
-        "A": "“质量百分比”指相对于原文件的最终文件大小。通常 25% 仍能提供非常可接受的质量并大幅减小大小。",
-        "B": "视频编解码器按优先级排序。默认将使用可用时的硬件编码器（Nvidia/AMD/Intel）。",
-        "C": "当可能时，仅执行复用（无重新编码），使进程更快。"
+        "A": "“质量百分比”指相对于原文件的最终大小。25% 通常仍能保持非常可接受的质量，同时大幅减小体积。",
+        "B": "视频编解码器按优先级排序。默认会在可用时使用硬件编码器（Nvidia/AMD/Intel）。",
+        "C": "可能时仅执行转封装（无重新编码），使过程快得多。"
       }
     },
     "VConvert": {
       "Title": "VConvert — 格式转换",
-      "Description": "VConvert 允许您快速转换一个或多个视频的格式。",
+      "Description": "VConvert 可让您快速转换一个或多个视频的格式。",
       "HowTo": {
-        "Title": "如何使用：",
-        "Step1": "1) 选择或拖放一个或多个视频文件。",
-        "Step2": "2) 选择所需的输出格式。",
-        "Step3": "3) （可选）选择首选的视频/音频编解码器。",
+        "Title": "使用方法：",
+        "Step1": "1) 选择或拖入一个或多个视频文件。",
+        "Step2": "2) 选择期望的输出格式。",
+        "Step3": "3) （可选）选择首选视频/音频编解码器。",
         "Step4": "4) 按 Enter 或点击“转换视频格式”。",
         "Step5": "5) 等待后台处理。"
       },
       "Notes": {
         "Title": "注意：",
-        "A": "视频编解码器按优先级排序。默认将使用您的 OS/GPU 特定的可用硬件编码器。",
-        "B": "当可能时，仅执行复用（无重新编码），显著加快进程。"
+        "A": "视频编解码器按优先级排序。默认会在可用时使用对应系统/GPU 的硬件编码器。",
+        "B": "可能时仅执行转封装（无重新编码），显著加快过程。"
       }
     },
     "VAudiofy": {
       "Title": "VAudiofy — 提取音频",
-      "Description": "VAudiofy 允许您快速转换音频格式或从一个或多个视频中提取音频。",
+      "Description": "VAudiofy 可让您快速转换音频格式或从一个或多个视频中提取音频。",
       "HowTo": {
-        "Title": "如何使用：",
-        "Step1": "1) 选择或拖放一个或多个音频/视频文件。",
-        "Step2": "2) 选择所需的输出格式。",
+        "Title": "使用方法：",
+        "Step1": "1) 选择或拖入一个或多个音频/视频文件。",
+        "Step2": "2) 选择期望的输出格式。",
         "Step3": "3) 按 Enter 或点击“提取音频”。",
         "Step4": "4) 等待后台处理。"
       }
     },
     "VDownload": {
       "title": "VDownload — 下载视频",
-      "description": "VDownload 允许您从各种平台（如 YouTube 或 TikTok）下载一个或多个视频。",
+      "description": "VDownload 可让您从 YouTube、TikTok 等各种平台下载一个或多个视频。",
       "howTo": {
-        "title": "如何使用：",
-        "step1": "1) 复制链接并粘贴到输入字段中。",
-        "step2": "2) 按“添加”按钮将其添加到列表中。",
-        "step3": "3) 选择所需的分辨率。",
+        "title": "使用方法：",
+        "step1": "1) 复制链接并粘贴到输入框。",
+        "step2": "2) 点击“添加”按钮将其加入列表。",
+        "step3": "3) 选择期望的分辨率。",
         "step4": "4) 按 Enter 或点击“下载视频”按钮。",
         "step5": "5) 等待后台处理。"
       },
       "troubleshooting": {
-        "title": "不工作？",
+        "title": "无法正常工作？",
         "youtube": {
           "problem": "年龄限制或高流量",
-          "description": "YouTube 会激活反机器人机制，需要登录。此外，Edge 和 Chrome 等浏览器会加密 Cookie。",
-          "solution": "需要使用活跃会话的浏览器 Cookie，以便 VDownload 获取视频信息。请转到“设置”进行配置。"
+          "description": "YouTube 会激活防机器人机制，需要登录。此外，像 Edge 和 Chrome 这样的浏览器会加密 Cookie。",
+          "solution": "需要使用活跃会话的浏览器 Cookie，以便 VDownload 获取视频信息。请到“设置”中进行配置。"
         }
       },
       "osInstructions": {
         "windows": {
           "edge": {
-            "description": "如果您使用 Edge，需要安装扩展"
+            "description": "如果使用 Edge，需要安装扩展"
           },
           "chrome": {
-            "description": "如果您使用 Chrome，需要安装扩展"
+            "description": "如果使用 Chrome，需要安装扩展"
           },
-          "otherBrowsers": "大多数其他浏览器（除 Firefox 外）兼容并需要 Chrome 兼容扩展。您可以安装扩展"
+          "otherBrowsers": "大多数其他浏览器（除 Firefox）兼容，需要 Chrome 兼容扩展。您可以安装扩展"
         },
         "linuxMac": {
-          "description": "无已知问题，尽管推荐使用 Cookie 文件以加快进程。",
+          "description": "无已知问题，但推荐使用 Cookie 文件以加快过程。",
           "suggestion": "您可以安装扩展"
         }
       },
       "limitations": {
         "title": "限制",
-        "item1": "尚未实现对多种视频格式的支持。",
-        "item2": "由于此功能最近实现，您可能遇到 bug。"
+        "item1": "多视频格式支持尚未实现。",
+        "item2": "由于该功能最近实现，可能出现 bug。"
       }
     }
   },
   "AcercaDe": {
     "Title": "关于",
     "WhatIs": {
-      "Title": "什么是 VManager？",
-      "Description": "VManager 是一套设计用于快速、直接、高效处理视频的工具。它允许在不复杂设置的情况下剪切、转换、压缩和提取音频，并具有专注于简单性和生产力的界面。"
+      "Title": "VManager 是什么？",
+      "Description": "VManager 是一套专为快速、直接、高效处理视频而设计的工具集。它允许在无需复杂设置的情况下剪切、转换、压缩和提取音频，界面注重简洁与生产力。"
     },
     "Privacy": {
       "Title": "隐私",
-      "Description": "VManager 不收集、存储或传输任何个人数据或用户文件。所有处理均在您的设备本地进行。"
+      "Description": "VManager 不收集、不存储也不传输任何个人数据或用户文件。所有处理均在您的设备本地完成。"
     },
     "Guides": {
       "Title": "工具指南",
-      "Description": "选择一个指南以了解如何使用每个模块。",
-      "VCut": "VCut — 剪切视频",
+      "Description": "选择一个指南以学习每个模块的使用方法。",
+      "VCut": "VCut — 剪切视频/音频",
       "VCompress": "VCompress — 压缩与优化",
       "VConvert": "VConvert — 格式转换",
       "VAudiofy": "VAudiofy — 提取音频",
@@ -406,7 +406,7 @@
     },
     "Credits": {
       "Title": "致谢",
-      "Description": "由 Franz Baltazar 开发。请注意可能出现 bug；强烈推荐在 GitHub 上打开 Issue。",
+      "Description": "由 Franz Baltazar 开发。请注意可能出现 bug；强烈建议在 GitHub 上开 Issue。",
       "LinkedIn": "LinkedIn – Franz Baltazar",
       "GitHubUser": "GitHub – balta-dev",
       "Instagram": "Instagram – @baltafranz"
@@ -417,22 +417,29 @@
     },
     "License": {
       "Title": "许可证",
-      "Description": "VManager 是根据 MIT 许可证分发的免费软件。"
+      "Description": "VManager 是根据 MIT 许可证分发的自由软件。"
     }
   },
   "VideoStatus": {
     "Completed": "已完成",
     "Canceled": "已取消",
     "Error": "错误",
-    "NoVideo": "无视频可下载。",
-    "ErrorNoInfo": "加载信息时出错",
-    "Downloading": "正在下载",
+    "NoVideo": "没有视频可下载。",
+    "ErrorNoInfo": "加载信息出错",
+    "Downloading": "下载中",
     "NotURL": "无效 URL",
     "AlreadyOnList": "此视频已在列表中。",
-    "RetrievingInfo": "正在检索信息...",
+    "RetrievingInfo": "正在获取信息...",
     "Downloaded": "已下载",
     "Downloads": "下载",
     "CantDeleteWhileDownloading": "下载中无法删除视频。",
     "OperationCanceled": "操作已取消。"
+  },
+  "Notifier": {
+    "FileProcessed": "文件 {0} 已成功处理！"
+  },
+  "Overlay": {
+    "DropHere": "将文件拖到此处",
+    "CancelHint": "或按 ESC 取消"
   }
 }

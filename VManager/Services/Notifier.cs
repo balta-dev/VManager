@@ -8,6 +8,7 @@ namespace VManager.Services;
 public class Notifier
 {
     private static bool _enabled = true;
+    public LocalizationService L => LocalizationService.Instance;
 
     public static bool Enabled
     {
@@ -51,20 +52,24 @@ public class Notifier
             return;
         
         string fileName = Path.GetFileName(filePath);
+        string message = string.Format(
+            L["Notifier.FileProcessed"],
+            fileName
+        );
         
         if (OperatingSystem.IsLinux())
         {
-            ShowNotificationLinux(status, $"¡El archivo {fileName} fue procesado exitosamente!");
+            ShowNotificationLinux(status,  message);
         }
         else if (OperatingSystem.IsMacOS())
         {
-            ShowNotificationMac(status, $"¡El archivo {fileName} fue procesado exitosamente!");
+            ShowNotificationMac(status,  message);
         }
         else if (OperatingSystem.IsWindows())
         {
             var toast = new ToastWindow(
                 status,
-                $"¡El archivo {fileName} fue procesado exitosamente!",
+                message,
                 "Assets/VManager.ico"
             );
             toast.Show(); 

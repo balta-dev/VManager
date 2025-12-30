@@ -837,10 +837,6 @@
                     validExtensions = new[] { ".txt" };
                     break;
 
-                case nameof(Herramienta1View):
-                    validExtensions = VideoExtensions;
-                    break;
-
                 default:
                     validExtensions = VideoExtensions.Concat(AudioExtensions).ToArray();
                     break;

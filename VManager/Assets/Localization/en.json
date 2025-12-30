@@ -42,7 +42,7 @@
       "Title1": "What does this program offer?",
       "Items1": {
         "Item1Title": "VCUT:",
-        "Item1Description": " quickly trims videos.",
+        "Item1Description": " quickly trims videos/audios.",
         "Item2Title": "VCOMPR:",
         "Item2Description": " compresses videos, prioritizing your GPU.",
         "Item3Title": "VCONV:",
@@ -66,7 +66,7 @@
     "Support": "This project is maintained by a single person, so if you'd like to contribute you can click the button below."
   },
   "VCut": {
-    "Title": "Video Trimming",
+    "Title": "Video/Audio Trimming",
     "Buttons": {
       "Refresh": "Refresh",
       "Browse": "Browse",
@@ -282,13 +282,13 @@
   "Guide": {
     "WindowTitle": "Tool guide",
     "VCut": {
-      "Title": "VCut — Trim videos",
-      "Description": "VCut lets you quickly trim one or more videos using a start and end point.",
+      "Title": "VCut — Trim videos/audios",
+      "Description": "VCut lets you quickly trim a video/audio using a start and end point.",
       "HowTo": {
         "Title": "How to use:",
-        "Step1": "1) Select or drag a video file(s).",
+        "Step1": "1) Select or drag a video/audio file.",
         "Step2": "2) Enter the start and end times for the trim.",
-        "Step3": "3) Press Enter or click 'Trim Video'.",
+        "Step3": "3) Press Enter or click 'Trim'.",
         "Step4": "4) Wait for background processing to finish."
       },
       "Notes": {
@@ -398,7 +398,7 @@
     "Guides": {
       "Title": "Tool Guides",
       "Description": "Select a guide to learn how to use each module.",
-      "VCut": "VCut — Trim videos",
+      "VCut": "VCut — Trim videos/audios",
       "VCompress": "VCompress — Compress & optimize",
       "VConvert": "VConvert — Format conversion",
       "VAudiofy": "VAudiofy — Extract audio",
@@ -434,5 +434,12 @@
     "Downloads": "downloads",
     "CantDeleteWhileDownloading": "Cannot delete a video while it is downloading.",
     "OperationCanceled": "Operation canceled."
+  },
+  "Notifier": {
+    "FileProcessed": "¡The file {0} was successfully processed!"
+  },
+  "Overlay": {
+    "DropHere": "Drop your file here",
+    "CancelHint": "or press ESC to cancel"
   }
 }

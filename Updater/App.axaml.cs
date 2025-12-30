@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
@@ -14,6 +15,7 @@ using Avalonia.Media;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using ReactiveUI;
+using VManager.Services;
 
 namespace Updater
 {
@@ -23,6 +25,160 @@ namespace Updater
         {
             AvaloniaXamlLoader.Load(this);
             this.GetObservable(ActualThemeVariantProperty).Subscribe(_ => ApplyCustomTheme());
+        }
+        
+        private static string CacheFilePath => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "VManager", "cache", "update_cache.json");
+        
+        private static readonly string ConfigPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "VManager",
+            "config.json");
+    
+        private static readonly Dictionary<string, string> LanguageMap =
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Español"] = "es",
+                ["English"] = "en",
+                ["Русский"] = "ru",
+                ["Português"] = "pt",
+                ["Français"] = "fr",
+                ["日本語"] = "ja",
+                ["中文"] = "zh",
+                ["العربية"] = "ar"
+            };
+        
+        private sealed class UpdaterConfig
+        {
+            public string? Language { get; set; } //dto para leer idioma
+        }
+        
+        private static string ResolveLanguageCode()
+        {
+            if (!File.Exists(ConfigPath))
+                return "es";
+
+            try
+            {
+                var json = File.ReadAllText(ConfigPath);
+                var config = JsonSerializer.Deserialize<UpdaterConfig>(json);
+
+                if (config?.Language == null)
+                    return "es";
+
+                return LanguageMap.TryGetValue(config.Language, out var code)
+                    ? code
+                    : "es";
+            }
+            catch
+            {
+                return "es";
+            }
+        }
+        public static string CurrentLanguageCode => ResolveLanguageCode();
+        
+        public static class UpdaterLocalization
+        {
+            private static readonly Dictionary<string, Dictionary<string, string>> Strings =
+                new()
+                {
+                    ["es"] = new()
+                    {
+                        ["Title"] = "Actualización de VManager",
+                        ["CheckingUpdates"] = "Comprobando si hay actualizaciones disponibles...",
+                        ["DownloadLatest"] = "Descargar última versión",
+                        ["NoUpdate"] = "No hay actualización disponible.",
+                        ["Downloading"] = "Descargando...",
+                        ["IncompatibleAsset"] = "Error: Asset incompatible con la plataforma.",
+                        ["NewVersion"] = "¡Nueva actualización disponible {0}!"
+                    },
+                    ["en"] = new()
+                    {
+                        ["Title"] = "VManager Update",
+                        ["CheckingUpdates"] = "Checking for available updates...",
+                        ["DownloadLatest"] = "Download latest version",
+                        ["NoUpdate"] = "No update available.",
+                        ["Downloading"] = "Downloading...",
+                        ["IncompatibleAsset"] = "Error: incompatible asset for this platform.",
+                        ["NewVersion"] = "New update available {0}!"
+                    },
+                    ["ru"] = new()
+                    {
+                        ["Title"] = "Обновление VManager",
+                        ["CheckingUpdates"] = "Проверка доступных обновлений...",
+                        ["DownloadLatest"] = "Скачать последнюю версию",
+                        ["NoUpdate"] = "Обновление недоступно.",
+                        ["Downloading"] = "Загрузка...",
+                        ["IncompatibleAsset"] = "Ошибка: несовместимый файл для платформы.",
+                        ["NewVersion"] = "Доступно новое обновление {0}!"
+                    },
+                    ["pt"] = new()
+                    {
+                        ["Title"] = "Atualização do VManager",
+                        ["CheckingUpdates"] = "Verificando atualizações disponíveis...",
+                        ["DownloadLatest"] = "Baixar versão mais recente",
+                        ["NoUpdate"] = "Nenhuma atualização disponível.",
+                        ["Downloading"] = "Baixando...",
+                        ["IncompatibleAsset"] = "Erro: arquivo incompatível com a plataforma.",
+                        ["NewVersion"] = "Nova atualização disponível {0}!"
+                    },
+                    ["fr"] = new()
+                    {
+                        ["Title"] = "Mise à jour de VManager",
+                        ["CheckingUpdates"] = "Vérification des mises à jour disponibles...",
+                        ["DownloadLatest"] = "Télécharger la dernière version",
+                        ["NoUpdate"] = "Aucune mise à jour disponible.",
+                        ["Downloading"] = "Téléchargement...",
+                        ["IncompatibleAsset"] = "Erreur : fichier incompatible avec la plateforme.",
+                        ["NewVersion"] = "Nouvelle mise à jour disponible {0} !"
+                    },
+                    ["ja"] = new()
+                    {
+                        ["Title"] = "VManager の更新",
+                        ["CheckingUpdates"] = "更新を確認しています...",
+                        ["DownloadLatest"] = "最新バージョンをダウンロード",
+                        ["NoUpdate"] = "利用可能な更新はありません。",
+                        ["Downloading"] = "ダウンロード中...",
+                        ["IncompatibleAsset"] = "エラー: このプラットフォームと互換性のないファイルです。",
+                        ["NewVersion"] = "新しいアップデート {0} が利用可能です！"
+                    },
+                    ["zh"] = new()
+                    {
+                        ["Title"] = "VManager 更新",
+                        ["CheckingUpdates"] = "正在检查可用更新…",
+                        ["DownloadLatest"] = "下载最新版本",
+                        ["NoUpdate"] = "没有可用的更新。",
+                        ["Downloading"] = "正在下载...",
+                        ["IncompatibleAsset"] = "错误：与平台不兼容的文件。",
+                        ["NewVersion"] = "发现新版本 {0}！"
+                    },
+                    ["ar"] = new()
+                    {
+                        ["Title"] = "تحديث VManager",
+                        ["CheckingUpdates"] = "جارٍ التحقق من التحديثات المتاحة...",
+                        ["DownloadLatest"] = "تنزيل أحدث إصدار",
+                        ["NoUpdate"] = "لا توجد تحديثات متاحة.",
+                        ["Downloading"] = "جارٍ التنزيل...",
+                        ["IncompatibleAsset"] = "خطأ: ملف غير متوافق مع النظام.",
+                        ["NewVersion"] = "تحديث جديد متاح {0}!"
+                    }
+                };
+            
+            public static string T(string key, params object[] args)
+            {
+                var lang = CurrentLanguageCode;
+
+                if (!Strings.TryGetValue(lang, out var dict))
+                    dict = Strings["es"];
+
+                if (!dict.TryGetValue(key, out var value))
+                    return key;
+
+                return args.Length > 0
+                    ? string.Format(value, args)
+                    : value;
+            }
         }
 
         public override void OnFrameworkInitializationCompleted()
@@ -35,7 +191,7 @@ namespace Updater
                     Height = 500,
                     MinWidth = 300,
                     MinHeight = 400,
-                    Title = "Actualización de VManager"
+                    Title = UpdaterLocalization.T("Title")
                 };
 
                 updateWindow.Opened += async (_, _) =>
@@ -59,10 +215,6 @@ namespace Updater
             public bool UpdateAvailable => LatestVersion > CurrentVersion;
         }
 
-        private static string CacheFilePath => Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "VManager", "cache", "update_cache.json");
-
         private async Task CheckUpdatesAsync(Window window)
         {
             var update = await CheckForUpdateAsync();
@@ -71,7 +223,7 @@ namespace Updater
             {
                 window.Content = new TextBlock
                 {
-                    Text = "No hay actualización disponible.",
+                    Text = UpdaterLocalization.T("NoUpdate"),
                     FontSize = 20,
                     VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                     HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
@@ -89,7 +241,7 @@ namespace Updater
                 var awaitUpdate = updateWindow.FindControl<TextBlock>("AwaitUpdate");
                 
                 if (versionText != null)
-                    versionText.Text = $"¡Nueva actualización disponible {update.LatestVersion}!";
+                    versionText.Text = UpdaterLocalization.T("NewVersion", update.LatestVersion);
                 
                 if (releaseNotesText != null)
                     releaseNotesText.Text = update.ReleaseNotes;
@@ -107,7 +259,7 @@ namespace Updater
                     downloadButton.Command = ReactiveCommand.CreateFromTask(async () =>
                     {
                         downloadButton.IsEnabled = false;
-                        downloadButton.Content = "Descargando...";
+                        downloadButton.Content = UpdaterLocalization.T("Downloading");
                         downloadButton.Background = Brushes.LightGray;
                         downloadButton.Foreground = Brushes.Gray;
                         await DownloadAndUpdateAsync(update, progressText, progressBar);
@@ -155,7 +307,7 @@ namespace Updater
             // Verifica que la URL termine con la extensión esperada
             if (!update.DownloadUrl.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
             {
-                progressText.Text = "Error: Asset incompatible con la plataforma.";
+                progressText.Text = UpdaterLocalization.T("IncompatibleAsset");
                 return;
             }
 

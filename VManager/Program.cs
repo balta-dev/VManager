@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 using VManager.Services;
 
 namespace VManager;
@@ -12,25 +13,56 @@ sealed class Program
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "VManager", "logs");
     
+    private static readonly string ConfigPath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "VManager",
+        "config.json");
+    
+    private sealed class LogConfig
+    {
+        public bool Log { get; set; } //dto para log
+    }
+    
+    private static bool IsLoggingEnabled()
+    {
+        if (!File.Exists(ConfigPath))
+            return true; // default seguro
+
+        try
+        {
+            var json = File.ReadAllText(ConfigPath);
+            var cfg = JsonSerializer.Deserialize<LogConfig>(json);
+            return cfg?.Log ?? true;
+        }
+        catch
+        {
+            return true;
+        }
+    }
+    
     [STAThread]
     public static void Main(string[] args)
     {
         Directory.CreateDirectory(LogsFolder);
         
-        // Log file con rotación diaria
-        var logFilePath = Path.Combine(LogsFolder, $"log-{DateTime.UtcNow:yyyy-MM-dd}.log");
-
-        // Abrir en append (así no se pierde nada si la app se reinicia el mismo día)
-        var logFile = new StreamWriter(logFilePath, append: true, Encoding.UTF8)
+        if (IsLoggingEnabled())
         {
-            AutoFlush = true
-        };
+            var logFilePath = Path.Combine(
+                LogsFolder,
+                $"log-{DateTime.UtcNow:yyyy-MM-dd}.log"
+            );
 
-        // Redirigir Console.WriteLine y Console.Error
-        Console.SetOut(new MultiTextWriter(Console.Out, logFile));
-        Console.SetError(new MultiTextWriter(Console.Error, logFile));
+            var logFile = new StreamWriter(logFilePath, append: true, Encoding.UTF8)
+            {
+                AutoFlush = true
+            };
 
-        // Ejemplo de log
+            Console.SetOut(new MultiTextWriter(Console.Out, logFile));
+            Console.SetError(new MultiTextWriter(Console.Error, logFile));
+            Console.WriteLine("[DEBUG]: LOG HABILITADO.");
+
+        }
+        
         Console.WriteLine("[DEBUG]: Iniciando VManager...");
         
         FFmpegManager.Initialize();

@@ -1,78 +1,78 @@
 {
   "General": {
     "WelcomeMessage": "VManagerへようこそ！",
-    "AppDescription": "VManagerは、動画のカット・圧縮・フォーマット変換を簡単に行える強力で使いやすい多機能ツールキットです。",
+    "AppDescription": "VManagerは、動画のカット・圧縮・フォーマット変換を簡単に行える強力な多機能ツールキットです。",
     "ShowHide": "非表示",
     "Refreshed": "更新しました！",
     "Loading": "読み込み中...",
     "WelcomePanel": {
-      "GuideInfo": "アプリの詳細なガイドやその他の情報については、",
-      "AboutButton": "概要",
+      "GuideInfo": "アプリの詳細なガイドや情報は、",
+      "AboutButton": "について",
       "InSidebar": "サイドバーのボタンをクリックしてください。",
       "QuickShortcuts": "クイックショートカット：",
       "PressText": "押す",
-      "ToSwitchTools": "ツールを切り替える",
+      "ToSwitchTools": "でツールを切り替え",
       "OrText": "または",
-      "ForConfiguration": "設定を開く"
+      "ForConfiguration": "で設定を開く。"
     },
     "Shortcuts": {
       "Title": "ショートカット一覧：",
       "Items": {
-        "Item1Title": "ボタン 1/2/3/4/5：",
-        "Item1Description": "ツールを切り替える",
+        "Item1Title": "ボタン1/2/3/4/5：",
+        "Item1Description": " ツールを切り替え",
         "Item2Title": "F5：",
-        "Item2Description": "画面を更新",
+        "Item2Description": " 画面を更新",
         "Item3Title": "B：",
-        "Item3Description": "動画を選択",
+        "Item3Description": " 動画を選択",
         "Item4Title": "D：",
-        "Item4Description": "ツール内でドラッグ＆ドロップを有効にする",
+        "Item4Description": " ツール内でドラッグ＆ドロップを有効化",
         "Item5Title": "T：",
-        "Item5Description": "ダーク/ライトテーマを切り替える",
+        "Item5Description": " ダーク/ライトテーマを切り替え",
         "Item6Title": "Enter：",
-        "Item6Description": "処理を開始",
+        "Item6Description": " 操作を開始",
         "Item7Title": "Esc：",
-        "Item7Description": "処理をキャンセル",
+        "Item7Description": " 操作をキャンセル",
         "Item8Title": "O：",
-        "Item8Description": "名前を表示/非表示にする",
+        "Item8Description": " 名前を表示/非表示",
         "Item9Title": "C：",
-        "Item9Description": "設定を開く"
+        "Item9Description": " 設定を開く"
       }
     },
     "Border": {
       "Title1": "このプログラムは何を提供しますか？",
       "Items1": {
         "Item1Title": "VCUT：",
-        "Item1Description": "動画を素早くトリミングします。",
+        "Item1Description": " 動画/音声を素早くトリミング。",
         "Item2Title": "VCOMPR：",
-        "Item2Description": "動画を圧縮し、可能であればGPUを優先します。",
+        "Item2Description": " 動画を圧縮（GPUを優先）。",
         "Item3Title": "VCONV：",
-        "Item3Description": "異なる動画形式間を変換します（例：MKV → MP4）。",
+        "Item3Description": " 動画フォーマットを変換（例：MKV → MP4）。",
         "Item4Title": "VAUDIOFY：",
-        "Item4Description": "動画から音声を抽出したり、音声形式を変換したりします。",
+        "Item4Description": " 動画から音声を抽出または音声フォーマットを変換。",
         "Item5Title": "VDOWNLOAD：",
-        "Item5Description": "お気に入りのプラットフォームから動画をダウンロードします。"
+        "Item5Description": " お気に入りのプラットフォームから動画をダウンロード。"
       },
       "Title2": "使い方は？",
       "Items2": {
-        "Item1Description": "マウスまたはキーボードショートカットで左上のツールを選択",
-        "Item2Description": "動画をボックスにドラッグするか、「参照」ボタンで選択",
-        "Item3Description": "ボタンで処理を実行すれば完了です！"
+        "Item1Description": "左上でマウスまたはキーボードショートカットを使ってツールを選択",
+        "Item2Description": "動画をボックスにドラッグするか「参照」ボタンで選択",
+        "Item3Description": "ボタンで処理を実行して完了！"
       }
     }
   },
   "Footer": {
-    "Title": "Baltazar Franz によって作成",
+    "Title": "作成者：Baltazar Franz",
     "Version": "バージョン：",
-    "Support": "このプロジェクトは一人で維持されているため、貢献したい場合は下のボタンをクリックしてください。"
+    "Support": "このプロジェクトは一人で維持しています。寄与したい場合は下のボタンをクリックしてください。"
   },
   "VCut": {
-    "Title": "動画トリミング",
+    "Title": "動画/音声トリミング",
     "Buttons": {
       "Refresh": "更新",
       "Browse": "参照",
       "Cut": "動画をトリミング",
       "Cancel": "キャンセル",
-      "ShowFileInFolder": "フォルダーでファイルを表示"
+      "ShowFileInFolder": "フォルダ内でファイルを表示"
     },
     "Fields": {
       "SelectVideo": "動画を選択：",
@@ -82,25 +82,25 @@
       "ObtainingInfo": "動画情報を取得中...",
       "InvalidFrom": "開始時間が無効です",
       "InvalidTo": "終了時間が無効です",
-      "EndBeforeStart": "終了時間は開始時間より後でなければなりません",
+      "EndBeforeStart": "終了時間は開始時間より後にしてください",
       "ExceedsLength": "開始時間が動画の長さを超えています",
       "Cutting": "トリミング中...",
       "CutCanceled": "ユーザーがトリミングをキャンセルしました。",
-      "NoMainWindow": "メインウィンドウにアクセスできませんでした。",
+      "NoMainWindow": "メインウィンドウにアクセスできません。",
       "BrowseTitle": "動画を選択",
       "Error": "エラー：{0}",
       "Completed": "{0}",
       "OutputLabel": "ファイル：{0}",
-      "NotificationTitle": "動画がトリミングされました",
+      "NotificationTitle": "動画をトリミングしました",
       "NotificationMessage": "{0}"
     },
     "Tips": {
-      "FormatSelection": "秒数のみ、または従来の時間形式（hh:mm:ss）のどちらでも使用できます。",
-      "ValidInput": "時間が有効であれば、お好みの形式を使用してください。",
+      "FormatSelection": "秒数のみ、または伝統的な時間形式（hh:mm:ss）を使用できます。",
+      "ValidInput": "時間が有効であれば、好きな形式を使ってください。",
       "ExamplesTitle": "使用例：",
       "ExampleTrim1": "• 23秒から2:01までトリミング",
       "ExampleTrim2": "• 1:02:01から2:52:01までトリミング",
-      "NoteDuration": "注意：無効または空の場合はトリミング期間が自動的に再計算されます。"
+      "NoteDuration": "注意：無効または空の場合、トリミング期間は自動的に再計算されます。"
     }
   },
   "VCompress": {
@@ -110,34 +110,34 @@
       "Browse": "参照",
       "Compress": "動画を圧縮",
       "Cancel": "キャンセル",
-      "ShowFileInFolder": "フォルダーでファイルを表示"
+      "ShowFileInFolder": "フォルダ内でファイルを表示"
     },
     "Fields": {
       "SelectVideo": "動画を選択：",
       "VideoCodec": "ビデオコーデック：",
       "AudioCodec": "オーディオコーデック：",
       "VideoPath": "動画のパス",
-      "Quality": "品質パーセンテージ：",
+      "Quality": "品質パーセント：",
       "NoFiles": "ファイルが選択されていません。",
-      "InvalidPercent": "無効なパーセンテージです。",
+      "InvalidPercent": "無効なパーセントです。",
       "Compressing": "圧縮中 ({0}/{1})：{2}...",
       "Error": "{0} の処理中にエラー：{1}",
-      "CompletedAll": "{0} 個のファイルが正常に圧縮されました！",
-      "CompletedPartial": "処理が中断されました：{0}/{1} 個のファイルが完了",
+      "CompletedAll": "{0}個のファイルが正常に圧縮されました！",
+      "CompletedPartial": "処理が中断されました：{0}/{1}個のファイルが完了",
       "Canceled": "ユーザーが圧縮をキャンセルしました。",
-      "NotificationTitle": "ファイルが圧縮されました",
+      "NotificationTitle": "ファイルを圧縮しました",
       "NotificationMessage": "{0}",
       "OutputSuffix": "-COMP-{0}"
     },
     "Tips": {
-      "VideoCodecInfo": "デフォルトオプションがほとんどの場合に最適です。",
+      "VideoCodecInfo": "デフォルトオプションがほとんどの場合で最適です。",
       "VideoCodecHW": "利用可能な場合はハードウェアアクセラレーション（GPU）を優先します。",
-      "VideoCodecDefinition": "ビデオコーデックは動画を圧縮・解凍して容量を節約したり、ストリーミングを高速化したりします。",
+      "VideoCodecDefinition": "ビデオコーデックは動画を圧縮・展開して容量を節約したり高速ストリーミングを実現します。",
       "VideoCodecCPU": "CPUエンコードを希望する場合は「libx264」などのコーデックを使用してください。",
       "VideoCodecTradeoff": "CPUは最高の品質を提供しますが、かなり遅くなります。",
-      "AudioCodecInfo": "デフォルトオプションがほとんどの場合に最適です。",
-      "AudioCodecDefinition": "オーディオコーデックは音声を圧縮・解凍して容量を節約したり、ストリーミングを高速化したりします。",
-      "AudioCodecFLAC": "FLACは優れた音質を提供しますが、ファイルサイズがかなり大きくなります。"
+      "AudioCodecInfo": "デフォルトオプションがほとんどの場合で最適です。",
+      "AudioCodecDefinition": "オーディオコーデックは音声を圧縮・展開して容量を節約したり高速ストリーミングを実現します。",
+      "AudioCodecFLAC": "FLACは卓越した音質を提供しますが、ファイルサイズがかなり大きくなります。"
     }
   },
   "VConvert": {
@@ -145,42 +145,42 @@
     "Buttons": {
       "Refresh": "更新",
       "Browse": "参照",
-      "Convert": "動画形式を変換",
+      "Convert": "動画フォーマットを変換",
       "Cancel": "キャンセル",
-      "ShowFileInFolder": "フォルダーでファイルを表示"
+      "ShowFileInFolder": "フォルダ内でファイルを表示"
     },
     "Fields": {
       "SelectVideo": "動画を選択：",
       "VideoPath": "動画のパス",
-      "Format": "対象形式？",
+      "Format": "対象フォーマット？",
       "VideoCodec": "ビデオコーデック：",
       "AudioCodec": "オーディオコーデック：",
       "NoFiles": "ファイルが選択されていません。",
       "Converting": "変換中 ({0}/{1})：{2}...",
       "Error": "{0} の処理中にエラー：{1}",
-      "CompletedAll": "{0} 個のファイルが正常に変換されました！",
-      "CompletedPartial": "処理が中断されました：{0}/{1} 個のファイルが完了",
+      "CompletedAll": "{0}個のファイルが正常に変換されました！",
+      "CompletedPartial": "処理が中断されました：{0}/{1}個のファイルが完了",
       "Canceled": "ユーザーが変換をキャンセルしました。",
-      "NotificationTitle": "ファイルが変換されました",
+      "NotificationTitle": "ファイルを変換しました",
       "NotificationMessage": "{0}",
       "OutputSuffix": "-VCONV"
     },
     "Tips": {
-      "FormatSelection": "動画の出力形式を選択してください。",
+      "FormatSelection": "動画の出力フォーマットを選択してください。",
       "RecommendationsTitle": "おすすめ：",
-      "RecMP4": "• MP4 + AAC（最大の互換性）",
-      "RecMKV": "• MKV + 任意のオーディオ（最も柔軟）",
-      "RecWebM": "• WebM + Opus（ウェブ向けに最適化）",
+      "RecMP4": "• MP4 + AAC（最大互換性）",
+      "RecMKV": "• MKV + 任意の音声（最も柔軟）",
+      "RecWebM": "• WebM + Opus（ウェブ向け最適化）",
       "RecMOV": "• MOV + PCM（DaVinci Resolveに最適）",
       "FormatNote": "注意：FFmpegは多くの組み合わせをサポートしますが、一部はすべてのデバイスと互換性がない場合があります。",
-      "VideoCodecInfo": "デフォルトオプションがほとんどの場合に最適です。",
-      "VideoCodecHW": "ハードウェアアクセラレーションを優先します。",
-      "VideoCodecDefinition": "ビデオコーデックは動画を圧縮・解凍して容量を節約したり、ストリーミングを高速化したりします。",
+      "VideoCodecInfo": "デフォルトオプションがほとんどの場合で最適です。",
+      "VideoCodecHW": "ハードウェアアクセラレーション（GPU）を優先します。",
+      "VideoCodecDefinition": "ビデオコーデックは動画を圧縮・展開して容量を節約したり高速ストリーミングを実現します。",
       "VideoCodecCPU": "CPUエンコードの場合は「libx264」などのコーデックを選択してください。",
       "VideoCodecTradeoff": "CPUはより良い品質を提供しますが、かなり遅くなります。",
-      "AudioCodecInfo": "デフォルトがほとんどの場合に最適です。",
-      "AudioCodecDefinition": "オーディオコーデックは音声を圧縮・解凍して容量を節約したり、ストリーミングを高速化したりします。",
-      "AudioCodecFLAC": "FLACは優れた品質を提供しますが、より多くの容量を占有します。"
+      "AudioCodecInfo": "デフォルトがほとんどの場合で機能します。",
+      "AudioCodecDefinition": "オーディオコーデックは音声を圧縮・展開して容量を節約したり高速ストリーミングを実現します。",
+      "AudioCodecFLAC": "FLACは卓越した品質を提供しますが、容量がかなり大きくなります。"
     }
   },
   "VAudiofy": {
@@ -190,25 +190,25 @@
       "Browse": "参照",
       "Extract": "音声を抽出",
       "Cancel": "キャンセル",
-      "ShowFileInFolder": "フォルダーでファイルを表示"
+      "ShowFileInFolder": "フォルダ内でファイルを表示"
     },
     "Fields": {
       "SelectVideo": "動画/音声を選択：",
       "VideoPath": "動画/音声のパス",
-      "Format": "対象形式？",
+      "Format": "対象フォーマット？",
       "ConvertingAudio": "音声を変換中",
       "ExtractingAudio": "音声を抽出中",
-      "ProcessedSingular": "1 個のファイルが正常に処理されました！",
-      "ProcessedPlural": "{0} 個のファイルが正常に処理されました！",
+      "ProcessedSingular": "1個のファイルが正常に処理されました！",
+      "ProcessedPlural": "{0}個のファイルが正常に処理されました！",
       "Interrupted": "処理が中断されました",
-      "InterruptedDetail": "{0}/{1} 個のファイルが完了",
+      "InterruptedDetail": "{0}/{1}個のファイルが完了",
       "Canceled": "操作がキャンセルされました",
       "NoFiles": "ファイルが選択されていません"
     },
     "Tips": {
-      "FormatSelection": "出力音声形式を選択してください。",
-      "FormatNote1": "WAV形式は使用頻度の高い順に並んでいます。不明な場合は最初のものを選択してください。",
-      "FormatNote2": "Opusは新しく効率的です。Vorbisはレガシーです。"
+      "FormatSelection": "出力音声フォーマットを選択してください。",
+      "FormatNote1": "WAVフォーマットは使用頻度の高い順に並んでいます。不明な場合は最初を選択してください。",
+      "FormatNote2": "Opusはより新しく効率的です。Vorbisは旧式です。"
     }
   },
   "VDownload": {
@@ -218,7 +218,7 @@
       "Add": "追加",
       "Download": "動画をダウンロード",
       "Cancel": "キャンセル",
-      "ShowFileInFolder": "フォルダーでファイルを表示"
+      "ShowFileInFolder": "フォルダ内でファイルを表示"
     },
     "Fields": {
       "PasteVideo": "動画URLを貼り付け",
@@ -235,132 +235,132 @@
     "Fields": {
       "Language": "言語：",
       "Appearance": "外観",
-      "ShowProfileIcon": "プロフィールアイコンを表示しますか？",
+      "ShowProfileIcon": "プロフィールアイコンを表示？",
       "Accent": "アクセントカラー：",
       "Behaviour": "動作",
-      "HideRemainingTime": "残り時間を非表示にしますか？",
-      "HideNotifications": "通知を非表示にしますか？",
-      "EnableSounds": "音を無効にしますか？",
+      "HideRemainingTime": "残り時間を非表示？",
+      "HideNotifications": "通知を非表示？",
+      "EnableSounds": "音を無効化？",
       "Advanced": "詳細設定",
-      "EnableDebug": "ログ出力（DEBUG）を有効にする",
+      "EnableDebug": "ログ出力（DEBUG）を有効化",
       "Hardware": "ハードウェアを再計算",
       "DefaultDownloadFolder": "デスクトップ（デフォルト）",
-      "DownloadFolder": "ダウンロードフォルダー：",
-      "DownloadFolderSet": "ダウンロードフォルダーが設定されました。",
+      "DownloadFolder": "ダウンロードフォルダ：",
+      "DownloadFolderSet": "ダウンロードフォルダを設定しました。",
       "ProfileImage": "プロフィール画像",
-      "BrowseProfileImage": "画像を読み込む",
+      "BrowseProfileImage": "画像を読み込み",
       "Browse": "参照...",
       "DeleteProfileImage": "画像を削除",
-      "CookiesFile": "セッションCookie：",
+      "CookiesFile": "セッションCookieファイル：",
       "BrowseCookies": "Cookieファイルを選択",
       "NoCookies": "ファイルが選択されていません",
       "Delete": "削除",
       "UseCookieFile": "yt-dlpにこのCookieファイルを使用",
       "InvalidCookiesFile": "無効または空のファイルです。",
-      "CookiesSet": "Cookieファイルが設定されました。",
-      "CookiesRemoved": "Cookieファイルが削除されました。",
+      "CookiesSet": "Cookieファイルを設定しました。",
+      "CookiesRemoved": "Cookieファイルを削除しました。",
       "ValidatingImage": "画像を検証中...",
-      "ProfileImageSet": "プロフィール画像が設定されました。",
-      "ProfileImageRemoved": "プロフィール画像が削除されました。",
-      "MainWindowFail": "メインウィンドウにアクセスできませんでした。",
-      "Welcome": "ようこそ、{0}！何を変更しますか？:)"
+      "ProfileImageSet": "プロフィール画像を設定しました。",
+      "ProfileImageRemoved": "プロフィール画像を削除しました。",
+      "MainWindowFail": "メインウィンドウにアクセスできません。",
+      "Welcome": "ようこそ、{0}！何を変更しますか？ :)"
     },
     "Tips": {
       "Hardware1": "このボタンは複数のFFmpegインスタンスを並列起動して",
-      "Hardware2": "さまざまなビデオコーデックの互換性をチェックし、ドロップダウンリストに保存します。",
+      "Hardware2": "複数のビデオコーデックの互換性をチェックし、ドロップダウンリストに保存します。",
       "Hardware3": "何をしているかわかっていない限り、このボタンを押すことはおすすめしません...",
-      "Hardware4": "GPUを変更した場合や問題が発生した場合に役立ちますが、PCに負荷がかかります。"
+      "Hardware4": "GPUを変更した場合や問題が発生した場合に便利ですが、PCに大きな負荷がかかります。"
     }
   },
   "CancelDialog": {
     "Title": "操作をキャンセルしますか？",
     "Info": "バックグラウンドプロセスを強制終了しようとしています。",
-    "Warning": "この操作は元に戻せません。",
+    "Warning": "この操作は取り消せません。",
     "Cancel": "キャンセル",
     "No": "いいえ"
   },
   "Guide": {
     "WindowTitle": "ツールガイド",
     "VCut": {
-      "Title": "VCut — 動画をトリミング",
-      "Description": "VCutは開始点と終了点を指定して1つまたは複数の動画を素早くトリミングできます。",
+      "Title": "VCut — 動画/音声トリミング",
+      "Description": "VCutは開始点と終了点を指定して動画や音声を素早くトリミングできます。",
       "HowTo": {
         "Title": "使い方：",
-        "Step1": "1) 動画ファイルを選択またはドラッグします。",
-        "Step2": "2) トリミングの開始時間と終了時間を入力します。",
-        "Step3": "3) Enterキーまたは「動画をトリミング」をクリックします。",
-        "Step4": "4) バックグラウンド処理が完了するまでお待ちください。"
+        "Step1": "1) 動画/音声ファイルをドラッグまたは選択。",
+        "Step2": "2) トリミングの開始と終了時間を入力。",
+        "Step3": "3) Enterキーまたは「トリミング」をクリック。",
+        "Step4": "4) バックグラウンド処理が完了するまで待つ。"
       },
       "Notes": {
         "Title": "注意：",
-        "A": "時間は秒数のみでも、完全なhh:mm:ss形式でも入力できます。",
-        "B": "終了時間が動画の長さを超える場合、自動的に動画の最後まで調整されます。",
-        "C": "終了時間を指定しない場合、動画の最後までトリミングされます。"
+        "A": "時間は秒数のみ、またはhh:mm:ssのフル形式で入力できます。",
+        "B": "終了時間が動画の長さを超えた場合、自動的に動画の末尾に調整されます。",
+        "C": "終了時間が指定されていない場合、動画の末尾までトリミングされます。"
       }
     },
     "VCompress": {
-      "Title": "VCompress — 圧縮と最適化",
+      "Title": "VCompress — 圧縮＆最適化",
       "Description": "VCompressは1つまたは複数の動画を素早く圧縮し、可能であればGPUを優先します。",
       "HowTo": {
         "Title": "使い方：",
-        "Step1": "1) 1つまたは複数の動画ファイルを選択またはドラッグします。",
-        "Step2": "2) 希望の品質パーセンテージを入力します。",
-        "Step3": "3) （任意）好みのビデオ/オーディオコーデックを選択します。",
-        "Step4": "4) Enterキーまたは「動画を圧縮」をクリックします。",
-        "Step5": "5) バックグラウンド処理をお待ちください。"
+        "Step1": "1) 1つまたは複数の動画ファイルをドラッグまたは選択。",
+        "Step2": "2) 希望の品質パーセントを入力。",
+        "Step3": "3) （任意）好みのビデオ/オーディオコーデックを選択。",
+        "Step4": "4) Enterキーまたは「動画を圧縮」をクリック。",
+        "Step5": "5) バックグラウンド処理を待つ。"
       },
       "Notes": {
         "Title": "注意：",
-        "A": "「品質パーセンテージ」は元のファイルに対する最終ファイルサイズを指します。通常25%でも非常に良好な品質を保ちながら大幅にサイズを削減できます。",
-        "B": "ビデオコーデックは優先順に並んでいます。デフォルトは利用可能な場合にハードウェアエンコーダー（Nvidia/AMD/Intel）を使用します。",
-        "C": "可能な場合はリムックス（再エンコードなし）のみが行われ、処理が大幅に速くなります。"
+        "A": "「品質パーセント」は元のファイルサイズに対する最終サイズを指します。25%でも非常に高い品質を保ちながら大幅にサイズを削減できることが多いです。",
+        "B": "ビデオコーデックは優先順に並んでいます。デフォルトは利用可能な場合、Nvidia/AMD/Intelのハードウェアエンコーダーを使用します。",
+        "C": "可能な場合はリムックス（再エンコードなし）のみ行われ、処理が大幅に高速になります。"
       }
     },
     "VConvert": {
-      "Title": "VConvert — 形式変換",
-      "Description": "VConvertは1つまたは複数の動画の形式を素早く変換できます。",
+      "Title": "VConvert — フォーマット変換",
+      "Description": "VConvertは1つまたは複数の動画のフォーマットを素早く変換できます。",
       "HowTo": {
         "Title": "使い方：",
-        "Step1": "1) 1つまたは複数の動画ファイルを選択またはドラッグします。",
-        "Step2": "2) 希望の出力形式を選択します。",
-        "Step3": "3) （任意）好みのビデオ/オーディオコーデックを選択します。",
-        "Step4": "4) Enterキーまたは「動画形式を変換」をクリックします。",
-        "Step5": "5) バックグラウンド処理をお待ちください。"
+        "Step1": "1) 1つまたは複数の動画ファイルをドラッグまたは選択。",
+        "Step2": "2) 希望の出力フォーマットを選択。",
+        "Step3": "3) （任意）好みのビデオ/オーディオコーデックを選択。",
+        "Step4": "4) Enterキーまたは「動画フォーマットを変換」をクリック。",
+        "Step5": "5) バックグラウンド処理を待つ。"
       },
       "Notes": {
         "Title": "注意：",
-        "A": "ビデオコーデックは優先順に並んでいます。デフォルトはOS/GPU固有の利用可能なハードウェアエンコーダーを使用します。",
-        "B": "可能な場合はリムックス（再エンコードなし）のみが行われ、処理が大幅に速くなります。"
+        "A": "ビデオコーデックは優先順に並んでいます。デフォルトはOS/GPUに応じたハードウェアエンコーダーを使用します。",
+        "B": "可能な場合はリムックス（再エンコードなし）のみ行われ、処理が大幅に高速になります。"
       }
     },
     "VAudiofy": {
       "Title": "VAudiofy — 音声抽出",
-      "Description": "VAudiofyは音声形式を素早く変換したり、1つまたは複数の動画から音声を抽出したりできます。",
+      "Description": "VAudiofyは音声フォーマットの変換や、1つまたは複数の動画から音声を素早く抽出できます。",
       "HowTo": {
         "Title": "使い方：",
-        "Step1": "1) 1つまたは複数の音声/動画ファイルを選択またはドラッグします。",
-        "Step2": "2) 希望の出力形式を選択します。",
-        "Step3": "3) Enterキーまたは「音声を抽出」をクリックします。",
-        "Step4": "4) バックグラウンド処理をお待ちください。"
+        "Step1": "1) 1つまたは複数の音声/動画ファイルをドラッグまたは選択。",
+        "Step2": "2) 希望の出力フォーマットを選択。",
+        "Step3": "3) Enterキーまたは「音声を抽出」をクリック。",
+        "Step4": "4) バックグラウンド処理を待つ。"
       }
     },
     "VDownload": {
       "title": "VDownload — 動画ダウンロード",
-      "description": "VDownloadはYouTubeやTikTokなどのさまざまなプラットフォームから1つまたは複数の動画をダウンロードできます。",
+      "description": "VDownloadはYouTubeやTikTokなどの各種プラットフォームから1つまたは複数の動画をダウンロードできます。",
       "howTo": {
         "title": "使い方：",
-        "step1": "1) リンクをコピーして入力欄に貼り付けます。",
-        "step2": "2) 「追加」ボタンを押してリストに追加します。",
-        "step3": "3) 希望の解像度を選択します。",
-        "step4": "4) Enterキーまたは「動画をダウンロード」ボタンをクリックします。",
-        "step5": "5) バックグラウンドで処理されるまでお待ちください。"
+        "step1": "1) リンクをコピーして入力欄に貼り付け。",
+        "step2": "2) 「追加」ボタンを押してリストに追加。",
+        "step3": "3) 希望の解像度を選択。",
+        "step4": "4) Enterキーまたは「動画をダウンロード」ボタンをクリック。",
+        "step5": "5) バックグラウンドで処理されるまで待つ。"
       },
       "troubleshooting": {
         "title": "動作しない場合？",
         "youtube": {
           "problem": "年齢制限または高トラフィック",
-          "description": "YouTubeはログインが必要なアンチボット機構を起動します。また、EdgeやChromeなどのブラウザはCookieを暗号化します。",
-          "solution": "VDownloadが動画情報を取得できるように、アクティブなセッションのブラウザCookieを使用する必要があります。「設定」に移動して設定してください。"
+          "description": "YouTubeはボット対策メカニズムを起動し、ログインを要求します。また、EdgeやChromeなどのブラウザはCookieを暗号化します。",
+          "solution": "VDownloadが動画情報を取得できるように、アクティブなセッションのブラウザCookieを使用する必要があります。「設定」から設定してください。"
         }
       },
       "osInstructions": {
@@ -371,7 +371,7 @@
           "chrome": {
             "description": "Chromeを使用している場合、拡張機能をインストールする必要があります"
           },
-          "otherBrowsers": "ほとんどの他のブラウザ（Firefoxを除く）は互換性があり、Chrome互換の拡張機能が必要です。拡張機能をインストールできます"
+          "otherBrowsers": "ほとんどの他のブラウザ（Firefoxを除く）はChrome互換拡張機能が必要です。拡張機能をインストールできます"
         },
         "linuxMac": {
           "description": "既知の問題はありませんが、処理を高速化するためにCookieファイルの使用をおすすめします。",
@@ -379,34 +379,34 @@
         }
       },
       "limitations": {
-        "title": "制限",
-        "item1": "複数の動画形式のサポートはまだ実装されていません。",
-        "item2": "この機能は最近実装されたため、バグが発生する可能性があります。"
+        "title": "制限事項",
+        "item1": "複数動画フォーマットのサポートはまだ実装されていません。",
+        "item2": "この機能の最近の実装によりバグが発生する可能性があります。"
       }
     }
   },
   "AcercaDe": {
-    "Title": "概要",
+    "Title": "について",
     "WhatIs": {
       "Title": "VManagerとは？",
-      "Description": "VManagerは動画を迅速・直接的・効率的に処理するためのツールセットです。複雑な設定なしでトリミング・変換・圧縮・音声抽出が可能で、シンプルさと生産性に焦点を当てたインターフェースを備えています。"
+      "Description": "VManagerは動画を迅速・直接的・効率的に処理するためのツールセットです。複雑な設定なしでトリミング、変換、圧縮、音声抽出が可能で、シンプルさと生産性に焦点を当てたインターフェースです。"
     },
     "Privacy": {
       "Title": "プライバシー",
-      "Description": "VManagerは個人データやユーザーファイルを収集・保存・送信しません。すべての処理はお客様のデバイス上でローカルに行われます。"
+      "Description": "VManagerは個人データやユーザーファイルを収集・保存・送信しません。すべての処理はローカルで実行されます。"
     },
     "Guides": {
       "Title": "ツールガイド",
-      "Description": "各モジュールの使い方を学ぶにはガイドを選択してください。",
-      "VCut": "VCut — 動画をトリミング",
-      "VCompress": "VCompress — 圧縮と最適化",
-      "VConvert": "VConvert — 形式変換",
+      "Description": "各モジュールの使い方を学ぶためにガイドを選択してください。",
+      "VCut": "VCut — 動画/音声トリミング",
+      "VCompress": "VCompress — 圧縮＆最適化",
+      "VConvert": "VConvert — フォーマット変換",
       "VAudiofy": "VAudiofy — 音声抽出",
       "VDownload": "VDownload — 動画ダウンロード"
     },
     "Credits": {
       "Title": "クレジット",
-      "Description": "Franz Baltazarによって開発されました。バグが発生する可能性があるため、GitHubでIssueを開くことを強くおすすめします。",
+      "Description": "開発：Franz Baltazar。バグが発生する可能性があります。GitHubでIssueを開くことを強くおすすめします。",
       "LinkedIn": "LinkedIn – Franz Baltazar",
       "GitHubUser": "GitHub – balta-dev",
       "Instagram": "Instagram – @baltafranz"
@@ -417,22 +417,29 @@
     },
     "License": {
       "Title": "ライセンス",
-      "Description": "VManagerはMITライセンスの下で配布されるフリーソフトウェアです。"
+      "Description": "VManagerはMITライセンスのもとで配布されるフリーソフトウェアです。"
     }
   },
   "VideoStatus": {
     "Completed": "完了",
-    "Canceled": "キャンセル済み",
+    "Canceled": "キャンセル",
     "Error": "エラー",
     "NoVideo": "ダウンロードする動画がありません。",
-    "ErrorNoInfo": "情報の読み込みエラー",
+    "ErrorNoInfo": "情報読み込みエラー",
     "Downloading": "ダウンロード中",
     "NotURL": "無効なURL",
     "AlreadyOnList": "この動画はすでにリストにあります。",
     "RetrievingInfo": "情報を取得中...",
     "Downloaded": "ダウンロード完了",
     "Downloads": "ダウンロード",
-    "CantDeleteWhileDownloading": "ダウンロード中は動画を削除できません。",
+    "CantDeleteWhileDownloading": "ダウンロード中の動画は削除できません。",
     "OperationCanceled": "操作がキャンセルされました。"
+  },
+  "Notifier": {
+    "FileProcessed": "ファイル {0} が正常に処理されました！"
+  },
+  "Overlay": {
+    "DropHere": "ここにファイルをドロップ",
+    "CancelHint": "またはEscキーでキャンセル"
   }
 }

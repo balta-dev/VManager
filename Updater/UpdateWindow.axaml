@@ -1,6 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="¡Actualización disponible!"
+        Title=""
         x:Class="Updater.UpdateWindow"
         Width="500" Height="400"
         MinWidth="200" MinHeight="50"
@@ -8,7 +8,7 @@
     <!-- Scroll principal -->
     <ScrollViewer Margin="10" VerticalScrollBarVisibility="Visible">
         <StackPanel Spacing="15">
-            <TextBlock x:Name="AwaitUpdate" Text="Comprobando si hay actualizaciones disponibles..." HorizontalAlignment="Center" TextWrapping="Wrap"
+            <TextBlock x:Name="AwaitUpdate" Text="" HorizontalAlignment="Center" TextWrapping="Wrap"
                        FontSize="15"
                        FontWeight="Bold"
                        Foreground="WhiteSmoke"/>
@@ -22,7 +22,7 @@
             <!-- Panel de progreso y botón -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="5">
                 <Button x:Name="DownloadButton" Classes="Accented" IsVisible="False"
-                        Content="Descargar última versión"
+                        Content=""
                         Width="200"
                         Height="35"
                         HorizontalContentAlignment="Center"

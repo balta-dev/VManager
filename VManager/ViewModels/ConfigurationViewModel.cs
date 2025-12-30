@@ -178,6 +178,13 @@ namespace VManager.ViewModels
             }
         }
         
+        private bool _log;
+        public bool Log
+        {
+            get => _log;
+            set => this.RaiseAndSetIfChanged(ref _log, value);
+        }
+        
         public ReactiveCommand<Unit, Unit> RefreshCodecsCommand { get; }
         public ReactiveCommand<Unit, Unit> ResetAccentColorCommand { get; }
         public ReactiveCommand<Unit, Unit> BrowseProfileImageCommand { get; }
@@ -253,6 +260,7 @@ namespace VManager.ViewModels
             UseCookiesFile = _config.UseCookiesFile;
             CookiesFilePath = _config.CookiesFilePath;
             CookiesLastUpdated = _config.CookiesLastUpdated;
+            Log = _config.Log;
 
             // Guardar cambios automáticamente
             this.WhenAnyValue(x => x.EnableSounds)
@@ -269,7 +277,7 @@ namespace VManager.ViewModels
                     SaveConfig();
                 });
             
-            this.WhenAnyValue(x => x.IdiomaSeleccionado, x => x.UseCustomIcon, x => x.HideRemainingTime, x => x.SelectedColor, x => x.ProfileImagePath, x => x.PreferredDownloadFolder)
+            this.WhenAnyValue(x => x.IdiomaSeleccionado, x => x.UseCustomIcon, x => x.HideRemainingTime, x => x.SelectedColor, x => x.ProfileImagePath, x => x.PreferredDownloadFolder, x => x.Log)
                 .Subscribe(_ => SaveConfig());
             
             
@@ -440,6 +448,8 @@ namespace VManager.ViewModels
             _config.UseCookiesFile = UseCookiesFile;
             _config.CookiesFilePath = CookiesFilePath;
             _config.CookiesLastUpdated = CookiesLastUpdated;
+            // Log activado/desactivado
+            _config.Log = Log;
 
             ConfigurationService.Save(_config);
         }

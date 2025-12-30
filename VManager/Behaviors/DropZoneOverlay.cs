@@ -5,6 +5,7 @@ using Avalonia.Input;
 using Avalonia.Threading;
 using System;
 using System.Threading.Tasks;
+using VManager.Services;
 
 namespace VManager.Behaviors
 {
@@ -14,6 +15,7 @@ namespace VManager.Behaviors
         private Border? _targetBorder;
         private Panel? _parentPanel;
         private bool _isActive = false;
+        private LocalizationService L => LocalizationService.Instance;
         
         public bool IsActive => _isActive;
         
@@ -27,7 +29,7 @@ namespace VManager.Behaviors
             
             if (_parentPanel == null)
             {
-                Console.WriteLine("⚠️ El Border debe estar dentro de un Panel");
+                Console.WriteLine("El Border debe estar dentro de un Panel");
                 return null;
             }
             
@@ -100,7 +102,7 @@ namespace VManager.Behaviors
             // Texto principal
             var mainText = new TextBlock
             {
-                Text = "Arrastra tu archivo aquí",
+                Text = L["Overlay.DropHere"],
                 FontSize = 24,
                 FontWeight = FontWeight.Bold,
                 Foreground = Brushes.White,
@@ -110,7 +112,7 @@ namespace VManager.Behaviors
             // Texto secundario
             var subText = new TextBlock
             {
-                Text = "o presiona ESC para cancelar",
+                Text = L["Overlay.CancelHint"],
                 FontSize = 14,
                 Foreground = new SolidColorBrush(Color.FromRgb(200, 200, 200)),
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
