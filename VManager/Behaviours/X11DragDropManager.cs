@@ -6,7 +6,7 @@
     using Avalonia.Controls.ApplicationLifetimes;
     using Avalonia.VisualTree;
 
-    namespace VManager.Behaviors
+    namespace VManager.Behaviours
     {
         public sealed class X11DragDropManager
         {

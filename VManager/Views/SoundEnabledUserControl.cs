@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
-using VManager.Behaviors;
+using VManager.Behaviours;
 
 namespace VManager.Views
 {
@@ -17,7 +17,7 @@ namespace VManager.Views
 
         private void OnLoaded(object? sender, RoutedEventArgs e)
         {
-            SoundBehavior.Attach(this);
+            SoundBehaviour.Attach(this);
         }
         
         protected void OpenGitHub(object? sender, PointerPressedEventArgs e)

@@ -3,7 +3,7 @@
              x:Class="VManager.Views.Herramienta2View"
              x:DataType="vm:Herramienta2ViewModel"
              xmlns:vm="using:VManager.ViewModels"
-             xmlns:behaviors="clr-namespace:VManager.Behaviors"
+             xmlns:behaviors="clr-namespace:VManager.Behaviours"
              xmlns:services="clr-namespace:VManager.Services">
 
     <UserControl.Resources>

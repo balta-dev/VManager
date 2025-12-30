@@ -1,7 +1,7 @@
 using Avalonia;
 using System;
 using Avalonia.Controls;
-using VManager.Behaviors;
+using VManager.Behaviours;
 using VManager.Controls;
 using VManager.ViewModels; // Asegurarse de que incluya ICodecViewModel y CodecViewModelBase
 

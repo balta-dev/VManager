@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Markup.Xaml;
 using VManager.ViewModels;
 
 namespace VManager.Views

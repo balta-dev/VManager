@@ -1,19 +1,15 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
-using Avalonia.Animation;
-using Avalonia.Animation.Easings;
 using ReactiveUI;
-using System.ComponentModel;
 using Avalonia.Platform.Storage;
 using DynamicData;
 
-namespace VManager.Behaviors
+namespace VManager.Behaviours
 {
     public static class DragDropHelper
     {

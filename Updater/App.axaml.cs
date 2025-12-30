@@ -15,7 +15,6 @@ using Avalonia.Media;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using ReactiveUI;
-using VManager.Services;
 
 namespace Updater
 {
@@ -55,11 +54,6 @@ namespace Updater
                 ["Українська"] = "uk"
             };
         
-        private sealed class UpdaterConfig
-        {
-            public string? Language { get; set; } //dto para leer idioma
-        }
-        
         private static string ResolveLanguageCode()
         {
             if (!File.Exists(ConfigPath))
@@ -68,17 +62,32 @@ namespace Updater
             try
             {
                 var json = File.ReadAllText(ConfigPath);
-                var config = JsonSerializer.Deserialize<UpdaterConfig>(json);
 
-                if (config?.Language == null)
-                    return "es";
+                using var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
 
-                return LanguageMap.TryGetValue(config.Language, out var code)
-                    ? code
-                    : "es";
+                // Buscamos "Language" con case insensitive (por si algún día cambia)
+                if (root.TryGetProperty("Language", out var langProp) ||
+                    root.TryGetProperty("language", out langProp) ||
+                    root.TryGetProperty("LANGUAGE", out langProp))
+                {
+                    string? languageName = langProp.GetString();
+
+                    if (string.IsNullOrWhiteSpace(languageName))
+                        return "es";
+
+                    // Mapeamos el nombre del idioma al código (ej: "Русский" → "ru")
+                    if (LanguageMap.TryGetValue(languageName, out var code))
+                        return code;
+                }
+
+                // Si no encontramos la propiedad o no está en el mapa
+                return "es";
             }
-            catch
+            catch (Exception ex)
             {
+                // Opcional: loguear si querés debug
+                Console.WriteLine($"[Updater] Error leyendo idioma del config: {ex.Message}");
                 return "es";
             }
         }

@@ -1,7 +1,7 @@
 using System;
 using Avalonia;
 using Avalonia.Controls;
-using VManager.Behaviors;
+using VManager.Behaviours;
 using VManager.Controls;
 using VManager.ViewModels;
 

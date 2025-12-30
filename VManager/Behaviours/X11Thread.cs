@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
-using System.Threading.Tasks;
 
-namespace VManager.Behaviors;
+namespace VManager.Behaviours;
 
 public sealed class X11Thread : IDisposable
 {

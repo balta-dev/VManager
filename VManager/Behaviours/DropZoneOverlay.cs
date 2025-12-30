@@ -2,12 +2,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Input;
-using Avalonia.Threading;
 using System;
 using System.Threading.Tasks;
 using VManager.Services;
 
-namespace VManager.Behaviors
+namespace VManager.Behaviours
 {
     public class DropZoneOverlay
     {

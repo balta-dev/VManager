@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using VManager.Views;
-using VManager.ViewModels;
 
 namespace VManager.Services;
 public class Notifier

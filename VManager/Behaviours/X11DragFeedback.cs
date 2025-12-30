@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 
-namespace VManager.Behaviors
+namespace VManager.Behaviours
 {
     // Eventos globales para comunicar estado del drag
     public static class X11DragFeedback

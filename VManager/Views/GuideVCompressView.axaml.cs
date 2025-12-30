@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using VManager.ViewModels;
 
 namespace VManager.Views

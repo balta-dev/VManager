@@ -5,19 +5,15 @@ using System.IO;
 using Avalonia.Controls;
 using Avalonia.Input;
 using System.Linq;
-using System.Net.Http;
 using System.Reactive.Linq;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using VManager.Behaviors;
+using VManager.Behaviours;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using ReactiveUI;
@@ -34,7 +30,7 @@ namespace VManager.Views
         {
             InitializeComponent();
             
-            SoundBehavior.Attach(this);
+            SoundBehaviour.Attach(this);
             _ = SoundManager.Play("dummy.wav");
             
             var accentObs = this.GetResourceObservable("SystemAccentColor")!

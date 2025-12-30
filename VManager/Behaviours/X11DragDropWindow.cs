@@ -3,10 +3,9 @@
     using System.Runtime.InteropServices;
     using System.Linq;
     using System.Threading.Tasks;
-    using Avalonia;
     using Avalonia.Controls;
     using Avalonia.Threading;
-    using VManager.Behaviors;
+    using VManager.Behaviours;
     using VManager.Views;
 
     public class X11DragDropWindow

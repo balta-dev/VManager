@@ -1,9 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Reactive;
 using System.Threading.Tasks;
-using ReactiveUI;
 using VManager.Services;
 
 namespace VManager.ViewModels

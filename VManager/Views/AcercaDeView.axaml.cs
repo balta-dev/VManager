@@ -1,7 +1,3 @@
-using System;
-using System.Diagnostics;
-using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 
 namespace VManager.Views

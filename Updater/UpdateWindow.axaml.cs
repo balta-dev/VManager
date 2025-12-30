@@ -1,5 +1,8 @@
 using System;
+using System.IO;
 using System.Reactive.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -10,9 +13,18 @@ namespace Updater
 {
     public partial class UpdateWindow : Window
     {
+        
+        private static readonly string ConfigPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "VManager",
+            "config.json");
+       
+        private Color? _customColor;
+        
         public UpdateWindow()
         {
             InitializeComponent();
+            _customColor = LoadCustomColorFromConfig();
             
             Title = App.UpdaterLocalization.T("WindowTitle");
 
@@ -37,11 +49,68 @@ namespace Updater
                 });
         }
         
+        private Color? LoadCustomColorFromConfig()
+        {
+            Console.WriteLine("[Updater] Entrando a LoadCustomColorFromConfig()");
+
+            if (!File.Exists(ConfigPath))
+            {
+                Console.WriteLine("[Updater] Config no existe");
+                return null;
+            }
+
+            try
+            {
+                var json = File.ReadAllText(ConfigPath);
+                Console.WriteLine("[Updater] JSON leído OK");
+
+                using var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
+
+                if (root.TryGetProperty("SelectedColor", out var selectedColorProp) ||
+                    root.TryGetProperty("selectedColor", out selectedColorProp) ||
+                    root.TryGetProperty("SELECTEDCOLOR", out selectedColorProp))
+                {
+                    string hex = selectedColorProp.GetString() ?? "";
+
+                    if (string.IsNullOrWhiteSpace(hex))
+                    {
+                        Console.WriteLine("[Updater] SelectedColor vacío en JSON");
+                        return null;
+                    }
+
+                    string hexUpper = hex.Trim().ToUpperInvariant();
+                    Console.WriteLine($"[Updater] HEX encontrado y normalizado: {hexUpper}");
+
+                    if (Color.TryParse(hexUpper, out var color))
+                    {
+                        Console.WriteLine($"[Updater] COLOR CARGADO PERFECTO: {color}");
+                        return color;
+                    }
+                    else
+                    {
+                        Console.WriteLine("[Updater] TryParse falló");
+                        return null;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("[Updater] Propiedad 'SelectedColor' NO encontrada en JSON");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Updater] Error: {ex.Message}");
+                return null;
+            }
+        }
+        
         private void ApplyCustomAccent(ThemeVariant? theme = null)
         {
             var actualTheme = theme ?? ActualThemeVariant;
             var accent = GetSystemAccentColor();
-            var background = (actualTheme == ThemeVariant.Dark) ? Colors.Black : Colors.White;
+
             var adjustedAccent = AdjustColorForAccentTheme(accent, actualTheme);
             var foreground = GetContrastingColor(adjustedAccent);
             Application.Current!.Resources["AccentBrush"] = new SolidColorBrush(adjustedAccent);
@@ -55,11 +124,16 @@ namespace Updater
         }
         private Color GetSystemAccentColor()
         {
-            if (Application.Current!.TryGetResource("SystemAccentColor", null, out var value) && value is Color accent) 
-                return accent;
-            
-            return Color.FromArgb(0xFF, 0xFF, 0x00, 0x00); // acá es IMPOSIBLE que llegue
-         
+            // 1. Prioridad: color personalizado del config (solo lectura)
+            if (_customColor.HasValue)
+                return _customColor.Value;
+
+            // 2. Si no hay custom → color del sistema
+            if (Application.Current!.TryGetResource("SystemAccentColor", ActualThemeVariant, out var value) && value is Color systemAccent)
+                return systemAccent;
+
+            // Fallback raro
+            return Colors.CornflowerBlue;
         }
         
         private double GetRelativeLuminance(Color color)
@@ -129,12 +203,19 @@ namespace Updater
 
             // Si el color ajustado es muy oscuro (luminancia < umbral) y estamos en modo claro, forzar un ajuste adicional
             double luminance = GetRelativeLuminance(adjusted);
-            if (theme == ThemeVariant.Light && luminance < luminanceThreshold)
+            if ((theme == ThemeVariant.Light && luminance < luminanceThreshold) ||
+                (theme == ThemeVariant.Dark && luminance > 1 - luminanceThreshold))
             {
-                adjusted = LightenColor(adjusted, 0.3); // Aclarar un 30% si está demasiado oscuro en modo claro
+                adjusted = theme == ThemeVariant.Dark ? DarkenColor(adjusted, 0.3) : LightenColor(adjusted, 0.3);
             }
 
             return adjusted;
+        }
+        
+        private Color DarkenColor(Color color, double factor)
+        {
+            byte Adjust(byte c) => (byte)Math.Clamp(c * (1 - factor), 0, 255);
+            return new Color(color.A, Adjust(color.R), Adjust(color.G), Adjust(color.B));
         }
 
         private void InitializeComponent()

@@ -1,7 +1,7 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using VManager.Behaviors;
+using VManager.Behaviours;
 
 namespace VManager.Views
 {

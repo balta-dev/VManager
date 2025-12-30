@@ -5,7 +5,7 @@
              xmlns:vm="using:VManager.ViewModels"
              xmlns:cc="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.ColorPicker"
              xmlns:services="clr-namespace:VManager.Services"
-             xmlns:behaviors="clr-namespace:VManager.Behaviors">
+             xmlns:behaviours="clr-namespace:VManager.Behaviours">
 
   <UserControl.Resources>
     <services:ValidPathConverter x:Key="ValidPathConverter" />
@@ -21,9 +21,9 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             ClipToBounds="True"
-            behaviors:DragDropHelper.EnableFileDrop="True"
-            behaviors:DragDropHelper.DropTarget="CookiesFilePath"
-            behaviors:DragDropHelper.AllowTxt="True">
+            behaviours:DragDropHelper.EnableFileDrop="True"
+            behaviours:DragDropHelper.DropTarget="CookiesFilePath"
+            behaviours:DragDropHelper.AllowTxt="True">
 
       <ScrollViewer Padding="0"
                     VerticalScrollBarVisibility="Auto"

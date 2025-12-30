@@ -3,7 +3,7 @@
              x:Class="VManager.Views.Herramienta3View"
              x:DataType="vm:Herramienta3ViewModel"
              xmlns:vm="using:VManager.ViewModels"
-             xmlns:behaviors="clr-namespace:VManager.Behaviors"
+             xmlns:behaviours="clr-namespace:VManager.Behaviours"
              xmlns:global="clr-namespace:"
              xmlns:views="clr-namespace:VManager.Views"
              xmlns:services="clr-namespace:VManager.Services">
@@ -26,8 +26,8 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             ClipToBounds="True"
-            behaviors:DragDropHelper.EnableFileDrop="True"
-            behaviors:DragDropHelper.DropTarget="VideoPath">
+            behaviours:DragDropHelper.EnableFileDrop="True"
+            behaviours:DragDropHelper.DropTarget="VideoPath">
       
       <ScrollViewer Padding="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Background="Transparent">
 

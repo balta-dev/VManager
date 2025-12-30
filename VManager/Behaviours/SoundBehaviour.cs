@@ -7,9 +7,9 @@ using Avalonia.LogicalTree;
 using VManager.Services;
 using Avalonia.VisualTree;
 
-namespace VManager.Behaviors
+namespace VManager.Behaviours
 {
-    public static class SoundBehavior
+    public static class SoundBehaviour
     {
         public static void Attach(ILogical container)
         {

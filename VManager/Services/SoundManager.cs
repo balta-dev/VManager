@@ -3,10 +3,24 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using NAudio.Wave;
+using System.Runtime.InteropServices;
 
 namespace VManager.Services
 {
+    public static class SimpleSoundPlayer
+    {
+        [DllImport("winmm.DLL", EntryPoint = "PlaySound", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern bool PlaySound(string szSound, IntPtr hMod, uint flags);
+
+        private const uint SND_ASYNC = 0x0001;
+        private const uint SND_FILENAME = 0x00020000;
+        private const uint SND_NODEFAULT = 0x0002;  // agregado para mejor debugging
+
+        public static bool PlayWav(string path)
+        {
+            return PlaySound(path, IntPtr.Zero, SND_ASYNC | SND_FILENAME | SND_NODEFAULT);
+        }
+    }
     public static class SoundManager
     {
         private static bool _enabled = true;
@@ -91,28 +105,32 @@ namespace VManager.Services
         private static async Task PlaySoundAsync(Stream stream, string fileName, string platform)
         {
             //LogDebug($"[{platform}] Reproduciendo: {fileName}");
+            
+            // Genera un nombre único cada vez
+            string uniqueFileName = $"{Guid.NewGuid():N}_{fileName}";
+            string tempFilePath = Path.Combine(Path.GetTempPath(), uniqueFileName);
+
             try
             {
-                using var memoryStream = new MemoryStream();
-                await stream.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
+                await ExtractResourceToTempFile(stream, tempFilePath, fileName);
 
-                using var waveOut = new WaveOutEvent();
-                using var waveReader = new WaveFileReader(memoryStream);
-                waveOut.Init(waveReader);
-                await Task.Run(() =>
+                bool success = SimpleSoundPlayer.PlayWav(tempFilePath);
+
+                if (success)
+                    LogInfo($"[Windows] Sonido iniciado: {fileName}");
+                else
                 {
-                    waveOut.Play();
-                    while (waveOut.PlaybackState == PlaybackState.Playing)
-                    {
-                        Task.Delay(100).Wait();
-                    }
-                });
-                LogInfo($"[{platform}] Sonido reproducido: {fileName}");
+                    int error = Marshal.GetLastWin32Error();
+                    LogError($"[Windows] PlaySound falló (error {error}): {fileName}");
+                }
+
+                // Borramos después de 10 segundos (el sonido ya está en memoria de winmm)
+                _ = Task.Delay(TimeSpan.FromSeconds(10)).ContinueWith(_ => CleanUpTempFile(tempFilePath));
             }
             catch (Exception ex)
             {
-                LogError($"[{platform}] Error al reproducir {fileName}: {ex.Message}");
+                LogError($"[Windows] Excepción: {ex.Message}");
+                CleanUpTempFile(tempFilePath);
             }
         }
 

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
-using VManager.Models; // <-- Necesitas crear la carpeta Models
+using VManager.Models;
 using VManager.Services;
 
 namespace VManager.ViewModels

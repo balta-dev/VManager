@@ -1,11 +1,9 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using System;
-using System.IO;
 using Avalonia.Layout;
 using Avalonia.Platform;
 

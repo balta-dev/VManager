@@ -6,13 +6,11 @@ using ReactiveUI;
 using System.Reactive;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows.Input;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using Avalonia;
 using Avalonia.Media.Imaging;
 using VManager.Services;
-using VManager.Views;
 
 namespace VManager.ViewModels;
 
