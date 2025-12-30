@@ -32,11 +32,17 @@ namespace VManager.ViewModels
             "English",
             "Español",
             "Français",
+            "Deutsch",
+            "Italiano",
+            "Polski",
             "Português",
             "Русский",
-            "عربي",
+            "Українська",
+            "हिंदी",
             "日本語",
-            "中文"
+            "한국어",
+            "中文",
+            "عربي"
         };
         
         private bool _enableNotifications = true;
@@ -66,11 +72,17 @@ namespace VManager.ViewModels
                     case "English": LocalizationService.Instance.CurrentLanguage = "en"; break;
                     case "Español": LocalizationService.Instance.CurrentLanguage = "es"; break;
                     case "Français": LocalizationService.Instance.CurrentLanguage = "fr"; break;
+                    case "Deutsch":   LocalizationService.Instance.CurrentLanguage = "de"; break;
+                    case "Italiano":  LocalizationService.Instance.CurrentLanguage = "it"; break;
+                    case "Polski":    LocalizationService.Instance.CurrentLanguage = "pl"; break;
                     case "Português": LocalizationService.Instance.CurrentLanguage = "pt"; break;
                     case "Русский": LocalizationService.Instance.CurrentLanguage = "ru"; break;
-                    case "عربي": LocalizationService.Instance.CurrentLanguage = "ar"; break;
+                    case "Українська": LocalizationService.Instance.CurrentLanguage = "uk"; break;
+                    case "हिंदी":     LocalizationService.Instance.CurrentLanguage = "hi"; break;
                     case "日本語": LocalizationService.Instance.CurrentLanguage = "jp"; break;
+                    case "한국어":    LocalizationService.Instance.CurrentLanguage = "ko"; break;
                     case "中文": LocalizationService.Instance.CurrentLanguage = "zh"; break;
+                    case "عربي": LocalizationService.Instance.CurrentLanguage = "ar"; break;
                 }
                 
                 OpenConfig = string.Format(L["Configuration.Fields.Welcome"], (Environment.UserName[0]) + Environment.UserName.Substring(1));

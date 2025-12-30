@@ -1,0 +1,445 @@
+{
+  "General": {
+    "WelcomeMessage": "Willkommen bei VManager!",
+    "AppDescription": "VManager ist ein leistungsstarkes und benutzerfreundliches Multifunktions-Toolkit, mit dem Sie Videos schneiden, komprimieren und Formate konvertieren können.",
+    "ShowHide": "Ausblenden",
+    "Refreshed": "Aktualisiert!",
+    "Loading": "Lade...",
+    "WelcomePanel": {
+      "GuideInfo": "Für detaillierte Anleitungen und weitere Informationen zur App klicken Sie auf den",
+      "AboutButton": "Über",
+      "InSidebar": "Button in der Seitenleiste.",
+      "QuickShortcuts": "Schnelltasten:",
+      "PressText": "Drücken Sie",
+      "ToSwitchTools": "um das Tool zu wechseln",
+      "OrText": "oder",
+      "ForConfiguration": "um die Einstellungen zu öffnen."
+    },
+    "Shortcuts": {
+      "Title": "Tastenübersicht:",
+      "Items": {
+        "Item1Title": "Tasten 1/2/3/4/5:",
+        "Item1Description": " Zwischen Tools wechseln",
+        "Item2Title": "F5:",
+        "Item2Description": " Bildschirm aktualisieren",
+        "Item3Title": "B:",
+        "Item3Description": " Video auswählen",
+        "Item4Title": "D:",
+        "Item4Description": " Drag & Drop von Dateien im Tool aktivieren",
+        "Item5Title": "T:",
+        "Item5Description": " Dunkles/Helles Thema umschalten",
+        "Item6Title": "Enter:",
+        "Item6Description": " Vorgang starten",
+        "Item7Title": "Esc:",
+        "Item7Description": " Vorgang abbrechen",
+        "Item8Title": "O:",
+        "Item8Description": " Namen ein-/ausblenden",
+        "Item9Title": "C:",
+        "Item9Description": " Einstellungen öffnen"
+      }
+    },
+    "Border": {
+      "Title1": "Was bietet dieses Programm?",
+      "Items1": {
+        "Item1Title": "VCUT:",
+        "Item1Description": " schneidet Videos/Audios schnell.",
+        "Item2Title": "VCOMPR:",
+        "Item2Description": " komprimiert Videos und priorisiert Ihre GPU.",
+        "Item3Title": "VCONV:",
+        "Item3Description": " konvertiert zwischen verschiedenen Videoformaten (z. B. MKV → MP4).",
+        "Item4Title": "VAUDIOFY:",
+        "Item4Description": " wandelt Videos in Audio um oder konvertiert zwischen Audioformaten.",
+        "Item5Title": "VDOWNLOAD:",
+        "Item5Description": " lädt Videos von Ihren Lieblingsplattformen herunter."
+      },
+      "Title2": "Wie benutzt man es?",
+      "Items2": {
+        "Item1Description": "Wählen Sie eines der Tools oben links mit der Maus oder per Tastenkürzel aus",
+        "Item2Description": "Ziehen Sie das Video in das Feld oder wählen Sie es mit der Schaltfläche „Durchsuchen“ aus",
+        "Item3Description": "Verarbeiten Sie das Video mit der Schaltfläche – fertig!"
+      }
+    }
+  },
+  "Footer": {
+    "Title": "Erstellt von Baltazar Franz",
+    "Version": "Version:",
+    "Support": "Dieses Projekt wird von einer einzelnen Person gepflegt – wenn Sie beitragen möchten, klicken Sie auf die Schaltfläche unten."
+  },
+  "VCut": {
+    "Title": "Video-/Audio-Schneiden",
+    "Buttons": {
+      "Refresh": "Aktualisieren",
+      "Browse": "Durchsuchen",
+      "Cut": "Video schneiden",
+      "Cancel": "ABBRECHEN",
+      "ShowFileInFolder": "Datei im Ordner anzeigen"
+    },
+    "Fields": {
+      "SelectVideo": "Video auswählen:",
+      "VideoPath": "Videopfad",
+      "TrimFrom": "Von:",
+      "TrimTo": "Bis:",
+      "ObtainingInfo": "Video-Informationen werden abgerufen...",
+      "InvalidFrom": "Ungültige „Von“-Zeit",
+      "InvalidTo": "Ungültige „Bis“-Zeit",
+      "EndBeforeStart": "Die „Bis“-Zeit muss größer als die „Von“-Zeit sein",
+      "ExceedsLength": "Die „Von“-Zeit überschreitet die Videolänge",
+      "Cutting": "Schneiden...",
+      "CutCanceled": "Schneiden vom Benutzer abgebrochen.",
+      "NoMainWindow": "Kein Zugriff auf das Hauptfenster möglich.",
+      "BrowseTitle": "Video auswählen",
+      "Error": "Fehler: {0}",
+      "Completed": "{0}",
+      "OutputLabel": "Datei: {0}",
+      "NotificationTitle": "Video geschnitten",
+      "NotificationMessage": "{0}"
+    },
+    "Tips": {
+      "FormatSelection": "Sie können Sekunden und/oder das traditionelle Zeitformat (hh:mm:ss) verwenden.",
+      "ValidInput": "Solange die Zeiten gültig sind, können Sie das bevorzugte Format wählen.",
+      "ExamplesTitle": "Verwendungsbeispiele:",
+      "ExampleTrim1": "• Von 23 Sekunden bis 2:01 schneiden",
+      "ExampleTrim2": "• Von 1:02:01 bis 2:52:01 schneiden",
+      "NoteDuration": "Hinweis: Die Schnittdauer wird automatisch neu berechnet, falls ungültig oder leer."
+    }
+  },
+  "VCompress": {
+    "Title": "Video-Komprimierung",
+    "Buttons": {
+      "Refresh": "Aktualisieren",
+      "Browse": "Durchsuchen",
+      "Compress": "Video komprimieren",
+      "Cancel": "ABBRECHEN",
+      "ShowFileInFolder": "Datei im Ordner anzeigen"
+    },
+    "Fields": {
+      "SelectVideo": "Video(s) auswählen:",
+      "VideoCodec": "Video-Codec:",
+      "AudioCodec": "Audio-Codec:",
+      "VideoPath": "Videopfad",
+      "Quality": "Qualitätsprozentsatz:",
+      "NoFiles": "Keine Dateien ausgewählt.",
+      "InvalidPercent": "Ungültiger Prozentsatz.",
+      "Compressing": "Komprimiere ({0}/{1}): {2}...",
+      "Error": "Fehler beim Verarbeiten von {0}: {1}",
+      "CompletedAll": "{0} Datei(en) erfolgreich komprimiert!",
+      "CompletedPartial": "Prozess unterbrochen: {0}/{1} Dateien abgeschlossen",
+      "Canceled": "Komprimierung vom Benutzer abgebrochen.",
+      "NotificationTitle": "Datei komprimiert",
+      "NotificationMessage": "{0}",
+      "OutputSuffix": "-COMP-{0}"
+    },
+    "Tips": {
+      "VideoCodecInfo": "Die Standardoption ist in den meisten Fällen am besten.",
+      "VideoCodecHW": "Hardwarebeschleunigung (GPU) wird bevorzugt, wenn verfügbar.",
+      "VideoCodecDefinition": "Ein Video-Codec komprimiert und dekomprimiert Video, um Platz zu sparen oder schneller zu streamen.",
+      "VideoCodecCPU": "Für CPU-Codierung verwenden Sie Codecs wie ‚libx264‘.",
+      "VideoCodecTradeoff": "CPU bietet die beste Qualität, ist aber deutlich langsamer.",
+      "AudioCodecInfo": "Die Standardoption funktioniert in den meisten Fällen am besten.",
+      "AudioCodecDefinition": "Ein Audio-Codec komprimiert und dekomprimiert Ton, um Platz zu sparen oder schneller zu streamen.",
+      "AudioCodecFLAC": "FLAC bietet außergewöhnliche Audioqualität, aber die Dateien sind viel größer."
+    }
+  },
+  "VConvert": {
+    "Title": "Video-Konvertierung",
+    "Buttons": {
+      "Refresh": "Aktualisieren",
+      "Browse": "Durchsuchen",
+      "Convert": "Videoformat konvertieren",
+      "Cancel": "ABBRECHEN",
+      "ShowFileInFolder": "Datei im Ordner anzeigen"
+    },
+    "Fields": {
+      "SelectVideo": "Video(s) auswählen:",
+      "VideoPath": "Videopfad",
+      "Format": "Zielformat?",
+      "VideoCodec": "Video-Codec:",
+      "AudioCodec": "Audio-Codec:",
+      "NoFiles": "Keine Dateien ausgewählt.",
+      "Converting": "Konvertiere ({0}/{1}): {2}...",
+      "Error": "Fehler beim Verarbeiten von {0}: {1}",
+      "CompletedAll": "{0} Datei(en) erfolgreich konvertiert!",
+      "CompletedPartial": "Prozess unterbrochen: {0}/{1} Dateien abgeschlossen",
+      "Canceled": "Konvertierung vom Benutzer abgebrochen.",
+      "NotificationTitle": "Datei konvertiert",
+      "NotificationMessage": "{0}",
+      "OutputSuffix": "-VCONV"
+    },
+    "Tips": {
+      "FormatSelection": "Wählen Sie das Ausgabeformat für Ihr Video.",
+      "RecommendationsTitle": "Empfehlungen:",
+      "RecMP4": "• MP4 + AAC (maximale Kompatibilität)",
+      "RecMKV": "• MKV + beliebiges Audio (am flexibelsten)",
+      "RecWebM": "• WebM + Opus (optimiert für Web)",
+      "RecMOV": "• MOV + PCM (ideal für DaVinci Resolve)",
+      "FormatNote": "Hinweis: FFmpeg unterstützt viele Kombinationen, einige sind jedoch nicht mit allen Geräten kompatibel.",
+      "VideoCodecInfo": "Die Standardoption ist in den meisten Fällen am besten.",
+      "VideoCodecHW": "Hardwarebeschleunigung (GPU) wird bevorzugt.",
+      "VideoCodecDefinition": "Ein Video-Codec komprimiert/dekomprimiert Video, um Platz zu sparen oder schneller zu streamen.",
+      "VideoCodecCPU": "Für CPU-Codierung wählen Sie Codecs wie ‚libx264‘.",
+      "VideoCodecTradeoff": "CPU bietet bessere Qualität, ist aber viel langsamer.",
+      "AudioCodecInfo": "Der Standard funktioniert in den meisten Fällen.",
+      "AudioCodecDefinition": "Ein Audio-Codec komprimiert/dekomprimiert Audio, um Platz zu sparen oder schneller zu streamen.",
+      "AudioCodecFLAC": "FLAC bietet außergewöhnliche Qualität, nimmt aber viel mehr Platz ein."
+    }
+  },
+  "VAudiofy": {
+    "Title": "Audio-Extraktion/Konvertierung",
+    "Buttons": {
+      "Refresh": "Aktualisieren",
+      "Browse": "Durchsuchen",
+      "Extract": "Audio extrahieren",
+      "Cancel": "ABBRECHEN",
+      "ShowFileInFolder": "Datei im Ordner anzeigen"
+    },
+    "Fields": {
+      "SelectVideo": "Video(s)/Audio(s) auswählen:",
+      "VideoPath": "Video-/Audiopfad",
+      "Format": "Zielformat?",
+      "ConvertingAudio": "Audio wird konvertiert",
+      "ExtractingAudio": "Audio wird extrahiert",
+      "ProcessedSingular": "1 Datei erfolgreich verarbeitet!",
+      "ProcessedPlural": "{0} Dateien erfolgreich verarbeitet!",
+      "Interrupted": "Prozess unterbrochen",
+      "InterruptedDetail": "{0}/{1} Dateien abgeschlossen",
+      "Canceled": "Vorgang abgebrochen",
+      "NoFiles": "Keine Dateien ausgewählt"
+    },
+    "Tips": {
+      "FormatSelection": "Wählen Sie das Ausgabe-Audioformat.",
+      "FormatNote1": "WAV-Formate sind nach Nutzungswahrscheinlichkeit sortiert. Wählen Sie das erste, wenn Sie unsicher sind.",
+      "FormatNote2": "Opus ist neuer und effizienter; Vorbis ist veraltet."
+    }
+  },
+  "VDownload": {
+    "Title": "Video-Download",
+    "Buttons": {
+      "Refresh": "Aktualisieren",
+      "Add": "Hinzufügen",
+      "Download": "Video herunterladen",
+      "Cancel": "ABBRECHEN",
+      "ShowFileInFolder": "Datei im Ordner anzeigen"
+    },
+    "Fields": {
+      "PasteVideo": "Video-URL einfügen",
+      "Queue": "Videos in der Warteschlange",
+      "Remaining": "Verbleibende Zeit"
+    },
+    "Popup": {
+      "Problem?": "Download-Probleme?",
+      "ClickHere": "Hier klicken"
+    }
+  },
+  "Configuration": {
+    "Title": "Einstellungen",
+    "Fields": {
+      "Language": "Sprache:",
+      "Appearance": "Aussehen",
+      "ShowProfileIcon": "Profil-Icon anzeigen?",
+      "Accent": "Akzentfarbe:",
+      "Behaviour": "Verhalten",
+      "HideRemainingTime": "Verbleibende Zeit ausblenden?",
+      "HideNotifications": "Benachrichtigungen ausblenden?",
+      "EnableSounds": "Töne deaktivieren?",
+      "Advanced": "Erweitert",
+      "EnableDebug": "Log-Ausgabe aktivieren (DEBUG)",
+      "Hardware": "Hardware neu berechnen",
+      "DefaultDownloadFolder": "Desktop (Standard)",
+      "DownloadFolder": "Download-Ordner:",
+      "DownloadFolderSet": "Download-Ordner festgelegt.",
+      "ProfileImage": "Profilbild",
+      "BrowseProfileImage": "Bild laden",
+      "Browse": "Durchsuchen...",
+      "DeleteProfileImage": "Bild löschen",
+      "CookiesFile": "Sitzungs-Cookie-Datei:",
+      "BrowseCookies": "Cookie-Datei auswählen",
+      "NoCookies": "Keine Datei ausgewählt",
+      "Delete": "Entfernen",
+      "UseCookieFile": "Diese Cookie-Datei für yt-dlp verwenden",
+      "InvalidCookiesFile": "Ungültige oder leere Datei.",
+      "CookiesSet": "Cookie-Datei festgelegt.",
+      "CookiesRemoved": "Cookie-Datei entfernt.",
+      "ValidatingImage": "Bild wird überprüft...",
+      "ProfileImageSet": "Profilbild festgelegt.",
+      "ProfileImageRemoved": "Profilbild entfernt.",
+      "MainWindowFail": "Kein Zugriff auf das Hauptfenster möglich.",
+      "Welcome": "Willkommen, {0}! Was möchten Sie ändern? :)"
+    },
+    "Tips": {
+      "Hardware1": "Diese Schaltfläche startet mehrere FFmpeg-Instanzen parallel, um",
+      "Hardware2": "die Kompatibilität mehrerer Video-Codecs zu prüfen und sie in einer Dropdown-Liste zu speichern.",
+      "Hardware3": "Es wird nicht empfohlen, diese Schaltfläche zu drücken, es sei denn, Sie wissen, was Sie tun...",
+      "Hardware4": "Kann nützlich sein, wenn Sie die GPU gewechselt haben oder ein Problem auftritt, belastet aber den Computer stark."
+    }
+  },
+  "CancelDialog": {
+    "Title": "Vorgang abbrechen?",
+    "Info": "Sie sind dabei, den Hintergrundprozess abrupt zu beenden.",
+    "Warning": "Diese Aktion kann nicht rückgängig gemacht werden.",
+    "Cancel": "Abbrechen",
+    "No": "Nein"
+  },
+  "Guide": {
+    "WindowTitle": "Tool-Anleitung",
+    "VCut": {
+      "Title": "VCut — Videos/Audios schneiden",
+      "Description": "VCut ermöglicht es Ihnen, ein Video oder Audio schnell mit einem Start- und Endpunkt zu schneiden.",
+      "HowTo": {
+        "Title": "Verwendung:",
+        "Step1": "1) Wählen oder ziehen Sie eine Video-/Audiodatei herein.",
+        "Step2": "2) Geben Sie die Start- und Endzeit für den Schnitt ein.",
+        "Step3": "3) Drücken Sie Enter oder klicken Sie auf „Schneiden“.",
+        "Step4": "4) Warten Sie, bis die Hintergrundverarbeitung abgeschlossen ist."
+      },
+      "Notes": {
+        "Title": "Hinweise:",
+        "A": "Sie können die Zeit beliebig eingeben: nur Sekunden oder vollständiges hh:mm:ss-Format.",
+        "B": "Wenn die Endzeit die Videolänge überschreitet, wird sie automatisch auf das Videoende angepasst.",
+        "C": "Wenn keine Endzeit angegeben ist, wird bis zum Videoende geschnitten."
+      }
+    },
+    "VCompress": {
+      "Title": "VCompress — Komprimieren & Optimieren",
+      "Description": "VCompress ermöglicht das schnelle Komprimieren eines oder mehrerer Videos und priorisiert Ihre GPU, wenn möglich.",
+      "HowTo": {
+        "Title": "Verwendung:",
+        "Step1": "1) Wählen oder ziehen Sie eine oder mehrere Videodateien herein.",
+        "Step2": "2) Geben Sie den gewünschten Qualitätsprozentsatz ein.",
+        "Step3": "3) (Optional) Wählen Sie bevorzugte Video-/Audio-Codecs.",
+        "Step4": "4) Drücken Sie Enter oder klicken Sie auf „Video komprimieren“.",
+        "Step5": "5) Warten Sie auf die Hintergrundverarbeitung."
+      },
+      "Notes": {
+        "Title": "Hinweise:",
+        "A": "Der „Qualitätsprozentsatz“ bezieht sich auf die finale Dateigröße im Vergleich zum Original. Oft liefert 25 % noch sehr akzeptable Qualität bei enormer Größenreduktion.",
+        "B": "Video-Codecs sind nach Priorität sortiert. Standardmäßig werden Hardware-Encoder (Nvidia/AMD/Intel) verwendet, wenn verfügbar.",
+        "C": "Wenn möglich wird nur Remuxing durchgeführt (kein Re-Encoding), was den Prozess deutlich beschleunigt."
+      }
+    },
+    "VConvert": {
+      "Title": "VConvert — Formatkonvertierung",
+      "Description": "VConvert ermöglicht die schnelle Konvertierung des Formats eines oder mehrerer Videos.",
+      "HowTo": {
+        "Title": "Verwendung:",
+        "Step1": "1) Wählen oder ziehen Sie eine oder mehrere Videodateien herein.",
+        "Step2": "2) Wählen Sie das gewünschte Ausgabeformat.",
+        "Step3": "3) (Optional) Wählen Sie bevorzugte Video-/Audio-Codecs.",
+        "Step4": "4) Drücken Sie Enter oder klicken Sie auf „Videoformat konvertieren“.",
+        "Step5": "5) Warten Sie auf die Hintergrundverarbeitung."
+      },
+      "Notes": {
+        "Title": "Hinweise:",
+        "A": "Video-Codecs sind nach Priorität sortiert. Standardmäßig werden Hardware-Encoder entsprechend Ihrem Betriebssystem/GPU verwendet.",
+        "B": "Wenn möglich wird nur Remuxing durchgeführt (kein Re-Encoding), was den Prozess erheblich beschleunigt."
+      }
+    },
+    "VAudiofy": {
+      "Title": "VAudiofy — Audio extrahieren",
+      "Description": "VAudiofy ermöglicht die schnelle Konvertierung von Audioformaten oder das Extrahieren von Audio aus einem oder mehreren Videos.",
+      "HowTo": {
+        "Title": "Verwendung:",
+        "Step1": "1) Wählen oder ziehen Sie eine oder mehrere Audio-/Videodateien herein.",
+        "Step2": "2) Wählen Sie das gewünschte Ausgabeformat.",
+        "Step3": "3) Drücken Sie Enter oder klicken Sie auf „Audio extrahieren“.",
+        "Step4": "4) Warten Sie auf die Hintergrundverarbeitung."
+      }
+    },
+    "VDownload": {
+      "title": "VDownload — Videos herunterladen",
+      "description": "VDownload ermöglicht das Herunterladen eines oder mehrerer Videos von verschiedenen Plattformen wie YouTube oder TikTok.",
+      "howTo": {
+        "title": "Verwendung:",
+        "step1": "1) Kopieren Sie den Link und fügen Sie ihn in das Eingabefeld ein.",
+        "step2": "2) Klicken Sie auf „Hinzufügen“, um ihn zur Liste hinzuzufügen.",
+        "step3": "3) Wählen Sie die gewünschte Auflösung.",
+        "step4": "4) Drücken Sie Enter oder klicken Sie auf „Video herunterladen“.",
+        "step5": "5) Warten Sie, während im Hintergrund verarbeitet wird."
+      },
+      "troubleshooting": {
+        "title": "Funktioniert nicht?",
+        "youtube": {
+          "problem": "Altersbeschränkung oder hoher Traffic",
+          "description": "YouTube aktiviert einen Anti-Bot-Mechanismus, der eine Anmeldung erfordert. Außerdem verschlüsseln Browser wie Edge und Chrome Cookies.",
+          "solution": "Es ist erforderlich, Browser-Cookies aus einer aktiven Sitzung zu verwenden, damit VDownload die Videoinformationen abrufen kann. Gehen Sie zu „Einstellungen“, um dies einzurichten."
+        }
+      },
+      "osInstructions": {
+        "windows": {
+          "edge": {
+            "description": "Wenn Sie Edge verwenden, müssen Sie die Erweiterung installieren"
+          },
+          "chrome": {
+            "description": "Wenn Sie Chrome verwenden, müssen Sie die Erweiterung installieren"
+          },
+          "otherBrowsers": "Die meisten anderen Browser (außer Firefox) sind kompatibel und benötigen Chrome-kompatible Erweiterungen. Sie können die Erweiterung installieren"
+        },
+        "linuxMac": {
+          "description": "Keine bekannten Probleme, allerdings wird die Verwendung einer Cookie-Datei empfohlen, um den Prozess zu beschleunigen.",
+          "suggestion": "Sie können die Erweiterung installieren"
+        }
+      },
+      "limitations": {
+        "title": "Einschränkungen",
+        "item1": "Die Unterstützung mehrerer Videoformate ist noch nicht implementiert.",
+        "item2": "Aufgrund der kürzlichen Implementierung dieser Funktion können Fehler auftreten."
+      }
+    }
+  },
+  "AcercaDe": {
+    "Title": "Über",
+    "WhatIs": {
+      "Title": "Was ist VManager?",
+      "Description": "VManager ist eine Sammlung von Tools, die entwickelt wurden, um Videos schnell, direkt und effizient zu bearbeiten. Es ermöglicht Schneiden, Konvertieren, Komprimieren und Audio-Extrahieren ohne komplizierte Einstellungen und mit einer auf Einfachheit und Produktivität fokussierten Oberfläche."
+    },
+    "Privacy": {
+      "Title": "Datenschutz",
+      "Description": "VManager sammelt, speichert oder überträgt keine persönlichen Daten oder Nutzerdateien. Die gesamte Verarbeitung erfolgt lokal auf Ihrem Gerät."
+    },
+    "Guides": {
+      "Title": "Tool-Anleitungen",
+      "Description": "Wählen Sie eine Anleitung aus, um zu lernen, wie jedes Modul verwendet wird.",
+      "VCut": "VCut — Videos/Audios schneiden",
+      "VCompress": "VCompress — Komprimieren & Optimieren",
+      "VConvert": "VConvert — Formatkonvertierung",
+      "VAudiofy": "VAudiofy — Audio extrahieren",
+      "VDownload": "VDownload — Videos herunterladen"
+    },
+    "Credits": {
+      "Title": "Danksagungen",
+      "Description": "Entwickelt von Franz Baltazar. Beachten Sie, dass Fehler auftreten können; ich empfehle dringend, ein Issue auf GitHub zu eröffnen.",
+      "LinkedIn": "LinkedIn – Franz Baltazar",
+      "GitHubUser": "GitHub – balta-dev",
+      "Instagram": "Instagram – @baltafranz"
+    },
+    "Repository": {
+      "Title": "Projekt-Repository",
+      "Link": "GitHub — VManager"
+    },
+    "License": {
+      "Title": "Lizenz",
+      "Description": "VManager ist freie Software, die unter der MIT-Lizenz vertrieben wird."
+    }
+  },
+  "VideoStatus": {
+    "Completed": "Abgeschlossen",
+    "Canceled": "Abgebrochen",
+    "Error": "Fehler",
+    "NoVideo": "Keine Videos zum Herunterladen.",
+    "ErrorNoInfo": "Fehler beim Laden der Informationen",
+    "Downloading": "Wird heruntergeladen",
+    "NotURL": "Ungültige URL",
+    "AlreadyOnList": "Dieses Video ist bereits in der Liste.",
+    "RetrievingInfo": "Informationen werden abgerufen...",
+    "Downloaded": "Heruntergeladen",
+    "Downloads": "Downloads",
+    "CantDeleteWhileDownloading": "Ein Video kann während des Downloads nicht gelöscht werden.",
+    "OperationCanceled": "Vorgang abgebrochen."
+  },
+  "Notifier": {
+    "FileProcessed": "Die Datei {0} wurde erfolgreich verarbeitet!"
+  },
+  "Overlay": {
+    "DropHere": "Datei hier ablegen",
+    "CancelHint": "oder ESC drücken, um abzubrechen"
+  }
+}

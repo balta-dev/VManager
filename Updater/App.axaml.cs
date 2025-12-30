@@ -46,7 +46,13 @@ namespace Updater
                 ["Français"] = "fr",
                 ["日本語"] = "ja",
                 ["中文"] = "zh",
-                ["العربية"] = "ar"
+                ["العربية"] = "ar",
+                ["Deutsch"] = "de",
+                ["Italiano"] = "it",
+                ["한국어"] = "ko",
+                ["हिंदी"] = "hi",
+                ["Polski"] = "pl",
+                ["Українська"] = "uk"
             };
         
         private sealed class UpdaterConfig
@@ -162,6 +168,66 @@ namespace Updater
                         ["Downloading"] = "جارٍ التنزيل...",
                         ["IncompatibleAsset"] = "خطأ: ملف غير متوافق مع النظام.",
                         ["NewVersion"] = "تحديث جديد متاح {0}!"
+                    },
+                    ["de"] = new()
+                    {
+                        ["Title"] = "VManager-Update",
+                        ["CheckingUpdates"] = "Suche nach verfügbaren Updates...",
+                        ["DownloadLatest"] = "Neueste Version herunterladen",
+                        ["NoUpdate"] = "Kein Update verfügbar.",
+                        ["Downloading"] = "Wird heruntergeladen...",
+                        ["IncompatibleAsset"] = "Fehler: Inkompatible Datei für diese Plattform.",
+                        ["NewVersion"] = "Neues Update verfügbar: {0}!"
+                    },
+                    ["it"] = new()
+                    {
+                        ["Title"] = "Aggiornamento VManager",
+                        ["CheckingUpdates"] = "Controllo degli aggiornamenti disponibili...",
+                        ["DownloadLatest"] = "Scarica l'ultima versione",
+                        ["NoUpdate"] = "Nessun aggiornamento disponibile.",
+                        ["Downloading"] = "Download in corso...",
+                        ["IncompatibleAsset"] = "Errore: file incompatibile con la piattaforma.",
+                        ["NewVersion"] = "Nuovo aggiornamento disponibile {0}!"
+                    },
+                    ["ko"] = new()
+                    {
+                        ["Title"] = "VManager 업데이트",
+                        ["CheckingUpdates"] = "사용 가능한 업데이트 확인 중...",
+                        ["DownloadLatest"] = "최신 버전 다운로드",
+                        ["NoUpdate"] = "사용 가능한 업데이트가 없습니다.",
+                        ["Downloading"] = "다운로드 중...",
+                        ["IncompatibleAsset"] = "오류: 플랫폼과 호환되지 않는 파일입니다.",
+                        ["NewVersion"] = "새로운 업데이트 {0}이(가) 사용 가능합니다!"
+                    },
+                    ["hi"] = new()
+                    {
+                        ["Title"] = "VManager अपडेट",
+                        ["CheckingUpdates"] = "उपलब्ध अपडेट की जाँच की जा रही है...",
+                        ["DownloadLatest"] = "नवीनतम संस्करण डाउनलोड करें",
+                        ["NoUpdate"] = "कोई अपडेट उपलब्ध नहीं है।",
+                        ["Downloading"] = "डाउनलोड हो रहा है...",
+                        ["IncompatibleAsset"] = "त्रुटि: इस प्लेटफ़ॉर्म के लिए असंगत फ़ाइल।",
+                        ["NewVersion"] = "नया अपडेट उपलब्ध है {0}!"
+                    },
+                    ["pl"] = new()
+                    {
+                        ["Title"] = "Aktualizacja VManager",
+                        ["CheckingUpdates"] = "Sprawdzanie dostępnych aktualizacji...",
+                        ["DownloadLatest"] = "Pobierz najnowszą wersję",
+                        ["NoUpdate"] = "Brak dostępnej aktualizacji.",
+                        ["Downloading"] = "Pobieranie...",
+                        ["IncompatibleAsset"] = "Błąd: niekompatybilny plik dla tej platformy.",
+                        ["NewVersion"] = "Dostępna nowa aktualizacja {0}!"
+                    },
+                    ["uk"] = new()
+                    {
+                        ["Title"] = "Оновлення VManager",
+                        ["CheckingUpdates"] = "Перевірка доступних оновлень...",
+                        ["DownloadLatest"] = "Завантажити останню версію",
+                        ["NoUpdate"] = "Оновлення недоступне.",
+                        ["Downloading"] = "Завантаження...",
+                        ["IncompatibleAsset"] = "Помилка: несумісний файл для цієї платформи.",
+                        ["NewVersion"] = "Доступне нове оновлення {0}!"
                     }
                 };
             

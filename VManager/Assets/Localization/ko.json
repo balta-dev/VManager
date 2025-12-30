@@ -1,0 +1,445 @@
+{
+  "General": {
+    "WelcomeMessage": "VManager에 오신 것을 환영합니다!",
+    "AppDescription": "VManager는 비디오를 자르고, 압축하고, 형식 변환할 수 있는 강력하고 사용하기 쉬운 다기능 툴킷입니다.",
+    "ShowHide": "숨기기",
+    "Refreshed": "새로 고침 완료!",
+    "Loading": "로딩 중...",
+    "WelcomePanel": {
+      "GuideInfo": "앱에 대한 상세 가이드와 추가 정보를 보려면",
+      "AboutButton": "정보",
+      "InSidebar": "사이드바의 버튼을 클릭하세요.",
+      "QuickShortcuts": "빠른 단축키:",
+      "PressText": "누르세요",
+      "ToSwitchTools": "도구 전환",
+      "OrText": "또는",
+      "ForConfiguration": "설정을 열기."
+    },
+    "Shortcuts": {
+      "Title": "단축키 목록:",
+      "Items": {
+        "Item1Title": "1/2/3/4/5 버튼:",
+        "Item1Description": " 도구 전환",
+        "Item2Title": "F5:",
+        "Item2Description": " 화면 새로 고침",
+        "Item3Title": "B:",
+        "Item3Description": " 비디오 탐색",
+        "Item4Title": "D:",
+        "Item4Description": " 도구 내 드래그 앤 드롭 활성화",
+        "Item5Title": "T:",
+        "Item5Description": " 다크/라이트 테마 전환",
+        "Item6Title": "Enter:",
+        "Item6Description": " 작업 시작",
+        "Item7Title": "Esc:",
+        "Item7Description": " 작업 취소",
+        "Item8Title": "O:",
+        "Item8Description": " 이름 숨기기/표시",
+        "Item9Title": "C:",
+        "Item9Description": " 설정 열기"
+      }
+    },
+    "Border": {
+      "Title1": "이 프로그램은 어떤 기능을 제공하나요?",
+      "Items1": {
+        "Item1Title": "VCUT:",
+        "Item1Description": " 비디오/오디오를 빠르게 자름.",
+        "Item2Title": "VCOMPR:",
+        "Item2Description": " 비디오 압축 (GPU 우선 사용).",
+        "Item3Title": "VCONV:",
+        "Item3Description": " 다양한 비디오 형식 변환 (예: MKV → MP4).",
+        "Item4Title": "VAUDIOFY:",
+        "Item4Description": " 비디오에서 오디오 추출 또는 오디오 형식 변환.",
+        "Item5Title": "VDOWNLOAD:",
+        "Item5Description": " 좋아하는 플랫폼에서 비디오 다운로드."
+      },
+      "Title2": "사용 방법은?",
+      "Items2": {
+        "Item1Description": "왼쪽 상단에서 마우스나 키보드 단축키로 도구 선택",
+        "Item2Description": "비디오를 박스에 드래그하거나 '탐색' 버튼으로 선택",
+        "Item3Description": "버튼으로 처리하면 끝!"
+      }
+    }
+  },
+  "Footer": {
+    "Title": "Baltazar Franz 제작",
+    "Version": "버전:",
+    "Support": "이 프로젝트는 한 명이 유지보수하고 있습니다. 기여하고 싶다면 아래 버튼을 클릭하세요."
+  },
+  "VCut": {
+    "Title": "비디오/오디오 자르기",
+    "Buttons": {
+      "Refresh": "새로 고침",
+      "Browse": "탐색",
+      "Cut": "비디오 자르기",
+      "Cancel": "취소",
+      "ShowFileInFolder": "폴더에서 파일 표시"
+    },
+    "Fields": {
+      "SelectVideo": "비디오 선택:",
+      "VideoPath": "비디오 경로",
+      "TrimFrom": "시작:",
+      "TrimTo": "끝:",
+      "ObtainingInfo": "비디오 정보 가져오는 중...",
+      "InvalidFrom": "'시작' 시간이 잘못되었습니다",
+      "InvalidTo": "'끝' 시간이 잘못되었습니다",
+      "EndBeforeStart": "'끝' 시간은 '시작' 시간보다 커야 합니다",
+      "ExceedsLength": "'시작' 시간이 비디오 길이를 초과합니다",
+      "Cutting": "자르는 중...",
+      "CutCanceled": "사용자가 자르기를 취소했습니다.",
+      "NoMainWindow": "메인 윈도우에 접근할 수 없습니다.",
+      "BrowseTitle": "비디오 선택",
+      "Error": "오류: {0}",
+      "Completed": "{0}",
+      "OutputLabel": "파일: {0}",
+      "NotificationTitle": "비디오 자르기 완료",
+      "NotificationMessage": "{0}"
+    },
+    "Tips": {
+      "FormatSelection": "초 단위 또는 전통적인 시간 형식(hh:mm:ss)을 사용할 수 있습니다.",
+      "ValidInput": "시간이 유효하다면 원하는 형식을 사용하세요.",
+      "ExamplesTitle": "사용 예시:",
+      "ExampleTrim1": "• 23초부터 2:01까지 자르기",
+      "ExampleTrim2": "• 1:02:01부터 2:52:01까지 자르기",
+      "NoteDuration": "참고: 잘못되거나 비어 있으면 자르기 길이가 자동으로 재계산됩니다."
+    }
+  },
+  "VCompress": {
+    "Title": "비디오 압축",
+    "Buttons": {
+      "Refresh": "새로 고침",
+      "Browse": "탐색",
+      "Compress": "비디오 압축",
+      "Cancel": "취소",
+      "ShowFileInFolder": "폴더에서 파일 표시"
+    },
+    "Fields": {
+      "SelectVideo": "비디오 선택:",
+      "VideoCodec": "비디오 코덱:",
+      "AudioCodec": "오디오 코덱:",
+      "VideoPath": "비디오 경로",
+      "Quality": "품질 백분율:",
+      "NoFiles": "선택된 파일이 없습니다.",
+      "InvalidPercent": "잘못된 백분율입니다.",
+      "Compressing": "압축 중 ({0}/{1}): {2}...",
+      "Error": "{0} 처리 중 오류: {1}",
+      "CompletedAll": "{0}개 파일이 성공적으로 압축되었습니다!",
+      "CompletedPartial": "프로세스 중단: {0}/{1}개 파일 완료",
+      "Canceled": "사용자가 압축을 취소했습니다.",
+      "NotificationTitle": "파일 압축 완료",
+      "NotificationMessage": "{0}",
+      "OutputSuffix": "-COMP-{0}"
+    },
+    "Tips": {
+      "VideoCodecInfo": "대부분의 경우 기본 옵션이 최적입니다.",
+      "VideoCodecHW": "가능할 때 하드웨어 가속(GPU)을 우선합니다.",
+      "VideoCodecDefinition": "비디오 코덱은 공간 절약 또는 빠른 스트리밍을 위해 비디오를 압축/해제합니다.",
+      "VideoCodecCPU": "CPU 인코딩을 원하면 'libx264' 같은 코덱을 사용하세요.",
+      "VideoCodecTradeoff": "CPU는 최고 품질을 제공하지만 훨씬 느립니다.",
+      "AudioCodecInfo": "대부분의 경우 기본 옵션이 최적입니다.",
+      "AudioCodecDefinition": "오디오 코덱은 공간 절약 또는 빠른 스트리밍을 위해 오디오를 압축/해제합니다.",
+      "AudioCodecFLAC": "FLAC은 뛰어난 오디오 품질을 제공하지만 파일 크기가 훨씬 큽니다."
+    }
+  },
+  "VConvert": {
+    "Title": "비디오 변환",
+    "Buttons": {
+      "Refresh": "새로 고침",
+      "Browse": "탐색",
+      "Convert": "비디오 형식 변환",
+      "Cancel": "취소",
+      "ShowFileInFolder": "폴더에서 파일 표시"
+    },
+    "Fields": {
+      "SelectVideo": "비디오 선택:",
+      "VideoPath": "비디오 경로",
+      "Format": "대상 형식?",
+      "VideoCodec": "비디오 코덱:",
+      "AudioCodec": "오디오 코덱:",
+      "NoFiles": "선택된 파일이 없습니다.",
+      "Converting": "변환 중 ({0}/{1}): {2}...",
+      "Error": "{0} 처리 중 오류: {1}",
+      "CompletedAll": "{0}개 파일이 성공적으로 변환되었습니다!",
+      "CompletedPartial": "프로세스 중단: {0}/{1}개 파일 완료",
+      "Canceled": "사용자가 변환을 취소했습니다.",
+      "NotificationTitle": "파일 변환 완료",
+      "NotificationMessage": "{0}",
+      "OutputSuffix": "-VCONV"
+    },
+    "Tips": {
+      "FormatSelection": "비디오 출력 형식을 선택하세요.",
+      "RecommendationsTitle": "추천:",
+      "RecMP4": "• MP4 + AAC (최대 호환성)",
+      "RecMKV": "• MKV + 모든 오디오 (가장 유연함)",
+      "RecWebM": "• WebM + Opus (웹 최적화)",
+      "RecMOV": "• MOV + PCM (DaVinci Resolve에 이상적)",
+      "FormatNote": "참고: FFmpeg는 많은 조합을 지원하지만 일부는 모든 기기와 호환되지 않을 수 있습니다.",
+      "VideoCodecInfo": "대부분의 경우 기본 옵션이 최적입니다.",
+      "VideoCodecHW": "하드웨어 가속(GPU)을 우선합니다.",
+      "VideoCodecDefinition": "비디오 코덱은 공간 절약 또는 빠른 스트리밍을 위해 비디오를 압축/해제합니다.",
+      "VideoCodecCPU": "CPU 인코딩 시 'libx264' 같은 코덱을 선택하세요.",
+      "VideoCodecTradeoff": "CPU는 더 나은 품질을 제공하지만 훨씬 느립니다.",
+      "AudioCodecInfo": "기본값이 대부분의 경우에 적합합니다.",
+      "AudioCodecDefinition": "오디오 코덱은 공간 절약 또는 빠른 스트리밍을 위해 오디오를 압축/해제합니다.",
+      "AudioCodecFLAC": "FLAC은 뛰어난 품질을 제공하지만 훨씬 더 많은 공간을 차지합니다."
+    }
+  },
+  "VAudiofy": {
+    "Title": "오디오 추출/변환",
+    "Buttons": {
+      "Refresh": "새로 고침",
+      "Browse": "탐색",
+      "Extract": "오디오 추출",
+      "Cancel": "취소",
+      "ShowFileInFolder": "폴더에서 파일 표시"
+    },
+    "Fields": {
+      "SelectVideo": "비디오/오디오 선택:",
+      "VideoPath": "비디오/오디오 경로",
+      "Format": "대상 형식?",
+      "ConvertingAudio": "오디오 변환 중",
+      "ExtractingAudio": "오디오 추출 중",
+      "ProcessedSingular": "1개 파일이 성공적으로 처리되었습니다!",
+      "ProcessedPlural": "{0}개 파일이 성공적으로 처리되었습니다!",
+      "Interrupted": "프로세스 중단",
+      "InterruptedDetail": "{0}/{1}개 파일 완료",
+      "Canceled": "작업 취소됨",
+      "NoFiles": "선택된 파일 없음"
+    },
+    "Tips": {
+      "FormatSelection": "출력 오디오 형식을 선택하세요.",
+      "FormatNote1": "WAV 형식은 사용 확률순으로 정렬되어 있습니다. 확실하지 않으면 첫 번째를 선택하세요.",
+      "FormatNote2": "Opus는 더 새롭고 효율적이며, Vorbis는 구형입니다."
+    }
+  },
+  "VDownload": {
+    "Title": "비디오 다운로드",
+    "Buttons": {
+      "Refresh": "새로 고침",
+      "Add": "추가",
+      "Download": "비디오 다운로드",
+      "Cancel": "취소",
+      "ShowFileInFolder": "폴더에서 파일 표시"
+    },
+    "Fields": {
+      "PasteVideo": "비디오 URL 붙여넣기",
+      "Queue": "대기열의 비디오",
+      "Remaining": "남은 시간"
+    },
+    "Popup": {
+      "Problem?": "다운로드 문제?",
+      "ClickHere": "여기 클릭"
+    }
+  },
+  "Configuration": {
+    "Title": "설정",
+    "Fields": {
+      "Language": "언어:",
+      "Appearance": "외관",
+      "ShowProfileIcon": "프로필 아이콘 표시?",
+      "Accent": "강조 색상:",
+      "Behaviour": "동작",
+      "HideRemainingTime": "남은 시간 숨기기?",
+      "HideNotifications": "알림 숨기기?",
+      "EnableSounds": "소리 비활성화?",
+      "Advanced": "고급",
+      "EnableDebug": "로그 출력 활성화 (DEBUG)",
+      "Hardware": "하드웨어 재계산",
+      "DefaultDownloadFolder": "바탕화면 (기본)",
+      "DownloadFolder": "다운로드 폴더:",
+      "DownloadFolderSet": "다운로드 폴더 설정됨.",
+      "ProfileImage": "프로필 이미지",
+      "BrowseProfileImage": "이미지 로드",
+      "Browse": "탐색...",
+      "DeleteProfileImage": "이미지 삭제",
+      "CookiesFile": "세션 쿠키 파일:",
+      "BrowseCookies": "쿠키 파일 선택",
+      "NoCookies": "선택된 파일 없음",
+      "Delete": "제거",
+      "UseCookieFile": "yt-dlp에 이 쿠키 파일 사용",
+      "InvalidCookiesFile": "잘못되었거나 빈 파일입니다.",
+      "CookiesSet": "쿠키 파일 설정됨.",
+      "CookiesRemoved": "쿠키 파일 제거됨.",
+      "ValidatingImage": "이미지 검증 중...",
+      "ProfileImageSet": "프로필 이미지 설정됨.",
+      "ProfileImageRemoved": "프로필 이미지 제거됨.",
+      "MainWindowFail": "메인 윈도우에 접근할 수 없습니다.",
+      "Welcome": "환영합니다, {0}! 무엇을 변경하시겠어요? :)"
+    },
+    "Tips": {
+      "Hardware1": "이 버튼은 여러 FFmpeg 인스턴스를 병렬로 실행하여",
+      "Hardware2": "다양한 비디오 코덱의 호환성을 확인하고 드롭다운 목록에 저장합니다.",
+      "Hardware3": "무엇을 하는지 모르면 이 버튼을 누르지 않는 것이 좋습니다...",
+      "Hardware4": "GPU를 변경하거나 문제가 발생했을 때 유용하지만 컴퓨터에 큰 부하를 줄 수 있습니다."
+    }
+  },
+  "CancelDialog": {
+    "Title": "작업 취소하시겠습니까?",
+    "Info": "백그라운드 프로세스를 강제로 종료하려고 합니다.",
+    "Warning": "이 작업은 되돌릴 수 없습니다.",
+    "Cancel": "취소",
+    "No": "아니오"
+  },
+  "Guide": {
+    "WindowTitle": "도구 가이드",
+    "VCut": {
+      "Title": "VCut — 비디오/오디오 자르기",
+      "Description": "VCut은 시작점과 끝점을 지정해 비디오나 오디오를 빠르게 자를 수 있습니다.",
+      "HowTo": {
+        "Title": "사용 방법:",
+        "Step1": "1) 비디오/오디오 파일을 선택하거나 드래그하세요.",
+        "Step2": "2) 자르기 시작과 끝 시간을 입력하세요.",
+        "Step3": "3) Enter를 누르거나 '자르기'를 클릭하세요.",
+        "Step4": "4) 백그라운드 처리가 완료될 때까지 기다리세요."
+      },
+      "Notes": {
+        "Title": "참고:",
+        "A": "시간은 초만 입력하거나 전체 hh:mm:ss 형식으로 입력할 수 있습니다.",
+        "B": "끝 시간이 비디오 길이를 초과하면 자동으로 비디오 끝으로 조정됩니다.",
+        "C": "끝 시간이 지정되지 않으면 비디오 끝까지 자릅니다."
+      }
+    },
+    "VCompress": {
+      "Title": "VCompress — 압축 및 최적화",
+      "Description": "VCompress는 하나 이상의 비디오를 빠르게 압축하며 가능하면 GPU를 우선 사용합니다.",
+      "HowTo": {
+        "Title": "사용 방법:",
+        "Step1": "1) 하나 이상의 비디오 파일을 선택하거나 드래그하세요.",
+        "Step2": "2) 원하는 품질 백분율을 입력하세요.",
+        "Step3": "3) (선택) 선호하는 비디오/오디오 코덱 선택.",
+        "Step4": "4) Enter를 누르거나 '비디오 압축'을 클릭하세요.",
+        "Step5": "5) 백그라운드 처리를 기다리세요."
+      },
+      "Notes": {
+        "Title": "참고:",
+        "A": "'품질 백분율'은 원본 대비 최종 파일 크기를 의미합니다. 종종 25%도 매우 좋은 품질을 유지하면서 크기를 크게 줄입니다.",
+        "B": "비디오 코덱은 우선순위로 정렬됩니다. 기본값은 사용 가능 시 Nvidia/AMD/Intel 하드웨어 인코더를 사용합니다.",
+        "C": "가능하면 리먹스만 수행(재인코딩 없음)하여 프로세스를 훨씬 빠르게 합니다."
+      }
+    },
+    "VConvert": {
+      "Title": "VConvert — 형식 변환",
+      "Description": "VConvert는 하나 이상의 비디오 형식을 빠르게 변환합니다.",
+      "HowTo": {
+        "Title": "사용 방법:",
+        "Step1": "1) 하나 이상의 비디오 파일을 선택하거나 드래그하세요.",
+        "Step2": "2) 원하는 출력 형식을 선택하세요.",
+        "Step3": "3) (선택) 선호하는 비디오/오디오 코덱 선택.",
+        "Step4": "4) Enter를 누르거나 '비디오 형식 변환'을 클릭하세요.",
+        "Step5": "5) 백그라운드 처리를 기다리세요."
+      },
+      "Notes": {
+        "Title": "참고:",
+        "A": "비디오 코덱은 우선순위로 정렬됩니다. 기본값은 OS/GPU에 맞는 하드웨어 인코더를 사용합니다.",
+        "B": "가능하면 리먹스만 수행(재인코딩 없음)하여 프로세스를 크게 가속합니다."
+      }
+    },
+    "VAudiofy": {
+      "Title": "VAudiofy — 오디오 추출",
+      "Description": "VAudiofy는 오디오 형식을 빠르게 변환하거나 하나 이상의 비디오에서 오디오를 추출합니다.",
+      "HowTo": {
+        "Title": "사용 방법:",
+        "Step1": "1) 하나 이상의 오디오/비디오 파일을 선택하거나 드래그하세요.",
+        "Step2": "2) 원하는 출력 형식을 선택하세요.",
+        "Step3": "3) Enter를 누르거나 '오디오 추출'을 클릭하세요.",
+        "Step4": "4) 백그라운드 처리를 기다리세요."
+      }
+    },
+    "VDownload": {
+      "title": "VDownload — 비디오 다운로드",
+      "description": "VDownload는 YouTube나 TikTok 등 다양한 플랫폼에서 하나 이상의 비디오를 다운로드할 수 있습니다.",
+      "howTo": {
+        "title": "사용 방법:",
+        "step1": "1) 링크를 복사해서 입력 필드에 붙여넣으세요.",
+        "step2": "2) \"추가\" 버튼을 눌러 목록에 추가하세요.",
+        "step3": "3) 원하는 해상도를 선택하세요.",
+        "step4": "4) Enter를 누르거나 \"비디오 다운로드\" 버튼을 클릭하세요.",
+        "step5": "5) 백그라운드에서 처리될 때까지 기다리세요."
+      },
+      "troubleshooting": {
+        "title": "작동하지 않나요?",
+        "youtube": {
+          "problem": "연령 제한 또는 높은 트래픽",
+          "description": "YouTube는 봇 방지 메커니즘을 활성화하여 로그인을 요구합니다. 또한 Edge나 Chrome 같은 브라우저는 쿠키를 암호화합니다.",
+          "solution": "VDownload가 비디오 정보를 가져올 수 있도록 활성 세션의 브라우저 쿠키를 사용해야 합니다. '설정'으로 이동해 구성하세요."
+        }
+      },
+      "osInstructions": {
+        "windows": {
+          "edge": {
+            "description": "Edge를 사용 중이라면 확장 프로그램을 설치해야 합니다"
+          },
+          "chrome": {
+            "description": "Chrome를 사용 중이라면 확장 프로그램을 설치해야 합니다"
+          },
+          "otherBrowsers": "대부분의 다른 브라우저(Firefox 제외)는 Chrome 호환 확장 프로그램이 필요합니다. 확장 프로그램을 설치할 수 있습니다"
+        },
+        "linuxMac": {
+          "description": "알려진 문제는 없지만 프로세스 속도를 높이기 위해 쿠키 파일 사용을 권장합니다.",
+          "suggestion": "확장 프로그램을 설치할 수 있습니다"
+        }
+      },
+      "limitations": {
+        "title": "제한 사항",
+        "item1": "다중 비디오 형식 지원은 아직 구현되지 않았습니다.",
+        "item2": "이 기능의 최근 구현으로 인해 버그가 발생할 수 있습니다."
+      }
+    }
+  },
+  "AcercaDe": {
+    "Title": "정보",
+    "WhatIs": {
+      "Title": "VManager란?",
+      "Description": "VManager는 비디오를 빠르고 직접적이며 효율적으로 처리하도록 설계된 도구 모음입니다. 복잡한 설정 없이 자르기, 변환, 압축, 오디오 추출이 가능하며 단순함과 생산성에 초점을 맞춘 인터페이스입니다."
+    },
+    "Privacy": {
+      "Title": "개인정보 보호",
+      "Description": "VManager는 개인 데이터나 사용자 파일을 수집, 저장 또는 전송하지 않습니다. 모든 처리는 기기 로컬에서 이루어집니다."
+    },
+    "Guides": {
+      "Title": "도구 가이드",
+      "Description": "각 모듈 사용법을 배우려면 가이드를 선택하세요.",
+      "VCut": "VCut — 비디오/오디오 자르기",
+      "VCompress": "VCompress — 압축 및 최적화",
+      "VConvert": "VConvert — 형식 변환",
+      "VAudiofy": "VAudiofy — 오디오 추출",
+      "VDownload": "VDownload — 비디오 다운로드"
+    },
+    "Credits": {
+      "Title": "크레딧",
+      "Description": "Franz Baltazar 개발. 버그가 발생할 수 있으니 GitHub에 Issue를 열어주시길 강력히 권장합니다.",
+      "LinkedIn": "LinkedIn – Franz Baltazar",
+      "GitHubUser": "GitHub – balta-dev",
+      "Instagram": "Instagram – @baltafranz"
+    },
+    "Repository": {
+      "Title": "프로젝트 저장소",
+      "Link": "GitHub — VManager"
+    },
+    "License": {
+      "Title": "라이선스",
+      "Description": "VManager는 MIT 라이선스로 배포되는 자유 소프트웨어입니다."
+    }
+  },
+  "VideoStatus": {
+    "Completed": "완료",
+    "Canceled": "취소됨",
+    "Error": "오류",
+    "NoVideo": "다운로드할 비디오가 없습니다.",
+    "ErrorNoInfo": "정보 로드 오류",
+    "Downloading": "다운로드 중",
+    "NotURL": "잘못된 URL",
+    "AlreadyOnList": "이 비디오는 이미 목록에 있습니다.",
+    "RetrievingInfo": "정보 가져오는 중...",
+    "Downloaded": "다운로드됨",
+    "Downloads": "다운로드",
+    "CantDeleteWhileDownloading": "다운로드 중에는 비디오를 삭제할 수 없습니다.",
+    "OperationCanceled": "작업이 취소되었습니다."
+  },
+  "Notifier": {
+    "FileProcessed": "파일 {0}이(가) 성공적으로 처리되었습니다!"
+  },
+  "Overlay": {
+    "DropHere": "파일을 여기로 드래그하세요",
+    "CancelHint": "또는 ESC를 눌러 취소"
+  }
+}

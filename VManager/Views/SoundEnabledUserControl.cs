@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 using VManager.Behaviors;
 
 namespace VManager.Views
@@ -56,27 +57,32 @@ namespace VManager.Views
         
         protected void OpenGuideVCut(object? sender, RoutedEventArgs e)
         {
-            new GuideWindow(new GuideVCutView()).Show();
+            var owner = this.GetVisualRoot() as Window;
+            GuideWindow.ShowGuide(new GuideVCutView(), owner!);
         }
 
         protected void OpenGuideVCompress(object? sender, RoutedEventArgs e)
         {
-            new GuideWindow(new GuideVCompressView()).Show();
+            var owner = this.GetVisualRoot() as Window;
+            GuideWindow.ShowGuide(new GuideVCompressView(), owner!);
         }
 
         protected void OpenGuideVConvert(object? sender, RoutedEventArgs e)
         {
-            new GuideWindow(new GuideVConvertView()).Show();
+            var owner = this.GetVisualRoot() as Window;
+            GuideWindow.ShowGuide(new GuideVConvertView(), owner!);
         }
 
         protected void OpenGuideVAudiofy(object? sender, RoutedEventArgs e)
         {
-            new GuideWindow(new GuideVAudiofyView()).Show();
+            var owner = this.GetVisualRoot() as Window;
+            GuideWindow.ShowGuide(new GuideVAudiofyView(), owner!);
         }
 
         protected void OpenGuideVDownload(object? sender, RoutedEventArgs e)
         {
-            new GuideWindow(new GuideVDownloadView()).Show();
+            var owner = this.GetVisualRoot() as Window;
+            GuideWindow.ShowGuide(new GuideVDownloadView(), owner!);
         }
         
     }

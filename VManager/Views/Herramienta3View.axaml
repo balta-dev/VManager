@@ -269,7 +269,6 @@
                             FontSize="18"
                             FontWeight="DemiBold"
                             Command="{Binding ConvertCommand}" 
-                            Width="260"
                             HotKey="Enter"
                             Margin="0,15,0,0" 
                             HorizontalAlignment="Center"/>
@@ -290,8 +289,7 @@
                             Command="{Binding ShowCancelDialogCommand}"
                             Classes="RedAccented"
                             HotKey="Escape"
-                            HorizontalAlignment="Center"
-                            Width="90"/>
+                            HorizontalAlignment="Center"/>
                 </Canvas>
 
                 <!-- Mostrar archivo -->

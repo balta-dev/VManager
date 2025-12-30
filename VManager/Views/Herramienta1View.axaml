@@ -166,7 +166,6 @@
                 IsEnabled="{Binding VideoPath, Converter={StaticResource ValidPathConverter}}"
                 Command="{Binding CutCommand}" 
                 HotKey="Enter"
-                Width="150" 
                 Margin="0,0,0,0" 
                 HorizontalAlignment="Center"/>
         
@@ -178,8 +177,7 @@
                 Command="{Binding ShowCancelDialogCommand}"
                 Classes="RedAccented"
                 HotKey="Escape"
-                HorizontalAlignment="Center"
-                Width="90"/>
+                HorizontalAlignment="Center"/>
 
         <!-- Mostrar archivo en carpeta -->
         <ToggleButton Content="{Binding L[VCut.Buttons.ShowFileInFolder]}"

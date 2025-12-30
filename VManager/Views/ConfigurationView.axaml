@@ -137,12 +137,10 @@
                   <StackPanel Spacing="5" VerticalAlignment="Center">
                     <Button Content="{Binding L[Configuration.Fields.BrowseProfileImage]}"
                             Command="{Binding BrowseProfileImageCommand}"
-                            Width="150"
                             FontSize="13"/>
                     
                     <Button Content="{Binding L[Configuration.Fields.DeleteProfileImage]}"
                             Command="{Binding RemoveProfileImageCommand}"
-                            Width="150"
                             FontSize="13"
                             Classes="RedAccented">
                       <Button.IsEnabled>
