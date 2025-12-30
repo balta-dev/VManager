@@ -169,6 +169,31 @@
             <Setter Property="Foreground" Value="{DynamicResource AccentForegroundBrush}" />
         </Style>
         
+        <!-- ============================= -->
+        <!-- TEXBOX -->
+        <!-- ============================= -->
+        
+        <!-- PointerOver -->
+        <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrushLight}" />
+        </Style>
+
+        <!-- Focused -->
+        <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="BorderThickness" Value="2" />
+        </Style>
+
+        <!-- Error -->
+        <Style Selector="TextBox:error /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource RedButtonBrush}" />
+        </Style>
+
+        <!-- Disabled -->
+        <Style Selector="TextBox:disabled /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource TextControlBorderBrushDisabled}" />
+        </Style>
+        
         <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
         
     </Application.Styles>

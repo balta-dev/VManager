@@ -29,7 +29,7 @@ namespace VManager.Views
  
     public partial class MainWindow : Window
     {
-        
+        public static Stopwatch? StartupStopwatch;
         public MainWindow()
         {
             InitializeComponent();
@@ -59,6 +59,9 @@ namespace VManager.Views
                     configVM.WhenAnyValue(x => x.SelectedColor) 
                         .Subscribe(_ => ApplyCustomAccent());
                 } 
+                
+                StartupStopwatch?.Stop();
+                Console.WriteLine($"[DEBUG]: Startup en {StartupStopwatch!.ElapsedMilliseconds} ms");
             };
             
             LocalizationService.Instance.PropertyChanged += OnLocalizationChanged;
