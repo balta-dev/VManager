@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Avalonia.Media;
 using ReactiveUI;
+using VManager.Services.Utils.Converters;
 
 namespace VManager.Services;
 

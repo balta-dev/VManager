@@ -9,13 +9,13 @@ using System.Threading;
 
 namespace VManager.Services
 {
-    public class CodecService : ICodecService
+    public class HardwareAccelerationService : IHardwareAccelerationService
     {
         private readonly string _ffmpegPath;
         private readonly SemaphoreSlim _codecCacheLock = new SemaphoreSlim(1, 1);
         private List<string>? _cachedCodecs;
 
-        public CodecService()
+        public HardwareAccelerationService()
         {
             _ffmpegPath = FFmpegManager.FfmpegPath;
         }

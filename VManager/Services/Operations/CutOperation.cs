@@ -4,7 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using FFMpegCore;
 using VManager.Services;
-using VManager.Services.Models; // para FFmpegExecutor y ProcessingResult
+using VManager.Services.Models;
+using VManager.Services.Utils.Execution; // para FFmpegExecutor y ProcessingResult
 
 namespace VManager.Services.Operations
 {
@@ -24,7 +25,7 @@ namespace VManager.Services.Operations
             string outputPath,
             TimeSpan start,
             TimeSpan duration,
-            IProgress<IVideoProcessor.ProgressInfo> progress,
+            IProgress<IFFmpegProcessor.ProgressInfo> progress,
             CancellationToken cancellationToken = default)
         {
             var analysisResult = await _analyzer.AnalyzeAsync(inputPath);

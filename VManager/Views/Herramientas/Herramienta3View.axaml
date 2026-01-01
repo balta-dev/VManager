@@ -7,10 +7,11 @@
              xmlns:global="clr-namespace:"
              xmlns:views="clr-namespace:VManager.Views"
              xmlns:services="clr-namespace:VManager.Services"
-             xmlns:herramientas="clr-namespace:VManager.ViewModels.Herramientas">
+             xmlns:herramientas="clr-namespace:VManager.ViewModels.Herramientas"
+             xmlns:converters="clr-namespace:VManager.Services.Utils.Converters">
     
     <UserControl.Resources>
-        <services:ValidPathConverter x:Key="ValidPathConverter" />
+        <converters:ValidPathConverter x:Key="ValidPathConverter" />
     </UserControl.Resources>   
     
     <!-- Se estira a toda la ventana y recorta cuando falta espacio -->

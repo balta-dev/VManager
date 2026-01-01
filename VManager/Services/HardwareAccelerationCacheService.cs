@@ -6,15 +6,15 @@ using System.Collections.Generic;
 
 namespace VManager.Services
 {
-    public class CodecCacheService
+    public class HardwareAccelerationCacheService
     {
-        private readonly ICodecService _codecService;
+        private readonly IHardwareAccelerationService _hardwareAccelerationService;
         private readonly string _cacheFile;
         private CodecCache? _cache;
 
-        public CodecCacheService(ICodecService codecService)
+        public HardwareAccelerationCacheService(IHardwareAccelerationService hardwareAccelerationService)
         {
-            _codecService = codecService;
+            _hardwareAccelerationService = hardwareAccelerationService;
             string cacheFolder = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "VManager", "cache");
@@ -48,9 +48,9 @@ namespace VManager.Services
 
         public async Task<CodecCache> RefreshCacheAsync()
         {
-            var video = await _codecService.GetAvailableVideoCodecsAsync();
-            var audio = await _codecService.GetAvailableAudioCodecsAsync();
-            var hw = await _codecService.GetHardwareCapabilitiesAsync();
+            var video = await _hardwareAccelerationService.GetAvailableVideoCodecsAsync();
+            var audio = await _hardwareAccelerationService.GetAvailableAudioCodecsAsync();
+            var hw = await _hardwareAccelerationService.GetHardwareCapabilitiesAsync();
 
             _cache = new CodecCache
             {

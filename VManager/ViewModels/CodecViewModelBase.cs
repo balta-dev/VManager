@@ -114,8 +114,8 @@ namespace VManager.ViewModels
             Console.WriteLine("Cargando códecs para la herramienta...");
             await LoadOrRefreshCodecsAsync(async () =>
             {
-                var codecService = new CodecService();
-                var cacheService = new CodecCacheService(codecService);
+                var codecService = new HardwareAccelerationService();
+                var cacheService = new HardwareAccelerationCacheService(codecService);
                 return await cacheService.LoadOrBuildCacheAsync();
             });
 
@@ -126,8 +126,8 @@ namespace VManager.ViewModels
             Console.WriteLine("Recargando códecs...");
             await LoadOrRefreshCodecsAsync(async () =>
             {
-                var codecService = new CodecService();
-                var cacheService = new CodecCacheService(codecService);
+                var codecService = new HardwareAccelerationService();
+                var cacheService = new HardwareAccelerationCacheService(codecService);
                 return await cacheService.RefreshCacheAsync();
             });
         }

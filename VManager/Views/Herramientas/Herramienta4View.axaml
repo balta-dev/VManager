@@ -5,10 +5,11 @@
              xmlns:vm="using:VManager.ViewModels"
              xmlns:behaviours="clr-namespace:VManager.Behaviours"
              xmlns:services="clr-namespace:VManager.Services"
-             xmlns:herramientas="clr-namespace:VManager.ViewModels.Herramientas">
+             xmlns:herramientas="clr-namespace:VManager.ViewModels.Herramientas"
+             xmlns:converters="clr-namespace:VManager.Services.Utils.Converters">
 
   <UserControl.Resources>
-    <services:ValidPathConverter x:Key="ValidPathConverter" />
+    <converters:ValidPathConverter x:Key="ValidPathConverter" />
   </UserControl.Resources>
   
   <Grid ClipToBounds="True">

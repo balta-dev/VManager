@@ -174,7 +174,7 @@ namespace VManager.ViewModels.Herramientas
             Status = L["VCut.Fields.ObtainingInfo"];
             this.RaisePropertyChanged(nameof(Status));
 
-            var processor = new VideoProcessor();
+            IFFmpegProcessor processor = new FFmpegProcessor();
             var analysisResult = await processor.AnalyzeVideoAsync(VideoPath);
 
             if (!analysisResult.Success)
@@ -228,7 +228,7 @@ namespace VManager.ViewModels.Herramientas
 
             try
             {
-                var progress = new Progress<IVideoProcessor.ProgressInfo>(info =>
+                var progress = new Progress<IFFmpegProcessor.ProgressInfo>(info =>
                 {
                     Progress = (int)(info.Progress * 100);
                     RemainingTime = info.Remaining.ToString(@"mm\:ss");

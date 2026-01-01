@@ -4,7 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using FFMpegCore;
 using VManager.Services.Utils; // Para HardwareAccelerationConfigurator, FFmpegExecutor, ResumableFFmpegExecutor
-using VManager.Services.Models; // Para ProcessingResult
+using VManager.Services.Models;
+using VManager.Services.Utils.Execution; // Para ProcessingResult
 
 namespace VManager.Services.Operations
 {
@@ -27,7 +28,7 @@ namespace VManager.Services.Operations
             string? videoCodec,
             string? audioCodec,
             string selectedFormat,
-            IProgress<IVideoProcessor.ProgressInfo> progress,
+            IProgress<IFFmpegProcessor.ProgressInfo> progress,
             CancellationToken cancellationToken = default)
         {
             // Defaults de códecs

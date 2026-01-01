@@ -8,7 +8,7 @@ using FFMpegCore;
 using VManager.Services.Models;
 using VManager.Services.Utils;
 
-namespace VManager.Services;
+namespace VManager.Services.Utils.Execution;
 
 internal class ResumableFFmpegExecutor
         {
@@ -25,7 +25,7 @@ internal class ResumableFFmpegExecutor
                 string outputPath,
                 Func<FFMpegArgumentOptions, FFMpegArgumentOptions> configureOptions, // función para configurar códecs, bitrate, etc.
                 double totalDuration,
-                IProgress<IVideoProcessor.ProgressInfo> progress,
+                IProgress<IFFmpegProcessor.ProgressInfo> progress,
                 CancellationToken ct,
                 string operationName = "unknown")
             {
@@ -76,13 +76,13 @@ internal class ResumableFFmpegExecutor
                         chunkOutput,
                         args,
                         Math.Min(ChunkDurationSeconds, totalDuration - processedDuration),
-                        new Progress<IVideoProcessor.ProgressInfo>(p =>
+                        new Progress<IFFmpegProcessor.ProgressInfo>(p =>
                         {
                             double globalProgress = (processedDuration + p.Progress * ChunkDurationSeconds) / totalDuration;
                             double remainingSeconds = (totalDuration - processedDuration - p.Progress * ChunkDurationSeconds) / Math.Max(p.Progress, 0.01);
                             TimeSpan remaining = TimeSpan.FromSeconds(remainingSeconds);
 
-                            progress.Report(new IVideoProcessor.ProgressInfo(globalProgress, remaining));
+                            progress.Report(new IFFmpegProcessor.ProgressInfo(globalProgress, remaining));
                         }),
                         ct
                     );
@@ -136,7 +136,7 @@ internal class ResumableFFmpegExecutor
                     pattern,
                     args,
                     0,
-                    new Progress<IVideoProcessor.ProgressInfo>(_ => { }),
+                    new Progress<IFFmpegProcessor.ProgressInfo>(_ => { }),
                     ct
                 );
             }
@@ -172,7 +172,7 @@ internal class ResumableFFmpegExecutor
                     finalOutput,
                     args,
                     0,
-                    new Progress<IVideoProcessor.ProgressInfo>(_ => { }),
+                    new Progress<IFFmpegProcessor.ProgressInfo>(_ => { }),
                     ct
                 );
             }

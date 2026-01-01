@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using FFMpegCore;
 using VManager.Services.Models;
 
-namespace VManager.Services;
+namespace VManager.Services.Utils.Execution;
 
 internal class FFmpegExecutor
         {
@@ -20,7 +20,7 @@ internal class FFmpegExecutor
                 string outputPath,
                 FFMpegArgumentProcessor args,
                 double duration,                                      // ← este es el "duration"
-                IProgress<IVideoProcessor.ProgressInfo> progress,
+                IProgress<IFFmpegProcessor.ProgressInfo> progress,
                 CancellationToken cancellationToken)
             {
                 var process = new Process
@@ -93,7 +93,7 @@ internal class FFmpegExecutor
                                         Console.WriteLine($"[DEBUG] Progreso: {progressValue:P2}, Restante real: {remainingReal}");
 
                                         // reportamos progreso usando tu ProgressInfo
-                                        progress.Report(new IVideoProcessor.ProgressInfo(progressValue, remainingReal));
+                                        progress.Report(new IFFmpegProcessor.ProgressInfo(progressValue, remainingReal));
                                     }
                                 }
                             }

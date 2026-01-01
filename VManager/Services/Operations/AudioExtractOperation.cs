@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FFMpegCore;
 using VManager.Services.Utils;
 using VManager.Services.Models;
+using VManager.Services.Utils.Execution;
 
 namespace VManager.Services.Operations
 {
@@ -26,7 +27,7 @@ namespace VManager.Services.Operations
             string? videoCodec, // no usado
             string? audioCodec, // no usado
             string selectedAudioFormat,
-            IProgress<IVideoProcessor.ProgressInfo> progress,
+            IProgress<IFFmpegProcessor.ProgressInfo> progress,
             CancellationToken cancellationToken = default)
         {
             Console.WriteLine($"[DEBUG] Audiofy - Origen: {inputPath}, Destino: {outputPath}, Formato: '{selectedAudioFormat}'");

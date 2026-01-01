@@ -6,10 +6,11 @@
              xmlns:models="using:VManager.Models"
              xmlns:services="clr-namespace:VManager.Services"
              xmlns:herramientas="clr-namespace:VManager.ViewModels.Herramientas"
+             xmlns:converters="clr-namespace:VManager.Services.Utils.Converters"
              x:Name="Root">
 
   <UserControl.Resources>
-    <services:ValidPathConverter x:Key="ValidPathConverter" />
+    <converters:ValidPathConverter x:Key="ValidPathConverter" />
   </UserControl.Resources>
   
   <UserControl.Styles>

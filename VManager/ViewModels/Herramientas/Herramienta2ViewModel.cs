@@ -209,7 +209,7 @@ namespace VManager.ViewModels.Herramientas
 
             try
             {
-                var processor = new VideoProcessor();
+                IFFmpegProcessor processor = new FFmpegProcessor();
                 IsConverting = true;
                 IsOperationRunning = true;
 
@@ -228,7 +228,7 @@ namespace VManager.ViewModels.Herramientas
                         Path.GetFileName(video)
                     );
 
-                    var progress = new Progress<IVideoProcessor.ProgressInfo>(p =>
+                    var progress = new Progress<IFFmpegProcessor.ProgressInfo>(p =>
                     {
                         double globalProgress = ((currentFileIndex - 1) + p.Progress) / totalFiles;
                         Progress = (int)(globalProgress * 100);

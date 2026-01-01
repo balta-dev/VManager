@@ -6,14 +6,19 @@ using VManager.Services.Models;
 
 namespace VManager.Services
 {
-    public interface IVideoProcessor
+    public interface IFFmpegProcessor
     {
         public record ProgressInfo(double Progress, TimeSpan Remaining);
 
         Task<AnalysisResult<IMediaAnalysis>> AnalyzeVideoAsync(string inputPath);
 
-        Task<ProcessingResult> CutAsync(string inputPath, string outputPath, TimeSpan start, TimeSpan duration,
-            IProgress<IVideoProcessor.ProgressInfo> progress, CancellationToken ct = default);
+        Task<ProcessingResult> CutAsync(
+            string inputPath, 
+            string outputPath, 
+            TimeSpan start, 
+            TimeSpan duration,
+            IProgress<ProgressInfo> progress, 
+            CancellationToken ct = default);
 
         Task<ProcessingResult> CompressAsync(
             string inputPath,
@@ -22,7 +27,7 @@ namespace VManager.Services
             string videoCodec,
             string audioCodec,
             IProgress<ProgressInfo> progress,
-            CancellationToken cancellationToken = default);
+            CancellationToken ct = default);
 
         Task<ProcessingResult> ConvertAsync(
             string inputPath,
@@ -31,7 +36,16 @@ namespace VManager.Services
             string? audioCodec,
             string selectedFormat,
             IProgress<ProgressInfo> progress,
-            CancellationToken cancellationToken = default);
+            CancellationToken ct = default);
+
+        Task<ProcessingResult> AudiofyAsync(
+            string inputPath,
+            string outputPath,
+            string? videoCodec,
+            string? audioCodec,
+            string selectedAudioFormat,
+            IProgress<ProgressInfo> progress, 
+            CancellationToken ct = default);
     }
-    //public record ProcessingResult(bool Success, string Message, string? OutputFile = null);
+  
 }

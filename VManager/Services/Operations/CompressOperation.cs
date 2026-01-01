@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FFMpegCore;
 using VManager.Services;
 using VManager.Services.Models;
+using VManager.Services.Utils.Execution;
 
 namespace VManager.Services.Operations
 {
@@ -28,7 +29,7 @@ namespace VManager.Services.Operations
             int compressionPercentage,
             string? videoCodec,
             string? audioCodec,
-            IProgress<IVideoProcessor.ProgressInfo> progress,
+            IProgress<IFFmpegProcessor.ProgressInfo> progress,
             CancellationToken cancellationToken = default)
         {
             if (compressionPercentage <= 0 || compressionPercentage > 100)

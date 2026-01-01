@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace VManager.Services
 {
-    public interface ICodecService
+    public interface IHardwareAccelerationService
     {
         Task<IReadOnlyList<string>> GetAvailableVideoCodecsAsync();
         Task<IReadOnlyList<string>> GetAvailableAudioCodecsAsync();

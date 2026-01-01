@@ -59,7 +59,7 @@ namespace VManager.ViewModels.Herramientas
 
             try
             {
-                var processor = new VideoProcessor();
+                IFFmpegProcessor processor = new FFmpegProcessor();
                 IsConverting = true;
                 IsOperationRunning = true;
                 Progress = 0;
@@ -72,7 +72,7 @@ namespace VManager.ViewModels.Herramientas
                 {
                     currentFileIndex++;
                     
-                    var progress = new Progress<IVideoProcessor.ProgressInfo>(p =>
+                    var progress = new Progress<IFFmpegProcessor.ProgressInfo>(p =>
                     {
                         // Calculamos progreso global si tenés múltiples archivos
                         double globalProgress = ((currentFileIndex - 1) + p.Progress) / totalFiles;

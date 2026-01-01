@@ -5,10 +5,11 @@
              xmlns:vm="using:VManager.ViewModels"
              xmlns:cc="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.ColorPicker"
              xmlns:services="clr-namespace:VManager.Services"
-             xmlns:behaviours="clr-namespace:VManager.Behaviours">
+             xmlns:behaviours="clr-namespace:VManager.Behaviours"
+             xmlns:converters="clr-namespace:VManager.Services.Utils.Converters">
 
   <UserControl.Resources>
-    <services:ValidPathConverter x:Key="ValidPathConverter" />
+    <converters:ValidPathConverter x:Key="ValidPathConverter" />
   </UserControl.Resources>
 
   <Grid>
