@@ -1,0 +1,19 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:VManager"
+        xmlns:viewModels="clr-namespace:VManager.ViewModels"
+        x:Class="VManager.Views.Guias.GuideWindow"
+        x:DataType="viewModels:AcercaDeViewModel"
+        Width="450" Height="710"
+        CanResize="True"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource PanelBackgroundBrush}"
+        Title="{Binding L[Guide.WindowTitle]}">
+
+    <ScrollViewer Padding="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="True" Background="Transparent">
+        <Border Padding="20">
+            <ContentControl x:Name="ContentArea"/>
+        </Border>
+    </ScrollViewer>
+
+</Window>

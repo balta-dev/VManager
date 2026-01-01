@@ -1,0 +1,29 @@
+using Avalonia.Input;
+using Avalonia.Markup.Xaml;
+using VManager.ViewModels;
+using VManager.ViewModels.Herramientas;
+
+namespace VManager.Views.Herramientas
+{
+    public partial class Herramienta5View : SoundEnabledUserControl
+    {
+        public Herramienta5View()
+        {
+            InitializeComponent();
+            
+        }
+        
+        private void DownloadHelpBorder_PointerPressed(object? sender, PointerPressedEventArgs e)
+        {
+            if (DataContext is Herramienta5ViewModel vm)
+            {
+                vm.ShowDownloadHelp = false;
+            }
+        }
+
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
+    }
+}

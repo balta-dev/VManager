@@ -5,6 +5,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using VManager.Behaviours;
+using VManager.Views.Guias;
 
 namespace VManager.Views
 {

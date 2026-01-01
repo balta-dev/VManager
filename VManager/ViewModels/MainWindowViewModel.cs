@@ -11,6 +11,7 @@ using Avalonia.Styling;
 using Avalonia;
 using Avalonia.Media.Imaging;
 using VManager.Services;
+using VManager.ViewModels.Herramientas;
 
 namespace VManager.ViewModels;
 
@@ -26,13 +27,6 @@ public class MainWindowViewModel : ViewModelBase
     public ConfigurationViewModel _configuration;
     private AcercaDeViewModel  _acercaDe;
     public List<ViewModelBase> Tools { get; }
-    
-    private bool isVideoPathSet;
-    public override bool IsVideoPathSet //NO LO USO ACÁ. ES POR LA CLASE ABSTRACTA. YA SÉ QUE ES MALA PRÁCTICA PERDÓN.
-    {
-        get => isVideoPathSet;
-        set => this.RaiseAndSetIfChanged(ref isVideoPathSet, value);
-    }
     
     private bool _herramienta1Activa;
     public bool Herramienta1Activa

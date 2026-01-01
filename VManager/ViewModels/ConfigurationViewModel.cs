@@ -18,12 +18,6 @@ namespace VManager.ViewModels
 {
     public class ConfigurationViewModel : CodecViewModelBase
     {
-        private bool isVideoPathSet;
-        public override bool IsVideoPathSet
-        {
-            get => isVideoPathSet;
-            set => this.RaiseAndSetIfChanged(ref isVideoPathSet, value);
-        }
         
         public ObservableCollection<string> Idiomas { get; } = new()
         {
@@ -283,7 +277,7 @@ namespace VManager.ViewModels
             this.WhenAnyValue(x => x.EnableNotifications)
                 .Subscribe(val =>
                 {
-                    Notifier.Enabled = val;
+                    NotificationService.Enabled = val;
                     SaveConfig();
                 });
             

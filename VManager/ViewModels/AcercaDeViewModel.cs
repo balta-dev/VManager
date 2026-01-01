@@ -7,13 +7,6 @@ namespace VManager.ViewModels
 {
     public class AcercaDeViewModel : ViewModelBase, INotifyPropertyChanged
     {
-        private bool isVideoPathSet;
-        public override bool IsVideoPathSet
-        {
-            get => isVideoPathSet;
-            set => this.RaiseAndSetIfChanged(ref isVideoPathSet, value);
-        }
-        
         public bool IsWindows { get; } =
             RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 

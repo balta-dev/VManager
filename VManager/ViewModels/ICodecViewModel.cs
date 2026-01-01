@@ -16,15 +16,6 @@ namespace VManager.ViewModels
         bool IsFileReadyVisible { get; }
         double GridWidth { set; }
         double HeightBlock { set; }
-        ObservableCollection<string> AvailableVideoCodecs { get; }
-        ObservableCollection<string> AvailableAudioCodecs { get; }
-        ObservableCollection<VideoFormat> SupportedVideoFormats { get; }
-        ObservableCollection<AudioFormat> SupportedAudioFormats { get; }
-        string SelectedVideoCodec { get; } 
-        string SelectedAudioCodec { get; }
-        Task ReloadCodecsAsync();
-        Task LoadOrRefreshCodecsAsync(Func<Task<CodecCache>> getCacheFunc);
-        Task LoadCodecsAsync();
         
     }
 

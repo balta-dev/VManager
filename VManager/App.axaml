@@ -202,9 +202,9 @@
         
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <MergeResourceInclude Source="/Controls/ToggleButton.axaml"></MergeResourceInclude>
-                <MergeResourceInclude Source="/Controls/ScrollBar.axaml"></MergeResourceInclude>
-                <MergeResourceInclude Source="/Controls/ScrollViewer.axaml"></MergeResourceInclude>
+                <MergeResourceInclude Source="/Controls/Visuals/ToggleButton.axaml"></MergeResourceInclude>
+                <MergeResourceInclude Source="/Controls/Visuals/ScrollBar.axaml"></MergeResourceInclude>
+                <MergeResourceInclude Source="/Controls/Visuals/ScrollViewer.axaml"></MergeResourceInclude>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
         

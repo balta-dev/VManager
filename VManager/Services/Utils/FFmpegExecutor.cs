@@ -1,0 +1,145 @@
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using FFMpegCore;
+using VManager.Services.Models;
+
+namespace VManager.Services;
+
+internal class FFmpegExecutor
+        {
+            private readonly string _ffmpegPath;
+
+            public FFmpegExecutor(string ffmpegPath) => _ffmpegPath = ffmpegPath;
+
+            public async Task<ProcessingResult> ExecuteAsync(
+                string inputPath,
+                string outputPath,
+                FFMpegArgumentProcessor args,
+                double duration,                                      // ← este es el "duration"
+                IProgress<IVideoProcessor.ProgressInfo> progress,
+                CancellationToken cancellationToken)
+            {
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = _ffmpegPath,
+                        Arguments = args.Arguments,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
+
+                try
+                {
+                    using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+                    {
+                        cts.Token.Register(() =>
+                        {
+                            if (!process.HasExited)
+                            {
+                                process.Kill();
+                                Console.WriteLine("[DEBUG]: Proceso FFmpeg terminado por cancelación.");
+                                if (File.Exists(outputPath))
+                                {
+                                    try
+                                    {
+                                        File.Delete(outputPath);
+                                        Console.WriteLine("[DEBUG]: Archivo de salida eliminado tras cancelación.");
+                                    }
+                                    catch (IOException ex)
+                                    {
+                                        Console.WriteLine($"[DEBUG]: No se pudo eliminar el archivo: {ex.Message}");
+                                    }
+                                }
+                            }
+                        });
+
+                        process.Start();
+
+                        using (var reader = process.StandardError)
+                        {
+                            string? line;
+                            while ((line = await reader.ReadLineAsync()) != null)
+                            {
+                                if (line.Contains("time="))
+                                {
+                                    var timeMatch = Regex.Match(line, @"time=(\d{2}:\d{2}:\d{2}\.\d{2})");
+                                    var speedMatch = Regex.Match(line, @"speed=(\d+(\.\d+)?)x");
+
+                                    if (timeMatch.Success && TimeSpan.TryParse(timeMatch.Groups[1].Value, out var time))
+                                    {
+                                        double processed = time.TotalSeconds;
+                                        double progressValue = Math.Min(processed / duration, 1.0);
+
+                                        // tiempo restante del video
+                                        double remainingVideo = duration - processed;
+
+                                        // velocidad de procesamiento (1.0x = tiempo real)
+                                        double speed = speedMatch.Success 
+                                            ? double.Parse(speedMatch.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture) 
+                                            : 1.0;
+
+                                        // tiempo real estimado restante (ajustado por velocidad)
+                                        TimeSpan remainingReal = TimeSpan.FromSeconds(remainingVideo / speed);
+
+                                        // debug opcional
+                                        Console.WriteLine($"[DEBUG] Progreso: {progressValue:P2}, Restante real: {remainingReal}");
+
+                                        // reportamos progreso usando tu ProgressInfo
+                                        progress.Report(new IVideoProcessor.ProgressInfo(progressValue, remainingReal));
+                                    }
+                                }
+                            }
+                        }
+
+                        await process.WaitForExitAsync(cts.Token);
+
+                        if (cts.Token.IsCancellationRequested)
+                        {
+                            if (File.Exists(outputPath))
+                                File.Delete(outputPath);
+                            return new ProcessingResult(false, "Operación cancelada por el usuario.");
+                        }
+
+                        if (process.ExitCode != 0)
+                        {
+                            string? errorOutput = await process.StandardError.ReadToEndAsync();
+                            if (errorOutput.Contains("No such file or directory") ||
+                                errorOutput.Contains("Permission denied") ||
+                                errorOutput.Contains("Could not create") ||
+                                errorOutput.Contains("Invalid argument"))
+                            {
+                                throw new Exception($"FFmpeg error: {errorOutput} (ExitCode: {process.ExitCode})");
+                            }
+                        }
+
+                        if (!File.Exists(outputPath) || new FileInfo(outputPath).Length == 0)
+                        {
+                            if (File.Exists(outputPath))
+                                File.Delete(outputPath);
+                            return new ProcessingResult(false, "El archivo de salida no se creó correctamente.");
+                        }
+
+                        return new ProcessingResult(true, "¡Operación finalizada!", outputPath);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    if (File.Exists(outputPath))
+                        File.Delete(outputPath);
+                    return new ProcessingResult(false, "Operación cancelada por el usuario.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[DEBUG]: Error: {ex.Message}");
+                    return new ProcessingResult(false, $"Error: {ex.Message}");
+                }
+            }
+        }

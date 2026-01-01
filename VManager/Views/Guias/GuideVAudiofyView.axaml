@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:VManager.ViewModels"
+             x:Class="VManager.Views.Guias.GuideVAudiofyView"
+             x:DataType="vm:AcercaDeViewModel">
+
+    <StackPanel Spacing="16">
+
+        <TextBlock Text="{Binding L[Guide.VAudiofy.Title]}"
+                   FontSize="22"
+                   FontWeight="Bold"
+                   TextWrapping="Wrap"/>
+
+        <TextBlock Text="{Binding L[Guide.VAudiofy.Description]}"
+                   TextWrapping="Wrap"
+                   FontSize="15"/>
+
+        <StackPanel Spacing="8">
+            <TextBlock Text="{Binding L[Guide.VAudiofy.HowTo.Title]}"
+                       TextWrapping="Wrap"
+                       FontSize="16"
+                       FontWeight="SemiBold"/>
+
+            <TextBlock Text="{Binding L[Guide.VAudiofy.HowTo.Step1]}" TextWrapping="Wrap" FontSize="14"/>
+            <TextBlock Text="{Binding L[Guide.VAudiofy.HowTo.Step2]}" TextWrapping="Wrap" FontSize="14"/>
+            <TextBlock Text="{Binding L[Guide.VAudiofy.HowTo.Step3]}" TextWrapping="Wrap" FontSize="14"/>
+            <TextBlock Text="{Binding L[Guide.VAudiofy.HowTo.Step4]}" TextWrapping="Wrap" FontSize="14"/>
+        </StackPanel>
+
+        <!-- GIF acá -->
+        <!-- 
+        <Image Source="/Assets/guides/vaudiofy.gif" Stretch="Uniform"/>
+        -->
+
+    </StackPanel>
+</UserControl>

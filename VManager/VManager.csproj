@@ -67,34 +67,52 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\Herramienta5View.axaml.cs">
-      <DependentUpon>Herramienta5View.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Views\AcercaDeView.axaml.cs">
       <DependentUpon>AcercaDeView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\GuideWindow.axaml.cs">
-      <DependentUpon>GuideWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\GuideVCutView.axaml.cs">
-      <DependentUpon>GuideVcutView.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\GuideVCompressView.axaml.cs">
-      <DependentUpon>GuideVcompressView.axaml</DependentUpon>
+    <Compile Update="Views\Herramientas\Herramienta1View.axaml.cs">
+      <DependentUpon>Herramienta1View.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\GuideVConvertView.axaml.cs">
-      <DependentUpon>GuideVConvertView.axaml</DependentUpon>
+    <Compile Update="Views\Herramientas\Herramienta2View.axaml.cs">
+      <DependentUpon>Herramienta2View.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\GuideVAudiofyView.axaml.cs">
+    <Compile Update="Views\Herramientas\Herramienta3View.axaml.cs">
+      <DependentUpon>Herramienta3View.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Herramientas\Herramienta4View.axaml.cs">
+      <DependentUpon>Herramienta4View.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Herramientas\Herramienta5View.axaml.cs">
+      <DependentUpon>Herramienta5View.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Guias\GuideVAudiofyView.axaml.cs">
       <DependentUpon>GuideVAudiofyView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\GuideVDownloadView.axaml.cs">
+    <Compile Update="Views\Guias\GuideVCompressView.axaml.cs">
+      <DependentUpon>GuideVCompressView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Guias\GuideVConvertView.axaml.cs">
+      <DependentUpon>GuideVConvertView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Guias\GuideVCutView.axaml.cs">
+      <DependentUpon>GuideVCutView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Guias\GuideVDownloadView.axaml.cs">
       <DependentUpon>GuideVDownloadView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Guias\GuideWindow.axaml.cs">
+      <DependentUpon>GuideWindow.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
