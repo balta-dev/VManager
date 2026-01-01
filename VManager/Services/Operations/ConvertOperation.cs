@@ -5,21 +5,33 @@ using System.Threading.Tasks;
 using FFMpegCore;
 using VManager.Services.Utils; // Para HardwareAccelerationConfigurator, FFmpegExecutor, ResumableFFmpegExecutor
 using VManager.Services.Models;
-using VManager.Services.Utils.Execution; // Para ProcessingResult
+using VManager.Services.Utils.Execution;
+using VManager.Services.Utils.Media; // Para ProcessingResult
 
 namespace VManager.Services.Operations
 {
     internal class ConvertOperation
     {
-        private readonly FFmpegExecutor _executor;
-        private readonly ResumableFFmpegExecutor _resumableExecutor;
-        private readonly MediaAnalyzer _analyzer;
+        private readonly IFFmpegExecutor _executor;
+        private readonly IResumableFFmpegExecutor _resumableExecutor;
+        private readonly IMediaAnalyzer _analyzer;
 
         public ConvertOperation(string ffmpegPath)
         {
             _executor = new FFmpegExecutor(ffmpegPath);
             _resumableExecutor = new ResumableFFmpegExecutor(ffmpegPath);
             _analyzer = new MediaAnalyzer();
+        }
+        
+        // PARA TESTS
+        public ConvertOperation(
+            IFFmpegExecutor executor,
+            IResumableFFmpegExecutor resumableExecutor,
+            IMediaAnalyzer analyzer)
+        {
+            _executor = executor;
+            _resumableExecutor = resumableExecutor;
+            _analyzer = analyzer;
         }
 
         public async Task<ProcessingResult> ExecuteAsync(

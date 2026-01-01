@@ -8,6 +8,7 @@ using DynamicData;
 using ReactiveUI;
 using VManager.Services;
 using VManager.Services.Utils;
+using VManager.Services.Utils.Media;
 
 namespace VManager.ViewModels.Herramientas
 {

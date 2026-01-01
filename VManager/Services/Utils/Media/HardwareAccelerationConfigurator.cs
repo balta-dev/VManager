@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using FFMpegCore;
 
-namespace VManager.Services.Operations
+namespace VManager.Services.Utils.Media
 {
     public static class HardwareAccelerationConfigurator
     {

@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VManager.Services;
 using VManager.Services.Utils;
+using VManager.Services.Utils.Media;
 
 namespace VManager.ViewModels.Herramientas
 {

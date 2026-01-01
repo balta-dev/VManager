@@ -1,0 +1,20 @@
+# Ignorar carpetas de compilación en cualquier nivel
+[Bb]in/
+[Oo]bj/
+
+# Archivos de usuario de Visual Studio / Rider
+*.user
+*.userosscache
+*.sln.docstates# Ignorar carpetas de compilación en cualquier nivel
+[Bb]in/
+[Oo]bj/
+
+# Archivos de usuario de Visual Studio / Rider
+*.user
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+
+# Archivos temporales de los Tests de Integración
+IntegrationTestFiles*/
+TestResults/

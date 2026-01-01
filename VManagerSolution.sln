@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VManager", "VManager\VManag
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "Updater\Updater.csproj", "{2426C45F-DB54-43F3-BF78-E0F5F9B58A54}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VManager.Tests", "VManager.Tests\VManager.Tests.csproj", "{4BE13960-B290-49A8-951C-4C12BC0B4C16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{2426C45F-DB54-43F3-BF78-E0F5F9B58A54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2426C45F-DB54-43F3-BF78-E0F5F9B58A54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2426C45F-DB54-43F3-BF78-E0F5F9B58A54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BE13960-B290-49A8-951C-4C12BC0B4C16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BE13960-B290-49A8-951C-4C12BC0B4C16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BE13960-B290-49A8-951C-4C12BC0B4C16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BE13960-B290-49A8-951C-4C12BC0B4C16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

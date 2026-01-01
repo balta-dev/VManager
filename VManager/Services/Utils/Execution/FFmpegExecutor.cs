@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,137 +10,148 @@ using VManager.Services.Models;
 
 namespace VManager.Services.Utils.Execution;
 
-internal class FFmpegExecutor
+internal class FFmpegExecutor : IFFmpegExecutor
+{
+    private readonly string _ffmpegPath;
+
+    public FFmpegExecutor(string ffmpegPath) => _ffmpegPath = ffmpegPath;
+
+    public virtual async Task<ProcessingResult> ExecuteAsync(
+        string inputPath,
+        string outputPath,
+        FFMpegArgumentProcessor args,
+        double duration,
+        IProgress<IFFmpegProcessor.ProgressInfo> progress,
+        CancellationToken cancellationToken)
+    {
+        var process = new Process
         {
-            private readonly string _ffmpegPath;
-
-            public FFmpegExecutor(string ffmpegPath) => _ffmpegPath = ffmpegPath;
-
-            public async Task<ProcessingResult> ExecuteAsync(
-                string inputPath,
-                string outputPath,
-                FFMpegArgumentProcessor args,
-                double duration,                                      // ← este es el "duration"
-                IProgress<IFFmpegProcessor.ProgressInfo> progress,
-                CancellationToken cancellationToken)
+            StartInfo = new ProcessStartInfo
             {
-                var process = new Process
+                FileName = _ffmpegPath,
+                Arguments = args.Arguments,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            }
+        };
+
+        try
+        {
+            using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+            {
+                cts.Token.Register(() =>
                 {
-                    StartInfo = new ProcessStartInfo
+                    if (!process.HasExited)
                     {
-                        FileName = _ffmpegPath,
-                        Arguments = args.Arguments,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
+                        process.Kill();
+                        Console.WriteLine("[DEBUG]: Proceso FFmpeg terminado por cancelación.");
+                        if (File.Exists(outputPath))
+                        {
+                            try
+                            {
+                                File.Delete(outputPath);
+                                Console.WriteLine("[DEBUG]: Archivo de salida eliminado tras cancelación.");
+                            }
+                            catch (IOException ex)
+                            {
+                                Console.WriteLine($"[DEBUG]: No se pudo eliminar el archivo: {ex.Message}");
+                            }
+                        }
                     }
-                };
+                });
 
-                try
+                process.Start();
+
+                // ✅ Capturar TODA la salida de error mientras leemos línea por línea
+                var errorOutputBuilder = new StringBuilder();
+                
+                using (var reader = process.StandardError)
                 {
-                    using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+                    string? line;
+                    while ((line = await reader.ReadLineAsync()) != null)
                     {
-                        cts.Token.Register(() =>
+                        // Guardar todas las líneas para diagnóstico
+                        errorOutputBuilder.AppendLine(line);
+                        
+                        if (line.Contains("time="))
                         {
-                            if (!process.HasExited)
+                            var timeMatch = Regex.Match(line, @"time=(\d{2}:\d{2}:\d{2}\.\d{2})");
+                            var speedMatch = Regex.Match(line, @"speed=(\d+(\.\d+)?)x");
+
+                            if (timeMatch.Success && TimeSpan.TryParse(timeMatch.Groups[1].Value, out var time))
                             {
-                                process.Kill();
-                                Console.WriteLine("[DEBUG]: Proceso FFmpeg terminado por cancelación.");
-                                if (File.Exists(outputPath))
-                                {
-                                    try
-                                    {
-                                        File.Delete(outputPath);
-                                        Console.WriteLine("[DEBUG]: Archivo de salida eliminado tras cancelación.");
-                                    }
-                                    catch (IOException ex)
-                                    {
-                                        Console.WriteLine($"[DEBUG]: No se pudo eliminar el archivo: {ex.Message}");
-                                    }
-                                }
-                            }
-                        });
+                                double processed = time.TotalSeconds;
+                                double progressValue = Math.Min(processed / duration, 1.0);
 
-                        process.Start();
+                                // tiempo restante del video
+                                double remainingVideo = duration - processed;
 
-                        using (var reader = process.StandardError)
-                        {
-                            string? line;
-                            while ((line = await reader.ReadLineAsync()) != null)
-                            {
-                                if (line.Contains("time="))
-                                {
-                                    var timeMatch = Regex.Match(line, @"time=(\d{2}:\d{2}:\d{2}\.\d{2})");
-                                    var speedMatch = Regex.Match(line, @"speed=(\d+(\.\d+)?)x");
+                                // velocidad de procesamiento (1.0x = tiempo real)
+                                double speed = speedMatch.Success 
+                                    ? double.Parse(speedMatch.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture) 
+                                    : 1.0;
 
-                                    if (timeMatch.Success && TimeSpan.TryParse(timeMatch.Groups[1].Value, out var time))
-                                    {
-                                        double processed = time.TotalSeconds;
-                                        double progressValue = Math.Min(processed / duration, 1.0);
+                                // tiempo real estimado restante (ajustado por velocidad)
+                                TimeSpan remainingReal = TimeSpan.FromSeconds(remainingVideo / speed);
 
-                                        // tiempo restante del video
-                                        double remainingVideo = duration - processed;
+                                // debug opcional
+                                Console.WriteLine($"[DEBUG] Progreso: {progressValue:P2}, Restante real: {remainingReal}");
 
-                                        // velocidad de procesamiento (1.0x = tiempo real)
-                                        double speed = speedMatch.Success 
-                                            ? double.Parse(speedMatch.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture) 
-                                            : 1.0;
-
-                                        // tiempo real estimado restante (ajustado por velocidad)
-                                        TimeSpan remainingReal = TimeSpan.FromSeconds(remainingVideo / speed);
-
-                                        // debug opcional
-                                        Console.WriteLine($"[DEBUG] Progreso: {progressValue:P2}, Restante real: {remainingReal}");
-
-                                        // reportamos progreso usando tu ProgressInfo
-                                        progress.Report(new IFFmpegProcessor.ProgressInfo(progressValue, remainingReal));
-                                    }
-                                }
+                                // reportamos progreso usando tu ProgressInfo
+                                progress?.Report(new IFFmpegProcessor.ProgressInfo(progressValue, remainingReal));
                             }
                         }
-
-                        await process.WaitForExitAsync(cts.Token);
-
-                        if (cts.Token.IsCancellationRequested)
-                        {
-                            if (File.Exists(outputPath))
-                                File.Delete(outputPath);
-                            return new ProcessingResult(false, "Operación cancelada por el usuario.");
-                        }
-
-                        if (process.ExitCode != 0)
-                        {
-                            string? errorOutput = await process.StandardError.ReadToEndAsync();
-                            if (errorOutput.Contains("No such file or directory") ||
-                                errorOutput.Contains("Permission denied") ||
-                                errorOutput.Contains("Could not create") ||
-                                errorOutput.Contains("Invalid argument"))
-                            {
-                                throw new Exception($"FFmpeg error: {errorOutput} (ExitCode: {process.ExitCode})");
-                            }
-                        }
-
-                        if (!File.Exists(outputPath) || new FileInfo(outputPath).Length == 0)
-                        {
-                            if (File.Exists(outputPath))
-                                File.Delete(outputPath);
-                            return new ProcessingResult(false, "El archivo de salida no se creó correctamente.");
-                        }
-
-                        return new ProcessingResult(true, "¡Operación finalizada!", outputPath);
                     }
                 }
-                catch (OperationCanceledException)
+
+                await process.WaitForExitAsync(cts.Token);
+
+                if (cts.Token.IsCancellationRequested)
                 {
                     if (File.Exists(outputPath))
                         File.Delete(outputPath);
                     return new ProcessingResult(false, "Operación cancelada por el usuario.");
                 }
-                catch (Exception ex)
+
+                // ✅ Ahora usar el string capturado, no leer del stream cerrado
+                string errorOutput = errorOutputBuilder.ToString();
+                
+                if (process.ExitCode != 0)
                 {
-                    Console.WriteLine($"[DEBUG]: Error: {ex.Message}");
-                    return new ProcessingResult(false, $"Error: {ex.Message}");
+                    if (errorOutput.Contains("No such file or directory") ||
+                        errorOutput.Contains("Permission denied") ||
+                        errorOutput.Contains("Could not create") ||
+                        errorOutput.Contains("Invalid argument"))
+                    {
+                        throw new Exception($"FFmpeg error: {errorOutput} (ExitCode: {process.ExitCode})");
+                    }
+                    
+                    // Si hubo error pero no es crítico, también reportarlo
+                    return new ProcessingResult(false, $"FFmpeg falló con código {process.ExitCode}: {errorOutput}");
                 }
+
+                if (!File.Exists(outputPath) || new FileInfo(outputPath).Length == 0)
+                {
+                    if (File.Exists(outputPath))
+                        File.Delete(outputPath);
+                    return new ProcessingResult(false, "El archivo de salida no se creó correctamente.");
+                }
+
+                return new ProcessingResult(true, "¡Operación finalizada!", outputPath);
             }
         }
+        catch (OperationCanceledException)
+        {
+            if (File.Exists(outputPath))
+                File.Delete(outputPath);
+            return new ProcessingResult(false, "Operación cancelada por el usuario.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[DEBUG]: Error: {ex.Message}");
+            return new ProcessingResult(false, $"Error: {ex.Message}");
+        }
+    }
+}

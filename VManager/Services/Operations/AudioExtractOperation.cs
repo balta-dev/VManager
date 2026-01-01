@@ -7,14 +7,25 @@ using FFMpegCore;
 using VManager.Services.Utils;
 using VManager.Services.Models;
 using VManager.Services.Utils.Execution;
+using VManager.Services.Utils.Media;
 
 namespace VManager.Services.Operations
 {
     internal class AudioExtractOperation
     {
-        private readonly FFmpegExecutor _executor;
-        private readonly MediaAnalyzer _analyzer;
+        private readonly IFFmpegExecutor _executor;
+        private readonly IMediaAnalyzer _analyzer;
 
+        // PARA TESTS
+        public AudioExtractOperation(
+            IFFmpegExecutor executor,
+            IMediaAnalyzer analyzer)
+        {
+            _executor = executor;
+            _analyzer = analyzer;
+        }
+
+        // PARA PRODUCCIÓN (FFmpegProcessor)
         public AudioExtractOperation(string ffmpegPath)
         {
             _executor = new FFmpegExecutor(ffmpegPath);

@@ -9,6 +9,7 @@ using Avalonia.ReactiveUI;
 using ReactiveUI;
 using VManager.Services;
 using VManager.Services.Utils;
+using VManager.Services.Utils.Media;
 
 namespace VManager.ViewModels.Herramientas
 {
@@ -93,9 +94,11 @@ namespace VManager.ViewModels.Herramientas
         
         private bool TryParseTime(string input, out TimeSpan result)
         {
+            
             result = TimeSpan.Zero;
+            // Si el usuario no escribió nada, lo tomamos como 0 y es un éxito
             if (string.IsNullOrWhiteSpace(input))
-                return false;
+                return true;
 
             // Intentar parsear formatos: "10" → segundos, "3:45" → minutos:segundos
             string[] parts = input.Split(':');

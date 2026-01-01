@@ -2,7 +2,7 @@
 using System.IO;
 using VManager.Services; // para ProcessingConstants si lo dejaste en VideoProcessor
 
-namespace VManager.Services.Utils
+namespace VManager.Services.Utils.Media
 {
     public static class OutputPathBuilder
     {

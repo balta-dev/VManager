@@ -1,11 +1,11 @@
-// Services/VideoProcessor.cs
-
+// Services/FFmpegProcessor.cs
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FFMpegCore;
 using VManager.Services.Models;
 using VManager.Services.Operations;
+using VManager.Services.Utils.Media;
 
 namespace VManager.Services
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System;
 
-namespace VManager.Services.Utils
+namespace VManager.Services.Utils.Media
 {
     public enum AudioProcessingAction
     {
@@ -50,7 +50,8 @@ namespace VManager.Services.Utils
                 ["opus"] = new() { "opus", "ogg" },
                 ["pcm_s16le"] = new() { "wav" },
                 ["pcm_s24le"] = new() { "wav" },
-                ["pcm_f32le"] = new() { "wav" }
+                ["pcm_f32le"] = new() { "wav" },
+                ["wmav2"] = new() { "wma" }
             };
 
             originalCodec = originalCodec.ToLowerInvariant();

@@ -5,11 +5,11 @@ using FFMpegCore;
 using VManager.Services.Models;
 using VManager.Services.Utils;
 
-namespace VManager.Services.Operations
+namespace VManager.Services.Utils.Media
 {
-    internal class MediaAnalyzer
+    internal class MediaAnalyzer : IMediaAnalyzer
     {
-        public async Task<AnalysisResult<IMediaAnalysis>> AnalyzeAsync(string inputPath)
+        public virtual async Task<AnalysisResult<IMediaAnalysis>> AnalyzeAsync(string inputPath)
         {
             try
             {

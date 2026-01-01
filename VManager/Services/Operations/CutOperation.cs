@@ -5,14 +5,15 @@ using System.Threading.Tasks;
 using FFMpegCore;
 using VManager.Services;
 using VManager.Services.Models;
-using VManager.Services.Utils.Execution; // para FFmpegExecutor y ProcessingResult
+using VManager.Services.Utils.Execution;
+using VManager.Services.Utils.Media; // para FFmpegExecutor y ProcessingResult
 
 namespace VManager.Services.Operations
 {
     internal class CutOperation
     {
-        private readonly FFmpegExecutor _executor;
-        private readonly MediaAnalyzer _analyzer;
+        private readonly IFFmpegExecutor _executor;
+        private readonly IMediaAnalyzer _analyzer;
 
         public CutOperation(string ffmpegPath)
         {

@@ -7,23 +7,36 @@ using FFMpegCore;
 using VManager.Services;
 using VManager.Services.Models;
 using VManager.Services.Utils.Execution;
+using VManager.Services.Utils.Media;
 
 namespace VManager.Services.Operations
 {
     internal class CompressOperation
     {
-        private readonly FFmpegExecutor _executor;
-        private readonly ResumableFFmpegExecutor _resumableExecutor;
-        private readonly MediaAnalyzer _analyzer;
+        private readonly IFFmpegExecutor _executor;
+        private readonly IResumableFFmpegExecutor _resumableExecutor;
+        private readonly IMediaAnalyzer _analyzer;
+        
+        // Constructor principal (para tests unitarios)
+        public CompressOperation(
+            IFFmpegExecutor executor,
+            IResumableFFmpegExecutor resumableExecutor,
+            IMediaAnalyzer analyzer)
+        {
+            _executor = executor;
+            _resumableExecutor = resumableExecutor;
+            _analyzer = analyzer;
+        }
 
-        public CompressOperation(string ffmpegPath)
+        // Constructor de conveniencia (para producción)
+        public CompressOperation(string ffmpegPath, IMediaAnalyzer? analyzer = null)
         {
             _executor = new FFmpegExecutor(ffmpegPath);
             _resumableExecutor = new ResumableFFmpegExecutor(ffmpegPath);
-            _analyzer = new MediaAnalyzer();
+            _analyzer = analyzer ?? new MediaAnalyzer();
         }
 
-        public async Task<ProcessingResult> ExecuteAsync(
+        public virtual async Task<ProcessingResult> ExecuteAsync(
             string inputPath,
             string outputPath,
             int compressionPercentage,

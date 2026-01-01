@@ -19,7 +19,7 @@ public static class FFmpegManager
         }
         else if (OperatingSystem.IsMacOS())
         {
-            InitializeMacOS();
+            InitializeMacOs();
         }
         else if (OperatingSystem.IsLinux())
         {
@@ -56,7 +56,7 @@ public static class FFmpegManager
         FfprobePath = ffprobe;
     }
     
-    private static void InitializeMacOS()
+    private static void InitializeMacOs()
     {
         string ffmpeg, ffprobe;
         if (!TryUseSystemFFmpeg(out ffmpeg, out ffprobe))
@@ -130,7 +130,7 @@ public static class FFmpegManager
         ffmpegPath = null;
         ffprobePath = null;
 
-        bool IsCommandAvailable(string command)
+        string FindExecutablePath(string command)
         {
             try
             {
@@ -138,7 +138,51 @@ public static class FFmpegManager
                 {
                     StartInfo = new ProcessStartInfo
                     {
-                        FileName = command,
+                        FileName = "which",  // o "where" en Windows
+                        Arguments = command,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
+                process.Start();
+                string output = process.StandardOutput.ReadToEnd().Trim();
+                process.WaitForExit(2000);
+                
+                if (process.ExitCode == 0 && !string.IsNullOrEmpty(output) && File.Exists(output))
+                {
+                    return output;
+                }
+            }
+            catch
+            {
+                // Si falla, intentar rutas comunes
+            }
+            
+            // Intentar rutas comunes como fallback
+            string[] commonPaths = { "/usr/bin/", "/usr/local/bin/", "/bin/" };
+            foreach (var path in commonPaths)
+            {
+                string fullPath = Path.Combine(path, command);
+                if (File.Exists(fullPath))
+                {
+                    return fullPath;
+                }
+            }
+            
+            return null;
+        }
+
+        bool IsCommandAvailable(string fullPath)
+        {
+            try
+            {
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = fullPath,
                         Arguments = "-version",
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
@@ -147,7 +191,7 @@ public static class FFmpegManager
                     }
                 };
                 process.Start();
-                process.WaitForExit(2000); // Timeout de 2 segundos
+                process.WaitForExit(2000);
                 return process.ExitCode == 0;
             }
             catch
@@ -156,10 +200,14 @@ public static class FFmpegManager
             }
         }
 
-        if (IsCommandAvailable("ffmpeg") && IsCommandAvailable("ffprobe"))
+        string foundFfmpeg = FindExecutablePath("ffmpeg");
+        string foundFfprobe = FindExecutablePath("ffprobe");
+
+        if (!string.IsNullOrEmpty(foundFfmpeg) && !string.IsNullOrEmpty(foundFfprobe) &&
+            IsCommandAvailable(foundFfmpeg) && IsCommandAvailable(foundFfprobe))
         {
-            ffmpegPath = "ffmpeg";
-            ffprobePath = "ffprobe";
+            ffmpegPath = foundFfmpeg;
+            ffprobePath = foundFfprobe;
             return true;
         }
 
