@@ -1,13 +1,9 @@
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using VManager.Services.Models;
 using VManager.Services.Operations;
-using VManager.Services.Utils.Execution;
-using VManager.Services.Utils.Media;
+using VManager.Services.Core.Execution;
+using VManager.Services.Core.Media;
 using Xunit;
 using FFMpegCore;
 using VManager.Services;

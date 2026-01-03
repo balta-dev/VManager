@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using FFMpegCore;
 using VManager.Services;
 using VManager.Services.Models;
-using VManager.Services.Utils.Execution;
+using VManager.Services.Core.Execution;
 
-namespace VManager.Tests.Fakes
+namespace VManager.Tests.Unit.Fakes
 {
     internal class FakeFFmpegExecutor : IFFmpegExecutor
     {

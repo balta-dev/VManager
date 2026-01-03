@@ -1,5 +1,5 @@
 using FluentAssertions;
-using VManager.Services.Utils.Media;
+using VManager.Services.Core.Media;
 using Xunit;
 
 namespace VManager.Tests.Unit

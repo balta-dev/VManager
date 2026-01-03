@@ -7,7 +7,7 @@ using FFMpegCore.Builders.MetaData;
 using FluentAssertions;
 using VManager.Services.Models;
 using VManager.Services.Operations;
-using VManager.Tests.Fakes;
+using VManager.Tests.Unit.Fakes;
 using Xunit;
 
 namespace VManager.Tests.Unit

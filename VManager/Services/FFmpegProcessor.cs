@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using FFMpegCore;
 using VManager.Services.Models;
 using VManager.Services.Operations;
-using VManager.Services.Utils.Media;
+using VManager.Services.Core.Media;
 
 namespace VManager.Services
 {

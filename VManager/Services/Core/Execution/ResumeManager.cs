@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using System.Text.Json;
-using VManager.Services.Utils.Media;
+using VManager.Services.Core.Media;
 
-namespace VManager.Services.Utils.Execution
+namespace VManager.Services.Core.Execution
 {
     public static class ResumeManager
     {

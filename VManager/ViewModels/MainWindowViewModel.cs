@@ -11,6 +11,7 @@ using Avalonia.Styling;
 using Avalonia;
 using Avalonia.Media.Imaging;
 using VManager.Services;
+using VManager.Services.Core;
 using VManager.ViewModels.Herramientas;
 
 namespace VManager.ViewModels;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System;
 
-namespace VManager.Services.Utils.Media
+namespace VManager.Services.Core.Media
 {
     public enum AudioProcessingAction
     {

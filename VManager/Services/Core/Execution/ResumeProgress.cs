@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-namespace VManager.Services.Utils.Execution
+namespace VManager.Services.Core.Execution
 {
     public class ResumeProgress
     {

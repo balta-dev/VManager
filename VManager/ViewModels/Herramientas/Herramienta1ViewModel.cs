@@ -8,8 +8,8 @@ using Avalonia.Platform.Storage;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
 using VManager.Services;
-using VManager.Services.Utils;
-using VManager.Services.Utils.Media;
+using VManager.Services.Core;
+using VManager.Services.Core.Media;
 
 namespace VManager.ViewModels.Herramientas
 {

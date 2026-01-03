@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using ReactiveUI;
 using VManager.Services;
+using VManager.Services.Core;
 
 namespace VManager.ViewModels
 {

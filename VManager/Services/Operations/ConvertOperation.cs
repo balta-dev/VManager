@@ -3,10 +3,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FFMpegCore;
-using VManager.Services.Utils; // Para HardwareAccelerationConfigurator, FFmpegExecutor, ResumableFFmpegExecutor
+using VManager.Services.Core; // Para HardwareAccelerationConfigurator, FFmpegExecutor, ResumableFFmpegExecutor
 using VManager.Services.Models;
-using VManager.Services.Utils.Execution;
-using VManager.Services.Utils.Media; // Para ProcessingResult
+using VManager.Services.Core.Execution;
+using VManager.Services.Core.Media; // Para ProcessingResult
 
 namespace VManager.Services.Operations
 {

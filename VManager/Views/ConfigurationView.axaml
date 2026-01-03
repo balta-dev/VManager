@@ -6,7 +6,7 @@
              xmlns:cc="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.ColorPicker"
              xmlns:services="clr-namespace:VManager.Services"
              xmlns:behaviours="clr-namespace:VManager.Behaviours"
-             xmlns:converters="clr-namespace:VManager.Services.Utils.Converters">
+             xmlns:converters="clr-namespace:VManager.Services.Core.Converters">
 
   <UserControl.Resources>
     <converters:ValidPathConverter x:Key="ValidPathConverter" />

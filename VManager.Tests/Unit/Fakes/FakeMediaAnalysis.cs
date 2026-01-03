@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using FFMpegCore;
 using FFMpegCore.Builders.MetaData;
 
-namespace VManager.Tests.Fakes
+namespace VManager.Tests.Unit.Fakes
 {
     internal class FakeMediaAnalysis : IMediaAnalysis
     {

@@ -18,6 +18,7 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 using VManager.Behaviours.X11DragDrop;
 using VManager.Services;
+using VManager.Services.Core;
 using VManager.Views;
 
 namespace VManager.ViewModels;

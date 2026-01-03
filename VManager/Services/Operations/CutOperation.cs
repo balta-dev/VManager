@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using FFMpegCore;
 using VManager.Services;
 using VManager.Services.Models;
-using VManager.Services.Utils.Execution;
-using VManager.Services.Utils.Media; // para FFmpegExecutor y ProcessingResult
+using VManager.Services.Core.Execution;
+using VManager.Services.Core.Media; // para FFmpegExecutor y ProcessingResult
 
 namespace VManager.Services.Operations
 {

@@ -12,6 +12,7 @@ using Avalonia.ReactiveUI;
 using ReactiveUI;
 using VManager.Models;
 using VManager.Services;
+using VManager.Services.Core;
 
 namespace VManager.ViewModels.Herramientas
 {

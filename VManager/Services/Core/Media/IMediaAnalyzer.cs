@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using FFMpegCore;
 using VManager.Services.Models;
 
-namespace VManager.Services.Utils.Media
+namespace VManager.Services.Core.Media
 {
     internal interface IMediaAnalyzer
     {

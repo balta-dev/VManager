@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
-namespace VManager.Services
+namespace VManager.Services.Core
 {
     public static class SimpleSoundPlayer
     {

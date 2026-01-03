@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using VManager.Views;
 
-namespace VManager.Services;
+namespace VManager.Services.Core;
 public class NotificationService
 {
     private static bool _enabled = true;

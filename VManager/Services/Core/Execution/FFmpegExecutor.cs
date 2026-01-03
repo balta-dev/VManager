@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using FFMpegCore;
 using VManager.Services.Models;
 
-namespace VManager.Services.Utils.Execution;
+namespace VManager.Services.Core.Execution;
 
 internal class FFmpegExecutor : IFFmpegExecutor
 {

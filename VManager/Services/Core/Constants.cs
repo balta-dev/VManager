@@ -1,5 +1,5 @@
-// Services/Utils/Constants.cs
-namespace VManager.Services.Utils
+// Services/Core/Constants.cs
+namespace VManager.Services.Core
 {
     internal static class ProcessingConstants
     {

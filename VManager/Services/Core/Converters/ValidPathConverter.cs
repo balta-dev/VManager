@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
 
-namespace VManager.Services.Utils.Converters;
+namespace VManager.Services.Core.Converters;
 
 public class ValidPathConverter : IValueConverter
 {

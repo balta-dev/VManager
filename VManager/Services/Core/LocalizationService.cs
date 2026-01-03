@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 
-namespace VManager.Services;
+namespace VManager.Services.Core;
 
 public class LocalizationService : INotifyPropertyChanged
 {

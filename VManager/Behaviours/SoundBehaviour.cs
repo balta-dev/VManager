@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using VManager.Services;
 using Avalonia.VisualTree;
+using VManager.Services.Core;
 
 namespace VManager.Behaviours
 {

@@ -8,7 +8,7 @@
              xmlns:views="clr-namespace:VManager.Views"
              xmlns:services="clr-namespace:VManager.Services"
              xmlns:herramientas="clr-namespace:VManager.ViewModels.Herramientas"
-             xmlns:converters="clr-namespace:VManager.Services.Utils.Converters">
+             xmlns:converters="clr-namespace:VManager.Services.Core.Converters">
     
     <UserControl.Resources>
         <converters:ValidPathConverter x:Key="ValidPathConverter" />

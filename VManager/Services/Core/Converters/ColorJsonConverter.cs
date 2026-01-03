@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Avalonia.Media;
 
-namespace VManager.Services.Utils.Converters;
+namespace VManager.Services.Core.Converters;
 
 public class ColorJsonConverter : JsonConverter<Color?>
 {

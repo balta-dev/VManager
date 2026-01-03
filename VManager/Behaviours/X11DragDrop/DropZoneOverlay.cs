@@ -5,6 +5,7 @@ using Avalonia.Input;
 using System;
 using System.Threading.Tasks;
 using VManager.Services;
+using VManager.Services.Core;
 
 namespace VManager.Behaviours.X11DragDrop
 {

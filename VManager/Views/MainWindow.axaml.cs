@@ -18,6 +18,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using ReactiveUI;
 using VManager.Services;
+using VManager.Services.Core;
 using VManager.ViewModels;
 
 namespace VManager.Views
