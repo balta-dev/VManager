@@ -45,6 +45,9 @@ namespace VManager.Services.Operations
             IProgress<IFFmpegProcessor.ProgressInfo> progress,
             CancellationToken cancellationToken = default)
         {
+            inputPath = OutputPathBuilder.SanitizeFilename(inputPath);
+            outputPath = OutputPathBuilder.SanitizeFilename(outputPath);
+            
             if (compressionPercentage <= 0 || compressionPercentage > 100)
                 return new ProcessingResult(false, "Porcentaje inválido.");
 

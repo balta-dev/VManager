@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using VManager.Services.Core.Media;
 using VManager.Services.Models;
 
 namespace VManager.Services;
@@ -252,9 +253,10 @@ public class YtDlpProcessor
     string? formatId = null)
     {
         string cookieArg = BuildCookiesArgument();
+        string safeOutput = OutputPathBuilder.SanitizeFilename(outputTemplate);
         
-        string args = $"{cookieArg} --newline -o \"{outputTemplate}\"";
-
+        string args = $"{cookieArg} --newline -o \"{safeOutput}\"";
+        
         if (!string.IsNullOrEmpty(formatId))
         {
             if (formatId == "0") // mp3

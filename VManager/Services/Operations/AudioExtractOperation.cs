@@ -41,6 +41,9 @@ namespace VManager.Services.Operations
             IProgress<IFFmpegProcessor.ProgressInfo> progress,
             CancellationToken cancellationToken = default)
         {
+            inputPath = OutputPathBuilder.SanitizeFilename(inputPath);
+            outputPath = OutputPathBuilder.SanitizeFilename(outputPath);
+            
             Console.WriteLine($"[DEBUG] Audiofy - Origen: {inputPath}, Destino: {outputPath}, Formato: '{selectedAudioFormat}'");
 
             if (string.IsNullOrEmpty(selectedAudioFormat))

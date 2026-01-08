@@ -29,6 +29,9 @@ namespace VManager.Services.Operations
             IProgress<IFFmpegProcessor.ProgressInfo> progress,
             CancellationToken cancellationToken = default)
         {
+            inputPath = OutputPathBuilder.SanitizeFilename(inputPath);
+            outputPath = OutputPathBuilder.SanitizeFilename(outputPath);
+            
             var analysisResult = await _analyzer.AnalyzeAsync(inputPath);
             if (!analysisResult.Success)
                 return new ProcessingResult(false, analysisResult.Message);

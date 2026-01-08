@@ -43,6 +43,9 @@ namespace VManager.Services.Operations
             IProgress<IFFmpegProcessor.ProgressInfo> progress,
             CancellationToken cancellationToken = default)
         {
+            inputPath = OutputPathBuilder.SanitizeFilename(inputPath);
+            outputPath = OutputPathBuilder.SanitizeFilename(outputPath);
+            
             // Defaults de códecs
             string selectedVideoCodec = videoCodec ?? "libx264";
             string selectedAudioCodec = audioCodec ?? "aac";
