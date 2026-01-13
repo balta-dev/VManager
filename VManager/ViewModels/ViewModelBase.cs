@@ -4,6 +4,7 @@ using Avalonia.ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -23,6 +24,7 @@ using VManager.Views;
 
 namespace VManager.ViewModels;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
 public abstract class ViewModelBase : ReactiveObject
 {
     private string _videoPath = "";
@@ -309,6 +311,7 @@ public abstract class ViewModelBase : ReactiveObject
         Status = L["General.Refreshed"];
         Warning = "";
         VideoPath = "";
+        VideoPaths.Clear();
         Progress = 0;
         OutputPath = "";
         IsFileReadyVisible = false;

@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using VManager.Services;
+using VManager.Services.Models;
 using VManager.Views;
 
 namespace VManager;
@@ -20,11 +21,6 @@ sealed class Program
         "VManager",
         "config.json");
     
-    private sealed class LogConfig
-    {
-        public bool Log { get; set; } //dto para log
-    }
-    
     private static bool IsLoggingEnabled()
     {
         if (!File.Exists(ConfigPath))
@@ -33,7 +29,7 @@ sealed class Program
         try
         {
             var json = File.ReadAllText(ConfigPath);
-            var cfg = JsonSerializer.Deserialize<LogConfig>(json);
+            var cfg = JsonSerializer.Deserialize<LogConfig>(json, VManagerJsonContext.Default.LogConfig);
             return cfg?.Log ?? true;
         }
         catch

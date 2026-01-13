@@ -137,15 +137,14 @@
           </TextBlock>
           
       </StackPanel>
-
-
+          
           <!-- Lista de Videos -->
           <Border BorderBrush="{DynamicResource BorderBrushPrimary}"
                   BorderThickness="1"
                   CornerRadius="8"
                   Margin="0,0,0,0"
                   MinHeight="50"
-                  MaxHeight="150"
+                  MaxHeight="250"
                   MaxWidth="700">
 
             <ListBox ItemsSource="{Binding Videos}"

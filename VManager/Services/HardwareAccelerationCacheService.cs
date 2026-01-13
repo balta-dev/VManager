@@ -3,6 +3,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using VManager.Services.Models;
 
 namespace VManager.Services
 {
@@ -33,7 +34,7 @@ namespace VManager.Services
                 try
                 {
                     string json = await File.ReadAllTextAsync(_cacheFile);
-                    _cache = JsonSerializer.Deserialize<CodecCache>(json);
+                    _cache = JsonSerializer.Deserialize<CodecCache>(json, VManagerJsonContext.Default.CodecCache)!;
                     if (_cache != null)
                         return _cache;
                 }
@@ -69,8 +70,7 @@ namespace VManager.Services
         {
             try
             {
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                string json = JsonSerializer.Serialize(cache, options);
+                string json = JsonSerializer.Serialize(cache, VManagerJsonContext.Default.CodecCache);
                 await File.WriteAllTextAsync(_cacheFile, json);
             }
             catch (Exception ex)
@@ -79,11 +79,5 @@ namespace VManager.Services
             }
         }
     }
-
-    public class CodecCache
-    {
-        public List<string> VideoCodecs { get; set; } = new();
-        public List<string> AudioCodecs { get; set; } = new();
-        public HardwareCapabilities Hardware { get; set; } = new();
-    }
+    
 }

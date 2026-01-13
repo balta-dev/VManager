@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Reactive.Linq;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;

@@ -2,6 +2,7 @@ using Avalonia.ReactiveUI;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -14,6 +15,7 @@ using VManager.Services.Core.Media;
 
 namespace VManager.ViewModels.Herramientas
 {
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
     public class Herramienta3ViewModel : CodecViewModelBase
     {
         private bool _isConverting;

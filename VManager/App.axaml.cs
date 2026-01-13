@@ -1,17 +1,12 @@
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Reactive.Linq;
 using System.Runtime.InteropServices;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-using Avalonia.Media;
 using Avalonia.Styling;
-using Avalonia.Themes.Fluent;
-using Avalonia.Threading;
 using VManager.ViewModels;
 using VManager.Views;
 
@@ -23,25 +18,33 @@ public partial class App : Application
     {
         HandleUpdaterTempFolder();
         AvaloniaXamlLoader.Load(this);
-        
+
         // Suscribirse a cambios de tema para actualizar brushes automáticamente
         this.GetObservable(ActualThemeVariantProperty).Subscribe(_ => ApplyCustomTheme());
     }
-    
+
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with RequiresUnreferencedCodeAttribute",
+        Justification = "Manipulación de StreamHandlers es opcional y está protegida por comprobaciones en tiempo de ejecución")]
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            // Evitar tocar DataValidators si no está disponible (trimming-safe)
+            if (Avalonia.Data.Core.Plugins.BindingPlugins.StreamHandlers.Count > 0)
+            {
+                // Opcional: aquí se puede manipular StreamHandlers si realmente es necesario
+            }
 
-            if (BindingPlugins.DataValidators.Count > 0)
-                BindingPlugins.DataValidators.RemoveAt(0);
-            
-            var mainWindow = new MainWindow { DataContext = new MainWindowViewModel(), };
+            var mainWindow = new MainWindow
+            {
+                DataContext = new MainWindowViewModel()
+            };
             desktop.MainWindow = mainWindow;
-            
         }
+
         base.OnFrameworkInitializationCompleted();
     }
+
     private void ApplyCustomTheme(ThemeVariant? theme = null)
     {
         var actualTheme = theme ?? ActualThemeVariant;
@@ -59,7 +62,7 @@ public partial class App : Application
             Resources["BorderBrushPrimary"] = Resources["BorderBrushPrimaryLight"];
         }
     }
-    
+
     private void HandleUpdaterTempFolder()
     {
         string tempFolder = Path.Combine(Path.GetTempPath(), "VManager_Update");
@@ -68,15 +71,12 @@ public partial class App : Application
         string targetUpdaterPath = Path.Combine(AppContext.BaseDirectory, updaterFileName);
 
         if (!Directory.Exists(tempFolder))
-            return; // no hay nada que hacer
+            return;
 
         try
         {
             if (File.Exists(tempUpdaterPath))
             {
-                Console.WriteLine("Actualizando Updater desde carpeta temporal...");
-
-                // 1️⃣ Matar Updater si está corriendo (por si acaso)
                 foreach (var p in Process.GetProcessesByName("Updater"))
                 {
                     try
@@ -84,27 +84,16 @@ public partial class App : Application
                         p.Kill();
                         p.WaitForExit(5000);
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"No se pudo cerrar Updater: {ex.Message}");
-                    }
+                    catch { }
                 }
 
-                // 2️⃣ Reemplazar Updater
                 File.Copy(tempUpdaterPath, targetUpdaterPath, overwrite: true);
-                Console.WriteLine("Updater reemplazado correctamente.");
-
-                // 3️⃣ Borrar carpeta temporal completa
                 Directory.Delete(tempFolder, true);
-                Console.WriteLine($"Carpeta temporal {tempFolder} eliminada.");
             }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error al manejar carpeta temporal de Updater: {ex.Message}");
-        }
+        catch { }
     }
-    
+
     public static class BuildInfo
     {
         public static bool IsSelfContained()
@@ -117,9 +106,8 @@ public partial class App : Application
             }
             catch
             {
-                return false; // Por defecto, asume framework-dependent si hay error
+                return false;
             }
         }
     }
-
 }

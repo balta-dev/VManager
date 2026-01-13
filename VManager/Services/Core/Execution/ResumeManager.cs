@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 using VManager.Services.Core.Media;
+using VManager.Services.Models;
 
 namespace VManager.Services.Core.Execution
 {
@@ -44,7 +45,7 @@ namespace VManager.Services.Core.Execution
             try
             {
                 string json = File.ReadAllText(logPath);
-                return JsonSerializer.Deserialize<ResumeProgress>(json);
+                return JsonSerializer.Deserialize<ResumeProgress>(json, VManagerJsonContext.Default.ResumeProgress)!;
             }
             catch
             {
@@ -57,7 +58,7 @@ namespace VManager.Services.Core.Execution
             string tempFolder = GetTempFolder(inputPath);
             Directory.CreateDirectory(tempFolder);
 
-            string json = JsonSerializer.Serialize(progress, new JsonSerializerOptions { WriteIndented = true });
+            string json = JsonSerializer.Serialize(progress, VManagerJsonContext.Default.ResumeProgress);
             File.WriteAllText(GetProgressLogPath(inputPath), json);
         }
 

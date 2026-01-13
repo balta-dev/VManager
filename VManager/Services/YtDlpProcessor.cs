@@ -112,20 +112,6 @@ public class YtDlpProcessor
     //                        PROGRESS
     // ============================================================
 
-    public class YtDlpProgress
-    {
-        public double Progress { get; }
-        public string Speed { get; }
-        public string Eta { get; }
-
-        public YtDlpProgress(double progress, string speed, string eta)
-        {
-            Progress = progress;
-            Speed = speed;
-            Eta = eta;
-        }
-    }
-
     private void ProcessYtDlpLine(string line, IProgress<YtDlpProgress>? progress)
     {
         Console.WriteLine("[YTDLP] " + line);
@@ -231,7 +217,7 @@ public class YtDlpProcessor
                 PropertyNameCaseInsensitive = true
             };
         
-            var info = JsonSerializer.Deserialize<VideoInfo>(json, options);
+            var info = JsonSerializer.Deserialize<VideoInfo>(json, VManagerJsonContext.Default.VideoInfo)!;
             return info;
         }
         catch (Exception ex)
@@ -371,63 +357,4 @@ public class YtDlpProcessor
         
     }
     
-}
-
-// ============================================================
-//                    CLASES DE DATOS
-// ============================================================
-
-public class VideoInfo
-{
-    [JsonPropertyName("title")]
-    public string Title { get; set; } = string.Empty;
-    
-    [JsonPropertyName("duration")]
-    public double Duration { get; set; }
-    
-    [JsonPropertyName("thumbnail")]
-    public string Thumbnail { get; set; } = string.Empty;
-    
-    [JsonPropertyName("filesize")]
-    public long? FileSize { get; set; }
-    
-    [JsonPropertyName("formats")]
-    public List<FormatInfo> Formats { get; set; } = new();
-}
-
-public class FormatInfo
-{
-    [JsonPropertyName("format_id")]
-    public string FormatId { get; set; } = string.Empty;
-    
-    [JsonPropertyName("ext")]
-    public string Extension { get; set; } = string.Empty;
-    
-    [JsonPropertyName("resolution")]
-    public string? Resolution { get; set; }
-    
-    [JsonPropertyName("height")]
-    public int? Height { get; set; }
-    
-    [JsonPropertyName("width")]
-    public int? Width { get; set; }
-    
-    [JsonPropertyName("filesize")]
-    public long? FileSize { get; set; }
-    
-    [JsonPropertyName("vcodec")]
-    public string VideoCodec { get; set; } = string.Empty;
-    
-    [JsonPropertyName("acodec")]
-    public string AudioCodec { get; set; } = string.Empty;
-    
-    // AGREGAR ESTAS PROPIEDADES PARA AUDIO
-    [JsonPropertyName("abr")]
-    public double? Abr { get; set; } // Audio bitrate
-    
-    [JsonPropertyName("format_note")]
-    public string? FormatNote { get; set; } // Descripción del formato
-    
-    [JsonPropertyName("asr")]
-    public int? Asr { get; set; } // Audio sample rate
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ReactiveUI;
 using VManager.Services;
+using VManager.Services.Models;
 
 namespace VManager.ViewModels
 {

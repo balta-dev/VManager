@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using SkiaSharp;
 
 namespace VManager.Services.Core
 {
@@ -14,6 +15,8 @@ namespace VManager.Services.Core
         private static readonly string ProfileImagesPath = Path.Combine(AppDataPath, "ProfileImages");
         
         public static string DefaultProfileImagePath => Path.Combine(ProfileImagesPath, "profile.jpg");
+
+        private const int ProfileImageSize = 128;
 
         // Firmas mágicas (magic numbers) de formatos de imagen válidos
         private static readonly byte[][] ValidImageSignatures = new[]
@@ -100,7 +103,73 @@ namespace VManager.Services.Core
         }
 
         /// <summary>
-        /// Guarda una copia de la imagen en AppData y retorna la ruta
+        /// Redimensiona una imagen a 128x128 manteniendo el aspect ratio y centrando
+        /// </summary>
+        private static async Task<bool> ResizeAndSaveImageAsync(string sourcePath, string destinationPath)
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    using (var inputStream = File.OpenRead(sourcePath))
+                    using (var original = SKBitmap.Decode(inputStream))
+                    {
+                        if (original == null)
+                            return false;
+
+                        // Crear bitmap de salida de 128x128
+                        using (var resized = new SKBitmap(ProfileImageSize, ProfileImageSize))
+                        using (var canvas = new SKCanvas(resized))
+                        {
+                            // Fondo blanco (o transparente si prefieres)
+                            canvas.Clear(SKColors.White);
+
+                            // Calcular el escalado manteniendo el aspect ratio
+                            float scale = Math.Min(
+                                (float)ProfileImageSize / original.Width,
+                                (float)ProfileImageSize / original.Height
+                            );
+
+                            int scaledWidth = (int)(original.Width * scale);
+                            int scaledHeight = (int)(original.Height * scale);
+
+                            // Centrar la imagen
+                            int x = (ProfileImageSize - scaledWidth) / 2;
+                            int y = (ProfileImageSize - scaledHeight) / 2;
+
+                            var destRect = new SKRect(x, y, x + scaledWidth, y + scaledHeight);
+                            var srcRect = new SKRect(0, 0, original.Width, original.Height);
+
+                            // Dibujar con filtro de alta calidad
+                            var paint = new SKPaint
+                            {
+                                FilterQuality = SKFilterQuality.High,
+                                IsAntialias = true
+                            };
+
+                            canvas.DrawBitmap(original, srcRect, destRect, paint);
+
+                            // Guardar como PNG para mantener calidad
+                            using (var image = SKImage.FromBitmap(resized))
+                            using (var data = image.Encode(SKEncodedImageFormat.Png, 95))
+                            using (var stream = File.OpenWrite(destinationPath))
+                            {
+                                data.SaveTo(stream);
+                            }
+                        }
+                    }
+
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            });
+        }
+
+        /// <summary>
+        /// Guarda una copia redimensionada de la imagen en AppData y retorna la ruta
         /// </summary>
         public static async Task<(bool Success, string Path, string Message)> SaveProfileImageAsync(string sourcePath)
         {
@@ -111,21 +180,20 @@ namespace VManager.Services.Core
 
             try
             {
-                // Obtener extensión del archivo original
-                string extension = Path.GetExtension(sourcePath).ToLowerInvariant();
-                
-                // Nombre del archivo destino
-                string destinationFileName = $"profile{extension}";
+                // Siempre guardar como PNG después del resize
+                string destinationFileName = "profile.png";
                 string destinationPath = Path.Combine(ProfileImagesPath, destinationFileName);
 
                 // Eliminar archivo anterior si existe
-                if (File.Exists(destinationPath))
-                    File.Delete(destinationPath);
+                DeleteProfileImage();
 
-                // Copiar el archivo
-                await Task.Run(() => File.Copy(sourcePath, destinationPath, true));
+                // Redimensionar y guardar
+                bool success = await ResizeAndSaveImageAsync(sourcePath, destinationPath);
 
-                return (true, destinationPath, "Imagen de perfil guardada correctamente");
+                if (!success)
+                    return (false, "", "Error al procesar la imagen");
+
+                return (true, destinationPath, "Imagen de perfil guardada correctamente (128x128)");
             }
             catch (Exception ex)
             {

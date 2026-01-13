@@ -15,6 +15,8 @@ using Avalonia.Media;
 using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using ReactiveUI;
+using Updater.Services;
+using Updater.Services.Models;
 
 namespace Updater
 {
@@ -280,16 +282,6 @@ namespace Updater
             base.OnFrameworkInitializationCompleted();
         }
 
-        private class UpdateInfo
-        {
-            public required Version CurrentVersion { get; set; }
-            public required Version LatestVersion { get; set; }
-            public required string DownloadUrl { get; set; }
-            public required string ReleaseNotes { get; set; }
-            public DateTime LastChecked { get; set; }
-            public bool UpdateAvailable => LatestVersion > CurrentVersion;
-        }
-
         private async Task CheckUpdatesAsync(Window window)
         {
             var update = await CheckForUpdateAsync();
@@ -496,7 +488,7 @@ namespace Updater
                 try
                 {
                     var json = await File.ReadAllTextAsync(CacheFilePath);
-                    var cached = JsonSerializer.Deserialize<UpdateInfo>(json);
+                    var cached = JsonSerializer.Deserialize(json.AsSpan(), UpdaterJsonContext.Default.UpdateInfo);
 
                     if (cached != null)
                     {
@@ -574,7 +566,7 @@ namespace Updater
                 try
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(CacheFilePath)!);
-                    var cacheJson = JsonSerializer.Serialize(updateInfo, new JsonSerializerOptions { WriteIndented = true });
+                    var cacheJson = JsonSerializer.Serialize(updateInfo, UpdaterJsonContext.Default.UpdateInfo);
                     await File.WriteAllTextAsync(CacheFilePath, cacheJson);
                 }
                 catch (Exception ex) { Console.WriteLine($"No se pudo guardar caché: {ex.Message}"); }

@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using ReactiveUI;
 using VManager.Services;
@@ -6,6 +7,7 @@ using VManager.Services.Core;
 
 namespace VManager.ViewModels
 {
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
     public class AcercaDeViewModel : ViewModelBase, INotifyPropertyChanged
     {
         public bool IsWindows { get; } =

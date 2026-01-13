@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using ReactiveUI;
 using System.Reactive;
@@ -16,6 +17,7 @@ using VManager.ViewModels.Herramientas;
 
 namespace VManager.ViewModels;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
 public class MainWindowViewModel : ViewModelBase
 {
     public bool IsWelcomeVisible => CurrentView == null;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -11,6 +12,7 @@ using DynamicData;
 
 namespace VManager.Behaviours
 {
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
     public static class DragDropHelper
     {
         // Enable drag & drop
@@ -25,6 +27,10 @@ namespace VManager.Behaviours
         public static readonly AttachedProperty<string> DropTargetProperty =
             AvaloniaProperty.RegisterAttached<Control, string>(
                 "DropTarget", typeof(DragDropHelper));
+        
+        private static readonly AttachedProperty<bool> IsDragOverProperty =
+            AvaloniaProperty.RegisterAttached<Control, bool>(
+                "IsDragOver", typeof(DragDropHelper));
 
         public static string GetDropTarget(Control control) => control.GetValue(DropTargetProperty);
         public static void SetDropTarget(Control control, string value) => control.SetValue(DropTargetProperty, value);
@@ -86,6 +92,7 @@ namespace VManager.Behaviours
 
         private static void OnDragOver(object? sender, DragEventArgs e)
         {
+            
             if (!e.DataTransfer.Contains(DataFormat.File))
             {
                 e.DragEffects = DragDropEffects.None;
@@ -103,6 +110,7 @@ namespace VManager.Behaviours
             {
                 bool allowAudio = GetAllowAudio(control);
                 bool allowTxt = GetAllowTxt(control);
+                control.SetValue(IsDragOverProperty, true);
 
                 bool hasValidFile;
                 
@@ -154,21 +162,28 @@ namespace VManager.Behaviours
         }
 
 
-        private static void OnDragLeave(object? sender, DragEventArgs e)
+        private static async void OnDragLeave(object? sender, DragEventArgs e)
         {
-            // Restore original color on drag leave
-            if (sender is Border border)
-            {
-                var mousePos = e.GetPosition(border);
-                // Si el cursor sigue dentro del border, no hacemos nada
-                if (mousePos.X >= 0 && mousePos.X <= border.Bounds.Width &&
-                    mousePos.Y >= 0 && mousePos.Y <= border.Bounds.Height)
-                    return;
-                
-                var originalBackground = border.GetValue(OriginalBackgroundProperty);
-                border.Background = originalBackground ?? Brushes.Transparent;
-                border.ClearValue(OriginalBackgroundProperty);
-            }
+            if (sender is not Border border)
+                return;
+
+            border.SetValue(IsDragOverProperty, false);
+
+            await System.Threading.Tasks.Task.Yield();
+            
+            var mousePos = e.GetPosition(border);
+            
+            if (border.GetValue(IsDragOverProperty))
+                return;
+
+            // Salvaguarda mantenida
+            if (mousePos.X > 0 && mousePos.X < border.Bounds.Width &&
+                mousePos.Y > 0 && mousePos.Y < border.Bounds.Height)
+                return;
+            
+            var original = border.GetValue(OriginalBackgroundProperty);
+            border.Background = original ?? Brushes.Transparent;
+            border.ClearValue(OriginalBackgroundProperty);
         }
 
         private static void OnDropFile(object? sender, DragEventArgs e)

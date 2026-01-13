@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using VManager.Services.Models;
 
 namespace VManager.Services
 {

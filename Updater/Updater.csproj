@@ -4,6 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>true</AppendRuntimeIdentifierToOutputPath>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>link</TrimMode>
     <OutputPath>../VManager/bin/$(Configuration)/net9.0/</OutputPath>
   </PropertyGroup>
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ using VManager.Services.Core.Media;
 
 namespace VManager.ViewModels.Herramientas
 {
-    
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
     public class Herramienta1ViewModel : ViewModelBase
     {
 

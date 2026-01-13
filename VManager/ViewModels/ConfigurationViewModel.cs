@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reactive;
 using System.Threading.Tasks;
@@ -14,9 +15,11 @@ using Avalonia.ReactiveUI;
 using ReactiveUI;
 using VManager.Services;
 using VManager.Services.Core;
+using VManager.Services.Models;
 
 namespace VManager.ViewModels
 {
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
     public class ConfigurationViewModel : CodecViewModelBase
     {
         
@@ -199,7 +202,7 @@ namespace VManager.ViewModels
         public ReactiveCommand<Unit, Unit> RemoveCookiesFileCommand { get; }
         
         
-        private readonly ConfigurationService.AppConfig _config;
+        private readonly AppConfig _config;
         
         private async Task BrowseDownloadFolderAsync()
         {

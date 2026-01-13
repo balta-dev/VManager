@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -13,9 +14,11 @@ using ReactiveUI;
 using VManager.Models;
 using VManager.Services;
 using VManager.Services.Core;
+using VManager.Services.Models;
 
 namespace VManager.ViewModels.Herramientas
 {
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
     public class Herramienta5ViewModel : CodecViewModelBase
     {
         // Nueva propiedad para la colección de videos con info
@@ -68,12 +71,14 @@ namespace VManager.ViewModels.Herramientas
             
         }
         
-        private readonly ConfigurationService.AppConfig _config;
+        private readonly AppConfig _config;
 
         public ReactiveCommand<Unit, Unit> DownloadCommand { get; }
         public ReactiveCommand<string, Unit> AddUrlCommand { get; }
         public ReactiveCommand<VideoDownloadItem, Unit> RemoveUrlCommand { get; }
         public ReactiveCommand<Unit, Unit> HideDownloadHelpCommand { get; }
+        
+        private readonly SemaphoreSlim _downloadSemaphore = new SemaphoreSlim(3, 3); // Máx 3 simultáneas (ajustá según tu máquina/red)
 
         public Herramienta5ViewModel()
         {
@@ -266,7 +271,7 @@ namespace VManager.ViewModels.Herramientas
         private readonly Dictionary<VideoDownloadItem, double> _maxProgress = new();
         
         private readonly Dictionary<VideoDownloadItem, double> _realProgress = new();
-
+        
         private async Task DownloadVideos()
         {
             if (Videos.Count == 0)
@@ -288,134 +293,232 @@ namespace VManager.ViewModels.Herramientas
                 IsConverting = true;
                 IsOperationRunning = true;
 
-                int total = Videos.Count;
-                int index = 0;
-                int success = 0;
+                var pendingVideos = Videos.Where(v => !v.IsCompleted && !v.IsCanceled).ToList();
+                int total = pendingVideos.Count;
 
-                foreach (var video in Videos.Where(v => !v.IsCompleted).ToList())
+                if (total == 0)
                 {
-                    index++;
-                    if (video.IsCanceled)
-                        continue;
-                    
-                    video.IsDownloading = true;
-
-                    var progress = new Progress<YtDlpProcessor.YtDlpProgress>(p =>
-                    {
-                        double newValue = p.Progress * 100;
-
-                        if (!_maxProgress.ContainsKey(video))
-                            _maxProgress[video] = 0;
-
-                        // Ignorar spikes tempranos de 100%
-                        if (newValue >= 100 && _maxProgress[video] < 5)
-                            return;
-
-                        // Solo avanzar
-                        if (newValue < _maxProgress[video])
-                            newValue = _maxProgress[video];
-                        else
-                            _maxProgress[video] = newValue;
-
-                        video.Progress = newValue;
-                        video.Status = $"{p.Speed} - ETA: {p.Eta}";
-
-                        // Actualizar progreso individual en global
-                        _realProgress[video] = newValue;
-
-                        // Calcular porcentaje global
-                        double globalProgress = Videos.Count > 0 
-                            ? Videos.Average(v => _realProgress.ContainsKey(v) ? _realProgress[v] : 0) 
-                            : 0;
-
-                        Progress = (int)globalProgress;
-                        RemainingTime = p.Eta;
-
-                        Status = $"{L["VideoStatus.Downloading"]} {index}/{total}: {video.Title}";
-                        this.RaisePropertyChanged(nameof(Progress));
-                        this.RaisePropertyChanged(nameof(RemainingTime));
-                        this.RaisePropertyChanged(nameof(Status));
-                    });
-
-                    // Guardar en carpeta preferida
-                    string downloadFolder = !string.IsNullOrWhiteSpace(_config.PreferredDownloadFolder)
-                        ? _config.PreferredDownloadFolder
-                        : Environment.GetFolderPath(Environment.SpecialFolder.Desktop); // fallback seguro
-
-                    string extension = video.SelectedFormat?.FormatId switch
-                    {
-                        "0" => "mp3",
-                        "1" => "wav",
-                        _ => "mp4"
-                    };
-
-                    string outputTemplate = Path.Combine(
-                        downloadFolder,
-                        $"{video.Title}.{extension}"
-                    );
-
-                    var result = await processor.DownloadAsync(
-                        video.Url,
-                        outputTemplate,
-                        progress,
-                        _cts.Token,
-                        video.SelectedFormat?.FormatId
-                    );
-
-                    video.IsDownloading = false;
-
-                    if (result.Success)
-                    {
-                        success++;
-                        video.IsCompleted = true;
-                        video.Status = L["VideoStatus.Completed"];
-                        video.Progress = 100;
-
-                        var notifier = new NotificationService();
-                        notifier.ShowFileConvertedNotification($"{L["VideoStatus.Downloaded"]} {video.Title}",  outputTemplate);
-
-                        _ = SoundManager.Play("success.wav");
-                        SetLastCompressedFile(outputTemplate);
-                    }
-                    else
-                    {
-                        if (_cts.IsCancellationRequested)
-                        {
-                            video.IsCanceled = true;
-                            video.Status = L["VideoStatus.Canceled"];
-                            video.Progress = 0;
-                            Status = $"{L["VideoStatus.Canceled"]} {success}/{total}";
-                        }
-                        else
-                        {
-                            video.HasError = true;
-                            video.Status = L["VideoStatus.Error"];
-                            _ = SoundManager.Play("fail.wav");
-                            Status = $"{L["VideoStatus.Error"]} {video.Title}: {result.Message}";
-                        }
-
-                        this.RaisePropertyChanged(nameof(Status));
-                    }
+                    Status = L["VideoStatus.NoVideo"];
+                    this.RaisePropertyChanged(nameof(Status));
+                    return;
                 }
 
+                int successCount = 0;
+                int finishedCount = 0;
+                var errorMessages = new List<string>();
+                string lastGlobalETA = "";
+                object lockObj = new object();
+
+                // Reporte inicial
+                Status = $"{L["VideoStatus.Completed"]} 0/{total} {L["VideoStatus.Downloads"]}";
+                this.RaisePropertyChanged(nameof(Status));
+
+                // Inicializar progresos
+                foreach (var v in pendingVideos)
+                {
+                    _realProgress[v] = 0;
+                    _maxProgress[v] = 0;
+                }
+
+                var downloadTasks = pendingVideos.Select(async (currentVideo) =>
+                {
+                    await _downloadSemaphore.WaitAsync(_cts.Token);
+
+                    try
+                    {
+                        currentVideo.IsDownloading = true;
+                        currentVideo.Progress = 0;
+
+                        if (total == 1)
+                        {
+                            currentVideo.Status = L["VideoStatus.Downloading"];
+                        }
+
+                        var progress = new Progress<YtDlpProgress>(p =>
+                        {
+                            double newValue = p.Progress * 100;
+
+                            lock (lockObj)
+                            {
+                                if (!_maxProgress.ContainsKey(currentVideo))
+                                    _maxProgress[currentVideo] = 0;
+
+                                if (newValue >= 100 && _maxProgress[currentVideo] < 5)
+                                    return;
+
+                                if (newValue < _maxProgress[currentVideo])
+                                    newValue = _maxProgress[currentVideo];
+                                else
+                                    _maxProgress[currentVideo] = newValue;
+
+                                _realProgress[currentVideo] = newValue;
+
+                                // Guardar ETA global solo si NO es "Unknown"
+                                if (!string.IsNullOrWhiteSpace(p.Eta) && 
+                                    !p.Eta.Equals("Unknown", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    lastGlobalETA = p.Eta;
+                                }
+                            }
+
+                            currentVideo.Progress = newValue;
+
+                            // Status detallado si es 1 solo video
+                            if (total == 1)
+                            {
+                                currentVideo.Status = $"{p.Speed} - ETA: {p.Eta}";
+                            }
+                            else
+                            {
+                                // Status con porcentaje + ETA individual si hay múltiples videos
+                                string etaPart = !string.IsNullOrWhiteSpace(p.Eta) ? $" - ETA: {p.Eta}" : "";
+                                currentVideo.Status = $"{newValue:F0}%{etaPart}";
+                            }
+
+                            // Calcular progreso global
+                            double globalProgress = pendingVideos.Count > 0
+                                ? pendingVideos.Average(v => _realProgress.GetValueOrDefault(v, 0))
+                                : 0;
+
+                            Progress = (int)globalProgress;
+                            RemainingTime = lastGlobalETA;
+
+                            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                            {
+                                this.RaisePropertyChanged(nameof(Progress));
+                                this.RaisePropertyChanged(nameof(RemainingTime));
+                                this.RaisePropertyChanged(nameof(Status));
+                            });
+                        });
+
+                        string downloadFolder = !string.IsNullOrWhiteSpace(_config.PreferredDownloadFolder)
+                            ? _config.PreferredDownloadFolder
+                            : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                        string extension = currentVideo.SelectedFormat?.FormatId switch
+                        {
+                            "0" => "mp3",
+                            "1" => "wav",
+                            _ => "mp4"
+                        };
+
+                        string outputTemplate = Path.Combine(downloadFolder, $"{currentVideo.Title}.{extension}");
+
+                        var result = await processor.DownloadAsync(
+                            currentVideo.Url,
+                            outputTemplate,
+                            progress,
+                            _cts.Token,
+                            currentVideo.SelectedFormat?.FormatId
+                        );
+
+                        // Chequeo: archivo existe → éxito aunque result diga false
+                        bool fileDownloaded = File.Exists(outputTemplate);
+
+                        if (fileDownloaded || result.Success)
+                        {
+                            Interlocked.Increment(ref successCount);
+                            currentVideo.IsCompleted = true;
+                            currentVideo.Status = L["VideoStatus.Completed"];
+                            currentVideo.Progress = 100;
+
+                            var notifier = new NotificationService();
+                            notifier.ShowFileConvertedNotification($"{L["VideoStatus.Downloaded"]} {currentVideo.Title}", outputTemplate);
+
+                            _ = SoundManager.Play("success.wav");
+                            SetLastCompressedFile(outputTemplate);
+                        }
+                        else
+                        {
+                            currentVideo.HasError = true;
+                            currentVideo.Status = L["VideoStatus.Error"];
+                            
+                            lock (lockObj)
+                            {
+                                errorMessages.Add($"{currentVideo.Title}: {result.Message ?? "Error desconocido"}");
+                            }
+                            
+                            _ = SoundManager.Play("fail.wav");
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        currentVideo.IsCanceled = true;
+                        currentVideo.Status = L["VideoStatus.Canceled"];
+                        currentVideo.Progress = 0;
+                    }
+                    catch (Exception ex)
+                    {
+                        currentVideo.HasError = true;
+                        currentVideo.Status = L["VideoStatus.Error"];
+                        
+                        lock (lockObj)
+                        {
+                            errorMessages.Add($"{currentVideo.Title}: {ex.Message}");
+                        }
+                        
+                        _ = SoundManager.Play("fail.wav");
+                    }
+                    finally
+                    {
+                        currentVideo.IsDownloading = false;
+                        _downloadSemaphore.Release();
+
+                        Interlocked.Increment(ref finishedCount);
+
+                        Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                        {
+                            // Status progresivo
+                            Status = $"{L["VideoStatus.Completed"]} {finishedCount}/{total} {L["VideoStatus.Downloads"]}";
+                            
+                            lock (lockObj)
+                            {
+                                if (errorMessages.Count > 0)
+                                    Status += $" ({errorMessages.Count} con problemas)";
+                            }
+
+                            this.RaisePropertyChanged(nameof(Progress));
+                            this.RaisePropertyChanged(nameof(Status));
+                        });
+                    }
+                }).ToList();
+
+                await Task.WhenAll(downloadTasks);
+
                 Progress = 100;
-                Status = $"{L["VideoStatus.Completed"]} {success}/{total} {L["VideoStatus.Downloads"]}";
+                RemainingTime = ""; // Limpiar ETA al finalizar
+
+                // Status final
+                string finalStatus = $"{L["VideoStatus.Completed"]} {finishedCount}/{total} {L["VideoStatus.Downloads"]}";
+                
+                lock (lockObj)
+                {
+                    if (errorMessages.Count > 0)
+                        finalStatus += $" ({errorMessages.Count} con problemas)";
+                }
+
+                Status = finalStatus;
+
+                this.RaisePropertyChanged(nameof(Progress));
+                this.RaisePropertyChanged(nameof(RemainingTime));
+                this.RaisePropertyChanged(nameof(Status));
             }
             catch (OperationCanceledException)
             {
-                _ = SoundManager.Play("fail.wav");
                 Status = L["VideoStatus.OperationCanceled"];
                 Progress = 0;
+                RemainingTime = "";
+                this.RaisePropertyChanged(nameof(Status));
+                this.RaisePropertyChanged(nameof(Progress));
+                this.RaisePropertyChanged(nameof(RemainingTime));
+                _ = SoundManager.Play("fail.wav");
             }
             finally
             {
                 IsConverting = false;
                 IsOperationRunning = false;
-
                 _cts?.Dispose();
                 _cts = null;
-                this.RaisePropertyChanged(nameof(Status));
-                this.RaisePropertyChanged(nameof(Progress));
                 this.RaisePropertyChanged(nameof(IsConverting));
                 this.RaisePropertyChanged(nameof(IsOperationRunning));
             }

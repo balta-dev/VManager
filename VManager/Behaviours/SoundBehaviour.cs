@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -66,6 +67,17 @@ namespace VManager.Behaviours
 
                 case "ClearInfo":
                     await SoundManager.Play("click.wav");
+                    break;
+                
+                case "LinuxDnD":
+                    if (OperatingSystem.IsLinux())
+                    {
+                        await SoundManager.Play("click.wav");
+                    }
+                    else
+                    {
+                        await SoundManager.Play("dummy.wav");
+                    }
                     break;
                 
                 default:

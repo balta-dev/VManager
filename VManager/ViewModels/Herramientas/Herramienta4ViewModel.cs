@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reactive;
 using System.Threading;
@@ -12,6 +13,7 @@ using VManager.Services.Core.Media;
 
 namespace VManager.ViewModels.Herramientas
 {
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
     public class Herramienta4ViewModel : CodecViewModelBase
     {
         public AudioFormat SelectedAudioFormat { get; set; }

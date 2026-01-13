@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using DynamicData;
 using ReactiveUI;
 
 namespace VManager.Services;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
 public static class FileAssignLogic
 {
     public static bool AssignVideoFiles(
