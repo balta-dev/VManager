@@ -52,20 +52,21 @@
     <EmbeddedResource Include="Binaries\Windows\ffmpeg.exe" />
     <EmbeddedResource Include="Binaries\Windows\yt-dlp.exe" />
     <EmbeddedResource Include="Binaries\Windows\ffprobe.exe" />
-    <None Remove="Binaries\Windows\ffplay.exe" />
+    <EmbeddedResource Include="Binaries\Windows\deno.exe" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(IsLinux)' == 'true'">
     <EmbeddedResource Include="Binaries\Linux\ffmpeg" />
     <EmbeddedResource Include="Binaries\Linux\ffprobe" />
     <EmbeddedResource Include="Binaries\Linux\yt-dlp" />
-    <None Remove="Binaries\Linux\ffplay" />
+    <EmbeddedResource Include="Binaries\Linux\deno" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Release' AND '$(IsMac)' == 'true'">
     <EmbeddedResource Include="Binaries\Mac\ffmpeg" />
     <EmbeddedResource Include="Binaries\Mac\ffprobe" />
     <EmbeddedResource Include="Binaries\Mac\yt-dlp_macos" />
+    <EmbeddedResource Include="Binaries\Mac\deno" />
   </ItemGroup>
 
   <ItemGroup>

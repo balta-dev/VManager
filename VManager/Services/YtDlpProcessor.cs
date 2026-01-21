@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Media;
 using VManager.Services.Core.Media;
 using VManager.Services.Models;
 
@@ -241,35 +242,57 @@ public class YtDlpProcessor
         string cookieArg = BuildCookiesArgument();
         string safeOutput = OutputPathBuilder.SanitizeFilename(outputTemplate);
         
-        string args = $"{cookieArg} --newline -o \"{safeOutput}\"";
-        
-        if (!string.IsNullOrEmpty(formatId))
-        {
-            if (formatId == "0") // mp3
-            {
-                args += " -x --audio-format mp3";
-            }
-            else if (formatId == "1") // wav
-            {
-                args += " -x --audio-format wav";
-            }
-            else
-            {
-                args += $" -f {formatId}";
-            }
-        }
-
-        args += $" {url}";
-        
         var psi = new ProcessStartInfo
         {
             FileName = _ytDlpPath,
-            Arguments = args,
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,
             CreateNoWindow = true
         };
+
+        //cambiada la forma en que se construyen argumentos para evitar escapes de comillas
+        if (!string.IsNullOrWhiteSpace(cookieArg))
+        {
+            foreach (var part in cookieArg.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                psi.ArgumentList.Add(part);
+        }
+
+        psi.ArgumentList.Add("--newline");
+        
+        /*
+         https://github.com/yt-dlp/yt-dlp/issues/15569
+         web_safari deja de poder puede descargar m3u8 porque yt empezó a forzar SABR
+         el problema es que yt-dlp todavía no entiende SABR
+         https://github.com/yt-dlp/yt-dlp/issues/12482
+        */
+        psi.ArgumentList.Add("--js-runtimes"); //agregado porque eventualmente sin este parámetro no va a funcionar
+        psi.ArgumentList.Add($"deno:{DenoManager.DenoPath}"); //agregado denomanager + binarios deno para resolver challenges de js      
+        psi.ArgumentList.Add("--extractor-args");
+        psi.ArgumentList.Add("youtube:player_client=default,-web_safari");
+        /////////////
+        
+        psi.ArgumentList.Add("-o");
+        psi.ArgumentList.Add(safeOutput);
+
+        if (!string.IsNullOrEmpty(formatId))
+        {
+            if (formatId == "0")
+            {
+                psi.ArgumentList.Add("-x");
+                psi.ArgumentList.Add("--audio-format");
+                psi.ArgumentList.Add("mp3");
+            }
+            else if (formatId == "1")
+            {
+                psi.ArgumentList.Add("-x");
+                psi.ArgumentList.Add("--audio-format");
+                psi.ArgumentList.Add("wav");
+            }
+            //removido forzado -f {formatId} (-f 91, correspondiente al protocolo m3u8)
+        }
+
+        psi.ArgumentList.Add(url);
 
         var process = new Process { StartInfo = psi };
 
@@ -308,6 +331,7 @@ public class YtDlpProcessor
                 }
             });
 
+            Console.WriteLine("[YTDLP CMD] " + psi.FileName + " " + string.Join(" ", psi.ArgumentList));
             process.Start();
 
             // Leer stdout y stderr con respeto al token

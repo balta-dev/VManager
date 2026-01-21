@@ -68,6 +68,7 @@ sealed class Program
         
         FFmpegManager.Initialize();
         YtDlpManager.Initialize();
+        DenoManager.Initialize();
 
         // Arrancar Avalonia
         BuildAvaloniaApp()
