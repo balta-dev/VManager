@@ -28,7 +28,8 @@ namespace VManager.Services
 
             var candidateCodecs = new List<string>
             {
-                "libx264", "libx265", "libvpx-vp9", "libx264rgb"
+                "libx264", "libx265", "libvpx-vp9", "libx264rgb",
+                "libaom-av1", "libsvtav1", "librav1e"  // Agrego AV1 software como fallback, siempre disponibles si compilados
             };
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -63,6 +64,7 @@ namespace VManager.Services
 
         private void AddLinuxVideoCodecs(List<string> codecs, List<string> allCodecs, HardwareCapabilities hardware)
         {
+            if (hardware.Intel) codecs.AddRange(allCodecs.Where(c => c.Contains("qsv")));
             if (hardware.VAAPI) codecs.AddRange(allCodecs.Where(c => c.Contains("vaapi")));
             if (hardware.Nvidia) codecs.AddRange(allCodecs.Where(c => c.Contains("nvenc")));
             codecs.AddRange(allCodecs.Where(c => c.Contains("v4l2m2m") || c.Contains("vulkan")));
@@ -77,13 +79,44 @@ namespace VManager.Services
         {
             return new Dictionary<string, int>
             {
-                { "h264_nvenc", 100 }, { "hevc_nvenc", 95 }, { "av1_nvenc", 90 },
-                { "h264_amf", 85 }, { "hevc_amf", 80 }, { "av1_amf", 75 },
-                { "h264_qsv", 70 }, { "hevc_qsv", 65 }, { "av1_qsv", 60 },
-                { "h264_vaapi", 55 }, { "hevc_vaapi", 50 }, { "av1_vaapi", 45 },
-                { "h264_videotoolbox", 40 }, { "hevc_videotoolbox", 35 },
-                { "h264_mf", 30 }, { "hevc_mf", 25 },
-                { "libx264", 20 }, { "libx265", 15 }, { "libvpx-vp9", 10 },
+                // --- NVIDIA ---
+                { "av1_nvenc", 100 }, // Máxima prioridad si hay Nvidia serie 4000+
+                { "h264_nvenc", 95 }, 
+                { "hevc_nvenc", 90 }, 
+        
+                // --- AMD (AMF) ---
+                { "av1_amf", 89 },    // AMD Radeon 7000+
+                { "h264_amf", 85 }, 
+                { "hevc_amf", 80 }, 
+        
+                // --- INTEL (QSV) - Windows y Linux (Arc) ---
+                { "av1_qsv", 79 },    // Intel Arc
+                { "h264_qsv", 75 }, 
+                { "hevc_qsv", 70 }, 
+
+                // --- MACOS (VideoToolbox) ---
+                // AGREGADO: Soporte para Chips M3 en adelante
+                { "av1_videotoolbox", 69 }, 
+                { "h264_videotoolbox", 65 }, 
+                { "hevc_videotoolbox", 60 },
+
+                // --- LINUX (VAAPI) ---
+                // VAAPI suele ser el fallback si QSV/NVENC no están explícitos
+                { "av1_vaapi", 59 },  
+                { "h264_vaapi", 55 }, 
+                { "hevc_vaapi", 50 }, 
+        
+                // --- WINDOWS (Media Foundation) ---
+                { "h264_mf", 40 }, 
+                { "hevc_mf", 35 },
+
+                // --- SOFTWARE (CPU) ---
+                { "libsvtav1", 25 },   // SVT-AV1 es muy eficiente por CPU hoy en día
+                { "libx264", 20 }, 
+                { "libx265", 15 }, 
+                { "libvpx-vp9", 10 },
+                { "libaom-av1", 8 },   // Lento
+                { "librav1e", 7 },
                 { "libx264rgb", 5 }
             };
         }
@@ -168,6 +201,7 @@ namespace VManager.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Error fetching codecs: {ex.Message}");
+                ErrorService.Show(ex);
             }
 
             return result;
@@ -197,6 +231,7 @@ namespace VManager.Services
             {
                 Console.WriteLine($"Error al detectar NVIDIA: {ex.Message}");
                 capabilities.Nvidia = false;
+                ErrorService.Show(ex);
             }
 
             // Detectar AMD e Intel usando wmic
@@ -235,6 +270,7 @@ namespace VManager.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"Excepción en wmic: {ex.Message}");
+                ErrorService.Show(ex);
             }
 
             Console.WriteLine($"Resultado final: Nvidia = {capabilities.Nvidia}, AMD = {capabilities.AMD}, Intel = {capabilities.Intel}");

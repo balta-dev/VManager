@@ -151,6 +151,7 @@ internal class FFmpegExecutor : IFFmpegExecutor
         catch (Exception ex)
         {
             Console.WriteLine($"[DEBUG]: Error: {ex.Message}");
+            ErrorService.Show(ex);
             return new ProcessingResult(false, $"Error: {ex.Message}");
         }
     }

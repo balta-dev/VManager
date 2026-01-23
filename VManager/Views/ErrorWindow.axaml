@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="VManager.Views.ErrorWindow"
+        Width="420"
+        Height="220"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource PanelBackgroundBrush}"
+        Title="Error">
+
+    <Border Padding="20">
+        <StackPanel Spacing="12">
+
+            <TextBlock Text="Error"
+                       FontSize="22"
+                       FontWeight="Bold"
+                       Foreground="Tomato"/>
+
+            <TextBlock x:Name="MessageText"
+                       TextWrapping="Wrap"
+                       FontSize="14"/>
+
+            <Button Content="OK"
+                    HorizontalAlignment="Right"
+                    Width="80"
+                    Click="CloseWindow"/>
+
+        </StackPanel>
+    </Border>
+</Window>

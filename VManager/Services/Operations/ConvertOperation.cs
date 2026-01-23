@@ -1,12 +1,13 @@
 // Services/Operations/ConvertOperation.cs
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using FFMpegCore;
-using VManager.Services.Core; // Para HardwareAccelerationConfigurator, FFmpegExecutor, ResumableFFmpegExecutor
+using VManager.Services.Core;
 using VManager.Services.Models;
 using VManager.Services.Core.Execution;
-using VManager.Services.Core.Media; // Para ProcessingResult
+using VManager.Services.Core.Media;
 
 namespace VManager.Services.Operations
 {
@@ -62,12 +63,21 @@ namespace VManager.Services.Operations
             if (!analysisResult.Success)
                 return new ProcessingResult(false, analysisResult.Message);
 
-            double duration = analysisResult.Result!.Duration.TotalSeconds;
+            var mediaInfo = analysisResult.Result!;
+            double duration = mediaInfo.Duration.TotalSeconds;
+
+            // Detectar si necesitamos recodificar o solo cambiar contenedor
+            bool needsReencoding = RequiresReencoding(mediaInfo, selectedVideoCodec, selectedAudioCodec);
 
             Console.WriteLine($"Conversión - Video: {selectedVideoCodec}, Audio: {selectedAudioCodec}, Formato: {selectedFormat}");
+            Console.WriteLine($"[DEBUG] Recodificación necesaria: {needsReencoding}");
 
-            // MODO RESUMABLE para videos largos (>5 minutos)
-            if (duration > 300)
+            // MODO RESUMABLE solo si recodifica Y es largo (>5 min)
+            // Para conversiones simples (copy), siempre modo normal
+            /*
+             WIP - No está listo para release oficial todavía
+             
+            if (needsReencoding && duration > 300)
             {
                 return await _resumableExecutor.ExecuteResumableAsync(
                     inputPath,
@@ -88,18 +98,28 @@ namespace VManager.Services.Operations
                     cancellationToken
                 );
             }
+            */
 
-            // Modo normal
+            // Modo normal (rápido)
             var args = FFMpegArguments
                 .FromFileInput(inputPath)
                 .OutputToFile(outputPath, overwrite: true, options =>
                 {
-                    options
-                        .WithCustomArgument("-map 0")
-                        .WithVideoCodec(selectedVideoCodec)
-                        .WithAudioCodec(selectedAudioCodec);
+                    options.WithCustomArgument("-map 0");
+                    
+                    if (needsReencoding)
+                    {
+                        options
+                            .WithVideoCodec(selectedVideoCodec)
+                            .WithAudioCodec(selectedAudioCodec);
 
-                    ApplySpecialCodecOptions(options, selectedVideoCodec);
+                        ApplySpecialCodecOptions(options, selectedVideoCodec);
+                    }
+                    else
+                    {
+                        // Solo cambiar contenedor, sin recodificar (ULTRA RÁPIDO)
+                        options.WithCustomArgument("-c copy");
+                    }
                 });
 
             return await _executor.ExecuteAsync(
@@ -110,6 +130,36 @@ namespace VManager.Services.Operations
                 progress,
                 cancellationToken
             );
+        }
+
+        // Detecta si necesitamos recodificar o solo cambiar contenedor
+        private bool RequiresReencoding(IMediaAnalysis mediaInfo, string targetVideoCodec, string targetAudioCodec)
+        {
+            var videoStream = mediaInfo.PrimaryVideoStream;
+            var audioStream = mediaInfo.PrimaryAudioStream;
+
+            if (videoStream == null || audioStream == null)
+                return true; // Sin streams, recodificar por seguridad
+
+            // Normalizar nombres de códecs
+            string currentVideoCodec = videoStream.CodecName?.ToLower() ?? "";
+            string currentAudioCodec = audioStream.CodecName?.ToLower() ?? "";
+            string targetVideo = targetVideoCodec.ToLower();
+            string targetAudio = targetAudioCodec.ToLower();
+
+            // Mapeo de códecs equivalentes
+            bool videoMatches = 
+                (currentVideoCodec == targetVideo) ||
+                (currentVideoCodec == "h264" && targetVideo == "libx264") ||
+                (currentVideoCodec == "hevc" && targetVideo == "libx265") ||
+                (currentVideoCodec == "vp9" && targetVideo == "libvpx-vp9");
+
+            bool audioMatches = 
+                (currentAudioCodec == targetAudio) ||
+                (currentAudioCodec == "aac" && targetAudio == "aac");
+
+            // Si ambos coinciden, solo necesitamos cambiar el contenedor
+            return !(videoMatches && audioMatches);
         }
 
         // Método privado para evitar duplicación de lógica DNxHR

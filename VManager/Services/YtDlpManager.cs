@@ -107,6 +107,7 @@ public static class YtDlpManager
             catch (Exception ex)
             {
                 Console.WriteLine("[YTDLP] ERROR en auto-update: " + ex.Message);
+                ErrorService.Show(ex);
             }
             finally
             {
@@ -117,6 +118,7 @@ public static class YtDlpManager
         catch (Exception ex)
         {
             Console.WriteLine("[YTDLP] ERROR al intentar crear el archivo de lock: " + ex.Message);
+            ErrorService.Show(ex);
         }
     }
 

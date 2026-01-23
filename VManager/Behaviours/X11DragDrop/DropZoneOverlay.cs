@@ -54,6 +54,7 @@ namespace VManager.Behaviours.X11DragDrop
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error en X11 window: {ex.Message}");
+                    ErrorService.Show(ex);
                 }
                 return result;
             }

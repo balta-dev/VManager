@@ -437,6 +437,7 @@ public abstract class ViewModelBase : ReactiveObject
         catch (Exception ex)
         {
             Console.WriteLine($"Error al abrir carpeta: {ex.Message}");
+            ErrorService.Show(ex);
         }
     }
     

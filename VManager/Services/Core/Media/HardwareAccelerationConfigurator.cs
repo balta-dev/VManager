@@ -32,89 +32,79 @@ namespace VManager.Services.Core.Media
                 case "hevc_nvenc":
                 case "av1_nvenc":
                     opts.WithCustomArgument("-preset fast")
-                        .WithCustomArgument("-profile:v main")
                         .WithCustomArgument("-rc vbr")
                         .WithCustomArgument("-gpu 0");
+                    // AV1 NVENC usa perfiles distintos, mejor dejar que ffmpeg decida o ser específico
+                    if (codec != "av1_nvenc") opts.WithCustomArgument("-profile:v main");
                     break;
 
                 case "h264_amf":
                 case "hevc_amf":
                 case "av1_amf":
                     opts.WithCustomArgument("-usage transcoding")
-                        .WithCustomArgument("-profile:v main")
                         .WithCustomArgument("-quality speed")
                         .WithCustomArgument("-rc vbr_peak");
+                    if (codec != "av1_amf") opts.WithCustomArgument("-profile:v main");
                     break;
 
                 case "h264_qsv":
                 case "hevc_qsv":
                 case "av1_qsv":
                     opts.WithCustomArgument("-preset fast")
-                        .WithCustomArgument("-profile:v main")
                         .WithCustomArgument("-look_ahead 0");
-                    break;
-
-                case "h264_mf":
-                case "hevc_mf":
+                    if (codec != "av1_qsv") opts.WithCustomArgument("-profile:v main");
                     break;
 
                 case "libx264":
-                    opts.WithCustomArgument("-preset fast")
-                        .WithCustomArgument("-profile:v main");
-                    break;
-
                 case "libx265":
                     opts.WithCustomArgument("-preset fast")
                         .WithCustomArgument("-profile:v main");
+                    break;
+                    
+                case "libsvtav1": // Añadimos soporte para el encoder de software AV1
+                    opts.WithCustomArgument("-preset 8"); // Preset balanceado para SVT-AV1
                     break;
             }
         }
 
         private static void ConfigureLinux(FFMpegArgumentOptions opts, string codec)
         {
+            switch (codec)
             {
-                switch (codec)
-                {
-                    case "h264_vaapi":
-                    case "hevc_vaapi":
-                    case "vp8_vaapi":
-                    case "vp9_vaapi":
-                    case "av1_vaapi":
-                        opts.WithCustomArgument("-vaapi_device /dev/dri/renderD128")
-                            .WithCustomArgument("-vf format=nv12,hwupload");
-                        if (codec == "h264_vaapi" || codec == "hevc_vaapi")
-                            opts.WithCustomArgument("-profile:v main");
-                        break;
+                case "h264_vaapi":
+                case "hevc_vaapi":
+                case "av1_vaapi":
+                case "vp8_vaapi":
+                case "vp9_vaapi":
+                    opts.WithCustomArgument("-vaapi_device /dev/dri/renderD128")
+                        .WithCustomArgument("-vf format=nv12,hwupload");
+                    break;
 
-                    case "h264_nvenc":
-                    case "hevc_nvenc":
-                    case "av1_nvenc":
-                        opts.WithCustomArgument("-preset fast")
-                            .WithCustomArgument("-profile:v main")
-                            .WithCustomArgument("-rc vbr")
-                            .WithCustomArgument("-gpu 0");
-                        break;
+                // AGREGADO: Soporte QSV en Linux (Intel Arc/iGPU)
+                case "h264_qsv":
+                case "hevc_qsv":
+                case "av1_qsv":
+                    opts.WithCustomArgument("-init_hw_device vaapi=va:/dev/dri/renderD128")
+                        .WithCustomArgument("-init_hw_device qsv=hw@va")
+                        .WithCustomArgument("-preset fast");
+                    break;
 
-                    case "h264_v4l2m2m":
-                    case "vp8_v4l2m2m":
-                        opts.WithCustomArgument("-pix_fmt yuv420p");
-                        break;
+                case "h264_nvenc":
+                case "hevc_nvenc":
+                case "av1_nvenc":
+                    opts.WithCustomArgument("-preset fast")
+                        .WithCustomArgument("-rc vbr")
+                        .WithCustomArgument("-gpu 0");
+                    break;
 
-                    case "h264_vulkan":
-                    case "hevc_vulkan":
-                        opts.WithCustomArgument("-vulkan_params device=0");
-                        break;
-
-                    case "libx264":
-                        opts.WithCustomArgument("-preset fast")
-                            .WithCustomArgument("-profile:v main");
-                        break;
-
-                    case "libx265":
-                        opts.WithCustomArgument("-preset fast")
-                            .WithCustomArgument("-profile:v main");
-                        break;
-                }
+                case "libx264":
+                case "libx265":
+                    opts.WithCustomArgument("-preset fast");
+                    break;
+                    
+                case "libsvtav1":
+                    opts.WithCustomArgument("-preset 8");
+                    break;
             }
         }
 
@@ -124,9 +114,12 @@ namespace VManager.Services.Core.Media
             {
                 case "h264_videotoolbox":
                 case "hevc_videotoolbox":
-                    opts.WithCustomArgument("-profile:v main")
-                        .WithCustomArgument("-pix_fmt yuv420p")
-                        .WithCustomArgument("-realtime 0");
+                case "av1_videotoolbox": // <--- AGREGADO
+                    opts.WithCustomArgument("-pix_fmt yuv420p") // Vital para compatibilidad en Mac
+                        .WithCustomArgument("-realtime 1");    // Optimiza para velocidad
+                    
+                    if (codec != "av1_videotoolbox") 
+                        opts.WithCustomArgument("-profile:v main");
                     break;
 
                 case "prores_videotoolbox":
@@ -134,16 +127,10 @@ namespace VManager.Services.Core.Media
                     break;
 
                 case "libx264":
-                    opts.WithCustomArgument("-preset fast")
-                        .WithCustomArgument("-profile:v main");
-                    break;
-
                 case "libx265":
-                    opts.WithCustomArgument("-preset fast")
-                        .WithCustomArgument("-profile:v main");
+                    opts.WithCustomArgument("-preset fast");
                     break;
             }
-        
         }
         
         public static bool IsDNxHRCodec(string codec)

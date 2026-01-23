@@ -6,6 +6,7 @@
     using Avalonia.Controls;
     using Avalonia.Threading;
     using VManager.Behaviours.X11DragDrop;
+    using VManager.Services;
     using VManager.Views;
     using VManager.Views.Herramientas;
 
@@ -302,6 +303,7 @@
                 }
                 catch (Exception ex)
                 {
+                    ErrorService.Show(ex);
                     tcs.TrySetException(ex);
                 }
             });

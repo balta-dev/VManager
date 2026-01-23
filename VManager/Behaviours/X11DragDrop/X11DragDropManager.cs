@@ -5,6 +5,7 @@
     using Avalonia.Controls;
     using Avalonia.Controls.ApplicationLifetimes;
     using Avalonia.VisualTree;
+    using VManager.Services;
 
     namespace VManager.Behaviours.X11DragDrop
     {
@@ -81,6 +82,7 @@
                 catch (Exception ex)
                 {
                     Console.WriteLine("NO SE PUDO COMPLETAR.");
+                    ErrorService.Show(ex);
                 }
                 finally
                 {

@@ -10,8 +10,13 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>partial</TrimMode>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
     <Description>Herramienta para procesar videos con FFmpeg</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+   <TrimmerRootAssembly Include="FFMpegCore" />
+  </ItemGroup>
 
   <!-- Detectar la plataforma de una forma que funcione -->
   <PropertyGroup>

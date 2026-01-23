@@ -357,6 +357,7 @@ public class MainWindowViewModel : ViewModelBase
         {
             // Optionally handle or log the error (e.g., show a message dialog)
             System.Console.WriteLine($"Failed to open GitHub: {ex.Message}");
+            ErrorService.Show(ex);
         }
     }
     

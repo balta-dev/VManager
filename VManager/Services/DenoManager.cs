@@ -99,6 +99,7 @@ public static class DenoManager
         catch (Exception ex)
         {
             Console.WriteLine("[DENO] ERROR update: " + ex.Message);
+            ErrorService.Show(ex);
         }
     }
 }

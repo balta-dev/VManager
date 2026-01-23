@@ -51,7 +51,7 @@ namespace VManager.Tests.Unit
                     .GetField("_executor", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
                     .SetValue(operation, mockExecutor.Object);
 
-                var result = await operation.ExecuteAsync(inputFile, outputFile, 50, null, null, null);
+                var result = await operation.ExecuteAsync(inputFile, outputFile, 50, null, null, null!);
 
                 result.Success.Should().BeTrue();
                 result.OutputPath.Should().Be(outputFile);
@@ -108,7 +108,7 @@ namespace VManager.Tests.Unit
                     .GetField("_resumableExecutor", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
                     .SetValue(operation, mockResumable.Object);
 
-                var result = await operation.ExecuteAsync(inputFile, outputFile, 50, null, null, null);
+                var result = await operation.ExecuteAsync(inputFile, outputFile, 50, null, null, null!);
 
                 result.Success.Should().BeTrue();
                 result.OutputPath.Should().Be(outputFile);
@@ -142,7 +142,7 @@ namespace VManager.Tests.Unit
                 await File.WriteAllTextAsync(tempInput, "dummy");
                 var operation = new CompressOperation(FFmpegManager.FfmpegPath, mockAnalyzer.Object);
 
-                var result = await operation.ExecuteAsync(tempInput, "out.mp4", compression, null, null, null);
+                var result = await operation.ExecuteAsync(tempInput, "out.mp4", compression, null, null, null!);
 
                 result.Success.Should().BeFalse();
                 result.Message.Should().Contain("Porcentaje inválido");

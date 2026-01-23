@@ -67,6 +67,10 @@ namespace VManager.Services.Operations
 
             Console.WriteLine($"Compresión - Video: {selectedVideoCodec}, Audio: {selectedAudioCodec}, Bitrate: {targetBitrate} kbps");
 
+            /*
+             
+             WIP - No funciona bien todavía, no está listo para release
+             
             if (duration > 300) // >5 minutos → resumable
             {
                 return await _resumableExecutor.ExecuteResumableAsync(
@@ -88,6 +92,7 @@ namespace VManager.Services.Operations
                     cancellationToken
                 );
             }
+            */
 
             // Modo normal
             var args = FFMpegArguments

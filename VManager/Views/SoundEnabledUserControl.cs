@@ -5,6 +5,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using VManager.Behaviours;
+using VManager.Services;
 using VManager.Views.Guias;
 
 namespace VManager.Views
@@ -53,6 +54,7 @@ namespace VManager.Views
             {
                 // opcional: manejar error o mostrar notificación
                 Console.WriteLine($"No se pudo abrir la URL: {ex.Message}");
+                ErrorService.Show(ex);
             }
         }
         

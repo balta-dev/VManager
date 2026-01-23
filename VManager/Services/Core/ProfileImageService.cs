@@ -81,6 +81,7 @@ namespace VManager.Services.Core
             }
             catch (Exception ex)
             {
+                ErrorService.Show(ex);
                 return (false, $"Error al validar la imagen: {ex.Message}");
             }
         }
@@ -197,6 +198,7 @@ namespace VManager.Services.Core
             }
             catch (Exception ex)
             {
+                ErrorService.Show(ex);
                 return (false, "", $"Error al guardar la imagen: {ex.Message}");
             }
         }
@@ -220,6 +222,7 @@ namespace VManager.Services.Core
             }
             catch (Exception ex)
             {
+                ErrorService.Show(ex);
                 return (false, $"Error al eliminar la imagen: {ex.Message}");
             }
         }

@@ -114,6 +114,7 @@ namespace VManager.ViewModels.Herramientas
             var h264Encoders = new[] { "libx264", "h264", "h264_nvenc", "h264_vaapi", "h264_qsv", "h264_amf" };
             var h265Encoders = new[] { "libx265", "h265", "hevc", "hevc_nvenc", "hevc_vaapi", "hevc_qsv", "hevc_amf" };
             var vpEncoders   = new[] { "libvpx", "vp8", "vp9" };
+            var av1Encoders  = new[] { "av1", "libsvtav1", "libaom-av1" }; // <--- nuevo
             var flvEncoders  = new[] { "flv" }; // fallback encoder si lo hay
             var mpeg4Enc     = new[] { "mpeg4" };
             var h263Enc      = new[] { "h263" };
@@ -138,7 +139,7 @@ namespace VManager.ViewModels.Herramientas
                     break;
 
                 case "webm":
-                    videoCodecs = FilterEncoders(videoCodecs, vpEncoders);
+                    videoCodecs = FilterEncoders(videoCodecs, vpEncoders.Concat(av1Encoders));
                     audioCodecs = FilterEncoders(audioCodecs, opusEnc.Concat(vorbisEnc));
                     break;
 

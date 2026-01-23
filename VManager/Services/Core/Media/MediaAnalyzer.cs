@@ -25,6 +25,7 @@ namespace VManager.Services.Core.Media
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al analizar video. {ex.Message}");
+                ErrorService.Show(ex);
                 return new AnalysisResult<IMediaAnalysis>(false, string.Format(ErrorMessages.AnalysisError, ex.Message));
             }
         }

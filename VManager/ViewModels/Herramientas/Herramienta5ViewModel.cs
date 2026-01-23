@@ -151,7 +151,13 @@ namespace VManager.ViewModels.Herramientas
             try
             {
                 var processor = new YtDlpProcessor();
-                var info = await processor.GetVideoInfoAsync(videoItem.Url);
+                var (info, cookiesProblem) =
+                    await processor.GetVideoInfoWithDetectionAsync(videoItem.Url);
+
+                if (cookiesProblem)
+                {
+                    ShowDownloadHelp = true;
+                }
 
                 if (info == null)
                 {
@@ -240,6 +246,7 @@ namespace VManager.ViewModels.Herramientas
                 videoItem.Title = L["VideoStatus.ErrorNoInfo"];
                 videoItem.IsLoading = false;
                 Console.WriteLine($"Error cargando info: {ex}");
+                ErrorService.Show(ex);
             }
         }
 
@@ -458,6 +465,7 @@ namespace VManager.ViewModels.Herramientas
                         }
                         
                         _ = SoundManager.Play("fail.wav");
+                        ErrorService.Show(ex);
                     }
                     finally
                     {

@@ -16,6 +16,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using ReactiveUI;
 using VManager.Services;
 using VManager.Models;
@@ -207,6 +208,8 @@ namespace VManager.Views
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al lanzar updater: {ex}");
+                var owner = this.GetVisualRoot() as Window;
+                ErrorService.Show(ex, owner);
             }
         }
         

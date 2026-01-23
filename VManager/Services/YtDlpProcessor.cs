@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -16,10 +17,6 @@ namespace VManager.Services;
 public class YtDlpProcessor
 {
     private readonly string _ytDlpPath = YtDlpManager.YtDlpPath;
-    
-    // ============================================================
-    //            NUEVO: DETECTA NAVEGADOR POR SISTEMA
-    // ============================================================
 
     private static string? DetectBrowser()
     {
@@ -61,7 +58,7 @@ public class YtDlpProcessor
     {
         try
         {
-            var result = Process.Start(new ProcessStartInfo
+            using var result = Process.Start(new ProcessStartInfo
             {
                 FileName = "xdg-settings",
                 Arguments = "get default-web-browser",
@@ -69,7 +66,11 @@ public class YtDlpProcessor
                 UseShellExecute = false
             });
 
-            string output = result!.StandardOutput.ReadToEnd().Trim().ToLower();
+            if (result == null)
+                return null;
+
+            string output = result.StandardOutput.ReadToEnd().Trim().ToLowerInvariant();
+            result.WaitForExit();
 
             if (output.Contains("chrome")) return "chrome";
             if (output.Contains("chromium")) return "chromium";
@@ -80,14 +81,17 @@ public class YtDlpProcessor
 
             return null;
         }
-        catch { return null; }
+        catch
+        {
+            return null;
+        }
     }
 
     private static string? DetectBrowserMac()
     {
         try
         {
-            var result = Process.Start(new ProcessStartInfo
+            using var result = Process.Start(new ProcessStartInfo
             {
                 FileName = "bash",
                 Arguments = "-c \"defaultbrowser\"",
@@ -95,7 +99,11 @@ public class YtDlpProcessor
                 UseShellExecute = false
             });
 
-            string output = result!.StandardOutput.ReadToEnd().Trim().ToLower();
+            if (result == null)
+                return null;
+
+            string output = result.StandardOutput.ReadToEnd().Trim().ToLowerInvariant();
+            result.WaitForExit();
 
             if (output.Contains("chrome")) return "chrome";
             if (output.Contains("firefox")) return "firefox";
@@ -105,9 +113,11 @@ public class YtDlpProcessor
 
             return null;
         }
-        catch { return null; }
+        catch
+        {
+            return null;
+        }
     }
-
 
     // ============================================================
     //                        PROGRESS
@@ -152,7 +162,7 @@ public class YtDlpProcessor
         }
     }
     
-    private string BuildCookiesArgument()
+    private IEnumerable<string> BuildCookiesArguments()
     {
         var config = ConfigurationService.Current;
 
@@ -161,7 +171,9 @@ public class YtDlpProcessor
         {
             if (File.Exists(config.CookiesFilePath))
             {
-                return $"--cookies \"{config.CookiesFilePath}\"";
+                yield return "--cookies";
+                yield return config.CookiesFilePath;
+                yield break;
             }
             else
             {
@@ -172,10 +184,42 @@ public class YtDlpProcessor
         // 2) Cookies del navegador
         string? browser = DetectBrowser();
         if (browser != null)
-            return $"--cookies-from-browser {browser}";
+        {
+            yield return "--cookies-from-browser";
+            yield return browser;
+            yield break;
+        }
+    }
+    
+    public async Task<(VideoInfo? Info, bool ShowHelp)>
+        GetVideoInfoWithDetectionAsync(string url, CancellationToken ct = default)
+    {
+        var info = await GetVideoInfoAsync(url, ct);
 
-        // 3) Sin cookies
-        return "";
+        if (info?.Formats == null || info.Formats.Count == 0)
+            return (info, true);
+
+        var usableHeights = info.Formats
+            .Where(f =>
+                f.Height.HasValue &&
+                !string.IsNullOrEmpty(f.VideoCodec) &&
+                f.VideoCodec != "none" &&
+                !string.IsNullOrEmpty(f.AudioCodec) &&
+                f.AudioCodec != "none")
+            .Select(f => f.Height!.Value)
+            .Distinct()
+            .ToList();
+
+        if (usableHeights.Count == 0)
+            return (info, true);
+
+        int maxHeight = usableHeights.Max();
+
+        bool showHelp =
+            maxHeight <= 360 &&
+            usableHeights.Count <= 3;
+
+        return (info, showHelp);
     }
 
     // ============================================================
@@ -184,27 +228,31 @@ public class YtDlpProcessor
 
     public async Task<VideoInfo?> GetVideoInfoAsync(string url, CancellationToken cancellationToken = default)
     {
-        string cookieArg = BuildCookiesArgument();
 
         var psi = new ProcessStartInfo
         {
             FileName = _ytDlpPath,
-            Arguments = $"{cookieArg} --dump-json --no-warnings \"{url}\"",
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
             CreateNoWindow = true
         };
+        
+        foreach (var arg in BuildCookiesArguments())
+                psi.ArgumentList.Add(arg);
+
+        psi.ArgumentList.Add("--dump-json");
+        psi.ArgumentList.Add(url);
 
         var process = new Process { StartInfo = psi };
 
         try
         {
             process.Start();
-        
+
             string json = await process.StandardOutput.ReadToEndAsync();
             string error = await process.StandardError.ReadToEndAsync();
-        
+
             await process.WaitForExitAsync(cancellationToken);
 
             if (process.ExitCode != 0)
@@ -213,17 +261,13 @@ public class YtDlpProcessor
                 return null;
             }
 
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-        
-            var info = JsonSerializer.Deserialize<VideoInfo>(json, VManagerJsonContext.Default.VideoInfo)!;
+            var info = JsonSerializer.Deserialize<VideoInfo>(json, VManagerJsonContext.Default.VideoInfo);
             return info;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error al obtener info del video: {ex.Message}");
+            ErrorService.Show(ex);
             return null;
         }
     }
@@ -239,7 +283,6 @@ public class YtDlpProcessor
     CancellationToken cancellationToken,
     string? formatId = null)
     {
-        string cookieArg = BuildCookiesArgument();
         string safeOutput = OutputPathBuilder.SanitizeFilename(outputTemplate);
         
         var psi = new ProcessStartInfo
@@ -252,11 +295,8 @@ public class YtDlpProcessor
         };
 
         //cambiada la forma en que se construyen argumentos para evitar escapes de comillas
-        if (!string.IsNullOrWhiteSpace(cookieArg))
-        {
-            foreach (var part in cookieArg.Split(' ', StringSplitOptions.RemoveEmptyEntries))
-                psi.ArgumentList.Add(part);
-        }
+        foreach (var arg in BuildCookiesArguments())
+            psi.ArgumentList.Add(arg);
 
         psi.ArgumentList.Add("--newline");
         
@@ -268,9 +308,9 @@ public class YtDlpProcessor
         */
         psi.ArgumentList.Add("--js-runtimes"); //agregado porque eventualmente sin este parámetro no va a funcionar
         psi.ArgumentList.Add($"deno:{DenoManager.DenoPath}"); //agregado denomanager + binarios deno para resolver challenges de js      
-        psi.ArgumentList.Add("--extractor-args");
-        psi.ArgumentList.Add("youtube:player_client=default,-web_safari");
         /////////////
+        psi.ArgumentList.Add("--merge-output-format");
+        psi.ArgumentList.Add("mp4");
         
         psi.ArgumentList.Add("-o");
         psi.ArgumentList.Add(safeOutput);
@@ -313,14 +353,15 @@ public class YtDlpProcessor
                     catch (Exception ex)
                     {
                         Console.WriteLine("[DEBUG] Error matando proceso: " + ex.Message);
+                        ErrorService.Show(ex);
                     }
 
                     // Borrar archivo parcial
-                    if (File.Exists(outputTemplate))
+                    if (File.Exists(safeOutput))
                     {
                         try
                         {
-                            File.Delete(outputTemplate);
+                            File.Delete(safeOutput);
                             Console.WriteLine("[DEBUG] Archivo parcial eliminado tras cancelación.");
                         }
                         catch (IOException ex)
@@ -376,6 +417,7 @@ public class YtDlpProcessor
         }
         catch (Exception ex)
         {
+            ErrorService.Show(ex);
             return new ProcessingResult(false, $"Error: {ex.Message}");
         }
         
