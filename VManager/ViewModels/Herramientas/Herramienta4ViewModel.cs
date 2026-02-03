@@ -31,17 +31,6 @@ namespace VManager.ViewModels.Herramientas
         {
             AudiofyCommand = ReactiveCommand.CreateFromTask(AudiofyVideos, outputScheduler: AvaloniaScheduler.Instance);
             SelectedAudioFormat = SupportedAudioFormats[0]; // mp3
-
-            // Códecs de audio estándar
-            AvailableAudioCodecs.Clear();
-            AvailableAudioCodecs.AddRange(new[]
-            {
-                "aac",
-                "libmp3lame",
-                "libvorbis",
-                "libopus",
-                "flac"
-            });
         }
 
         protected override bool AllowAudioFiles => true;
@@ -110,7 +99,7 @@ namespace VManager.ViewModels.Herramientas
                         videoPath,
                         outputPath,
                         isAudioInput ? null : SelectedVideoCodec,
-                        SelectedAudioCodec,
+                        SelectedAudioFormat?.Codec!,
                         SelectedAudioFormat?.Extension!,
                         progress,
                         _cts.Token

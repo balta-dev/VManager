@@ -221,7 +221,11 @@ namespace VManager.Behaviours
                 return;
             }
 
+            // AGREGAR DISTINCT acá para eliminar duplicados del DataTransfer
+            var uniqueFiles = files.DistinctBy(f => f.Path.LocalPath).ToList();
+
             Console.WriteLine($"Archivos detectados: {files.Count()}");
+            Console.WriteLine($"Archivos únicos: {uniqueFiles.Count()}");
 
             bool allowAudio = GetAllowAudio(control);
             bool allowTxt = GetAllowTxt(control);
@@ -286,7 +290,7 @@ namespace VManager.Behaviours
             {
                 Console.WriteLine("Modo Video/Audio");
                 // Modo Video/Audio
-                var validPaths = files
+                var validPaths = uniqueFiles
                     .Where(f =>
                     {
                         var ext = System.IO.Path.GetExtension(f.Path.LocalPath).ToLowerInvariant();
@@ -318,8 +322,19 @@ namespace VManager.Behaviours
                 {
                     if (listProp.GetValue(dc) is ObservableCollection<string> currentList)
                     {
-                        currentList.AddRange(validPaths);
-                        Console.WriteLine($"Agregados {validPaths.Count} items a lista existente");
+                        // Filtrar solo los que no están ya en la lista
+                        var newPaths = validPaths.Where(path => !currentList.Contains(path)).ToList();
+    
+                        if (newPaths.Any())
+                        {
+                            currentList.AddRange(newPaths);
+                            Console.WriteLine($"Agregados {newPaths.Count} items nuevos a lista existente");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Todos los archivos ya están en la lista");
+                            ShowErrorFeedback(control); // O un feedback diferente para duplicados
+                        }
                     }
                     else
                     {

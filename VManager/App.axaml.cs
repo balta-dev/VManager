@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -16,7 +17,6 @@ public partial class App : Application
 {
     public override void Initialize()
     {
-        HandleUpdaterTempFolder();
         AvaloniaXamlLoader.Load(this);
 
         // Suscribirse a cambios de tema para actualizar brushes automáticamente
@@ -41,7 +41,7 @@ public partial class App : Application
             };
             desktop.MainWindow = mainWindow;
         }
-
+        Task.Run(HandleUpdaterTempFolder);
         base.OnFrameworkInitializationCompleted();
     }
 

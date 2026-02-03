@@ -2,6 +2,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using FFMpegCore;
 
 namespace VManager.Services;
@@ -10,208 +12,156 @@ public static class FFmpegManager
 {
     public static string FfmpegPath { get; private set; } = string.Empty;
     public static string FfprobePath { get; private set; } = string.Empty;
-    
-    public static void Initialize()
+
+    public static async Task Initialize()
     {
-        if (OperatingSystem.IsWindows())
+        if (!await TryUseSystemFFmpeg())
         {
-            InitializeWindows();
-        }
-        else if (OperatingSystem.IsMacOS())
-        {
-            InitializeMacOs();
-        }
-        else if (OperatingSystem.IsLinux())
-        {
-            InitializeLinux();
+            await UseEmbeddedFFmpeg();
         }
 
-        Console.WriteLine($"[DEBUG] ffmpeg: {FfmpegPath}");
-        Console.WriteLine($"[DEBUG] ffprobe: {FfprobePath}");
-        
-        // Configura FFMpegCore con la carpeta temporal donde se extraen los ejecutables
-        GlobalFFOptions.Configure(new FFOptions { BinaryFolder = Path.GetTempPath() });
-    }
-    
-    private static void InitializeWindows()
-    {
-        FfmpegPath = ExtractFFmpeg("VManager.Binaries.Windows.ffmpeg.exe", "ffmpeg.exe");
-        FfprobePath = ExtractFFmpeg("VManager.Binaries.Windows.ffprobe.exe", "ffprobe.exe");
-    }
-    
-    private static void InitializeLinux()
-    {
-        string ffmpeg, ffprobe;
-        if (!TryUseSystemFFmpeg(out ffmpeg, out ffprobe))
-        {
-            FfmpegPath = ExtractFFmpeg("VManager.Binaries.Linux.ffmpeg", "ffmpeg");
-            FfprobePath = ExtractFFmpeg("VManager.Binaries.Linux.ffprobe", "ffprobe");
+        Console.WriteLine($"[FFMPEG] ffmpeg: {FfmpegPath}");
+        Console.WriteLine($"[FFMPEG] ffprobe: {FfprobePath}");
 
-            if (!AreFFmpegBinariesCompatible(FfmpegPath, FfprobePath))
-            {
-                throw new Exception("Los binarios de FFmpeg extraídos están desactualizados. Avisale al dev :) o instala ffmpeg manualmente");
-            }
-        }
+        GlobalFFOptions.Configure(new FFOptions
+        {
+            BinaryFolder = Path.GetDirectoryName(FfmpegPath)!
+        });
+    }
+
+    // =====================================================
+
+    private static async Task<bool> TryUseSystemFFmpeg()
+    {
+        string? ffmpeg = FindOnPath(OperatingSystem.IsWindows() ? "ffmpeg.exe" : "ffmpeg");
+        string? ffprobe = FindOnPath(OperatingSystem.IsWindows() ? "ffprobe.exe" : "ffprobe");
+
+        if (ffmpeg == null || ffprobe == null)
+            return false;
+
+        if (!await TestBinary(ffmpeg) || !await TestBinary(ffprobe))
+            return false;
+
         FfmpegPath = ffmpeg;
         FfprobePath = ffprobe;
+        return true;
     }
-    
-    private static void InitializeMacOs()
-    {
-        string ffmpeg, ffprobe;
-        if (!TryUseSystemFFmpeg(out ffmpeg, out ffprobe))
-        {
-            FfmpegPath = ExtractFFmpeg("VManager.Binaries.Mac.ffmpeg", "ffmpeg");
-            FfprobePath = ExtractFFmpeg("VManager.Binaries.Mac.ffprobe", "ffprobe");
 
-            if (!AreFFmpegBinariesCompatible(FfmpegPath, FfprobePath))
-            {
-                throw new Exception("Los binarios de FFmpeg extraídos están desactualizados. Avisale al dev :) o instala ffmpeg manualmente");
-            }
-        }
-        FfmpegPath = ffmpeg;
-        FfprobePath = ffprobe;
-    }
-    
-    private static bool AreFFmpegBinariesCompatible(string ffmpegPath, string ffprobePath)
+    private static async Task UseEmbeddedFFmpeg()
     {
-        bool CheckVersion(string path)
+        string ffmpegTarget = OperatingSystem.IsWindows() ? "ffmpeg.exe" : "ffmpeg";
+        string ffprobeTarget = OperatingSystem.IsWindows() ? "ffprobe.exe" : "ffprobe";
+
+        FfmpegPath = ExtractFFmpeg(GetFFmpegResourceName(), ffmpegTarget);
+        FfprobePath = ExtractFFmpeg(GetFFprobeResourceName(), ffprobeTarget);
+
+        if (!OperatingSystem.IsWindows())
+            Process.Start("chmod", $"+x \"{FfmpegPath}\"")?.WaitForExit();
+
+        if (!await TestBinary(FfmpegPath) || !await TestBinary(FfprobePath))
+            throw new Exception("Los binarios de FFmpeg no son válidos.");
+    }
+
+    // =====================================================
+
+    private static string? FindOnPath(string name)
+    {
+        var envPath = Environment.GetEnvironmentVariable("PATH");
+        if (envPath == null)
+            return null;
+
+        foreach (var p in envPath.Split(Path.PathSeparator))
         {
             try
             {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = path,
-                        Arguments = "-version",
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    }
-                };
-                process.Start();
-                process.WaitForExit(3000);
-                return process.ExitCode == 0;
+                var full = Path.Combine(p.Trim(), name);
+                if (File.Exists(full))
+                    return full;
             }
-            catch
-            {
-                return false;
-            }
+            catch { }
         }
 
-        return CheckVersion(ffmpegPath) && CheckVersion(ffprobePath);
+        return null;
     }
+
+    private static async Task<bool> TestBinary(string path)
+    {
+        try
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = path,
+                Arguments = "-version",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var p = Process.Start(psi);
+            if (p == null)
+                return false;
+
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+
+            try
+            {
+                await p.WaitForExitAsync(cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                try { p.Kill(); } catch { }
+                return false;
+            }
+
+            return p.ExitCode == 0;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    // =====================================================
 
     private static string ExtractFFmpeg(string resourceName, string targetFileName)
     {
+        string tempPath = Path.Combine(Path.GetTempPath(), targetFileName);
+
+        if (File.Exists(tempPath))
+            return tempPath;
+
         var assembly = Assembly.GetExecutingAssembly();
         using var stream = assembly.GetManifestResourceStream(resourceName)
-                           ?? throw new Exception($"Recurso {resourceName} no encontrado");
+            ?? throw new Exception($"Recurso {resourceName} no encontrado");
 
-        string tempPath = Path.Combine(Path.GetTempPath(), targetFileName);
-        
-        var dir = Path.GetDirectoryName(tempPath); //por si no existe la carpeta Temp
-        if (!Directory.Exists(dir))
-            Directory.CreateDirectory(dir);
-        
-        using var fs = File.Create(tempPath);
+        using var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write);
         stream.CopyTo(fs);
-
-        if (!OperatingSystem.IsWindows())
-            Process.Start("chmod", $"+x {tempPath}")?.WaitForExit();
 
         return tempPath;
     }
-    
-    private static bool TryUseSystemFFmpeg(out string ffmpegPath, out string ffprobePath)
+
+    private static string GetFFmpegResourceName()
     {
-        ffmpegPath = null;
-        ffprobePath = null;
+        if (OperatingSystem.IsWindows())
+            return "VManager.Binaries.Windows.ffmpeg.exe";
+        if (OperatingSystem.IsLinux())
+            return "VManager.Binaries.Linux.ffmpeg";
+        if (OperatingSystem.IsMacOS())
+            return "VManager.Binaries.Mac.ffmpeg";
 
-        string FindExecutablePath(string command)
-        {
-            try
-            {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "which",  // o "where" en Windows
-                        Arguments = command,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    }
-                };
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd().Trim();
-                process.WaitForExit(2000);
-                
-                if (process.ExitCode == 0 && !string.IsNullOrEmpty(output) && File.Exists(output))
-                {
-                    return output;
-                }
-            }
-            catch
-            {
-                // Si falla, intentar rutas comunes
-            }
-            
-            // Intentar rutas comunes como fallback
-            string[] commonPaths = { "/usr/bin/", "/usr/local/bin/", "/bin/" };
-            foreach (var path in commonPaths)
-            {
-                string fullPath = Path.Combine(path, command);
-                if (File.Exists(fullPath))
-                {
-                    return fullPath;
-                }
-            }
-            
-            return null;
-        }
-
-        bool IsCommandAvailable(string fullPath)
-        {
-            try
-            {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = fullPath,
-                        Arguments = "-version",
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    }
-                };
-                process.Start();
-                process.WaitForExit(2000);
-                return process.ExitCode == 0;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        string foundFfmpeg = FindExecutablePath("ffmpeg");
-        string foundFfprobe = FindExecutablePath("ffprobe");
-
-        if (!string.IsNullOrEmpty(foundFfmpeg) && !string.IsNullOrEmpty(foundFfprobe) &&
-            IsCommandAvailable(foundFfmpeg) && IsCommandAvailable(foundFfprobe))
-        {
-            ffmpegPath = foundFfmpeg;
-            ffprobePath = foundFfprobe;
-            return true;
-        }
-
-        return false;
+        throw new PlatformNotSupportedException();
     }
 
+    private static string GetFFprobeResourceName()
+    {
+        if (OperatingSystem.IsWindows())
+            return "VManager.Binaries.Windows.ffprobe.exe";
+        if (OperatingSystem.IsLinux())
+            return "VManager.Binaries.Linux.ffprobe";
+        if (OperatingSystem.IsMacOS())
+            return "VManager.Binaries.Mac.ffprobe";
+
+        throw new PlatformNotSupportedException();
+    }
 }

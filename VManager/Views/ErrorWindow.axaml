@@ -8,6 +8,7 @@
         Background="{DynamicResource PanelBackgroundBrush}"
         Title="Error">
 
+    <ScrollViewer>
     <Border Padding="20">
         <StackPanel Spacing="12">
 
@@ -27,4 +28,5 @@
 
         </StackPanel>
     </Border>
+    </ScrollViewer>
 </Window>

@@ -35,8 +35,8 @@ namespace VManager.Services.Operations
         public async Task<ProcessingResult> ExecuteAsync(
             string inputPath,
             string outputPath,
-            string? videoCodec, // no usado
-            string? audioCodec, // no usado
+            string? videoCodec,
+            string? audioCodec,
             string selectedAudioFormat,
             IProgress<IFFmpegProcessor.ProgressInfo> progress,
             CancellationToken cancellationToken = default)
@@ -65,13 +65,32 @@ namespace VManager.Services.Operations
 
             Console.WriteLine($"[DEBUG] Decisión: {decision.Action}, Códec: {decision.Codec}, Razón: {decision.Reason}");
 
+            // Formatos que NO soportan múltiples streams de audio
+            var singleStreamFormats = new[] { "wav", "mp3", "flac", "aac", "wma" };
+            bool isSingleStreamFormat = singleStreamFormats.Contains(selectedAudioFormat.ToLowerInvariant());
+            
+            // Si hay múltiples streams y el formato no los soporta, extraer por separado
+            if (isSingleStreamFormat && mediaInfo.AudioStreams.Count > 1)
+            {
+                return await ExtractMultipleStreamsAsync(
+                    inputPath, 
+                    outputPath, 
+                    mediaInfo, 
+                    decision, 
+                    duration, 
+                    progress, 
+                    cancellationToken
+                );
+            }
+
+            // Proceso normal para un solo stream o formatos que soportan múltiples
             var args = FFMpegArguments
                 .FromFileInput(inputPath)
                 .OutputToFile(outputPath, overwrite: true, options =>
                 {
                     options
-                        .WithCustomArgument("-vn")           // sin video
-                        .WithCustomArgument("-map 0:a");     // todas las pistas de audio
+                        .WithCustomArgument("-vn")
+                        .WithCustomArgument(isSingleStreamFormat ? "-map 0:a:0" : "-map 0:a");
 
                     if (decision.Action == AudioProcessingAction.Copy)
                     {
@@ -103,6 +122,67 @@ namespace VManager.Services.Operations
             }
 
             return result;
+        }
+
+        private async Task<ProcessingResult> ExtractMultipleStreamsAsync(
+            string inputPath,
+            string outputPath,
+            FFMpegCore.IMediaAnalysis mediaInfo,
+            AudioProcessingDecision decision,  // <- Sin AudioCodecHelper.
+            double duration,
+            IProgress<IFFmpegProcessor.ProgressInfo> progress,
+            CancellationToken cancellationToken)
+        {
+            int streamCount = mediaInfo.AudioStreams.Count;
+            string baseOutputPath = System.IO.Path.GetFileNameWithoutExtension(outputPath);
+            string extension = System.IO.Path.GetExtension(outputPath);
+            string directory = System.IO.Path.GetDirectoryName(outputPath) ?? "";
+
+            for (int i = 0; i < streamCount; i++)
+            {
+                string streamOutputPath = System.IO.Path.Combine(
+                    directory,
+                    $"{baseOutputPath}_track{i + 1}{extension}"
+                );
+
+                var args = FFMpegArguments
+                    .FromFileInput(inputPath)
+                    .OutputToFile(streamOutputPath, overwrite: true, options =>
+                    {
+                        options
+                            .WithCustomArgument("-vn")
+                            .WithCustomArgument($"-map 0:a:{i}");
+
+                        if (decision.Action == AudioProcessingAction.Copy)
+                        {
+                            options.WithAudioCodec("copy");
+                        }
+                        else
+                        {
+                            options
+                                .WithAudioCodec(decision.Codec)
+                                .WithAudioBitrate(decision.Bitrate);
+                        }
+                    });
+
+                var result = await _executor.ExecuteAsync(
+                    inputPath,
+                    streamOutputPath,
+                    args,
+                    duration,
+                    progress,
+                    cancellationToken
+                );
+
+                if (!result.Success)
+                    return new ProcessingResult(false, $"Error extrayendo pista {i + 1}: {result.Message}");
+            }
+
+            return new ProcessingResult(
+                true, 
+                $"¡{streamCount} pistas de audio extraídas exitosamente!",
+                outputPath
+            );
         }
     }
 }

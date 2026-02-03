@@ -10,7 +10,7 @@ public static class DenoManager
 {
     public static string DenoPath { get; private set; } = string.Empty;
 
-    public static void Initialize()
+    public static async Task Initialize()
     {
         string targetFile = OperatingSystem.IsWindows() ? "deno.exe"
                           : OperatingSystem.IsMacOS() ? "deno_macos"
@@ -18,33 +18,68 @@ public static class DenoManager
 
         DenoPath = Path.Combine(Path.GetTempPath(), targetFile);
 
-        if (!File.Exists(DenoPath))
+        if (File.Exists(DenoPath) && !OperatingSystem.IsWindows())
+            Process.Start("chmod", $"+x \"{DenoPath}\"")?.WaitForExit();
+
+        bool needsExtract = !File.Exists(DenoPath) || !await TestDenoAsync();
+
+        if (needsExtract)
         {
-            Console.WriteLine("[DENO] Extrayendo versión embebida inicial…");
-
-            if (OperatingSystem.IsWindows())
-                ExtractBinary("VManager.Binaries.Windows.deno.exe", targetFile);
-            else if (OperatingSystem.IsLinux())
-                ExtractBinary("VManager.Binaries.Linux.deno", targetFile);
-            else if (OperatingSystem.IsMacOS())
-                ExtractBinary("VManager.Binaries.Mac.deno", targetFile);
-
-            if (!OperatingSystem.IsWindows())
-                Process.Start("chmod", $"+x {DenoPath}")?.WaitForExit();
+            Console.WriteLine("[DENO] Extrayendo versión embebida…");
+            ExtractForOS(targetFile);
         }
 
-        Console.WriteLine($"[DEBUG] deno path: {DenoPath}");
+        Console.WriteLine($"[DENO] path: {DenoPath}");
 
         _ = TryAutoUpdateAsync();
+    }
+
+    private static void ExtractForOS(string targetFile)
+    {
+        if (OperatingSystem.IsWindows())
+            ExtractBinary("VManager.Binaries.Windows.deno.exe", targetFile);
+        else if (OperatingSystem.IsLinux())
+            ExtractBinary("VManager.Binaries.Linux.deno", targetFile);
+        else if (OperatingSystem.IsMacOS())
+            ExtractBinary("VManager.Binaries.Mac.deno", targetFile);
+
+        if (!OperatingSystem.IsWindows())
+            Process.Start("chmod", $"+x \"{DenoPath}\"")?.WaitForExit();
+    }
+
+    private static async Task<bool> TestDenoAsync()
+    {
+        try
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = DenoPath,
+                Arguments = "--version",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var p = Process.Start(psi);
+            if (p == null) return false;
+
+            await p.WaitForExitAsync();
+            return p.ExitCode == 0;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static void ExtractBinary(string resourceName, string targetFile)
     {
         var assembly = Assembly.GetExecutingAssembly();
         using var stream = assembly.GetManifestResourceStream(resourceName)
-                           ?? throw new Exception($"Recurso {resourceName} no encontrado");
+            ?? throw new Exception($"Recurso {resourceName} no encontrado");
 
-        using var fs = File.Create(Path.Combine(Path.GetTempPath(), targetFile));
+        using var fs = new FileStream(Path.Combine(Path.GetTempPath(), targetFile), FileMode.Create, FileAccess.Write);
         stream.CopyTo(fs);
     }
 
@@ -54,52 +89,35 @@ public static class DenoManager
 
         try
         {
-            if (File.Exists(lockFilePath))
+            using var lockStream = new FileStream(lockFilePath, FileMode.CreateNew);
+
+            var psi = new ProcessStartInfo
             {
-                Console.WriteLine("[DENO] Otro proceso está actualizando.");
-                return;
-            }
+                FileName = DenoPath,
+                Arguments = "upgrade",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
 
-            File.Create(lockFilePath).Dispose();
+            using var p = Process.Start(psi);
+            if (p == null) return;
 
-            try
-            {
-                Console.WriteLine("[DENO] Intentando actualización automática…");
-
-                var psi = new ProcessStartInfo
-                {
-                    FileName = DenoPath,
-                    Arguments = "upgrade",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                using var p = Process.Start(psi);
-                if (p != null)
-                {
-                    string stdout = await p.StandardOutput.ReadToEndAsync();
-                    string stderr = await p.StandardError.ReadToEndAsync();
-                    await p.WaitForExitAsync();
-
-                    if (!string.IsNullOrEmpty(stdout)) Console.WriteLine("[DENO] stdout: " + stdout);
-                    if (!string.IsNullOrEmpty(stderr)) Console.WriteLine("[DENO] stderr: " + stderr);
-
-                    Console.WriteLine(p.ExitCode == 0
-                        ? "[DENO] Actualización completada."
-                        : "[DENO] Falló la actualización, se usa versión embebida.");
-                }
-            }
-            finally
-            {
-                File.Delete(lockFilePath);
-            }
+            await p.WaitForExitAsync();
+        }
+        catch (IOException)
+        {
+            Console.WriteLine("[DENO] Otro proceso está actualizando.");
         }
         catch (Exception ex)
         {
-            Console.WriteLine("[DENO] ERROR update: " + ex.Message);
+            Console.WriteLine("[DENO] ERROR: " + ex.Message);
             ErrorService.Show(ex);
+        }
+        finally
+        {
+            try { File.Delete(lockFilePath); } catch { }
         }
     }
 }

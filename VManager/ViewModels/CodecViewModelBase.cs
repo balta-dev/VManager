@@ -33,15 +33,15 @@ namespace VManager.ViewModels
         
         public ObservableCollection<AudioFormat> SupportedAudioFormats { get; } = new ObservableCollection<AudioFormat>
         {
-            new AudioFormat { Extension = "pcm_s24le", DisplayName = ".wav (PCM 24-bit)" },
-            new AudioFormat { Extension = "pcm_s16le", DisplayName = ".wav (PCM 16-bit)" },
-            new AudioFormat { Extension = "pcm_f32le", DisplayName = ".wav (PCM 32-bit float)" },
-            new AudioFormat { Extension = "libmp3lame", DisplayName = ".mp3" },
-            new AudioFormat { Extension = "aac", DisplayName = ".aac" },
-            new AudioFormat { Extension = "flac", DisplayName = ".flac" },
-            new AudioFormat { Extension = "libopus", DisplayName = ".ogg (OPUS)" },
-            new AudioFormat { Extension = "libvorbis", DisplayName = ".ogg (VORBIS)" },
-            new AudioFormat { Extension = "wmav2", DisplayName = ".wma (WMA v2)" }
+            new AudioFormat { Codec = "pcm_s24le", Extension = "wav", DisplayName = ".wav (PCM 24-bit)" },
+            new AudioFormat { Codec = "pcm_s16le", Extension = "wav", DisplayName = ".wav (PCM 16-bit)" },
+            new AudioFormat { Codec = "pcm_f32le", Extension = "wav", DisplayName = ".wav (PCM 32-bit float)" },
+            new AudioFormat { Codec = "libmp3lame", Extension = "mp3", DisplayName = ".mp3" },
+            new AudioFormat { Codec = "aac", Extension = "aac", DisplayName = ".aac" },
+            new AudioFormat { Codec = "flac", Extension = "flac", DisplayName = ".flac" },
+            new AudioFormat { Codec = "libopus", Extension = "ogg", DisplayName = ".ogg (OPUS)" },
+            new AudioFormat { Codec = "libvorbis", Extension = "ogg", DisplayName = ".ogg (VORBIS)" },
+            new AudioFormat { Codec = "wmav2", Extension = "wma", DisplayName = ".wma (WMA v2)" }
         };
 
         public string SelectedVideoCodec

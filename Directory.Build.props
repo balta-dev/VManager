@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
     <Version>1.7.0</Version>
     <FileVersion>1.7.0.0</FileVersion>

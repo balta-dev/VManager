@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using VManager.Services;
 using VManager.Services.Models;
 using VManager.Views;
@@ -39,7 +40,7 @@ sealed class Program
     }
     
     [STAThread]
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var sw = Stopwatch.StartNew();
         MainWindow.StartupStopwatch = sw;
@@ -66,9 +67,9 @@ sealed class Program
         
         Console.WriteLine("[DEBUG]: Iniciando VManager...");
         
-        FFmpegManager.Initialize();
-        YtDlpManager.Initialize();
-        DenoManager.Initialize();
+        _ = FFmpegManager.Initialize();
+        _ = YtDlpManager.Initialize();
+        _ = DenoManager.Initialize();
 
         // Arrancar Avalonia
         BuildAvaloniaApp()
