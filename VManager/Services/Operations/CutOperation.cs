@@ -59,7 +59,7 @@ namespace VManager.Services.Operations
                         .WithCustomArgument("-map 0")
                         .WithVideoCodec("copy")
                         .WithAudioCodec("copy")
-                        .WithCustomArgument("-t " + duration.TotalSeconds);
+                        .WithDuration(duration);
                 });
 
             var result = await _executor.ExecuteAsync(
