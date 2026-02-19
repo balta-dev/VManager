@@ -10,14 +10,14 @@ using Xunit;
 
 namespace VManager.Tests.Integration
 {
-    public class CompressOperationIntegrationTests : IDisposable
+    public class CompressOperationIntegrationTests : IAsyncLifetime
     {
         private const string TestFilesDir = "CompressionTestFiles";
-        private readonly string _ffmpegPath;
+        private string _ffmpegPath = string.Empty;
 
-        public CompressOperationIntegrationTests()
+        public async Task InitializeAsync()
         {
-            FFmpegManager.Initialize();
+            await FFmpegManager.Initialize();
             _ffmpegPath = FFmpegManager.FfmpegPath;
 
             if (Directory.Exists(TestFilesDir))
@@ -26,7 +26,13 @@ namespace VManager.Tests.Integration
             Directory.CreateDirectory(TestFilesDir);
         }
 
-        public void Dispose() => Directory.Delete(TestFilesDir, true);
+        public Task DisposeAsync()
+        {
+            if (Directory.Exists(TestFilesDir))
+                Directory.Delete(TestFilesDir, true);
+            
+            return Task.CompletedTask;
+        }
 
         private async Task CreateTestVideo(string path, int durationSeconds)
         {
@@ -91,6 +97,16 @@ namespace VManager.Tests.Integration
             await CreateTestVideo(inputPath, 301); 
 
             var operation = new CompressOperation(_ffmpegPath);
+            
+            // Trackear si se creó la carpeta temporal (indica uso de ResumableExecutor)
+            bool tempFolderWasCreated = false;
+            string tempFolder = Path.Combine(Path.GetDirectoryName(inputPath)!, ".vmanager_temp_" + Path.GetFileNameWithoutExtension(inputPath));
+            
+            var progress = new Progress<IFFmpegProcessor.ProgressInfo>(p => {
+                // Verificar si la carpeta temporal existe durante la ejecución
+                if (Directory.Exists(tempFolder))
+                    tempFolderWasCreated = true;
+            });
 
             // Act
             var result = await operation.ExecuteAsync(
@@ -99,12 +115,18 @@ namespace VManager.Tests.Integration
                 compressionPercentage: 50,
                 videoCodec: "libx264",
                 audioCodec: "aac",
-                progress: new Progress<IFFmpegProcessor.ProgressInfo>()
+                progress: progress
             );
 
             // Assert
             result.Success.Should().BeTrue($"Error de FFmpeg: {result.Message}");
             File.Exists(outputPath).Should().BeTrue();
+            
+            // CRÍTICO: Verificar que se usó el ResumableExecutor
+            tempFolderWasCreated.Should().BeTrue("Para videos largos (>=120s) se debe usar el ResumableExecutor que crea carpetas temporales");
+            
+            // Verificar limpieza de temporales
+            Directory.Exists(tempFolder).Should().BeFalse("La carpeta temporal de chunks debería haber sido eliminada.");
         }
 
         [Fact]

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading.Tasks;
 using FluentAssertions;
 using VManager.Services;
 using Xunit;
@@ -7,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace VManager.Tests.Integration
 {
-    public class FFmpegManagerIntegrationTests
+    public class FFmpegManagerIntegrationTests : IAsyncLifetime
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
@@ -15,13 +16,21 @@ namespace VManager.Tests.Integration
         {
             _testOutputHelper = testOutputHelper;
         }
+
+        public async Task InitializeAsync()
+        {
+            // Inicializar FFmpegManager de forma asíncrona
+            await FFmpegManager.Initialize();
+        }
+
+        public Task DisposeAsync()
+        {
+            return Task.CompletedTask;
+        }
         
         [Fact]
         public void FFmpegBinaries_ShouldExistAndBeExecutable()
         {
-            // Inicializar FFmpegManager
-            FFmpegManager.Initialize();
-    
             // Usar las rutas que FFmpegManager ya determinó
             var ffmpegPath = FFmpegManager.FfmpegPath;
             var ffprobePath = FFmpegManager.FfprobePath;

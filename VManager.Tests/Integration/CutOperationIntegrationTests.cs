@@ -11,37 +11,51 @@ using Xunit;
 
 namespace VManager.Tests.Integration
 {
-    public class CutOperationIntegrationTests
+    public class CutOperationIntegrationTests : IAsyncLifetime
     {
         private const string TestFilesDir = "IntegrationTestFiles_Cut";
+        private string _ffmpegPath = string.Empty;
+
+        public async Task InitializeAsync()
+        {
+            await FFmpegManager.Initialize();
+            _ffmpegPath = FFmpegManager.FfmpegPath;
+
+            // Limpieza inicial
+            if (Directory.Exists(TestFilesDir))
+                Directory.Delete(TestFilesDir, true);
+            
+            Directory.CreateDirectory(TestFilesDir);
+        }
+
+        public Task DisposeAsync()
+        {
+            // Limpieza al finalizar (opcional)
+            // if (Directory.Exists(TestFilesDir)) Directory.Delete(TestFilesDir, true);
+            return Task.CompletedTask;
+        }
 
         [Fact]
         public async Task CutVideo_ShouldProduceCorrectDuration_AndHandleWarnings()
         {
-            // 1. Setup y Limpieza
-            if (Directory.Exists(TestFilesDir)) Directory.Delete(TestFilesDir, true);
-            Directory.CreateDirectory(TestFilesDir);
-            
-            // Usamos el path configurado globalmente o el comando por defecto
-            var ffmpegPath = "ffmpeg"; 
             string inputPath = Path.Combine(TestFilesDir, "cut_input.mp4");
             string outputPath = Path.Combine(TestFilesDir, "cut_output.mp4");
 
-            // 2. Generar video de prueba (10 segundos, 320x240)
+            // Generar video de prueba (10 segundos, 320x240)
             // Es vital usar yuv420p para que el decoder no tenga problemas
             var generateArgs = $"-f lavfi -i testsrc=duration=10:size=320x240:rate=15 -c:v libx264 -pix_fmt yuv420p -y \"{inputPath}\"";
             
             var proc = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
             {
-                FileName = ffmpegPath,
+                FileName = _ffmpegPath,
                 Arguments = generateArgs,
                 CreateNoWindow = true,
                 UseShellExecute = false
             });
             await proc!.WaitForExitAsync();
 
-            // 3. Ejecutar Corte: De los 10s totales, cortamos desde el segundo 3 con una duración de 4s
-            var operation = new CutOperation(ffmpegPath);
+            // Ejecutar Corte: De los 10s totales, cortamos desde el segundo 3 con una duración de 4s
+            var operation = new CutOperation(_ffmpegPath);
             var start = TimeSpan.FromSeconds(3);
             var duration = TimeSpan.FromSeconds(4);
 
@@ -54,7 +68,7 @@ namespace VManager.Tests.Integration
                 CancellationToken.None
             );
 
-            // 4. Validaciones
+            // Validaciones
             result.Success.Should().BeTrue($"Error en la operación: {result.Message}");
             File.Exists(outputPath).Should().BeTrue("El archivo de salida debería haberse creado.");
 
@@ -71,11 +85,22 @@ namespace VManager.Tests.Integration
         public async Task CutVideo_WithExceededDuration_ShouldAdjustAutomatically()
         {
             // Test para tu lógica de: if (start + duration > totalDuration)
-            var ffmpegPath = "ffmpeg";
-            string inputPath = Path.Combine(TestFilesDir, "cut_input.mp4"); // Reutilizamos el de 10s
+            string inputPath = Path.Combine(TestFilesDir, "cut_input_adjusted.mp4");
             string outputPath = Path.Combine(TestFilesDir, "cut_adjusted.mp4");
 
-            var operation = new CutOperation(ffmpegPath);
+            // Generar video de prueba de 10 segundos
+            var generateArgs = $"-f lavfi -i testsrc=duration=10:size=320x240:rate=15 -c:v libx264 -pix_fmt yuv420p -y \"{inputPath}\"";
+            
+            var proc = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = _ffmpegPath,
+                Arguments = generateArgs,
+                CreateNoWindow = true,
+                UseShellExecute = false
+            });
+            await proc!.WaitForExitAsync();
+
+            var operation = new CutOperation(_ffmpegPath);
             var start = TimeSpan.FromSeconds(8);
             var duration = TimeSpan.FromSeconds(5); // 8 + 5 = 13 (se pasa de los 10s originales)
 

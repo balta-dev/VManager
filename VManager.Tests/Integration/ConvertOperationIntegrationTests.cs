@@ -11,24 +11,37 @@ using Xunit;
 
 namespace VManager.Tests.Integration
 {
-    public class ConvertOperationIntegrationTests
+    public class ConvertOperationIntegrationTests : IAsyncLifetime
     {
         private const string TestFilesDir = "IntegrationTestFiles";
+        private string _ffmpegPath = string.Empty;
+
+        public async Task InitializeAsync()
+        {
+            await FFmpegManager.Initialize();
+            _ffmpegPath = FFmpegManager.FfmpegPath;
+
+            // Limpieza inicial
+            if (Directory.Exists(TestFilesDir))
+                Directory.Delete(TestFilesDir, true);
+            
+            Directory.CreateDirectory(TestFilesDir);
+        }
+
+        public Task DisposeAsync()
+        {
+            // Limpieza al finalizar (opcional)
+            // if (Directory.Exists(TestFilesDir)) Directory.Delete(TestFilesDir, true);
+            return Task.CompletedTask;
+        }
 
         [Fact]
         public async Task ConvertShortVideo_ProducesOutputFile()
         {
-            FFmpegManager.Initialize();
-            var ffmpegPath = FFmpegManager.FfmpegPath;
-    
-            // 1. Limpieza total para evitar archivos corruptos de ejecuciones previas
-            if (Directory.Exists(TestFilesDir)) Directory.Delete(TestFilesDir, true);
-            Directory.CreateDirectory(TestFilesDir);
-
             string inputPath = Path.Combine(TestFilesDir, "test_input.mp4");
             string outputPath = Path.Combine(TestFilesDir, "test_output.mp4");
 
-            // 2. Generar el video de entrada CORRECTAMENTE
+            // Generar el video de entrada CORRECTAMENTE
             // Usamos yuv420p porque es el estándar que aceptan TODOS los perfiles (Baseline, Main, High)
             var generateArgs = $"-f lavfi -i testsrc=duration=2:size=320x240:rate=15 -c:v libx264 -pix_fmt yuv420p -y \"{inputPath}\"";
     
@@ -36,7 +49,7 @@ namespace VManager.Tests.Integration
             {
                 StartInfo = new System.Diagnostics.ProcessStartInfo
                 {
-                    FileName = ffmpegPath,
+                    FileName = _ffmpegPath,
                     Arguments = generateArgs,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -50,8 +63,8 @@ namespace VManager.Tests.Integration
             if (proc.ExitCode != 0) 
                 throw new Exception($"Fallo al crear video de prueba: {await proc.StandardError.ReadToEndAsync()}");
 
-            // 3. Ejecutar la operación de conversión
-            var operation = new ConvertOperation(ffmpegPath);
+            // Ejecutar la operación de conversión
+            var operation = new ConvertOperation(_ffmpegPath);
             var result = await operation.ExecuteAsync(
                 inputPath,
                 outputPath,
@@ -62,7 +75,7 @@ namespace VManager.Tests.Integration
                 cancellationToken: CancellationToken.None
             );
 
-            // 4. Validar
+            // Validar
             result.Success.Should().BeTrue($"Error de FFmpeg: {result.Message}");
             File.Exists(outputPath).Should().BeTrue();
         }
@@ -70,35 +83,34 @@ namespace VManager.Tests.Integration
         [Fact]
         public async Task ConvertLongVideo_ShouldTriggerResumableExecutor()
         {
-            FFmpegManager.Initialize();
-            var ffmpegPath = FFmpegManager.FfmpegPath;
-
-            // 1. Limpieza
-            if (Directory.Exists(TestFilesDir)) Directory.Delete(TestFilesDir, true);
-            Directory.CreateDirectory(TestFilesDir);
-
             string inputPath = Path.Combine(TestFilesDir, "long_convert_input.mp4");
             string outputPath = Path.Combine(TestFilesDir, "long_convert_output.mkv"); // Cambiamos formato para testear
 
-            // 2. Generar video de 130 segundos (2 chunks de 60s + 1 de 10s)
+            // Generar video de 130 segundos (2 chunks de 60s + 1 de 10s)
             var generateArgs = $"-f lavfi -i testsrc=duration=130:size=160x120:rate=10 -c:v libx264 -pix_fmt yuv420p -y \"{inputPath}\"";
             
             var proc = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
             {
-                FileName = ffmpegPath,
+                FileName = _ffmpegPath,
                 Arguments = generateArgs,
                 CreateNoWindow = true,
                 UseShellExecute = false
             });
             await proc!.WaitForExitAsync();
 
-            // 3. Ejecutar Conversión
-            var operation = new ConvertOperation(ffmpegPath);
+            // Ejecutar Conversión
+            var operation = new ConvertOperation(_ffmpegPath);
             
             // El progreso debería reportar varias veces ya que hay múltiples chunks
             int progressCount = 0;
+            bool tempFolderWasCreated = false;
+            string tempFolder = Path.Combine(Path.GetDirectoryName(inputPath)!, ".vmanager_temp_" + Path.GetFileNameWithoutExtension(inputPath));
+            
             var progress = new Progress<IFFmpegProcessor.ProgressInfo>(p => {
                 progressCount++;
+                // Verificar si la carpeta temporal existe durante la ejecución
+                if (Directory.Exists(tempFolder))
+                    tempFolderWasCreated = true;
             });
 
             var result = await operation.ExecuteAsync(
@@ -111,16 +123,21 @@ namespace VManager.Tests.Integration
                 cancellationToken: CancellationToken.None
             );
 
-            // 4. Validaciones
+            // Validaciones
             result.Success.Should().BeTrue($"La conversión resumible falló: {result.Message}");
             File.Exists(outputPath).Should().BeTrue();
+            
+            // CRÍTICO: Verificar que se usó el ResumableExecutor
+            tempFolderWasCreated.Should().BeTrue("El ResumableExecutor debería haber creado una carpeta temporal de chunks");
+            
+            // El ResumableExecutor debería haber reportado progreso múltiples veces (uno por chunk mínimo)
+            progressCount.Should().BeGreaterThan(1, "El ResumableExecutor debería reportar progreso para cada chunk procesado");
             
             // Verificar que el archivo final realmente sea el formato pedido (MKV)
             var mediaInfo = await FFProbe.AnalyseAsync(outputPath);
             mediaInfo.Format.FormatName.Should().Contain("matroska");
 
             // Verificar limpieza de temporales
-            string tempFolder = Path.Combine(Path.GetDirectoryName(inputPath)!, ".vmanager_temp_" + Path.GetFileNameWithoutExtension(inputPath));
             Directory.Exists(tempFolder).Should().BeFalse("La carpeta temporal de chunks debería haber sido eliminada.");
         }
     }

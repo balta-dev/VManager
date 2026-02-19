@@ -10,14 +10,14 @@ using Xunit;
 
 namespace VManager.Tests.Integration
 {
-    public class AudioExtractOperationIntegrationTests : IDisposable
+    public class AudioExtractOperationIntegrationTests : IAsyncLifetime
     {
         private const string TestFilesDir = "AudioTestFiles";
-        private readonly string _ffmpegPath;
+        private string _ffmpegPath = string.Empty;
 
-        public AudioExtractOperationIntegrationTests()
+        public async Task InitializeAsync()
         {
-            FFmpegManager.Initialize();
+            await FFmpegManager.Initialize();
             _ffmpegPath = FFmpegManager.FfmpegPath;
 
             // Limpieza inicial
@@ -27,10 +27,11 @@ namespace VManager.Tests.Integration
             Directory.CreateDirectory(TestFilesDir);
         }
 
-        public void Dispose()
+        public Task DisposeAsync()
         {
             // Limpieza al finalizar (opcional)
             // if (Directory.Exists(TestFilesDir)) Directory.Delete(TestFilesDir, true);
+            return Task.CompletedTask;
         }
 
         private async Task CreateTestVideoWithAudio(string path)

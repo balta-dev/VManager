@@ -100,7 +100,8 @@ namespace VManager.Services.Operations
                 .OutputToFile(outputPath, overwrite: true, options =>
                 {
                     options
-                        .WithCustomArgument("-map 0")
+                        .WithCustomArgument("-map 0:v")
+                        .WithCustomArgument("-map 0:a")
                         .WithVideoCodec(selectedVideoCodec)
                         .WithVideoBitrate(targetBitrate)
                         .WithAudioCodec(selectedAudioCodec)

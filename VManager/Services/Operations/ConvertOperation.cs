@@ -105,7 +105,8 @@ namespace VManager.Services.Operations
                 .FromFileInput(inputPath)
                 .OutputToFile(outputPath, overwrite: true, options =>
                 {
-                    options.WithCustomArgument("-map 0");
+                    options.WithCustomArgument("-map 0:v");
+                    options.WithCustomArgument("-map 0:a");
                     
                     if (needsReencoding)
                     {
