@@ -242,6 +242,7 @@
       "HideNotifications": "隐藏通知？",
       "EnableSounds": "禁用声音？",
       "Advanced": "高级",
+      "OpenLogsFolder": "打开日志文件夹",
       "EnableDebug": "启用日志输出（DEBUG）",
       "Hardware": "重新计算硬件",
       "DefaultDownloadFolder": "桌面（默认）",

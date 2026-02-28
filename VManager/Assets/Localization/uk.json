@@ -242,6 +242,7 @@
       "HideNotifications": "Приховати сповіщення?",
       "EnableSounds": "Вимкнути звуки?",
       "Advanced": "Розширені",
+      "OpenLogsFolder": "Відкрити папку логів",
       "EnableDebug": "Увімкнути вивід логів (DEBUG)",
       "Hardware": "Перерахувати апаратне забезпечення",
       "DefaultDownloadFolder": "Робочий стіл (за замовчуванням)",

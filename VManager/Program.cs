@@ -40,7 +40,7 @@ sealed class Program
     }
     
     [STAThread]
-    public static async Task Main(string[] args)
+    public static void Main(string[] args)
     {
         var sw = Stopwatch.StartNew();
         MainWindow.StartupStopwatch = sw;

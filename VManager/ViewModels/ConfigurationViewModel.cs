@@ -15,6 +15,7 @@ using Avalonia.ReactiveUI;
 using ReactiveUI;
 using VManager.Services;
 using VManager.Services.Core;
+using System.Diagnostics;
 using VManager.Services.Models;
 
 namespace VManager.ViewModels
@@ -201,8 +202,19 @@ namespace VManager.ViewModels
         public ReactiveCommand<Unit, Unit> BrowseCookiesFileCommand { get; }
         public ReactiveCommand<Unit, Unit> RemoveCookiesFileCommand { get; }
         
+        public ReactiveCommand<Unit, Unit> OpenLogsFolderCommand { get; }
         
         private readonly AppConfig _config;
+        
+        public void OpenLogsFolder()
+        {
+            var logsFolder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "VManager", "logs");
+    
+            Directory.CreateDirectory(logsFolder); // por si no existe
+            Process.Start(new ProcessStartInfo(logsFolder) { UseShellExecute = true });
+        }
         
         private async Task BrowseDownloadFolderAsync()
         {
@@ -236,6 +248,7 @@ namespace VManager.ViewModels
         public ConfigurationViewModel()
         {
             RefreshCodecsCommand = ReactiveCommand.CreateFromTask(ReloadCodecsAsync, outputScheduler: AvaloniaScheduler.Instance);
+            OpenLogsFolderCommand = ReactiveCommand.Create(OpenLogsFolder, outputScheduler: AvaloniaScheduler.Instance);
             
             ResetAccentColorCommand = ReactiveCommand.Create<Unit>(
                 () =>

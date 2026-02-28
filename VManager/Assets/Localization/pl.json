@@ -242,6 +242,7 @@
       "HideNotifications": "Ukryć powiadomienia?",
       "EnableSounds": "Wyłączyć dźwięki?",
       "Advanced": "Zaawansowane",
+      "OpenLogsFolder": "Otwórz folder logów",
       "EnableDebug": "Włącz wyjście logów (DEBUG)",
       "Hardware": "Przelicz sprzęt",
       "DefaultDownloadFolder": "Pulpit (domyślny)",

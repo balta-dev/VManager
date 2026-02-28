@@ -242,6 +242,7 @@
       "HideNotifications": "通知を非表示？",
       "EnableSounds": "音を無効化？",
       "Advanced": "詳細設定",
+      "OpenLogsFolder": "ログフォルダを開く",
       "EnableDebug": "ログ出力（DEBUG）を有効化",
       "Hardware": "ハードウェアを再計算",
       "DefaultDownloadFolder": "デスクトップ（デフォルト）",

@@ -183,8 +183,6 @@ namespace VManager.ViewModels.Herramientas
                 foreach (var f in info.Formats
                              .Where(fmt => !string.IsNullOrEmpty(fmt.VideoCodec) && 
                                            fmt.VideoCodec != "none" && 
-                                           !string.IsNullOrEmpty(fmt.AudioCodec) && 
-                                           fmt.AudioCodec != "none" && 
                                            fmt.Height.HasValue)
                              .OrderByDescending(fmt => fmt.Height))
                 {
@@ -409,7 +407,11 @@ namespace VManager.ViewModels.Herramientas
                             _ => "mp4"
                         };
 
-                        string outputTemplate = Path.Combine(downloadFolder, $"{currentVideo.Title}.{extension}");
+                        string safeTitle = currentVideo.Title
+                            .Replace("/", "-")
+                            .Replace("\\", "-")
+                            .Replace("\"", "'");
+                        string outputTemplate = Path.Combine(downloadFolder, $"{safeTitle}.{extension}");
 
                         var result = await processor.DownloadAsync(
                             currentVideo.Url,

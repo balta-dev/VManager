@@ -311,6 +311,9 @@
                              FontSize="15"
                              VerticalAlignment="Center"/>
                   <CheckBox IsChecked="{Binding Log}" />
+                  <Button Content="{Binding L[Configuration.Fields.OpenLogsFolder]}"
+                          Command="{Binding OpenLogsFolderCommand}"
+                          FontSize="13"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">

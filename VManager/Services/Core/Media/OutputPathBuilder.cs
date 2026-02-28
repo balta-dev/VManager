@@ -9,7 +9,10 @@ namespace VManager.Services.Core.Media
         public static string SanitizeFilename(string path)
         {
             var dir = Path.GetDirectoryName(path)!;
-            var name = Path.GetFileName(path).Replace("\"", "'");
+            var name = Path.GetFileName(path)
+                .Replace("\"", "'")
+                .Replace("/", "-")
+                .Replace("\\", "-");
             var newPath = Path.Combine(dir, name);
 
             if (path != newPath && File.Exists(path))

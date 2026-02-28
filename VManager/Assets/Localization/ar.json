@@ -242,6 +242,7 @@
       "HideNotifications": "إخفاء الإشعارات؟",
       "EnableSounds": "تعطيل الأصوات؟",
       "Advanced": "متقدم",
+      "OpenLogsFolder": "فتح مجلد السجلات",
       "EnableDebug": "تفعيل إخراج السجل (DEBUG)",
       "Hardware": "إعادة حساب الأجهزة",
       "DefaultDownloadFolder": "سطح المكتب (افتراضي)",

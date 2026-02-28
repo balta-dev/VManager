@@ -242,6 +242,7 @@
       "HideNotifications": "Hide notifications?",
       "EnableSounds": "Disable sounds?",
       "Advanced": "Advanced",
+      "OpenLogsFolder": "Open logs folder",
       "EnableDebug": "Enable log output (DEBUG)",
       "Hardware": "Recalculate hardware",
       "DefaultDownloadFolder": "Desktop (default)",

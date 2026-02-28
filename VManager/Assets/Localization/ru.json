@@ -242,6 +242,7 @@
       "HideNotifications": "Скрыть уведомления?",
       "EnableSounds": "Отключить звуки?",
       "Advanced": "Расширенные",
+      "OpenLogsFolder": "Открыть папку логов",
       "EnableDebug": "Включить вывод лога (DEBUG)",
       "Hardware": "Пересчитать оборудование",
       "DefaultDownloadFolder": "Рабочий стол (по умолчанию)",

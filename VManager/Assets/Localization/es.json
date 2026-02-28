@@ -242,6 +242,7 @@
       "HideNotifications": "¿Ocultar notificaciones?",
       "EnableSounds": "¿Desactivar sonidos?",
       "Advanced": "Avanzado",
+      "OpenLogsFolder": "Abrir carpeta de logs",
       "EnableDebug": "Habilitar salida de log (DEBUG)",
       "Hardware": "Recalcular hardware",
       "DefaultDownloadFolder": "Escritorio (por defecto)",

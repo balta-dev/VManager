@@ -242,6 +242,7 @@
       "HideNotifications": "Masquer les notifications ?",
       "EnableSounds": "Désactiver les sons ?",
       "Advanced": "Avancé",
+      "OpenLogsFolder": "Ouvrir le dossier des journaux",
       "EnableDebug": "Activer la sortie de journal (DEBUG)",
       "Hardware": "Recalculer le matériel",
       "DefaultDownloadFolder": "Bureau (par défaut)",

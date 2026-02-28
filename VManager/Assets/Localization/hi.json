@@ -242,6 +242,7 @@
       "HideNotifications": "सूचनाएँ छिपाएँ?",
       "EnableSounds": "ध्वनियाँ अक्षम करें?",
       "Advanced": "उन्नत",
+      "OpenLogsFolder": "लॉग फ़ोल्डर खोलें",
       "EnableDebug": "लॉग आउटपुट सक्षम करें (DEBUG)",
       "Hardware": "हार्डवेयर पुनर्गणना",
       "DefaultDownloadFolder": "डेस्कटॉप (डिफ़ॉल्ट)",

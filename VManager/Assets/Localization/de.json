@@ -242,6 +242,7 @@
       "HideNotifications": "Benachrichtigungen ausblenden?",
       "EnableSounds": "Töne deaktivieren?",
       "Advanced": "Erweitert",
+      "OpenLogsFolder": "Log-Ordner öffnen",
       "EnableDebug": "Log-Ausgabe aktivieren (DEBUG)",
       "Hardware": "Hardware neu berechnen",
       "DefaultDownloadFolder": "Desktop (Standard)",

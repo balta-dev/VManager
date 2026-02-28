@@ -203,9 +203,7 @@ public class YtDlpProcessor
             .Where(f =>
                 f.Height.HasValue &&
                 !string.IsNullOrEmpty(f.VideoCodec) &&
-                f.VideoCodec != "none" &&
-                !string.IsNullOrEmpty(f.AudioCodec) &&
-                f.AudioCodec != "none")
+                f.VideoCodec != "none")
             .Select(f => f.Height!.Value)
             .Distinct()
             .ToList();

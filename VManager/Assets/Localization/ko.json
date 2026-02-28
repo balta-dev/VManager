@@ -242,6 +242,7 @@
       "HideNotifications": "알림 숨기기?",
       "EnableSounds": "소리 비활성화?",
       "Advanced": "고급",
+      "OpenLogsFolder": "로그 폴더 열기",
       "EnableDebug": "로그 출력 활성화 (DEBUG)",
       "Hardware": "하드웨어 재계산",
       "DefaultDownloadFolder": "바탕화면 (기본)",
