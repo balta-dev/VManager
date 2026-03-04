@@ -239,6 +239,9 @@ public class YtDlpProcessor
         foreach (var arg in BuildCookiesArguments())
                 psi.ArgumentList.Add(arg);
 
+        psi.ArgumentList.Add("--js-runtimes");
+        psi.ArgumentList.Add($"deno:{DenoManager.DenoPath}");
+        
         psi.ArgumentList.Add("--dump-json");
         psi.ArgumentList.Add(url);
 
