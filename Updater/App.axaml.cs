@@ -258,10 +258,42 @@ namespace Updater
             }
         }
 
+        private static bool? ResolveUseDarkTheme()
+        {
+            if (!File.Exists(ConfigPath))
+                return null;
+
+            try
+            {
+                var json = File.ReadAllText(ConfigPath);
+                using var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
+
+                if (root.TryGetProperty("UseDarkTheme", out var prop) ||
+                    root.TryGetProperty("useDarkTheme", out prop))
+                {
+                    if (prop.ValueKind == JsonValueKind.Null)
+                        return null;
+
+                    return prop.GetBoolean();
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
         public override void OnFrameworkInitializationCompleted()
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                var useDarkTheme = ResolveUseDarkTheme();
+                RequestedThemeVariant = useDarkTheme.HasValue
+                    ? (useDarkTheme.Value ? ThemeVariant.Dark : ThemeVariant.Light)
+                    : ThemeVariant.Default;
+                
                 var updateWindow = new UpdateWindow
                 {
                     Width = 500,
