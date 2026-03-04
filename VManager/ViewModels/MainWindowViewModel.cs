@@ -261,7 +261,8 @@ public class MainWindowViewModel : ViewModelBase
             outputScheduler: AvaloniaScheduler.Instance
         );
         
-        _isDarkTheme = Application.Current?.ActualThemeVariant == ThemeVariant.Dark;
+        _isDarkTheme = ConfigurationService.Current.UseDarkTheme ?? 
+                       (Application.Current?.ActualThemeVariant == ThemeVariant.Dark);
 
         // Suscribirse a cambios de tema
         Application.Current?.GetObservable(Application.ActualThemeVariantProperty)
@@ -333,6 +334,13 @@ public class MainWindowViewModel : ViewModelBase
         app.RequestedThemeVariant = app.ActualThemeVariant == ThemeVariant.Dark
             ? ThemeVariant.Light
             : ThemeVariant.Dark;
+
+        bool isDark = app.RequestedThemeVariant == ThemeVariant.Dark;
+    
+        // Actualizar ambos lados
+        ConfigurationService.Current.UseDarkTheme = isDark;
+        ConfigurationService.Save(ConfigurationService.Current);
+        _configuration.UseDarkTheme = isDark; // sincronizar con ConfigurationViewModel
     }
     
     private void OpenGitHub()

@@ -17,6 +17,7 @@ using VManager.Services;
 using VManager.Services.Core;
 using System.Diagnostics;
 using VManager.Services.Models;
+using Avalonia.Styling;
 
 namespace VManager.ViewModels
 {
@@ -194,6 +195,13 @@ namespace VManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref _log, value);
         }
         
+        private bool? _useDarkTheme;
+        public bool? UseDarkTheme
+        {
+            get => _useDarkTheme;
+            set => this.RaiseAndSetIfChanged(ref _useDarkTheme, value);
+        }
+        
         public ReactiveCommand<Unit, Unit> RefreshCodecsCommand { get; }
         public ReactiveCommand<Unit, Unit> ResetAccentColorCommand { get; }
         public ReactiveCommand<Unit, Unit> BrowseProfileImageCommand { get; }
@@ -282,6 +290,7 @@ namespace VManager.ViewModels
             CookiesFilePath = _config.CookiesFilePath;
             CookiesLastUpdated = _config.CookiesLastUpdated;
             Log = _config.Log;
+            UseDarkTheme = _config.UseDarkTheme;
 
             // Guardar cambios automáticamente
             this.WhenAnyValue(x => x.EnableSounds)
@@ -300,7 +309,6 @@ namespace VManager.ViewModels
             
             this.WhenAnyValue(x => x.IdiomaSeleccionado, x => x.UseCustomIcon, x => x.HideRemainingTime, x => x.SelectedColor, x => x.ProfileImagePath, x => x.PreferredDownloadFolder, x => x.Log)
                 .Subscribe(_ => SaveConfig());
-            
             
         }
         
@@ -471,7 +479,7 @@ namespace VManager.ViewModels
             _config.CookiesLastUpdated = CookiesLastUpdated;
             // Log activado/desactivado
             _config.Log = Log;
-
+            _config.UseDarkTheme = UseDarkTheme;
             ConfigurationService.Save(_config);
         }
     }

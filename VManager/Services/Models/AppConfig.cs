@@ -94,4 +94,6 @@ public class AppConfig : ReactiveObject
             get => _log;
             set => this.RaiseAndSetIfChanged(ref _log, value);
         }
+        
+        public bool? UseDarkTheme { get; set; } = true; // o false según tu default
     }

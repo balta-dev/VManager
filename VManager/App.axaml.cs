@@ -10,6 +10,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using VManager.ViewModels;
 using VManager.Views;
+using VManager.Services;
 
 namespace VManager;
 
@@ -34,6 +35,12 @@ public partial class App : Application
             {
                 // Opcional: aquí se puede manipular StreamHandlers si realmente es necesario
             }
+            
+            // Aplicar tema guardado antes de crear la ventana
+            var config = ConfigurationService.Current;
+            Application.Current!.RequestedThemeVariant = config.UseDarkTheme.HasValue
+                ? (config.UseDarkTheme.Value ? ThemeVariant.Dark : ThemeVariant.Light)
+                : ThemeVariant.Default;
 
             var mainWindow = new MainWindow
             {
