@@ -327,7 +327,12 @@ public class YtDlpProcessor
                 psi.ArgumentList.Add("--audio-format");
                 psi.ArgumentList.Add("wav");
             }
-            //removido forzado -f {formatId} (-f 91, correspondiente al protocolo m3u8)
+            else
+            {
+                // Formato de video real: pedir ese formato + mejor audio disponible
+                psi.ArgumentList.Add("-f");
+                psi.ArgumentList.Add($"{formatId}+bestaudio/best");
+            }
         }
 
         psi.ArgumentList.Add(url);

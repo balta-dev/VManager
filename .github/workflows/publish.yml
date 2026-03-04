@@ -1,5 +1,4 @@
 name: Publish Release
-
 on:
   push:
     tags:
@@ -10,7 +9,6 @@ on:
         description: 'Tag para la release (ej: v1.5.0)'
         required: true
         default: 'v1.5.0'
-
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -26,7 +24,6 @@ jobs:
             compression: "-p:EnableCompressionInSingleFile=true"
             archive-name: VManager-win-x64-self-contained.zip
             archive-cmd: 7z a VManager-win-x64-self-contained.zip -r ./VManager/bin/Release/net9.0/win-x64/publish/*
-
           # Windows Framework-Dependent (no self)
           - os: windows-latest
             runtime: win-x64
@@ -34,7 +31,6 @@ jobs:
             compression: ""
             archive-name: VManager-win-x64.zip
             archive-cmd: 7z a VManager-win-x64.zip -r ./VManager/bin/Release/net9.0/win-x64/publish/*
-
           # Linux Self-Contained
           - os: ubuntu-latest
             runtime: linux-x64
@@ -42,7 +38,6 @@ jobs:
             compression: "-p:EnableCompressionInSingleFile=true"
             archive-name: VManager-linux-x64.tar.gz
             archive-cmd: tar -czf VManager-linux-x64.tar.gz -C ./VManager/bin/Release/net9.0/linux-x64/publish .
-
           # macOS Self-Contained
           - os: macos-latest
             runtime: osx-x64
@@ -50,32 +45,27 @@ jobs:
             compression: "-p:EnableCompressionInSingleFile=true"
             archive-name: VManager-osx-x64.tar.gz
             archive-cmd: tar -czf VManager-osx-x64.tar.gz -C ./VManager/bin/Release/net9.0/osx-x64/publish .
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+        with:
+          lfs: true
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'
-
       - name: Restore dependencies
         run: |
           dotnet restore VManager/VManager.csproj
           dotnet restore Updater/Updater.csproj
-
       - name: Publish VManager
         run: |
           dotnet publish VManager/VManager.csproj -c Release -r ${{ matrix.runtime }} --self-contained ${{ matrix.self-contained }} -p:PublishSingleFile=true ${{ matrix.compression }}
-
       - name: Publish Updater
         run: |
           dotnet publish Updater/Updater.csproj -c Release -r ${{ matrix.runtime }} --self-contained ${{ matrix.self-contained }} -p:PublishSingleFile=true ${{ matrix.compression }}
-
       - name: Create Archive
         run: ${{ matrix.archive-cmd }}
-
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
