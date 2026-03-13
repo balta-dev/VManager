@@ -273,7 +273,7 @@ public class YtDlpProcessor
 
             if (process.ExitCode != 0)
             {
-                Console.WriteLine($"Error obteniendo info: {errorMessage}");
+                Console.WriteLine($"Error obteniendo info: {error}");
                 
                 if (!string.IsNullOrEmpty(errorMessage))
                  ErrorService.Show(errorMessage);
