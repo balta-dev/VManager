@@ -9,11 +9,24 @@ namespace VManager.Services
         private static ErrorWindow? _instance;
         private static bool _closed = true;
 
-        public static void Show(Exception ex, Window? owner = null)
+        public static void Show(
+            Exception ex,
+            Window? owner = null,
+            string? title = null,
+            string? color = null)
+        {
+            Show(ex.Message, owner, title, color);
+        }
+
+        public static void Show(
+            string message,
+            Window? owner = null,
+            string? title = null,
+            string? color = null)
         {
             if (_instance == null || _closed)
             {
-                _instance = new ErrorWindow(ex.Message);
+                _instance = new ErrorWindow(message, title, color);
                 _closed = false;
 
                 _instance.Closed += (_, _) =>

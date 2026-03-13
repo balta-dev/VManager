@@ -23,6 +23,7 @@ namespace VManager.Models
         private bool _isLoading = true;
         private bool _hasError;
         private Bitmap? _thumbnailBitmap;
+        public bool UsedCookies { get; set; } = true;
 
         public string Url { get; set; } = string.Empty;
 

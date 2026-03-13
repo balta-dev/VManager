@@ -191,13 +191,13 @@ public class YtDlpProcessor
         }
     }
     
-    public async Task<(VideoInfo? Info, bool ShowHelp)>
+    public async Task<(VideoInfo? Info, bool ShowHelp, bool UsedCookies)>
         GetVideoInfoWithDetectionAsync(string url, CancellationToken ct = default)
     {
-        var info = await GetVideoInfoAsync(url, ct);
+        var (info, usedCookies) = await GetVideoInfoAsync(url, ct);
 
         if (info?.Formats == null || info.Formats.Count == 0)
-            return (info, true);
+            return (info, true, usedCookies);
 
         var usableHeights = info.Formats
             .Where(f =>
@@ -209,24 +209,33 @@ public class YtDlpProcessor
             .ToList();
 
         if (usableHeights.Count == 0)
-            return (info, true);
+            return (info, true, usedCookies);
 
         int maxHeight = usableHeights.Max();
+        bool showHelp = maxHeight <= 360 && usableHeights.Count <= 3;
 
-        bool showHelp =
-            maxHeight <= 360 &&
-            usableHeights.Count <= 3;
-
-        return (info, showHelp);
+        return (info, showHelp, usedCookies);
     }
 
     // ============================================================
     //                   OBTENER INFO DEL VIDEO
     // ============================================================
 
-    public async Task<VideoInfo?> GetVideoInfoAsync(string url, CancellationToken cancellationToken = default)
+    public async Task<(VideoInfo? Info, bool UsedCookies)> GetVideoInfoAsync(string url, CancellationToken cancellationToken = default)
     {
+        var result = await GetVideoInfoInternalAsync(url, useCookies: true, cancellationToken);
+        if (result != null)
+            return (result, true);
+    
+        Console.WriteLine("[YTDLP] Reintentando sin cookies...");
+        var ex = new Exception("yt-dlp está teniendo problemas. Reintentando sin cookies...");
+        ErrorService.Show(ex, null, "Advertencia", "#FFFFA500");
+        result = await GetVideoInfoInternalAsync(url, useCookies: false, cancellationToken);
+        return (result, false);
+    }
 
+    private async Task<VideoInfo?> GetVideoInfoInternalAsync(string url, bool useCookies, CancellationToken cancellationToken)
+    {
         var psi = new ProcessStartInfo
         {
             FileName = _ytDlpPath,
@@ -235,35 +244,44 @@ public class YtDlpProcessor
             UseShellExecute = false,
             CreateNoWindow = true
         };
-        
-        foreach (var arg in BuildCookiesArguments())
+    
+        if (useCookies)
+            foreach (var arg in BuildCookiesArguments())
                 psi.ArgumentList.Add(arg);
 
         psi.ArgumentList.Add("--js-runtimes");
         psi.ArgumentList.Add($"deno:{DenoManager.DenoPath}");
-        
         psi.ArgumentList.Add("--dump-json");
         psi.ArgumentList.Add(url);
 
         var process = new Process { StartInfo = psi };
-
+    
         try
         {
             process.Start();
+            Console.WriteLine($"[DEBUG] Comando: {psi.FileName} {string.Join(" ", psi.ArgumentList)}");
 
             string json = await process.StandardOutput.ReadToEndAsync();
             string error = await process.StandardError.ReadToEndAsync();
+            
+            string? errorMessage = error.Split('\n')
+                .FirstOrDefault(line => line.Contains("Cookies file must be Netscape formatted"))
+                ?.Substring("ERROR:".Length)
+                .Trim();
 
             await process.WaitForExitAsync(cancellationToken);
 
             if (process.ExitCode != 0)
             {
-                Console.WriteLine($"Error obteniendo info: {error}");
+                Console.WriteLine($"Error obteniendo info: {errorMessage}");
+                
+                if (!string.IsNullOrEmpty(errorMessage))
+                 ErrorService.Show(errorMessage);
+                
                 return null;
             }
 
-            var info = JsonSerializer.Deserialize<VideoInfo>(json, VManagerJsonContext.Default.VideoInfo);
-            return info;
+            return JsonSerializer.Deserialize<VideoInfo>(json, VManagerJsonContext.Default.VideoInfo);
         }
         catch (Exception ex)
         {
@@ -278,11 +296,12 @@ public class YtDlpProcessor
     // ============================================================
     
     public async Task<ProcessingResult> DownloadAsync(
-    string url,
-    string outputTemplate,
-    IProgress<YtDlpProgress> progress,
-    CancellationToken cancellationToken,
-    string? formatId = null)
+        string url,
+        string outputTemplate,
+        IProgress<YtDlpProgress> progress,
+        CancellationToken cancellationToken,
+        string? formatId = null,
+        bool useCookies = true)
     {
         string safeOutput = OutputPathBuilder.SanitizeFilename(outputTemplate);
         
@@ -294,10 +313,10 @@ public class YtDlpProcessor
             UseShellExecute = false,
             CreateNoWindow = true
         };
-
-        //cambiada la forma en que se construyen argumentos para evitar escapes de comillas
-        foreach (var arg in BuildCookiesArguments())
-            psi.ArgumentList.Add(arg);
+        
+        if (useCookies)
+            foreach (var arg in BuildCookiesArguments())
+                psi.ArgumentList.Add(arg);
 
         psi.ArgumentList.Add("--newline");
         

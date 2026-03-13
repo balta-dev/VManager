@@ -30,13 +30,14 @@
     <Folder Include="Binaries\Linux\" />
     <Folder Include="Binaries\Mac\" />
     <Folder Include="Binaries\Windows\" />
-    <EmbeddedResource Include="Assets\Localization\*.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <AvaloniaResource Include="Assets\**" Exclude="Assets\Sounds\**" />
-    <EmbeddedResource Include="Assets\Sounds\**\*" />
-    <AvaloniaResource Include="Assets\VManager.ico" />
+      <AvaloniaResource Include="Assets\**" 
+                        Exclude="Assets\Sounds\**;Assets\Localization\**" />
+      <EmbeddedResource Include="Assets\Sounds\**\*" />
+      <EmbeddedResource Include="Assets\Localization\*.json" />
+      <AvaloniaResource Include="Assets\VManager.ico" />
   </ItemGroup>
 
   <!-- Paquetes NuGet -->

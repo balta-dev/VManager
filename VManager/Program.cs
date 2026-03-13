@@ -46,9 +46,13 @@ sealed class Program
         MainWindow.StartupStopwatch = sw;
         
         Directory.CreateDirectory(LogsFolder);
+        var t0 = sw.ElapsedMilliseconds;
         
         if (IsLoggingEnabled())
         {
+            
+            t0 = sw.ElapsedMilliseconds;
+            
             var logFilePath = Path.Combine(
                 LogsFolder,
                 $"log-{DateTime.UtcNow:yyyy-MM-dd}.log"
@@ -62,14 +66,28 @@ sealed class Program
             Console.SetOut(new MultiTextWriter(Console.Out, logFile));
             Console.SetError(new MultiTextWriter(Console.Error, logFile));
             Console.WriteLine("[DEBUG]: LOG HABILITADO.");
+            
+            Console.WriteLine($"[STARTUP] [{sw.ElapsedMilliseconds}ms] StreamWriter setup (delta: {sw.ElapsedMilliseconds - t0}ms)");
 
         }
         
         Console.WriteLine("[DEBUG]: Iniciando VManager...");
         
-        _ = FFmpegManager.Initialize();
-        _ = YtDlpManager.Initialize();
-        _ = DenoManager.Initialize();
+        // Medimos cuánto tarda en RETORNAR cada Initialize (no en completarse)
+        // Si tarda >5ms en retornar, tiene código síncrono bloqueante antes del primer await
+        
+        var ffmpegTask = FFmpegManager.Initialize();
+        Console.WriteLine($"[STARTUP] [{sw.ElapsedMilliseconds}ms] FFmpegManager.Initialize() retornó (delta: {sw.ElapsedMilliseconds - t0}ms)");
+    
+        t0 = sw.ElapsedMilliseconds;
+        var ytDlpTask = YtDlpManager.Initialize();
+        Console.WriteLine($"[STARTUP] [{sw.ElapsedMilliseconds}ms] YtDlpManager.Initialize() retornó (delta: {sw.ElapsedMilliseconds - t0}ms)");
+    
+        t0 = sw.ElapsedMilliseconds;
+        var denoTask = DenoManager.Initialize();
+        Console.WriteLine($"[STARTUP] [{sw.ElapsedMilliseconds}ms] DenoManager.Initialize() retornó (delta: {sw.ElapsedMilliseconds - t0}ms)");
+    
+        Console.WriteLine($"[STARTUP] [{sw.ElapsedMilliseconds}ms] Arrancando Avalonia...");
 
         // Arrancar Avalonia
         BuildAvaloniaApp()

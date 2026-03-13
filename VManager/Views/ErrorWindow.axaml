@@ -6,16 +6,15 @@
         CanResize="False"
         WindowStartupLocation="CenterOwner"
         Background="{DynamicResource PanelBackgroundBrush}"
-        Title="Error">
+        Title="">
 
     <ScrollViewer>
     <Border Padding="20">
         <StackPanel Spacing="12">
 
-            <TextBlock Text="Error"
+            <TextBlock x:Name="TitleText"
                        FontSize="22"
-                       FontWeight="Bold"
-                       Foreground="Tomato"/>
+                       FontWeight="Bold"/>
 
             <TextBlock x:Name="MessageText"
                        TextWrapping="Wrap"

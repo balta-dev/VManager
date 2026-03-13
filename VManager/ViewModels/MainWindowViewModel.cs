@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq; // <-- este es el que necesitás para .Where()
 using ReactiveUI;
 using System.Reactive;
 using System.Reflection;
@@ -22,14 +23,25 @@ public class MainWindowViewModel : ViewModelBase
 {
     public bool IsWelcomeVisible => CurrentView == null;
     
-    private Herramienta1ViewModel _herramienta1;
-    private Herramienta2ViewModel _herramienta2;
-    private Herramienta3ViewModel _herramienta3;
-    private Herramienta4ViewModel _herramienta4;
-    private Herramienta5ViewModel _herramienta5;
+    private Herramienta1ViewModel? _herramienta1;
+    private Herramienta2ViewModel? _herramienta2;
+    private Herramienta3ViewModel? _herramienta3;
+    private Herramienta4ViewModel? _herramienta4;
+    private Herramienta5ViewModel? _herramienta5;
     public ConfigurationViewModel _configuration;
-    private AcercaDeViewModel  _acercaDe;
-    public List<ViewModelBase> Tools { get; }
+    private AcercaDeViewModel _acercaDe;
+
+    private Herramienta1ViewModel Herramienta1 => _herramienta1 ??= new Herramienta1ViewModel();
+    private Herramienta2ViewModel Herramienta2 => _herramienta2 ??= new Herramienta2ViewModel();
+    private Herramienta3ViewModel Herramienta3 => _herramienta3 ??= new Herramienta3ViewModel();
+    private Herramienta4ViewModel Herramienta4 => _herramienta4 ??= new Herramienta4ViewModel();
+    private Herramienta5ViewModel Herramienta5 => _herramienta5 ??= new Herramienta5ViewModel();
+
+    public List<ViewModelBase> Tools =>
+        new ViewModelBase?[] { _herramienta1, _herramienta2, _herramienta3, _herramienta4, _herramienta5 }
+            .Where(t => t != null)
+            .Cast<ViewModelBase>()
+            .ToList();
     
     private bool _herramienta1Activa;
     public bool Herramienta1Activa
@@ -84,24 +96,21 @@ public class MainWindowViewModel : ViewModelBase
     public ViewModelBase? CurrentView
     {
         get => _currentView;
-        set {
+        set
+        {
             this.RaiseAndSetIfChanged(ref _currentView, value);
-            this.RaisePropertyChanged(nameof(IsWelcomeVisible)); // Notifica cambio de visibilidad
-            } 
+            this.RaisePropertyChanged(nameof(IsWelcomeVisible));
+        }
     }
     
     public ReactiveCommand<Unit, Unit> GoToHerramienta1 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta2 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta3 { get; }
-    
     public ReactiveCommand<Unit, Unit> GoToHerramienta4 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta5 { get; }
-    
     public ReactiveCommand<Unit, Unit> GoToAcercaDe { get; }
-
     public ReactiveCommand<Unit, Unit> ToggleThemeCommand { get; }
     public ReactiveCommand<Unit, Unit> OpenGitHubCommand { get; }
-    
     public ReactiveCommand<Unit, Unit> GoToConfiguration { get; }
     
     private bool _isDarkTheme;
@@ -110,6 +119,7 @@ public class MainWindowViewModel : ViewModelBase
         get => _isDarkTheme;
         set => this.RaiseAndSetIfChanged(ref _isDarkTheme, value);
     }
+
     public string WelcomeMessage => L["General.WelcomeMessage"];
     
     private bool _showCustomIcon = true;
@@ -134,22 +144,12 @@ public class MainWindowViewModel : ViewModelBase
         ToggleThemeCommand = ReactiveCommand.Create(ToggleTheme, outputScheduler: AvaloniaScheduler.Instance);
         OpenGitHubCommand = ReactiveCommand.Create(OpenGitHub, outputScheduler: AvaloniaScheduler.Instance);
         
-        _herramienta1 = new Herramienta1ViewModel();
-        _herramienta2 = new Herramienta2ViewModel();
-        _herramienta3 = new Herramienta3ViewModel();
-        _herramienta4 = new Herramienta4ViewModel();
-        _herramienta5 = new Herramienta5ViewModel();
+        // _configuration y _acercaDe se siguen creando al inicio porque
+        // se necesitan para suscripciones y sincronización de config
         _configuration = new ConfigurationViewModel();
         _acercaDe = new AcercaDeViewModel();
         
-        Tools = new List<ViewModelBase>
-        {
-            _herramienta1,
-            _herramienta2,
-            _herramienta3,
-            _herramienta4,
-            _herramienta5
-        };
+        // Las 5 herramientas ya NO se crean acá, se crean lazy al primer uso
         
         GoToHerramienta1 = ReactiveCommand.Create(
             () =>
@@ -161,7 +161,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta5Activa = false;
                 ConfiguracionActiva = false;
                 AcercaDeActivo = false;
-                CurrentView = _herramienta1;
+                CurrentView = Herramienta1; // propiedad lazy, no campo
                 return Unit.Default;
             },
             outputScheduler: AvaloniaScheduler.Instance
@@ -177,7 +177,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta5Activa = false;
                 ConfiguracionActiva = false;
                 AcercaDeActivo = false;
-                CurrentView = _herramienta2;
+                CurrentView = Herramienta2;
                 return Unit.Default;
             },
             outputScheduler: AvaloniaScheduler.Instance
@@ -193,7 +193,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta5Activa = false;
                 ConfiguracionActiva = false;
                 AcercaDeActivo = false;
-                CurrentView = _herramienta3;
+                CurrentView = Herramienta3;
                 return Unit.Default;
             },
             outputScheduler: AvaloniaScheduler.Instance
@@ -209,7 +209,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta5Activa = false;
                 ConfiguracionActiva = false;
                 AcercaDeActivo = false;
-                CurrentView = _herramienta4;
+                CurrentView = Herramienta4;
                 return Unit.Default;
             },
             outputScheduler: AvaloniaScheduler.Instance
@@ -225,13 +225,14 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta4Activa = false;
                 ConfiguracionActiva = false;
                 AcercaDeActivo = false;
-                CurrentView = _herramienta5;
+                CurrentView = Herramienta5;
                 return Unit.Default;
             },
             outputScheduler: AvaloniaScheduler.Instance
         );
 
-        GoToConfiguration = ReactiveCommand.Create(() =>
+        GoToConfiguration = ReactiveCommand.Create(
+            () =>
             {
                 Herramienta1Activa = false;
                 Herramienta2Activa = false;
@@ -246,7 +247,8 @@ public class MainWindowViewModel : ViewModelBase
             outputScheduler: AvaloniaScheduler.Instance
         );
         
-        GoToAcercaDe = ReactiveCommand.Create(() =>
+        GoToAcercaDe = ReactiveCommand.Create(
+            () =>
             {
                 AcercaDeActivo = true;
                 Herramienta1Activa = false;
@@ -264,17 +266,14 @@ public class MainWindowViewModel : ViewModelBase
         _isDarkTheme = ConfigurationService.Current.UseDarkTheme ?? 
                        (Application.Current?.ActualThemeVariant == ThemeVariant.Dark);
 
-        // Suscribirse a cambios de tema
         Application.Current?.GetObservable(Application.ActualThemeVariantProperty)
             .Subscribe(theme =>
             {
                 IsDarkTheme = theme == ThemeVariant.Dark;
             });
         
-        // Cargar imagen inicial
         LoadProfileImage();
         
-        // Suscribirse a cambios en UseCustomIcon y ProfileImagePath
         _configuration.WhenAnyValue(x => x.UseCustomIcon)
             .Subscribe(useCustom => 
             {
@@ -284,7 +283,6 @@ public class MainWindowViewModel : ViewModelBase
         
         _configuration.WhenAnyValue(x => x.ProfileImagePath)
             .Subscribe(_ => LoadProfileImage());
-        
     }
     
     public ConfigurationViewModel Configuration => _configuration; 
@@ -336,11 +334,9 @@ public class MainWindowViewModel : ViewModelBase
             : ThemeVariant.Dark;
 
         bool isDark = app.RequestedThemeVariant == ThemeVariant.Dark;
-    
-        // Actualizar ambos lados
         ConfigurationService.Current.UseDarkTheme = isDark;
         ConfigurationService.Save(ConfigurationService.Current);
-        _configuration.UseDarkTheme = isDark; // sincronizar con ConfigurationViewModel
+        _configuration.UseDarkTheme = isDark;
     }
     
     private void OpenGitHub()
@@ -349,25 +345,16 @@ public class MainWindowViewModel : ViewModelBase
         try
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
                 Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
-            }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
                 Process.Start("xdg-open", url);
-            }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
                 Process.Start("open", url);
-            }
         }
         catch (Exception ex)
         {
-            // Optionally handle or log the error (e.g., show a message dialog)
             System.Console.WriteLine($"Failed to open GitHub: {ex.Message}");
             ErrorService.Show(ex);
         }
     }
-    
 }
-

@@ -151,12 +151,19 @@ namespace VManager.ViewModels.Herramientas
             try
             {
                 var processor = new YtDlpProcessor();
-                var (info, cookiesProblem) =
+                var (info, cookiesProblem, usedCookies) =
                     await processor.GetVideoInfoWithDetectionAsync(videoItem.Url);
+                
+                videoItem.UsedCookies = usedCookies;
 
                 if (cookiesProblem)
                 {
+                    videoItem.HasError = true;
+                    videoItem.Title = L["VideoStatus.ErrorNoInfo"];
+                    videoItem.IsLoading = false;
                     ShowDownloadHelp = true;
+                    ErrorService.Show("Su archivo de cookies caducó. Por favor, renuévelo o quítelo.", null, "Advertencia", "#FFFFA500");
+                    // return; dejar al usuario seguir a pesar de eso.
                 }
 
                 if (info == null)
@@ -418,7 +425,8 @@ namespace VManager.ViewModels.Herramientas
                             outputTemplate,
                             progress,
                             _cts.Token,
-                            currentVideo.SelectedFormat?.FormatId
+                            currentVideo.SelectedFormat?.FormatId,
+                            currentVideo.UsedCookies
                         );
 
                         // Chequeo: archivo existe → éxito aunque result diga false

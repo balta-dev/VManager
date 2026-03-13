@@ -28,24 +28,24 @@ public partial class App : Application
         Justification = "Manipulación de StreamHandlers es opcional y está protegida por comprobaciones en tiempo de ejecución")]
     public override void OnFrameworkInitializationCompleted()
     {
+        Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] OnFrameworkInitializationCompleted");
+    
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Evitar tocar DataValidators si no está disponible (trimming-safe)
-            if (Avalonia.Data.Core.Plugins.BindingPlugins.StreamHandlers.Count > 0)
-            {
-                // Opcional: aquí se puede manipular StreamHandlers si realmente es necesario
-            }
-            
-            // Aplicar tema guardado antes de crear la ventana
             var config = ConfigurationService.Current;
+            Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] Config cargada");
+        
             Application.Current!.RequestedThemeVariant = config.UseDarkTheme.HasValue
                 ? (config.UseDarkTheme.Value ? ThemeVariant.Dark : ThemeVariant.Light)
                 : ThemeVariant.Default;
+            Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] Tema aplicado");
 
-            var mainWindow = new MainWindow
-            {
-                DataContext = new MainWindowViewModel()
-            };
+            var vm = new MainWindowViewModel();
+            Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] MainWindowViewModel creado");
+        
+            var mainWindow = new MainWindow { DataContext = vm };
+            Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] MainWindow creada");
+        
             desktop.MainWindow = mainWindow;
         }
         Task.Run(HandleUpdaterTempFolder);
