@@ -2,7 +2,7 @@
 
 ![Banner](VManager/Assets/banner.png)
 
-[![Release version](https://img.shields.io/github/v/release/balta-dev/VManager?color=brightgreen&label=Download&style=for-the-badge)](#installation "Installation")
+[![Release version](https://img.shields.io/github/v/release/balta-dev/VManager?color=brightgreen&label=Download&style=for-the-badge)](#instalación "Installation")
 [![Donate](https://img.shields.io/badge/_-Donate-red.svg?logo=githubsponsors&labelColor=555555&style=for-the-badge)](https://ko-fi.com/baltafranz "Donate")
 [![License: Mit License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE.md "License")
 [![CI Status](https://img.shields.io/github/actions/workflow/status/balta-dev/VManager/.github/workflows/publish.yml?branch=main&label=Tests&style=for-the-badge)](https://github.com/balta-dev/VManager/actions "CI Status")
