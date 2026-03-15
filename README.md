@@ -135,7 +135,7 @@ La lista de ubicaciones por defecto que están en PATH son:
 
 3. ¡Todo listo!
 
-> **Nota: ** Para mantenerlo actualizado, ejecuta periódicamente `brew upgrade ffmpeg`.
+> **Nota:** Para mantenerlo actualizado, ejecuta periódicamente `brew upgrade ffmpeg`.
 
 ## COMPILAR
 
