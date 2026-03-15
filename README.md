@@ -105,7 +105,7 @@ No se necesita descargar nada de antemano, pero es recomendable tener la última
 #### Opción 2 : Descarga manual
 
 1. Descarga y descomprime [ffmpeg-release-essentials.7z](https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.7z)
-3. Copia `ffmpeg.exe` y `ffprobe.exe` que están dentro de la carpeta `bin`, esos binarios debes pegarlos en cualquier ruta del [PATH](####PATH) en Windows, ya que VManager intentará encontrarlos allí. Elige únicamente una sola ruta.
+3. Copia `ffmpeg.exe` y `ffprobe.exe` que están dentro de la carpeta `bin`, esos binarios debes pegarlos en cualquier ruta del [PATH](#PATH) en Windows, ya que VManager intentará encontrarlos allí. Elige únicamente una sola ruta.
 4. ¡Todo listo!
 
 > **Nota**: Para mantenerlo actualizado tendrás que repetir todos los pasos nuevamente, de manera periódica.
