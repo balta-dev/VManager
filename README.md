@@ -39,8 +39,6 @@ VManager es una aplicación de escritorio multiplataforma para recortar, comprim
 
 Puedes instalar VManager haciendo click en la insignia correspondiente a tu sistema operativo o desde [Releases](https://github.com/balta-dev/VManager/releases). 
 
-### Instrucciones
-
 ### Windows
 
 1. Extrae el contenido
