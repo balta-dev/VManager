@@ -22,7 +22,7 @@ VManager es una aplicación de escritorio multiplataforma para recortar, comprim
     
 * [CONTRIBUIR](CONTRIBUTING.md#contribuir-a-vmanager)
   * [Abrir un Issue](CONTRIBUTING.md#abrir-un-issue)
-    * [Instrucciones para Desarrolladores](CONTRIBUTING.md#instrucciones-para-desarrolladores)
+  * [Instrucciones para Desarrolladores](CONTRIBUTING.md#instrucciones-para-desarrolladores)
     
 * [EXTRA](#extra)
   * [Motivaciones](#motivaciones)
