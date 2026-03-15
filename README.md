@@ -1,6 +1,7 @@
 <div align="center">
 
 ![Banner](VManager/Assets/banner.png)
+
 [![Release version](https://img.shields.io/github/v/release/balta-dev/VManager?color=brightgreen&label=Download&style=for-the-badge)](#installation "Installation")
 [![Donate](https://img.shields.io/badge/_-Donate-red.svg?logo=githubsponsors&labelColor=555555&style=for-the-badge)](https://ko-fi.com/baltafranz "Donate")
 [![License: Mit License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE.md "License")
@@ -16,19 +17,17 @@ VManager es una aplicación de escritorio multiplataforma para recortar, comprim
     * [Actualizar](#actualizar)
     * [Dependencias](#dependencias)
     * [Compilar](#compilar)
-      * [Pre-requisitos](####pre-requisitos)
-      * [Clonar el repo](####clonar-el-repo)
+      * [Pre-requisitos](#pre-requisitos)
+      * [Clonar el repo](#clonar-el-repo)
     
 * [CONTRIBUIR](CONTRIBUTING.md#contribuir-a-vmanager)
   * [Abrir un Issue](CONTRIBUTING.md#abrir-un-issue)
     * [Instrucciones para Desarrolladores](CONTRIBUTING.md#instrucciones-para-desarrolladores)
     
 * [EXTRA](#extra)
-  * [Motivaciones](###motivaciones)
-    
-    * [Objetivos](###objetivos)
-    
-    * [Agradecimientos](###agradecimientos)
+  * [Motivaciones](#motivaciones)
+  * [Objetivos](#objetivos)
+  * [Agradecimientos](#agradecimientos)
     
 
 
@@ -140,7 +139,7 @@ La lista de ubicaciones por defecto que están en PATH son:
 
 ## COMPILAR
 
-### Pre-requisitos:
+### Pre-requisitos
 
 ### 	1) .NET 9 SDK
 
