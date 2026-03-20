@@ -1,5 +1,5 @@
 # VManager - FFmpeg & yt-dlp GUI
-VManager es una aplicación open-source multiplataforma para recortar, comprimir, convertir y descargar videos o audios de forma rápida y eficiente. Desarrollado en C# con Avalonia UI. Disponible para Windows, Linux y macOS.
+VManager es una aplicación open-source multiplataforma para recortar, comprimir, convertir y descargar videos o audios de forma rápida y eficiente. Desarrollado en C# con Avalonia UI. Disponible para Windows, Linux y macOS, sin dependencias externas.
 
 <div align="center">
 
