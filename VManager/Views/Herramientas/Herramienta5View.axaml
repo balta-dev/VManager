@@ -294,11 +294,10 @@
           </Grid>
 
           <!-- Estado global -->
-          <StackPanel HorizontalAlignment="Center" Spacing="2" Margin="0,6,0,0">
+          <StackPanel HorizontalAlignment="Center" Spacing="2" Margin="0,8,0,0">
             <TextBlock Text="{Binding Status}"
                        FontSize="12"
-                       HorizontalAlignment="Center"
-                       FontWeight="SemiBold"/>
+                       HorizontalAlignment="Center"/>
           </StackPanel>
 
           <!-- Botón descargar -->
@@ -310,8 +309,7 @@
                   IsEnabled="{Binding IsVideoPathSet}"
                   Command="{Binding DownloadCommand}" 
                   HotKey="Enter"
-                  Width="200"
-                  Margin="0,6,0,0"
+                  Margin="0,4,0,0"
                   HorizontalAlignment="Center"/>
 
           <!-- Mostrar archivo -->

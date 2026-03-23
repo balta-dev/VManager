@@ -126,9 +126,7 @@
 
         <!-- Estado -->
         <StackPanel HorizontalAlignment="Center" Spacing="2" Margin="0,2,0,0">
-          <TextBlock Text="{Binding Status}"     FontSize="12" HorizontalAlignment="Center"/>
-          <TextBlock Text="{Binding OutputPath}" FontSize="12" HorizontalAlignment="Center"/>
-          <TextBlock Text="{Binding Warning}"    FontSize="12" HorizontalAlignment="Center"/>
+          <TextBlock Text="{Binding Status}" FontSize="12" HorizontalAlignment="Center"/>
         </StackPanel>
 
         <!-- Botón extraer -->

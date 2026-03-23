@@ -111,7 +111,11 @@ namespace VManager.ViewModels.Herramientas
         public async void AddUrl(string url)
         {
             if (string.IsNullOrWhiteSpace(url))
+            {
+                Status = L["VideoStatus.NoVideo"];
+                this.RaisePropertyChanged(nameof(Status));
                 return;
+            }
 
             if (!IsValidUrl(url))
             {
