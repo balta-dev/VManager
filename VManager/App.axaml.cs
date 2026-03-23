@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
@@ -32,6 +33,7 @@ public partial class App : Application
     
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            
             var config = ConfigurationService.Current;
             Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] Config cargada");
         
