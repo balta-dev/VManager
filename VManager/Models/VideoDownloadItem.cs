@@ -23,10 +23,24 @@ namespace VManager.Models
         private bool _isLoading = true;
         private bool _hasError;
         private Bitmap? _thumbnailBitmap;
+        
         public bool UsedCookies { get; set; } = true;
-
         public string Url { get; set; } = string.Empty;
 
+        // ── Playlist ──────────────────────────────────────────────
+        /// <summary>
+        /// ID de la playlist a la que pertenece este item (null si es un video suelto).
+        /// </summary>
+        public string? PlaylistId { get; set; }
+
+        /// <summary>
+        /// True si el usuario cambió el formato de este item manualmente,
+        /// por lo que NO debe sincronizarse cuando cambie el formato global de la playlist.
+        /// </summary>
+        public bool FormatOverriddenByUser { get; set; } = false;
+
+        public bool IsPlaylistItem => PlaylistId != null;
+        // ─────────────────────────────────────────────────────────
 
         public string Title
         {
@@ -46,13 +60,11 @@ namespace VManager.Models
             set { _thumbnailUrl = value; OnPropertyChanged(); }
         }
 
-
         public Bitmap? ThumbnailBitmap
         {
             get => _thumbnailBitmap;
             set { _thumbnailBitmap = value; OnPropertyChanged(); }
         }
-
 
         public long? FileSize
         {
@@ -65,13 +77,11 @@ namespace VManager.Models
             }
         }
 
-
         public ObservableCollection<VideoFormat> AvailableFormats
         {
             get => _availableFormats;
             set { _availableFormats = value; OnPropertyChanged(); }
         }
-
 
         public VideoFormat? SelectedFormat
         {
@@ -87,7 +97,6 @@ namespace VManager.Models
             }
         }
 
-
         public bool IsLoading
         {
             get => _isLoading;
@@ -100,13 +109,11 @@ namespace VManager.Models
             set { _hasError = value; OnPropertyChanged(); }
         }
 
-
         public string ErrorMessage
         {
             get => _errorMessage;
             set { _errorMessage = value; OnPropertyChanged(); }
         }
-
 
         public double Progress
         {
@@ -114,13 +121,11 @@ namespace VManager.Models
             set { _progress = value; OnPropertyChanged(); }
         }
 
-
         public string Status
         {
             get => _status;
             set { _status = value; OnPropertyChanged(); }
         }
-
 
         public bool IsDownloading
         {
@@ -133,17 +138,15 @@ namespace VManager.Models
             get => _isCanceled;
             set { _isCanceled = value; OnPropertyChanged(); }
         }
-        
+
         public bool IsCompleted
         {
             get => _isCompleted;
             set { _isCompleted = value; OnPropertyChanged(); }
         }
 
-
         public string FileSizeFormatted =>
             FileSize.HasValue ? FormatFileSize(FileSize.Value) : "";
-
 
         private static string FormatFileSize(long bytes)
         {
@@ -160,7 +163,6 @@ namespace VManager.Models
             return $"{len:0.##} {sizes[order]}";
         }
 
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
@@ -168,8 +170,6 @@ namespace VManager.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
-
 
     public class VideoFormat
     {

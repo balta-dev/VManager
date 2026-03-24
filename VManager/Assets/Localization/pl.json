@@ -218,7 +218,8 @@
       "Add": "Dodaj",
       "Download": "Pobierz wideo",
       "Cancel": "ANULUJ",
-      "ShowFileInFolder": "Pokaż plik w folderze"
+      "ShowFileInFolder": "Pokaż plik w folderze",
+      "ClearAll": "Wyczyść kolejkę"
     },
     "Fields": {
       "PasteVideo": "Wklej URL wideo",
@@ -434,7 +435,12 @@
     "Downloaded": "Pobrano",
     "Downloads": "pobrania",
     "CantDeleteWhileDownloading": "Nie można usunąć wideo podczas pobierania.",
-    "OperationCanceled": "Operacja anulowana."
+    "OperationCanceled": "Operacja anulowana.",
+    "PlaylistIgnored": "W URL wykryto playlistę. Zostanie pobrane tylko wideo. Aby pobrać całą playlistę, użyj linku do playlisty.",
+    "DetectingPlaylist": "Wykrywanie...",
+    "PlaylistEmpty": "Playlista nie zawiera wideo.",
+    "PlaylistLoading": "Ładowanie playlisty: {0}/{1}",
+    "PlaylistLoaded": "Playlista załadowana: {0} filmów"
   },
   "Notifier": {
     "FileProcessed": "Plik {0} został pomyślnie przetworzony!"
@@ -442,5 +448,10 @@
   "Overlay": {
     "DropHere": "Upuść plik tutaj",
     "CancelHint": "lub naciśnij ESC, aby anulować"
+  },
+  "Errors": {
+    "CookiesExpired": "Plik cookies wygasł. Proszę go odnowić lub usunąć.",
+    "CookiesWarningTitle": "Ostrzeżenie",
+    "RetryingWithoutCookies": "yt-dlp ma problemy. Ponawiam próbę bez cookies..."
   }
 }

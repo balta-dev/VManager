@@ -108,12 +108,29 @@
                        HorizontalAlignment="Stretch"/>
             </Grid>
 
-            <!-- Contador -->
-            <TextBlock FontSize="12" Opacity="0.8" HorizontalAlignment="Center" Margin="0,25,0,0">
-              <Run Text="{Binding L[VDownload.Fields.Queue]}" />
-              <Run Text=":" />
-              <Run Text="{Binding VideoCount}" />
-            </TextBlock>
+            <!-- Contador + Limpiar todo -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" 
+                        Margin="0,25,0,0" Spacing="10"
+                        VerticalAlignment="Center">
+              <TextBlock FontSize="12" Opacity="0.8" VerticalAlignment="Center">
+                <Run Text="{Binding L[VDownload.Fields.Queue]}" />
+                <Run Text=":" />
+                <Run Text="{Binding VideoCount}" />
+              </TextBlock>
+              <!-- Botón Limpiar todo: visible solo si hay videos y no está descargando -->
+              <Button Command="{Binding ClearAllCommand}"
+                      FontSize="11"
+                      Padding="6,2"
+                      VerticalAlignment="Center"
+                      Classes="RedAccented"
+                      IsVisible="{Binding IsVideoPathSet}"
+                      IsEnabled="{Binding !IsConverting}"
+                      ToolTip.Tip="{Binding L[VDownload.Buttons.ClearAll]}">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                  <TextBlock Text="{Binding L[VDownload.Buttons.ClearAll]}" VerticalAlignment="Center"/>
+                </StackPanel>
+              </Button>
+            </StackPanel>
           
           </StackPanel>
           
@@ -199,7 +216,8 @@
                                           SelectedItem="{Binding SelectedFormat, Mode=TwoWay}"
                                           Margin="0,4,0,0"
                                           HorizontalAlignment="Left"
-                                          IsVisible="{Binding !IsLoading}">
+                                          IsVisible="{Binding !IsLoading}"
+                                          x:Name="FormatComboBox">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate DataType="models:VideoFormat">
                                             <TextBlock Text="{Binding DisplayName}"/>
@@ -258,7 +276,7 @@
               <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Grid.Column="0"
+            <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                         Orientation="Horizontal"
                         HorizontalAlignment="Center"
                         Margin="0,0,0,4"

@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Media;
+using VManager.Services.Core;
 using VManager.Services.Core.Media;
 using VManager.Services.Models;
 
@@ -17,6 +18,7 @@ namespace VManager.Services;
 public class YtDlpProcessor
 {
     private readonly string _ytDlpPath = YtDlpManager.YtDlpPath;
+    public LocalizationService L => LocalizationService.Instance;
 
     private static string? DetectBrowser()
     {
@@ -229,7 +231,7 @@ public class YtDlpProcessor
     
         Console.WriteLine("[YTDLP] Reintentando sin cookies...");
         var ex = new Exception("yt-dlp está teniendo problemas. Reintentando sin cookies...");
-        ErrorService.Show(ex, null, "Advertencia", "#FFFFA500");
+        ErrorService.Show(L["Errors.RetryingWithoutCookies"], null, L["Errors.CookiesWarningTitle"], "#FFFFA500");
         result = await GetVideoInfoInternalAsync(url, useCookies: false, cancellationToken);
         return (result, false);
     }
@@ -292,6 +294,73 @@ public class YtDlpProcessor
     }
 
     // ============================================================
+    //                   OBTENER INFO DE PLAYLIST
+    // ============================================================
+
+    /// <summary>
+    /// Devuelve la info de una playlist usando --flat-playlist -J.
+    /// El campo _type del JSON determina si es playlist o video suelto.
+    /// </summary>
+    public async Task<PlaylistInfo?> GetPlaylistInfoAsync(string url, CancellationToken cancellationToken = default)
+    {
+        var result = await GetPlaylistInfoInternalAsync(url, useCookies: true, cancellationToken);
+        if (result != null)
+            return result;
+
+        Console.WriteLine("[YTDLP] Reintentando playlist sin cookies...");
+        return await GetPlaylistInfoInternalAsync(url, useCookies: false, cancellationToken);
+    }
+
+    private async Task<PlaylistInfo?> GetPlaylistInfoInternalAsync(string url, bool useCookies, CancellationToken cancellationToken)
+    {
+        var psi = new ProcessStartInfo
+        {
+            FileName = _ytDlpPath,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        if (useCookies)
+            foreach (var arg in BuildCookiesArguments())
+                psi.ArgumentList.Add(arg);
+
+        psi.ArgumentList.Add("--flat-playlist");
+        psi.ArgumentList.Add("-J"); // JSON completo de la playlist en un solo objeto
+        psi.ArgumentList.Add("--js-runtimes");
+        psi.ArgumentList.Add($"deno:{DenoManager.DenoPath}");
+        psi.ArgumentList.Add(url);
+
+        var process = new Process { StartInfo = psi };
+
+        try
+        {
+            process.Start();
+            Console.WriteLine($"[DEBUG] Playlist cmd: {psi.FileName} {string.Join(" ", psi.ArgumentList)}");
+
+            string json = await process.StandardOutput.ReadToEndAsync();
+            string error = await process.StandardError.ReadToEndAsync();
+
+            await process.WaitForExitAsync(cancellationToken);
+
+            if (process.ExitCode != 0)
+            {
+                Console.WriteLine($"[YTDLP] Error obteniendo playlist: {error}");
+                return null;
+            }
+
+            return JsonSerializer.Deserialize<PlaylistInfo>(json, VManagerJsonContext.Default.PlaylistInfo);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[YTDLP] Error al obtener info de playlist: {ex.Message}");
+            ErrorService.Show(ex);
+            return null;
+        }
+    }
+
+    // ============================================================
     //                      DESCARGAR VIDEO
     // ============================================================
     
@@ -326,9 +395,8 @@ public class YtDlpProcessor
          el problema es que yt-dlp todavía no entiende SABR
          https://github.com/yt-dlp/yt-dlp/issues/12482
         */
-        psi.ArgumentList.Add("--js-runtimes"); //agregado porque eventualmente sin este parámetro no va a funcionar
-        psi.ArgumentList.Add($"deno:{DenoManager.DenoPath}"); //agregado denomanager + binarios deno para resolver challenges de js      
-        /////////////
+        psi.ArgumentList.Add("--js-runtimes");
+        psi.ArgumentList.Add($"deno:{DenoManager.DenoPath}");
         psi.ArgumentList.Add("--merge-output-format");
         psi.ArgumentList.Add("mp4");
         
@@ -445,7 +513,5 @@ public class YtDlpProcessor
             ErrorService.Show(ex);
             return new ProcessingResult(false, $"Error: {ex.Message}");
         }
-        
     }
-    
 }

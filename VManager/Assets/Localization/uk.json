@@ -218,7 +218,8 @@
       "Add": "Додати",
       "Download": "Завантажити відео",
       "Cancel": "СКАСУВАТИ",
-      "ShowFileInFolder": "Показати файл у папці"
+      "ShowFileInFolder": "Показати файл у папці",
+      "ClearAll": "Очистити чергу"
     },
     "Fields": {
       "PasteVideo": "Вставте URL відео",
@@ -434,7 +435,12 @@
     "Downloaded": "Завантажено",
     "Downloads": "завантаження",
     "CantDeleteWhileDownloading": "Не можна видалити відео під час завантаження.",
-    "OperationCanceled": "Операцію скасовано."
+    "OperationCanceled": "Операцію скасовано.",
+    "PlaylistIgnored": "У URL виявлено плейлист. Буде завантажено лише відео. Для завантаження повного плейлиста використовуйте посилання на плейлист.",
+    "DetectingPlaylist": "Визначення...",
+    "PlaylistEmpty": "Плейлист не містить відео.",
+    "PlaylistLoading": "Завантаження плейлиста: {0}/{1}",
+    "PlaylistLoaded": "Плейлист завантажено: {0} відео"
   },
   "Notifier": {
     "FileProcessed": "Файл {0} успішно оброблено!"
@@ -442,5 +448,10 @@
   "Overlay": {
     "DropHere": "Перетягніть файл сюди",
     "CancelHint": "або натисніть ESC для скасування"
+  },
+  "Errors": {
+    "CookiesExpired": "Файл cookies застарів. Будь ласка, оновіть або видаліть його.",
+    "CookiesWarningTitle": "Попередження",
+    "RetryingWithoutCookies": "yt-dlp має проблеми. Повторна спроба без cookies..."
   }
 }

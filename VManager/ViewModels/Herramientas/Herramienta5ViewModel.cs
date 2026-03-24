@@ -21,7 +21,15 @@ namespace VManager.ViewModels.Herramientas
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
     public class Herramienta5ViewModel : CodecViewModelBase
     {
-        // Nueva propiedad para la colección de videos con info
+        // ── Formatos fijos para items de playlist ─────────────────
+        private static readonly ObservableCollection<VManager.Models.VideoFormat> PlaylistFormats = new()
+        {
+            new VManager.Models.VideoFormat { FormatId = "best", Resolution = "Mejor calidad", Extension = "mp4" },
+            new VManager.Models.VideoFormat { FormatId = "0",    Resolution = "audio",          Extension = "mp3" },
+            new VManager.Models.VideoFormat { FormatId = "1",    Resolution = "audio",          Extension = "wav" },
+        };
+        // ─────────────────────────────────────────────────────────
+
         private ObservableCollection<VideoDownloadItem> _videos = new();
         public ObservableCollection<VideoDownloadItem> Videos
         {
@@ -63,12 +71,9 @@ namespace VManager.ViewModels.Herramientas
         
         public override void ClearInfo()
         {
-            // Primero ejecuta el ClearInfo del base
             base.ClearInfo();
-            
             SelectedVideo = null;
             this.RaisePropertyChanged(nameof(SelectedVideo));
-            
         }
         
         private readonly AppConfig _config;
@@ -77,8 +82,9 @@ namespace VManager.ViewModels.Herramientas
         public ReactiveCommand<string, Unit> AddUrlCommand { get; }
         public ReactiveCommand<VideoDownloadItem, Unit> RemoveUrlCommand { get; }
         public ReactiveCommand<Unit, Unit> HideDownloadHelpCommand { get; }
-        
-        private readonly SemaphoreSlim _downloadSemaphore = new SemaphoreSlim(3, 3); // Máx 3 simultáneas (ajustá según tu máquina/red)
+        public ReactiveCommand<Unit, Unit> ClearAllCommand { get; }
+
+        private readonly SemaphoreSlim _downloadSemaphore = new SemaphoreSlim(3, 3);
 
         public Herramienta5ViewModel()
         {
@@ -90,6 +96,7 @@ namespace VManager.ViewModels.Herramientas
                 () => { ShowDownloadHelp = false; },
                 outputScheduler: AvaloniaScheduler.Instance
             );
+            ClearAllCommand = ReactiveCommand.Create(ClearAll, outputScheduler: AvaloniaScheduler.Instance);
             SelectedAudioFormat = SupportedAudioFormats[0]; // mp3
         }
 
@@ -107,7 +114,47 @@ namespace VManager.ViewModels.Herramientas
                    && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
         }
 
-        // Agregar URL y cargar su info
+        // ============================================================
+        //              CLASIFICACIÓN DE URL
+        // ============================================================
+
+        private enum UrlType { Single, VideoInPlaylist, Playlist }
+
+        /// <summary>
+        /// Clasifica la URL en base a los query params.
+        /// Solo se usa para YouTube; otras plataformas se manejan vía _type del JSON de yt-dlp.
+        /// </summary>
+        private static UrlType ClassifyYouTubeUrl(Uri uri, out string cleanUrl)
+        {
+            var qs = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            bool hasList = !string.IsNullOrEmpty(qs["list"]);
+            bool hasV    = !string.IsNullOrEmpty(qs["v"]);
+
+            if (hasList && hasV)
+            {
+                // Video dentro de una playlist → stripear list e index
+                var builder = new UriBuilder(uri)
+                {
+                    Query = $"v={qs["v"]}"
+                };
+                cleanUrl = builder.Uri.ToString();
+                return UrlType.VideoInPlaylist;
+            }
+
+            if (hasList && !hasV)
+            {
+                cleanUrl = uri.ToString();
+                return UrlType.Playlist;
+            }
+
+            cleanUrl = uri.ToString();
+            return UrlType.Single;
+        }
+
+        // ============================================================
+        //              AGREGAR URL
+        // ============================================================
+
         public async void AddUrl(string url)
         {
             if (string.IsNullOrWhiteSpace(url))
@@ -124,7 +171,60 @@ namespace VManager.ViewModels.Herramientas
                 return;
             }
 
-            // Verificar si ya existe
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+                return;
+
+            UrlText = string.Empty;
+            bool isYouTube = uri.Host.Contains("youtube.com") || uri.Host.Contains("youtu.be");
+
+            // --- 1. CASO YOUTUBE (Ya optimizado) ---
+            if (isYouTube)
+            {
+                var urlType = ClassifyYouTubeUrl(uri, out string cleanUrl);
+
+                if (urlType == UrlType.VideoInPlaylist)
+                {
+                    Status = L["VideoStatus.PlaylistIgnored"];
+                    this.RaisePropertyChanged(nameof(Status));
+                    await AddSingleVideoAsync(cleanUrl);
+                    return;
+                }
+
+                if (urlType == UrlType.Playlist)
+                {
+                    await AddPlaylistAsync(url);
+                    return;
+                }
+        
+                // Es un video normal de YT
+                await AddSingleVideoAsync(url);
+                return;
+            }
+
+            // --- 2. OTRAS PLATAFORMAS (Instagram, TikTok, Twitter, etc.) ---
+            // En lugar de ir directo a AddPlaylistAsync, chequeamos si la URL 
+            // contiene keywords típicas de listas.
+            bool looksLikePlaylist = url.Contains("playlist") || 
+                                     url.Contains("album") || 
+                                     url.Contains("/sets/") || 
+                                     url.Contains("series");
+
+            if (looksLikePlaylist)
+            {
+                await AddPlaylistAsync(url);
+            }
+            else
+            {
+                // El 99% de los links de redes sociales van por acá ahora (INSTANTÁNEO)
+                await AddSingleVideoAsync(url);
+            }
+        }
+
+        /// <summary>
+        /// Agrega un video suelto (flujo original).
+        /// </summary>
+        private async Task AddSingleVideoAsync(string url)
+        {
             if (Videos.Any(v => v.Url == url))
             {
                 Status = L["VideoStatus.AlreadyOnList"];
@@ -132,7 +232,6 @@ namespace VManager.ViewModels.Herramientas
                 return;
             }
 
-            // Crear item temporal
             var videoItem = new VideoDownloadItem
             {
                 Url = url,
@@ -141,14 +240,160 @@ namespace VManager.ViewModels.Herramientas
             };
 
             Videos.Add(videoItem);
-            UrlText = string.Empty; // Limpiar textbox
-            
             this.RaisePropertyChanged(nameof(IsVideoPathSet));
             this.RaisePropertyChanged(nameof(VideoCount));
 
-            // Cargar metadata en background
             await LoadVideoInfoAsync(videoItem);
         }
+
+        /// <summary>
+        /// Detecta si la URL es una playlist (vía yt-dlp --flat-playlist -J).
+        /// Si lo es, agrega todos sus videos. Si no, la trata como video suelto.
+        /// </summary>
+        private async Task AddPlaylistAsync(string url)
+        {
+            // Item placeholder mientras detectamos
+            var detectingItem = new VideoDownloadItem
+            {
+                Url = url,
+                Title = L["VideoStatus.DetectingPlaylist"], // "Detectando..."
+                IsLoading = true
+            };
+            Videos.Add(detectingItem);
+            this.RaisePropertyChanged(nameof(IsVideoPathSet));
+            this.RaisePropertyChanged(nameof(VideoCount));
+
+            try
+            {
+                var processor = new YtDlpProcessor();
+                var playlistInfo = await processor.GetPlaylistInfoAsync(url);
+
+                // Quitar el placeholder
+                Videos.Remove(detectingItem);
+
+                if (playlistInfo == null || !playlistInfo.IsPlaylist)
+                {
+                    // No es playlist → flujo normal
+                    await AddSingleVideoAsync(url);
+                    return;
+                }
+
+                // ── Es una playlist ───────────────────────────────
+                var entries = playlistInfo.Entries;
+                if (entries == null || entries.Count == 0)
+                {
+                    Status = L["VideoStatus.PlaylistEmpty"]; // "La playlist no tiene videos."
+                    this.RaisePropertyChanged(nameof(Status));
+                    return;
+                }
+
+                string playlistId = playlistInfo.Id ?? url;
+                Status = $"Cargando playlist: 0/{entries.Count}";
+                this.RaisePropertyChanged(nameof(Status));
+
+                // Semáforo para no cargar thumbnails de 100 videos en paralelo
+                using var thumbSemaphore = new SemaphoreSlim(4, 4);
+                int loaded = 0;
+
+                var tasks = entries.Select(async entry =>
+                {
+                    string entryUrl = entry.EffectiveUrl ?? url;
+
+                    // Deduplicar
+                    if (Videos.Any(v => v.Url == entryUrl))
+                        return;
+
+                    var item = new VideoDownloadItem
+                    {
+                        Url = entryUrl,
+                        Title = entry.Title ?? "...",
+                        Duration = entry.Duration.HasValue ? FormatDuration(entry.Duration.Value) : string.Empty,
+                        PlaylistId = playlistId,
+                        IsLoading = false,
+                        AvailableFormats = PlaylistFormats,
+                        SelectedFormat = PlaylistFormats[0] // "Mejor calidad"
+                    };
+
+                    Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                    {
+                        Videos.Add(item);
+                        this.RaisePropertyChanged(nameof(IsVideoPathSet));
+                        this.RaisePropertyChanged(nameof(VideoCount));
+                    });
+
+                    // Cargar thumbnail en background con semáforo
+                    string? thumbUrl = entry.BestThumbnailUrl;
+                    if (!string.IsNullOrEmpty(thumbUrl))
+                    {
+                        await thumbSemaphore.WaitAsync();
+                        try
+                        {
+                            var bytes = await _httpClient.GetByteArrayAsync(thumbUrl);
+                            using var ms = new MemoryStream(bytes);
+                            item.ThumbnailBitmap = new Bitmap(ms);
+                        }
+                        catch { /* thumbnail no crítico */ }
+                        finally
+                        {
+                            thumbSemaphore.Release();
+                        }
+                    }
+
+                    int n = Interlocked.Increment(ref loaded);
+                    Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                    {
+                        Status = $"Cargando playlist: {n}/{entries.Count}";
+                        this.RaisePropertyChanged(nameof(Status));
+                    });
+                });
+
+                await Task.WhenAll(tasks);
+
+                Status = $"Playlist cargada: {entries.Count} videos";
+                this.RaisePropertyChanged(nameof(Status));
+                this.RaisePropertyChanged(nameof(VideoCount));
+            }
+            catch (Exception ex)
+            {
+                Videos.Remove(detectingItem);
+                Console.WriteLine($"[PLAYLIST] Error: {ex}");
+                ErrorService.Show(ex);
+
+                // Fallback: intentar como video suelto
+                await AddSingleVideoAsync(url);
+            }
+        }
+
+        // ============================================================
+        //          SINCRONIZACIÓN DE FORMATO EN PLAYLIST
+        // ============================================================
+
+        /// <summary>
+        /// Cuando el usuario cambia el formato de un item de playlist,
+        /// propaga el cambio a todos los demás items de la misma playlist
+        /// que no hayan sido modificados manualmente.
+        /// Llamar desde la View o mediante suscripción a PropertyChanged.
+        /// </summary>
+        public void OnPlaylistItemFormatChanged(VideoDownloadItem changedItem)
+        {
+            if (changedItem.PlaylistId == null || changedItem.SelectedFormat == null)
+                return;
+
+            changedItem.FormatOverriddenByUser = true;
+
+            foreach (var item in Videos)
+            {
+                if (item == changedItem) continue;
+                if (item.PlaylistId != changedItem.PlaylistId) continue;
+                if (item.FormatOverriddenByUser) continue;
+
+                item.SelectedFormat = changedItem.SelectedFormat;
+            }
+        }
+
+        // ============================================================
+        //                  CARGAR INFO DE VIDEO INDIVIDUAL
+        // ============================================================
 
         private async Task LoadVideoInfoAsync(VideoDownloadItem videoItem)
         {
@@ -166,8 +411,7 @@ namespace VManager.ViewModels.Herramientas
                     videoItem.Title = L["VideoStatus.ErrorNoInfo"];
                     videoItem.IsLoading = false;
                     ShowDownloadHelp = true;
-                    ErrorService.Show("Su archivo de cookies caducó. Por favor, renuévelo o quítelo.", null, "Advertencia", "#FFFFA500");
-                    // return; dejar al usuario seguir a pesar de eso.
+                    ErrorService.Show(L["Errors.CookiesExpired"], null, L["Errors.CookiesWarningTitle"], "#FFFFA500");
                 }
 
                 if (info == null)
@@ -180,17 +424,14 @@ namespace VManager.ViewModels.Herramientas
                     return;
                 }
 
-                // Actualizar info
                 videoItem.Title = info.Title;
                 videoItem.Duration = FormatDuration(info.Duration);
                 videoItem.ThumbnailUrl = info.Thumbnail;
                 videoItem.FileSize = info.FileSize;
                 
-                // Cargar formatos disponibles - CON AUDIO
                 var seenResolutions = new HashSet<string>();
                 var formatList = new List<VManager.Models.VideoFormat>();
 
-                // 1. Formatos de VIDEO+AUDIO
                 foreach (var f in info.Formats
                              .Where(fmt => !string.IsNullOrEmpty(fmt.VideoCodec) && 
                                            fmt.VideoCodec != "none" && 
@@ -228,10 +469,8 @@ namespace VManager.ViewModels.Herramientas
                 });
                 
                 videoItem.AvailableFormats = new ObservableCollection<VManager.Models.VideoFormat>(formatList);
-                // Seleccionar formato por defecto
                 videoItem.SelectedFormat = videoItem.AvailableFormats.FirstOrDefault();
 
-                // Descargar thumbnail
                 if (!string.IsNullOrEmpty(info.Thumbnail))
                 {
                     try
@@ -240,10 +479,7 @@ namespace VManager.ViewModels.Herramientas
                         using var ms = new MemoryStream(thumbnailBytes);
                         videoItem.ThumbnailBitmap = new Bitmap(ms);
                     }
-                    catch
-                    {
-                        // Si falla el thumbnail, no es crítico
-                    }
+                    catch { }
                 }
 
                 videoItem.IsLoading = false;
@@ -267,6 +503,25 @@ namespace VManager.ViewModels.Herramientas
             return ts.ToString(@"m\:ss");
         }
 
+        // ============================================================
+        //                  LIMPIAR COLA
+        // ============================================================
+
+        private void ClearAll()
+        {
+            var downloading = Videos.Any(v => v.IsDownloading);
+            if (downloading)
+            {
+                Status = L["VideoStatus.CantDeleteWhileDownloading"];
+                this.RaisePropertyChanged(nameof(Status));
+                return;
+            }
+
+            Videos.Clear();
+            this.RaisePropertyChanged(nameof(IsVideoPathSet));
+            this.RaisePropertyChanged(nameof(VideoCount));
+        }
+
         public void RemoveUrl(VideoDownloadItem video)
         {
             if (video.IsDownloading)
@@ -285,9 +540,12 @@ namespace VManager.ViewModels.Herramientas
         protected override bool AllowAudioFiles => false;
         
         private readonly Dictionary<VideoDownloadItem, double> _maxProgress = new();
-        
         private readonly Dictionary<VideoDownloadItem, double> _realProgress = new();
         
+        // ============================================================
+        //                  DESCARGAR VIDEOS
+        // ============================================================
+
         private async Task DownloadVideos()
         {
             if (Videos.Count == 0)
@@ -325,11 +583,9 @@ namespace VManager.ViewModels.Herramientas
                 string lastGlobalETA = "";
                 object lockObj = new object();
 
-                // Reporte inicial
                 Status = $"{L["VideoStatus.Completed"]} 0/{total} {L["VideoStatus.Downloads"]}";
                 this.RaisePropertyChanged(nameof(Status));
 
-                // Inicializar progresos
                 foreach (var v in pendingVideos)
                 {
                     _realProgress[v] = 0;
@@ -346,9 +602,7 @@ namespace VManager.ViewModels.Herramientas
                         currentVideo.Progress = 0;
 
                         if (total == 1)
-                        {
                             currentVideo.Status = L["VideoStatus.Downloading"];
-                        }
 
                         var progress = new Progress<YtDlpProgress>(p =>
                         {
@@ -369,7 +623,6 @@ namespace VManager.ViewModels.Herramientas
 
                                 _realProgress[currentVideo] = newValue;
 
-                                // Guardar ETA global solo si NO es "Unknown"
                                 if (!string.IsNullOrWhiteSpace(p.Eta) && 
                                     !p.Eta.Equals("Unknown", StringComparison.OrdinalIgnoreCase))
                                 {
@@ -379,19 +632,16 @@ namespace VManager.ViewModels.Herramientas
 
                             currentVideo.Progress = newValue;
 
-                            // Status detallado si es 1 solo video
                             if (total == 1)
                             {
                                 currentVideo.Status = $"{p.Speed} - ETA: {p.Eta}";
                             }
                             else
                             {
-                                // Status con porcentaje + ETA individual si hay múltiples videos
                                 string etaPart = !string.IsNullOrWhiteSpace(p.Eta) ? $" - ETA: {p.Eta}" : "";
                                 currentVideo.Status = $"{newValue:F0}%{etaPart}";
                             }
 
-                            // Calcular progreso global
                             double globalProgress = pendingVideos.Count > 0
                                 ? pendingVideos.Average(v => _realProgress.GetValueOrDefault(v, 0))
                                 : 0;
@@ -411,12 +661,20 @@ namespace VManager.ViewModels.Herramientas
                             ? _config.PreferredDownloadFolder
                             : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-                        string extension = currentVideo.SelectedFormat?.FormatId switch
+                        // ── Determinar formatId y extensión ───────────────
+                        string? formatId = currentVideo.SelectedFormat?.FormatId;
+                        string extension = formatId switch
                         {
-                            "0" => "mp3",
-                            "1" => "wav",
-                            _ => "mp4"
+                            "0"    => "mp3",
+                            "1"    => "wav",
+                            "best" => "mp4",
+                            _      => "mp4"
                         };
+
+                        // Para el formatId que se pasa a yt-dlp:
+                        // "best" → bestvideo+bestaudio/best (se resuelve en DownloadAsync)
+                        // null  → yt-dlp elige por defecto
+                        string? ytFormatId = formatId == "best" ? null : formatId;
 
                         string safeTitle = currentVideo.Title
                             .Replace("/", "-")
@@ -429,11 +687,10 @@ namespace VManager.ViewModels.Herramientas
                             outputTemplate,
                             progress,
                             _cts.Token,
-                            currentVideo.SelectedFormat?.FormatId,
+                            ytFormatId,
                             currentVideo.UsedCookies
                         );
 
-                        // Chequeo: archivo existe → éxito aunque result diga false
                         bool fileDownloaded = File.Exists(outputTemplate);
 
                         if (fileDownloaded || result.Success)
@@ -490,7 +747,6 @@ namespace VManager.ViewModels.Herramientas
 
                         Avalonia.Threading.Dispatcher.UIThread.Post(() =>
                         {
-                            // Status progresivo
                             Status = $"{L["VideoStatus.Completed"]} {finishedCount}/{total} {L["VideoStatus.Downloads"]}";
                             
                             lock (lockObj)
@@ -508,9 +764,8 @@ namespace VManager.ViewModels.Herramientas
                 await Task.WhenAll(downloadTasks);
 
                 Progress = 100;
-                RemainingTime = ""; // Limpiar ETA al finalizar
+                RemainingTime = "";
 
-                // Status final
                 string finalStatus = $"{L["VideoStatus.Completed"]} {finishedCount}/{total} {L["VideoStatus.Downloads"]}";
                 
                 lock (lockObj)

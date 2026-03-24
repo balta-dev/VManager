@@ -14,6 +14,7 @@ namespace VManager.Services
     [JsonSerializable(typeof(HardwareCapabilities))]
     [JsonSerializable(typeof(LogConfig))]
     [JsonSerializable(typeof(UpdateInfo))]
+    [JsonSerializable(typeof(PlaylistInfo))]
     [JsonSourceGenerationOptions(
         WriteIndented = true,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,

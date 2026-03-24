@@ -218,7 +218,8 @@
       "Add": "추가",
       "Download": "비디오 다운로드",
       "Cancel": "취소",
-      "ShowFileInFolder": "폴더에서 파일 표시"
+      "ShowFileInFolder": "폴더에서 파일 표시",
+      "ClearAll": "대기열 비우기"
     },
     "Fields": {
       "PasteVideo": "비디오 URL 붙여넣기",
@@ -434,7 +435,12 @@
     "Downloaded": "다운로드됨",
     "Downloads": "다운로드",
     "CantDeleteWhileDownloading": "다운로드 중에는 비디오를 삭제할 수 없습니다.",
-    "OperationCanceled": "작업이 취소되었습니다."
+    "OperationCanceled": "작업이 취소되었습니다.",
+    "PlaylistIgnored": "URL에서 재생목록이 감지되었습니다. 영상만 다운로드됩니다. 전체 재생목록을 다운로드하려면 재생목록 링크를 사용하세요.",
+    "DetectingPlaylist": "감지 중...",
+    "PlaylistEmpty": "재생목록에 영상이 없습니다.",
+    "PlaylistLoading": "재생목록 불러오는 중: {0}/{1}",
+    "PlaylistLoaded": "재생목록 불러오기 완료: {0}개 영상"
   },
   "Notifier": {
     "FileProcessed": "파일 {0}이(가) 성공적으로 처리되었습니다!"
@@ -442,5 +448,10 @@
   "Overlay": {
     "DropHere": "파일을 여기로 드래그하세요",
     "CancelHint": "또는 ESC를 눌러 취소"
+  },
+  "Errors": {
+    "CookiesExpired": "쿠키 파일이 만료되었습니다. 갱신하거나 삭제해 주세요.",
+    "CookiesWarningTitle": "경고",
+    "RetryingWithoutCookies": "yt-dlp에 문제가 발생했습니다. 쿠키 없이 재시도 중..."
   }
 }

@@ -218,7 +218,8 @@
       "Add": "追加",
       "Download": "動画をダウンロード",
       "Cancel": "キャンセル",
-      "ShowFileInFolder": "フォルダ内でファイルを表示"
+      "ShowFileInFolder": "フォルダ内でファイルを表示",
+      "ClearAll": "キューをクリア"
     },
     "Fields": {
       "PasteVideo": "動画URLを貼り付け",
@@ -434,7 +435,12 @@
     "Downloaded": "ダウンロード完了",
     "Downloads": "ダウンロード",
     "CantDeleteWhileDownloading": "ダウンロード中の動画は削除できません。",
-    "OperationCanceled": "操作がキャンセルされました。"
+    "OperationCanceled": "操作がキャンセルされました。",
+    "PlaylistIgnored": "URLにプレイリストが検出されました。動画のみダウンロードされます。プレイリスト全体をダウンロードするには、プレイリストのリンクを使用してください。",
+    "DetectingPlaylist": "検出中...",
+    "PlaylistEmpty": "プレイリストに動画がありません。",
+    "PlaylistLoading": "プレイリスト読み込み中: {0}/{1}",
+    "PlaylistLoaded": "プレイリスト読み込み完了: {0}本"
   },
   "Notifier": {
     "FileProcessed": "ファイル {0} が正常に処理されました！"
@@ -442,5 +448,10 @@
   "Overlay": {
     "DropHere": "ここにファイルをドロップ",
     "CancelHint": "またはEscキーでキャンセル"
+  },
+  "Errors": {
+    "CookiesExpired": "Cookieファイルの有効期限が切れています。更新または削除してください。",
+    "CookiesWarningTitle": "警告",
+    "RetryingWithoutCookies": "yt-dlpに問題が発生しています。Cookieなしで再試行中..."
   }
 }

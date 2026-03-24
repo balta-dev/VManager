@@ -218,7 +218,8 @@
       "Add": "Add",
       "Download": "Download video",
       "Cancel": "CANCEL",
-      "ShowFileInFolder": "Show file in folder"
+      "ShowFileInFolder": "Show file in folder",
+      "ClearAll": "Clear queue"
     },
     "Fields": {
       "PasteVideo": "Paste video URL",
@@ -273,7 +274,7 @@
       "Hardware4": "It can be useful if you change your GPU or encounter a problem, but be aware that it stresses your computer."
     }
   },
-    "CancelDialog": {
+  "CancelDialog": {
     "Title": "Cancel operation?",
     "Info": "You are about to abruptly terminate the background process.",
     "Warning": "This action cannot be undone.",
@@ -434,7 +435,12 @@
     "Downloaded": "Downloaded",
     "Downloads": "downloads",
     "CantDeleteWhileDownloading": "Cannot delete a video while it is downloading.",
-    "OperationCanceled": "Operation canceled."
+    "OperationCanceled": "Operation canceled.",
+    "PlaylistIgnored": "A playlist was detected in the URL. Only the video will be downloaded. To download the full playlist, use the playlist link.",
+    "DetectingPlaylist": "Detecting...",
+    "PlaylistEmpty": "The playlist has no videos.",
+    "PlaylistLoading": "Loading playlist: {0}/{1}",
+    "PlaylistLoaded": "Playlist loaded: {0} videos"
   },
   "Notifier": {
     "FileProcessed": "¡The file {0} was successfully processed!"
@@ -442,5 +448,10 @@
   "Overlay": {
     "DropHere": "Drop your file here",
     "CancelHint": "or press ESC to cancel"
+  },
+  "Errors": {
+    "CookiesExpired": "Your cookies file has expired. Please renew or remove it.",
+    "CookiesWarningTitle": "Warning",
+    "RetryingWithoutCookies": "yt-dlp is having issues. Retrying without cookies..."
   }
 }

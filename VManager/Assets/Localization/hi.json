@@ -218,7 +218,8 @@
       "Add": "जोड़ें",
       "Download": "वीडियो डाउनलोड करें",
       "Cancel": "रद्द करें",
-      "ShowFileInFolder": "फोल्डर में फाइल दिखाएँ"
+      "ShowFileInFolder": "फोल्डर में फाइल दिखाएँ",
+      "ClearAll": "कतार साफ़ करें"
     },
     "Fields": {
       "PasteVideo": "वीडियो URL पेस्ट करें",
@@ -434,7 +435,12 @@
     "Downloaded": "डाउनलोड हो गया",
     "Downloads": "डाउनलोड",
     "CantDeleteWhileDownloading": "डाउनलोड के दौरान वीडियो हटाया नहीं जा सकता।",
-    "OperationCanceled": "ऑपरेशन रद्द किया गया।"
+    "OperationCanceled": "ऑपरेशन रद्द किया गया।",
+    "PlaylistIgnored": "URL में एक प्लेलिस्ट पाई गई। केवल वीडियो डाउनलोड किया जाएगा। पूरी प्लेलिस्ट के लिए प्लेलिस्ट लिंक का उपयोग करें।",
+    "DetectingPlaylist": "पहचान हो रही है...",
+    "PlaylistEmpty": "प्लेलिस्ट में कोई वीडियो नहीं है।",
+    "PlaylistLoading": "प्लेलिस्ट लोड हो रही है: {0}/{1}",
+    "PlaylistLoaded": "प्लेलिस्ट लोड हुई: {0} वीडियो"
   },
   "Notifier": {
     "FileProcessed": "फाइल {0} सफलतापूर्वक प्रोसेस हो गई!"
@@ -442,5 +448,10 @@
   "Overlay": {
     "DropHere": "अपनी फाइल यहाँ ड्रॉप करें",
     "CancelHint": "या ESC दबाकर रद्द करें"
+  },
+  "Errors": {
+    "CookiesExpired": "आपकी कुकी फाइल समाप्त हो गई है। कृपया इसे नवीनीकृत या हटाएं।",
+    "CookiesWarningTitle": "चेतावनी",
+    "RetryingWithoutCookies": "yt-dlp में समस्या है। कुकीज़ के बिना पुनः प्रयास हो रहा है..."
   }
 }

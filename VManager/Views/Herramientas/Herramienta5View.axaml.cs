@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using VManager.Models;
 using VManager.ViewModels;
 using VManager.ViewModels.Herramientas;
 
@@ -12,42 +13,67 @@ namespace VManager.Views.Herramientas
         {
             InitializeComponent();
             
-            // Encontramos el ListBox por nombre
             var listBox = this.FindControl<ListBox>("VideoListBox");
-
             if (listBox != null)
             {
-                // Interceptamos el evento de rueda del mouse
                 listBox.PointerWheelChanged += ListBox_PointerWheelChanged;
+
+                // Suscribirse a cambios de la colección para hookear PropertyChanged en cada item nuevo
+                if (DataContext is Herramienta5ViewModel vm)
+                    HookViewModel(vm);
+
+                DataContextChanged += (_, _) =>
+                {
+                    if (DataContext is Herramienta5ViewModel newVm)
+                        HookViewModel(newVm);
+                };
             }
-            
         }
-        
+
+        private void HookViewModel(Herramienta5ViewModel vm)
+        {
+            // Cuando se agrega un video nuevo a la lista, suscribirse a sus cambios de propiedad
+            vm.Videos.CollectionChanged += (_, e) =>
+            {
+                if (e.NewItems == null) return;
+                foreach (VideoDownloadItem item in e.NewItems)
+                {
+                    item.PropertyChanged += (sender, args) =>
+                    {
+                        // Solo nos importa el cambio de SelectedFormat en items de playlist
+                        if (args.PropertyName != nameof(VideoDownloadItem.SelectedFormat))
+                            return;
+                        if (sender is not VideoDownloadItem changedItem)
+                            return;
+                        if (changedItem.PlaylistId == null)
+                            return;
+
+                        vm.OnPlaylistItemFormatChanged(changedItem);
+                    };
+                }
+            };
+        }
+
         private void ListBox_PointerWheelChanged(object? sender, PointerWheelEventArgs e)
         {
             if (sender is not ListBox listBox) return;
 
-            // Obtenemos el ScrollViewer interno del ListBox
             var scrollViewer = listBox.Scroll as ScrollViewer;
 
             if (scrollViewer == null)
             {
-                // Si no hay ScrollViewer (lista corta, no scrolleable), no consumimos
                 e.Handled = false;
                 return;
             }
 
-            // Chequeamos si hay contenido scrolleable (extent > viewport)
-            bool hasScrollableContent = scrollViewer.Extent.Height > scrollViewer.Viewport.Height + 1; // +1 para flotantes
+            bool hasScrollableContent = scrollViewer.Extent.Height > scrollViewer.Viewport.Height + 1;
 
             if (!hasScrollableContent)
             {
-                // No hay scrollbar → no consumimos, pasa al padre
                 e.Handled = false;
                 return;
             }
 
-            // Hay scrollbar → consumimos siempre para que no escape al padre
             e.Handled = true;
         }
         

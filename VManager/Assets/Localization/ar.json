@@ -218,7 +218,8 @@
       "Add": "إضافة",
       "Download": "تنزيل الفيديو",
       "Cancel": "إلغاء",
-      "ShowFileInFolder": "إظهار الملف في المجلد"
+      "ShowFileInFolder": "إظهار الملف في المجلد",
+      "ClearAll": "مسح الطابور"
     },
     "Fields": {
       "PasteVideo": "الصق رابط الفيديو",
@@ -434,7 +435,12 @@
     "Downloaded": "تم التنزيل",
     "Downloads": "تنزيلات",
     "CantDeleteWhileDownloading": "لا يمكن حذف فيديو أثناء التنزيل.",
-    "OperationCanceled": "تم إلغاء العملية."
+    "OperationCanceled": "تم إلغاء العملية.",
+    "PlaylistIgnored": "تم اكتشاف قائمة تشغيل في الرابط. سيتم تنزيل الفيديو فقط. لتنزيل القائمة الكاملة، استخدم رابط القائمة.",
+    "DetectingPlaylist": "جاري الاكتشاف...",
+    "PlaylistEmpty": "قائمة التشغيل لا تحتوي على فيديوهات.",
+    "PlaylistLoading": "تحميل قائمة التشغيل: {0}/{1}",
+    "PlaylistLoaded": "تم تحميل قائمة التشغيل: {0} فيديو"
   },
   "Notifier": {
     "FileProcessed": "تم معالجة الملف {0} بنجاح!"
@@ -442,5 +448,10 @@
   "Overlay": {
     "DropHere": "أسقط ملفك هنا",
     "CancelHint": "أو اضغط ESC للإلغاء"
+  },
+  "Errors": {
+    "CookiesExpired": "انتهت صلاحية ملف الكوكيز. يرجى تجديده أو إزالته.",
+    "CookiesWarningTitle": "تحذير",
+    "RetryingWithoutCookies": "yt-dlp يواجه مشاكل. إعادة المحاولة بدون كوكيز..."
   }
 }

@@ -218,7 +218,8 @@
       "Add": "Adicionar",
       "Download": "Baixar vídeo",
       "Cancel": "CANCELAR",
-      "ShowFileInFolder": "Mostrar arquivo na pasta"
+      "ShowFileInFolder": "Mostrar arquivo na pasta",
+      "ClearAll": "Limpar fila"
     },
     "Fields": {
       "PasteVideo": "Colar URL do vídeo",
@@ -434,7 +435,12 @@
     "Downloaded": "Baixado",
     "Downloads": "downloads",
     "CantDeleteWhileDownloading": "Não é possível excluir um vídeo enquanto está baixando.",
-    "OperationCanceled": "Operação cancelada."
+    "OperationCanceled": "Operação cancelada.",
+    "PlaylistIgnored": "Uma playlist foi detectada na URL. Apenas o vídeo será baixado. Para baixar a playlist completa, use o link da playlist.",
+    "DetectingPlaylist": "Detectando...",
+    "PlaylistEmpty": "A playlist não tem vídeos.",
+    "PlaylistLoading": "Carregando playlist: {0}/{1}",
+    "PlaylistLoaded": "Playlist carregada: {0} vídeos"
   },
   "Notifier": {
     "FileProcessed": "O arquivo {0} foi processado com sucesso!"
@@ -442,5 +448,10 @@
   "Overlay": {
     "DropHere": "Solte seu arquivo aqui",
     "CancelHint": "ou pressione ESC para cancelar"
+  },
+  "Errors": {
+    "CookiesExpired": "O arquivo de cookies expirou. Renove-o ou remova-o.",
+    "CookiesWarningTitle": "Aviso",
+    "RetryingWithoutCookies": "yt-dlp está com problemas. Tentando novamente sem cookies..."
   }
 }

@@ -218,7 +218,8 @@
       "Add": "添加",
       "Download": "下载视频",
       "Cancel": "取消",
-      "ShowFileInFolder": "在文件夹中显示文件"
+      "ShowFileInFolder": "在文件夹中显示文件",
+      "ClearAll": "清空队列"
     },
     "Fields": {
       "PasteVideo": "粘贴视频 URL",
@@ -434,7 +435,12 @@
     "Downloaded": "已下载",
     "Downloads": "下载",
     "CantDeleteWhileDownloading": "下载中无法删除视频。",
-    "OperationCanceled": "操作已取消。"
+    "OperationCanceled": "操作已取消。",
+    "PlaylistIgnored": "URL 中检测到播放列表。仅下载该视频。如需下载完整播放列表，请使用播放列表链接。",
+    "DetectingPlaylist": "检测中...",
+    "PlaylistEmpty": "播放列表中没有视频。",
+    "PlaylistLoading": "加载播放列表：{0}/{1}",
+    "PlaylistLoaded": "播放列表已加载：{0} 个视频"
   },
   "Notifier": {
     "FileProcessed": "文件 {0} 已成功处理！"
@@ -442,5 +448,10 @@
   "Overlay": {
     "DropHere": "将文件拖到此处",
     "CancelHint": "或按 ESC 取消"
+  },
+  "Errors": {
+    "CookiesExpired": "Cookie 文件已过期。请更新或删除它。",
+    "CookiesWarningTitle": "警告",
+    "RetryingWithoutCookies": "yt-dlp 遇到问题。正在不使用 Cookie 重试..."
   }
 }

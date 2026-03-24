@@ -218,11 +218,12 @@
       "Add": "Agregar",
       "Download": "Descargar video",
       "Cancel": "CANCELAR",
-      "ShowFileInFolder": "Mostrar archivo en carpeta"
+      "ShowFileInFolder": "Mostrar archivo en carpeta",
+      "ClearAll": "Limpiar cola"
     },
     "Fields": {
       "PasteVideo": "Pegar URL de video",
-      "Queue":"Videos en cola",
+      "Queue": "Videos en cola",
       "Remaining": "Tiempo restante"
     },
     "Popup": {
@@ -281,24 +282,24 @@
     "No": "No"
   },
   "Guide": {
-      "WindowTitle": "Guía de herramienta",
-      "VCut": {
-        "Title": "VCut — Recortar video/audio",
-        "Description": "VCut permite recortar un video/audio de forma rápida usando un punto de inicio y de fin.",
-        "HowTo": {
-          "Title": "Cómo usar:",
-          "Step1": "1) Seleccioná o arrastrá un archivo de video/audio.",
-          "Step2": "2) Escribí el tiempo de inicio y fin del recorte.",
-          "Step3": "3) Presioná Enter o el botón 'Recortar'.",
-          "Step4": "4) Esperá a que se procese en segundo plano."
-        },
-        "Notes": {
-          "Title": "Notas:",
-          "A": "La manera de introducir el tiempo es a gusto, es decir, si quieres cortar entre el segundo 30 y el segundo 45 es directo. Así también, se puede cortar desde el segundo 15 hasta el minuto 1:03 o 27:09.",
-          "B": "La duración final de recorte es automáticamente calculada si el tiempo final es mayor que la duración del video.",
-          "C": "Si no se especifica el tiempo final, se intuye que debe ser al final del video."
-        }
+    "WindowTitle": "Guía de herramienta",
+    "VCut": {
+      "Title": "VCut — Recortar video/audio",
+      "Description": "VCut permite recortar un video/audio de forma rápida usando un punto de inicio y de fin.",
+      "HowTo": {
+        "Title": "Cómo usar:",
+        "Step1": "1) Seleccioná o arrastrá un archivo de video/audio.",
+        "Step2": "2) Escribí el tiempo de inicio y fin del recorte.",
+        "Step3": "3) Presioná Enter o el botón 'Recortar'.",
+        "Step4": "4) Esperá a que se procese en segundo plano."
       },
+      "Notes": {
+        "Title": "Notas:",
+        "A": "La manera de introducir el tiempo es a gusto, es decir, si quieres cortar entre el segundo 30 y el segundo 45 es directo. Así también, se puede cortar desde el segundo 15 hasta el minuto 1:03 o 27:09.",
+        "B": "La duración final de recorte es automáticamente calculada si el tiempo final es mayor que la duración del video.",
+        "C": "Si no se especifica el tiempo final, se intuye que debe ser al final del video."
+      }
+    },
     "VDownload": {
       "title": "VDownload — Descargar videos",
       "description": "VDownload permite descargar uno o varios videos de múltiples plataformas como YouTube o TikTok.",
@@ -434,7 +435,12 @@
     "Downloaded": "Descargado",
     "Downloads": "descargas",
     "CantDeleteWhileDownloading": "No se puede eliminar un video mientras se está descargando.",
-    "OperationCanceled": "Operación cancelada."
+    "OperationCanceled": "Operación cancelada.",
+    "PlaylistIgnored": "Se detectó una playlist en la URL. Se descargará solo el video. Para la playlist completa, usá el link de la playlist.",
+    "DetectingPlaylist": "Detectando...",
+    "PlaylistEmpty": "La playlist no tiene videos.",
+    "PlaylistLoading": "Cargando playlist: {0}/{1}",
+    "PlaylistLoaded": "Playlist cargada: {0} videos"
   },
   "Notifier": {
     "FileProcessed": "¡El archivo {0} fue procesado exitosamente!"
@@ -442,5 +448,10 @@
   "Overlay": {
     "DropHere": "Arrastra tu archivo aquí",
     "CancelHint": "o presiona ESC para cancelar"
+  },
+  "Errors": {
+    "CookiesExpired": "Su archivo de cookies caducó. Por favor, renuévelo o quítelo.",
+    "CookiesWarningTitle": "Advertencia",
+    "RetryingWithoutCookies": "yt-dlp está teniendo problemas. Reintentando sin cookies..."
   }
 }
