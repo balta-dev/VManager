@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="VManager.App"
              xmlns:local="using:VManager"
+             xmlns:controls="https://github.com/DmitryNizhebovsky/Avalonia.RangeSlider"
              RequestedThemeVariant="Default">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
@@ -195,17 +196,20 @@
         </Style>
         
         <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
+        <StyleInclude Source="avares://RangeSlider.Avalonia/Themes/Fluent/RangeSliderTheme.axaml"/>
         
     </Application.Styles>
              
     <Application.Resources>
         
         <ResourceDictionary>
+            
             <ResourceDictionary.MergedDictionaries>
                 <MergeResourceInclude Source="/Controls/Visuals/ToggleButton.axaml"></MergeResourceInclude>
                 <MergeResourceInclude Source="/Controls/Visuals/ScrollBar.axaml"></MergeResourceInclude>
                 <MergeResourceInclude Source="/Controls/Visuals/ScrollViewer.axaml"></MergeResourceInclude>
             </ResourceDictionary.MergedDictionaries>
+            
         </ResourceDictionary>
         
         <!-- Tema Claro -->
@@ -219,6 +223,15 @@
         <SolidColorBrush x:Key="BorderBrushPrimaryDark">#FF444444</SolidColorBrush>
         <SolidColorBrush x:Key="WindowBackgroundBrushDark">#1c1c1c</SolidColorBrush>
         <SolidColorBrush x:Key="ToggleButtonBorderDark">#fff7f3</SolidColorBrush>
+        
+        <!-- Forma de RangeSlider -->
+        <CornerRadius x:Key="SliderThumbCornerRadius">0</CornerRadius>
+        <x:Double x:Key="SliderHorizontalThumbWidth">10</x:Double>
+        <x:Double x:Key="SliderHorizontalThumbHeight">20</x:Double>
+        
+        <!-- Fill fuera del slider -->
+        <SolidColorBrush x:Key="SliderTrackFillPointerOver" Color="Gray"/>
+        <SolidColorBrush x:Key="SliderTrackFillPressed" Color="Gray"/>
         
     </Application.Resources>
 

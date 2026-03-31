@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="VManager.Controls.ResizeGrip">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="6"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="6"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="6"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Row="0" Grid.Column="0" Cursor="TopLeftCorner"     Background="Transparent" PointerPressed="ResizeNW"/>
+        <Border Grid.Row="0" Grid.Column="1" Cursor="TopSide"           Background="Transparent" PointerPressed="ResizeN"/>
+        <Border Grid.Row="0" Grid.Column="2" Cursor="TopRightCorner"    Background="Transparent" PointerPressed="ResizeNE"/>
+        <Border Grid.Row="1" Grid.Column="0" Cursor="LeftSide"          Background="Transparent" PointerPressed="ResizeW"/>
+        <Border Grid.Row="1" Grid.Column="2" Cursor="RightSide"         Background="Transparent" PointerPressed="ResizeE"/>
+        <Border Grid.Row="2" Grid.Column="0" Cursor="BottomLeftCorner"  Background="Transparent" PointerPressed="ResizeSW"/>
+        <Border Grid.Row="2" Grid.Column="1" Cursor="BottomSide"        Background="Transparent" PointerPressed="ResizeS"/>
+        <Border Grid.Row="2" Grid.Column="2" Cursor="BottomRightCorner" Background="Transparent" PointerPressed="ResizeSE"/>
+    </Grid>
+</UserControl>

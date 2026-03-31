@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:VManager.Views"
         xmlns:services="clr-namespace:VManager.Services"
+        xmlns:controls="clr-namespace:VManager.Controls"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="VManager.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -13,16 +14,36 @@
         MinWidth="550" MinHeight="400"
         Width="900" Height="650"
         WindowStartupLocation="CenterScreen"
+        SystemDecorations="Full"
+        ExtendClientAreaToDecorationsHint="True"
         Background="{DynamicResource WindowBackgroundBrush}">
-
+    
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-
+    
     <Grid>
+        <controls:ResizeGrip ZIndex="999" x:Name="TheResizeGrip"/>
+        
+    <Border x:Name="RootBorder" 
+            CornerRadius="10" 
+            BorderThickness="1"
+            BorderBrush="{DynamicResource BorderBrushPrimary}"
+            Background="{DynamicResource WindowBackgroundBrush}"
+            ClipToBounds="True">
+        
+        <!-- CornerRadius="10" -->
+        <!-- BorderThickness="1" -->
+        <!-- BoxShadow="0 8 32 0 #66000000" -->
+        
+        <Grid x:Name="MainGrid" RowDefinitions="32,*"> <!-- 32,*-->
+            
+            <controls:CustomTitleBar x:Name="TheTitleBar" Grid.Row="0"/>
+    
+        <Grid Grid.Row="1">
         <!-- SplitView: sidebar izquierda con las herramientas -->
         <SplitView x:Name="MainSplitView"
-                   IsPaneOpen="True"
+                   IsPaneOpen="{Binding !HidePane}"
                    DisplayMode="CompactInline"
                    CompactPaneLength="56"
                    OpenPaneLength="160"
@@ -426,7 +447,11 @@
             </SplitView.Content>
         </SplitView>
         
+        
         <!-- Overlay -->
         <views:DimOverlay ZIndex="100"/>
+        </Grid>
+    </Grid>
+        </Border>
     </Grid>
 </Window>

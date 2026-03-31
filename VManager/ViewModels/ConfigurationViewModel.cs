@@ -202,6 +202,20 @@ namespace VManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref _useDarkTheme, value);
         }
         
+        private bool _useCustomDecorations = false;
+        public bool UseCustomDecorations
+        {
+            get => _useCustomDecorations;
+            set => this.RaiseAndSetIfChanged(ref _useCustomDecorations, value);
+        }
+        
+        private bool _hidePane = false;
+        public bool HidePane
+        {
+            get => _hidePane;
+            set => this.RaiseAndSetIfChanged(ref _hidePane, value);
+        }
+        
         public ReactiveCommand<Unit, Unit> RefreshCodecsCommand { get; }
         public ReactiveCommand<Unit, Unit> ResetAccentColorCommand { get; }
         public ReactiveCommand<Unit, Unit> BrowseProfileImageCommand { get; }
@@ -291,6 +305,8 @@ namespace VManager.ViewModels
             CookiesLastUpdated = _config.CookiesLastUpdated;
             Log = _config.Log;
             UseDarkTheme = _config.UseDarkTheme;
+            UseCustomDecorations = _config.UseCustomDecorations;
+            HidePane = _config.HidePane;
 
             // Guardar cambios automáticamente
             this.WhenAnyValue(x => x.EnableSounds)
@@ -309,6 +325,8 @@ namespace VManager.ViewModels
             
             this.WhenAnyValue(x => x.IdiomaSeleccionado, x => x.UseCustomIcon, x => x.HideRemainingTime, x => x.SelectedColor, x => x.ProfileImagePath, x => x.PreferredDownloadFolder, x => x.Log)
                 .Subscribe(_ => SaveConfig());
+            
+            this.WhenAnyValue(x => x.UseCustomDecorations, x => x.HidePane).Subscribe(_ => SaveConfig());
             
         }
         
@@ -480,6 +498,8 @@ namespace VManager.ViewModels
             // Log activado/desactivado
             _config.Log = Log;
             _config.UseDarkTheme = UseDarkTheme;
+            _config.UseCustomDecorations = UseCustomDecorations;
+            _config.HidePane = HidePane;
             ConfigurationService.Save(_config);
         }
     }

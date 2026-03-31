@@ -3,7 +3,7 @@
                     x:ClassModifier="internal">
 
     <Design.PreviewWith>
-        <Border Padding="20" Background="Gray" Width="600">
+        <Border Padding="20" Background="DarkGray" Width="600">
             <Grid ColumnDefinitions="*,*,*">
                 <StackPanel Grid.Column="0" Spacing="10">
                     <ToggleButton Theme="{DynamicResource ThemeToggleButton}" />

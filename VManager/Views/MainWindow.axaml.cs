@@ -18,6 +18,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using ReactiveUI;
+using VManager.Controls;
 using VManager.Services;
 using VManager.Models;
 using VManager.Services.Core;
@@ -26,13 +27,83 @@ using VManager.ViewModels;
 
 namespace VManager.Views
 {
- 
     public partial class MainWindow : Window
     {
         public static Stopwatch? StartupStopwatch;
+        private AppConfig Config => ConfigurationService.Current;
+        
+        private void ApplyDecorationMode()
+        {
+            
+            if (Config.UseCustomDecorations)
+            {
+                SystemDecorations = SystemDecorations.None;
+                TransparencyLevelHint = new[]
+                {
+                    WindowTransparencyLevel.AcrylicBlur,
+                    WindowTransparencyLevel.Transparent
+                };
+            }
+            else
+            {
+                SystemDecorations = SystemDecorations.Full;
+                TransparencyLevelHint = new[]
+                {
+                    WindowTransparencyLevel.None
+                };
+            }
+
+            // Controles del AXAML
+            var resizeGrip = this.FindControl<ResizeGrip>("TheResizeGrip");
+            var titleBar = this.FindControl<CustomTitleBar>("TheTitleBar");
+            var rootBorder = this.FindControl<Border>("RootBorder");
+            var mainGrid = this.FindControl<Grid>("MainGrid");
+
+            if (resizeGrip != null)
+            {
+                resizeGrip.IsVisible = Config.UseCustomDecorations;
+                resizeGrip.IsEnabled = Config.UseCustomDecorations;
+            }
+
+            if (titleBar != null)
+            {
+                titleBar.IsVisible = Config.UseCustomDecorations;
+                titleBar.IsEnabled = Config.UseCustomDecorations;
+            }
+
+            if (mainGrid != null)
+            {
+                mainGrid.RowDefinitions = Config.UseCustomDecorations
+                    ? new RowDefinitions("32,*")
+                    : new RowDefinitions("0,*");
+            }
+            
+            if (rootBorder != null)
+            {
+                rootBorder.CornerRadius = Config.UseCustomDecorations 
+                    ? new CornerRadius(10) 
+                    : new CornerRadius(0);
+                rootBorder.BorderThickness = Config.UseCustomDecorations 
+                    ? new Thickness(1) 
+                    : new Thickness(0);
+            }
+            
+        }
+        
         public MainWindow()
         {
+            if (Config.UseCustomDecorations)
+            {
+                SystemDecorations = SystemDecorations.None;
+                TransparencyLevelHint = new[]
+                {
+                    WindowTransparencyLevel.AcrylicBlur,
+                    WindowTransparencyLevel.Transparent
+                };
+            }
+            
             InitializeComponent();
+            ApplyDecorationMode();
             
             SoundBehaviour.Attach(this);
             _ = SoundManager.Play("dummy.wav");
@@ -58,6 +129,8 @@ namespace VManager.Views
                     var configVM = vm.Configuration; 
                     configVM.WhenAnyValue(x => x.SelectedColor) 
                         .Subscribe(_ => ApplyCustomAccent());
+                    configVM.WhenAnyValue(x => x.UseCustomDecorations)
+                        .Subscribe(_ => ApplyDecorationMode());
                 } 
                 
                 StartupStopwatch?.Stop();
@@ -256,6 +329,19 @@ namespace VManager.Views
             }
         }
         
+        private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e)
+        {
+            if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+            {
+                if (e.ClickCount == 2)
+                    WindowState = WindowState == WindowState.Maximized
+                        ? WindowState.Normal
+                        : WindowState.Maximized;
+                else
+                    BeginMoveDrag(e);
+            }
+        }
+        
         public void ApplyCustomAccent(ThemeVariant? theme = null)
         {
             var actualTheme = theme ?? ActualThemeVariant;
@@ -269,6 +355,18 @@ namespace VManager.Views
             // Derivados para hover/pressed
             Application.Current.Resources["AccentBrushLight"] = new SolidColorBrush(LightenColor(adjustedAccent, 0.3)); // hover
             Application.Current.Resources["AccentBrushDark"] = new SolidColorBrush(DarkenColor(adjustedAccent, 0.15));   // pressed
+            
+            // Sincronizar slider — acá los colores ya están resueltos
+            Application.Current.Resources["SliderThumbBackground"] = new SolidColorBrush(adjustedAccent);
+            Application.Current.Resources["SliderThumbBackgroundPointerOver"] =
+                Application.Current.Resources["AccentBrushLight"];
+            Application.Current.Resources["SliderThumbBackgroundPressed"] =
+                Application.Current.Resources["AccentBrushDark"];
+            Application.Current.Resources["SliderTrackValueFill"] = new SolidColorBrush(adjustedAccent);
+            Application.Current.Resources["SliderTrackValueFillPointerOver"] = 
+                Application.Current.Resources["AccentBrushLight"];
+            Application.Current.Resources["SliderTrackValueFillPressed"] =
+                Application.Current.Resources["AccentBrushDark"];
             
             var redButton = Color.FromArgb(0xFF, 0xBF, 0x24, 0x24);
             var adjustedRed = AdjustColorForAccentTheme(redButton, actualTheme);

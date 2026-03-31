@@ -96,4 +96,18 @@ public class AppConfig : ReactiveObject
         }
         
         public bool? UseDarkTheme { get; set; } = true; // o false según tu default
+        
+        private bool _useCustomDecorations = false;
+        public bool UseCustomDecorations
+        {
+            get => _useCustomDecorations;
+            set => this.RaiseAndSetIfChanged(ref _useCustomDecorations, value);
+        }
+        
+        private bool _hidePane = false;
+        public bool HidePane
+        {
+            get => _hidePane;
+            set => this.RaiseAndSetIfChanged(ref _hidePane, value);
+        }
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -186,7 +187,7 @@ namespace VManager.Behaviours
             border.ClearValue(OriginalBackgroundProperty);
         }
 
-        private static void OnDropFile(object? sender, DragEventArgs e)
+        private static async void OnDropFile(object? sender, DragEventArgs e)
         {
             Console.WriteLine("=== OnDropFile iniciado ===");
             
@@ -315,6 +316,7 @@ namespace VManager.Behaviours
                 // Intentamos obtener la propiedad VideoPaths (ObservableCollection<string>)
                 var listProp = dc.GetType().GetProperty("VideoPaths");
                 var singleProp = dc.GetType().GetProperty("VideoPath");
+                var loadDurationMethod = dc.GetType().GetMethod("LoadVideoDurationAsync");
 
                 Console.WriteLine($"VideoPaths existe: {listProp != null}, VideoPath existe: {singleProp != null}");
 
@@ -358,6 +360,11 @@ namespace VManager.Behaviours
                     {
                         reactiveObj.RaisePropertyChanged("VideoPath");
                         Console.WriteLine("RaisePropertyChanged('VideoPath') ejecutado");
+                        if (loadDurationMethod != null)
+                        {
+                            Console.WriteLine("Llamando a LoadVideoDurationAsync vía reflexión...");
+                            await (Task)loadDurationMethod.Invoke(dc, new object[] { validPaths.First() })!;
+                        }
                     }
                 }
 

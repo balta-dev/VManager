@@ -4,7 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Avalonia.Controls;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
@@ -17,18 +19,52 @@ namespace VManager.ViewModels.Herramientas
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
     public class Herramienta1ViewModel : ViewModelBase
     {
-
+        
         private string _tiempoDesde = ""; 
         private string _tiempoHasta = ""; 
         public string TiempoDesde
         {
             get => _tiempoDesde;
-            set => this.RaiseAndSetIfChanged(ref _tiempoDesde, value);
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _tiempoDesde, value);
+        
+                if (TryParseTime(value, out TimeSpan result))
+                {
+                    double segundos = result.TotalSeconds;
+                    // Solo movemos el slider si el cambio es real y no excede la duración
+                    if (segundos <= VideoDuration && Math.Abs(_sliderDesde - segundos) > 0.1)
+                    {
+                        _sliderDesde = segundos; // Seteo directo al field para evitar bucles
+                        this.RaisePropertyChanged(nameof(SliderDesde));
+                
+                        _lastThumbValue = segundos;
+                        UpdatePopupOffset();
+                    }
+                }
+            }
         }
+
         public string TiempoHasta
         {
             get => _tiempoHasta;
-            set => this.RaiseAndSetIfChanged(ref _tiempoHasta, value);
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _tiempoHasta, value);
+        
+                if (TryParseTime(value, out TimeSpan result))
+                {
+                    double segundos = result.TotalSeconds;
+                    if (segundos <= VideoDuration && Math.Abs(_sliderHasta - segundos) > 0.1)
+                    {
+                        _sliderHasta = segundos;
+                        this.RaisePropertyChanged(nameof(SliderHasta));
+                
+                        _lastThumbValue = segundos;
+                        UpdatePopupOffset();
+                    }
+                }
+            }
         }
         
         private bool _isConverting;
@@ -41,6 +77,256 @@ namespace VManager.ViewModels.Herramientas
         protected override bool AllowAudioFiles => true;
         public ReactiveCommand<Unit, Unit> CutCommand { get; }
         public ReactiveCommand<Unit, Unit> BrowseSingleVideoCommand { get; }
+
+        // --- Preview de frame ---
+        private double _videoDuration = 1;
+        public double VideoDuration
+        {
+            get => _videoDuration;
+            set => this.RaiseAndSetIfChanged(ref _videoDuration, value);
+        }
+
+        private string _videoDurationFormatted = "0:00:00";
+        public string VideoDurationFormatted
+        {
+            get => _videoDurationFormatted;
+            set => this.RaiseAndSetIfChanged(ref _videoDurationFormatted, value);
+        }
+
+        private Bitmap? _previewFrame;
+        public Bitmap? PreviewFrame
+        {
+            get => _previewFrame;
+            set => this.RaiseAndSetIfChanged(ref _previewFrame, value);
+        }
+
+        private string _previewTimestamp = "";
+        public string PreviewTimestamp
+        {
+            get => _previewTimestamp;
+            set => this.RaiseAndSetIfChanged(ref _previewTimestamp, value);
+        }
+
+        // --- RangeSlider: thumb izquierdo (Desde) ---
+        private double _sliderDesde;
+        public double SliderDesde
+        {
+            get => _sliderDesde;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _sliderDesde, value);
+                TiempoDesde = ToTimestamp(value);
+                _ = OnSliderChangedAsync(value);
+            }
+        }
+
+        // --- RangeSlider: thumb derecho (Hasta) ---
+        private double _sliderHasta = 1;
+        public double SliderHasta
+        {
+            get => _sliderHasta;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _sliderHasta, value);
+                TiempoHasta = ToTimestamp(value);
+                _ = OnSliderChangedAsync(value);
+            }
+        }
+        
+        private double _sliderTrackWidth = 400;
+        public double SliderTrackWidth
+        {
+            get => _sliderTrackWidth;
+            set
+            {
+                if (double.IsNaN(value) || value <= 0) return; // evita el crash de Arrange
+                _sliderTrackWidth = value;
+                UpdatePopupOffset();
+            }
+        }
+
+        // Offset horizontal del Popup — se calcula en base al thumb activo
+        private double _previewPopupHorizontalOffset;
+        public double PreviewPopupHorizontalOffset
+        {
+            get => _previewPopupHorizontalOffset;
+            set => this.RaiseAndSetIfChanged(ref _previewPopupHorizontalOffset, value);
+        }
+
+        private const double PopupWidth = 200;
+        
+        public double LastThumbValue
+        {
+            get => _lastThumbValue;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _lastThumbValue, value);
+                UpdatePopupOffset();
+            }
+        }
+
+        private const double ThumbRadius = 18; // ajustá según el tamaño real del thumb del RangeSlider
+
+        private void UpdatePopupOffset()
+        {
+            if (VideoDuration <= 0 || _sliderTrackWidth <= 0 || double.IsNaN(_sliderTrackWidth)) return;
+
+            double ratio = Math.Clamp(_lastThumbValue / VideoDuration, 0.0, 1.0);
+    
+            // El thumb se mueve solo por el área efectiva, no por el ancho total
+            double effectiveWidth = _sliderTrackWidth - (ThumbRadius * 2);
+            double thumbX = ThumbRadius + (ratio * effectiveWidth);
+
+            PreviewPopupHorizontalOffset = thumbX - (PopupWidth / 2.0);
+        }
+
+        // Último valor movido (Desde o Hasta)
+        private double _lastThumbValue;
+
+        private static string ToTimestamp(double seconds)
+            => TimeSpan.FromSeconds(seconds).ToString(@"hh\:mm\:ss");
+
+        // --- Drag loop ---
+        private bool _isDragging;
+        private CancellationTokenSource? _dragLoopCts;
+
+        public void StartDragging()
+        {
+            if (_isDragging) return;
+            _isDragging = true;
+            _dragLoopCts?.Cancel();
+            _dragLoopCts = new CancellationTokenSource();
+            _ = DragLoopAsync(_dragLoopCts.Token);
+        }
+
+        public void StopDragging()
+        {
+            _isDragging = false;
+            _dragLoopCts?.Cancel();
+            _ = ClearPreviewAfterDelayAsync();
+        }
+
+        private async Task DragLoopAsync(CancellationToken token)
+        {
+            try
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    var seconds = _lastThumbValue;
+                    PreviewTimestamp = ToTimestamp(seconds);
+                    var frame = await ExtractFrameAsync(VideoPath, seconds, token);
+                    if (frame != null)
+                        PreviewFrame = frame;
+                    await Task.Delay(150, token);
+                }
+            }
+            catch (OperationCanceledException) { }
+        }
+
+        private async Task ClearPreviewAfterDelayAsync()
+        {
+            await Task.Delay(600);
+            if (!_isDragging)
+            {
+                PreviewFrame = null;
+                PreviewTimestamp = "";
+            }
+        }
+
+        private async Task OnSliderChangedAsync(double seconds)
+        {
+            _lastThumbValue = seconds;
+            UpdatePopupOffset();
+            // El drag loop se encarga del render mientras se arrastra
+            await Task.CompletedTask;
+        }
+
+
+        private static async Task<Bitmap?> ExtractFrameAsync(string videoPath, double seconds, CancellationToken token)
+        {
+            if (string.IsNullOrWhiteSpace(videoPath)) return null;
+
+            var tempFile = System.IO.Path.Combine(
+                System.IO.Path.GetTempPath(),
+                $"vmanager_preview_{Guid.NewGuid():N}.jpg");
+
+            string ffmpeg = FFmpegManager.FfmpegPath;
+            System.Diagnostics.Process? proc = null;
+
+            try
+            {
+                var args = $"-ss {seconds.ToString("F3", System.Globalization.CultureInfo.InvariantCulture)} " +
+                           $"-i \"{videoPath}\" -frames:v 1 -q:v 3 \"{tempFile}\" -y";
+                
+                var psi = new System.Diagnostics.ProcessStartInfo(ffmpeg, args)
+                {
+                    RedirectStandardError = false,
+                    RedirectStandardOutput = false,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                proc = System.Diagnostics.Process.Start(psi);
+                if (proc == null) return null;
+
+                // Registramos un callback en el token: si se cancela, matamos a FFmpeg inmediatamente.
+                using var cancellationRegistration = token.Register(() => 
+                {
+                    try
+                    {
+                        if (!proc.HasExited) proc.Kill();
+                    }
+                    catch { /* Ignorar errores al intentar matar un proceso que ya murió */ }
+                });
+
+                await proc.WaitForExitAsync(token);
+
+                // Verificamos de nuevo si nos cancelaron antes de empezar a leer el disco
+                token.ThrowIfCancellationRequested();
+
+                if (System.IO.File.Exists(tempFile))
+                {
+                    var info = new System.IO.FileInfo(tempFile);
+                    if (info.Length == 0) return null; 
+
+                    // Lectura rápida de I/O
+                    var bytes = await System.IO.File.ReadAllBytesAsync(tempFile, token);
+                    
+                    // Volvemos a chequear antes de hacer el trabajo pesado de CPU
+                    token.ThrowIfCancellationRequested();
+
+                    // Mover la creación del Bitmap (que es puro CPU) a un hilo de fondo
+                    return await Task.Run(() => 
+                    {
+                        using var ms = new System.IO.MemoryStream(bytes);
+                        return new Bitmap(ms); // Se crea en el background, Avalonia lo acepta
+                    }, token);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Se canceló porque el usuario movió/soltó el slider. Propagamos la excepción
+                // para que DragLoopAsync la ignore limpiamente.
+                throw;
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                // Asegurar que el proceso se libere de la memoria gestionada
+                proc?.Dispose();
+
+                if (System.IO.File.Exists(tempFile))
+                {
+                    try { System.IO.File.Delete(tempFile); } 
+                    catch { /* Ignorar fallos de borrado si el SO lo bloqueó brevemente */ }
+                }
+            }
+            return null;
+        }
+        
         public Herramienta1ViewModel()
         {
             CutCommand = ReactiveCommand.CreateFromTask(CutVideo, outputScheduler: AvaloniaScheduler.Instance);
@@ -90,9 +376,53 @@ namespace VManager.ViewModels.Herramientas
                 this.RaisePropertyChanged(nameof(VideoPath));
                 IsVideoPathSet = true;
                 this.RaisePropertyChanged(nameof(IsVideoPathSet));
+                await LoadVideoDurationAsync(VideoPath);
             }
         }
-        
+
+        public async Task LoadVideoDurationAsync(string path)
+        {
+            string ffprobe = FFmpegManager.FfprobePath;
+            try
+            {
+                // Usar ffprobe para obtener la duración en segundos
+                var args = $"-v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 \"{path}\"";
+                var psi = new System.Diagnostics.ProcessStartInfo(ffprobe, args)
+                {
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var proc = System.Diagnostics.Process.Start(psi);
+                if (proc == null) return;
+
+                string output = await proc.StandardOutput.ReadToEndAsync();
+                await proc.WaitForExitAsync();
+
+                if (double.TryParse(output.Trim(),
+                    System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out double duration) && duration > 0)
+                {
+                    VideoDuration = duration;
+                    VideoDurationFormatted = ToTimestamp(duration);
+                    // Inicializar Hasta al final del video
+                    _sliderHasta = duration;
+                    this.RaisePropertyChanged(nameof(SliderHasta));
+                    TiempoHasta = ToTimestamp(duration);
+                    // Resetear Desde a 0
+                    _sliderDesde = 0;
+                    this.RaisePropertyChanged(nameof(SliderDesde));
+                    TiempoDesde = ToTimestamp(0);
+                    PreviewFrame = null;
+                    PreviewTimestamp = "";
+                }
+            }
+            catch { Console.WriteLine("ERROR - NO SE PUDO LEER INFORMACIÓN DEL VIDEO. Revisa que el video no esté corrupto y que ffprobe esté funcionando correctamente."); /* ffprobe no disponible */ }
+        }
+
         private bool TryParseTime(string input, out TimeSpan result)
         {
             
@@ -147,17 +477,25 @@ namespace VManager.ViewModels.Herramientas
         
         public override void ClearInfo()
         {
-            // Primero ejecuta el ClearInfo del base
             base.ClearInfo();
-
-            // Ahora resetea propiedades propias de Herramienta1
+            
             TiempoDesde = "";
             TiempoHasta = "";
             IsConverting = false;
+            PreviewFrame = null;
+            PreviewTimestamp = "";
 
             this.RaisePropertyChanged(nameof(TiempoDesde));
             this.RaisePropertyChanged(nameof(TiempoHasta));
             this.RaisePropertyChanged(nameof(IsConverting));
+            
+            _sliderDesde = 0;
+            _sliderHasta = 1;
+            this.RaisePropertyChanged(nameof(SliderDesde));
+            this.RaisePropertyChanged(nameof(SliderHasta));
+            
+            VideoDuration = 1;
+            VideoDurationFormatted = "0:00:00";
         }
         
         private async Task CutVideo()

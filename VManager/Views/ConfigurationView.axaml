@@ -90,6 +90,13 @@
                              VerticalAlignment="Center"/>
                   <CheckBox IsChecked="{Binding UseCustomIcon, Mode=TwoWay}" />
                 </StackPanel>
+                
+                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                  <TextBlock Text="{Binding L[Configuration.Fields.CustomDecorations]}"
+                             FontSize="14"
+                             VerticalAlignment="Center"/>
+                  <CheckBox IsChecked="{Binding UseCustomDecorations, Mode=TwoWay}" />
+                </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                   <TextBlock Text="{Binding L[Configuration.Fields.Accent]}"
@@ -205,6 +212,13 @@
                              FontSize="14"
                              VerticalAlignment="Center"/>
                   <CheckBox IsChecked="{Binding !EnableSounds, Mode=TwoWay}" />
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                  <TextBlock Text="{Binding L[Configuration.Fields.KeepPaneHide]}"
+                             FontSize="14"
+                             VerticalAlignment="Center"/>
+                  <CheckBox IsChecked="{Binding HidePane, Mode=TwoWay}" />
                 </StackPanel>
                 
                 <!-- Carpeta preferida para guardar videos -->

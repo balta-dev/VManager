@@ -22,6 +22,7 @@ namespace VManager.ViewModels;
 public class MainWindowViewModel : ViewModelBase
 {
     public bool IsWelcomeVisible => CurrentView == null;
+    public bool HidePane => ConfigurationService.Current.HidePane;
     
     private Herramienta1ViewModel? _herramienta1;
     private Herramienta2ViewModel? _herramienta2;
