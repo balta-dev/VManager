@@ -216,6 +216,21 @@ namespace VManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref _hidePane, value);
         }
         
+        public IEnumerable<string> AvailableThemes => ThemeService.Instance.GetThemes();
+
+        private string _themeName;
+        public string ThemeName
+        {
+            get => _themeName;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _themeName, value);
+                ThemeService.Instance.Apply(value);
+                ConfigurationService.Current.ThemeName = value;
+                ConfigurationService.Save(ConfigurationService.Current);
+            }
+        }
+        
         public ReactiveCommand<Unit, Unit> RefreshCodecsCommand { get; }
         public ReactiveCommand<Unit, Unit> ResetAccentColorCommand { get; }
         public ReactiveCommand<Unit, Unit> BrowseProfileImageCommand { get; }
@@ -307,6 +322,7 @@ namespace VManager.ViewModels
             UseDarkTheme = _config.UseDarkTheme;
             UseCustomDecorations = _config.UseCustomDecorations;
             HidePane = _config.HidePane;
+            _themeName = _config.ThemeName ?? "Default";
 
             // Guardar cambios automáticamente
             this.WhenAnyValue(x => x.EnableSounds)
@@ -500,6 +516,7 @@ namespace VManager.ViewModels
             _config.UseDarkTheme = UseDarkTheme;
             _config.UseCustomDecorations = UseCustomDecorations;
             _config.HidePane = HidePane;
+            _config.ThemeName = ThemeName;
             ConfigurationService.Save(_config);
         }
     }

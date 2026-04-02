@@ -110,4 +110,6 @@ public class AppConfig : ReactiveObject
             get => _hidePane;
             set => this.RaiseAndSetIfChanged(ref _hidePane, value);
         }
+        
+        public string? ThemeName { get; set; }
     }

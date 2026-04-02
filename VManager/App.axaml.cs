@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Avalonia;
@@ -28,47 +29,94 @@ public partial class App : Application
     [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with RequiresUnreferencedCodeAttribute",
         Justification = "Manipulación de StreamHandlers es opcional y está protegida por comprobaciones en tiempo de ejecución")]
     public override void OnFrameworkInitializationCompleted()
-    {
-        Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] OnFrameworkInitializationCompleted");
-    
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            
-            var config = ConfigurationService.Current;
-            Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] Config cargada");
-        
-            Application.Current!.RequestedThemeVariant = config.UseDarkTheme.HasValue
-                ? (config.UseDarkTheme.Value ? ThemeVariant.Dark : ThemeVariant.Light)
-                : ThemeVariant.Default;
-            Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] Tema aplicado");
+            Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] OnFrameworkInitializationCompleted");
 
-            var vm = new MainWindowViewModel();
-            Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] MainWindowViewModel creado");
-        
-            var mainWindow = new MainWindow { DataContext = vm };
-            Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] MainWindow creada");
-        
-            desktop.MainWindow = mainWindow;
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                var splash = new SplashScreen();
+                desktop.MainWindow = splash;
+                splash.Show();
+                
+                Task.Run(async () =>
+                {
+                    // Trabajo pesado fuera del hilo UI
+                    ExtractDefaultTheme();
+                    Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] ExtractDefaultTheme ejecutado");
+
+                    var config = ConfigurationService.Current;
+                    Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] Config cargada");
+
+                    var savedTheme = config.ThemeName ?? "Default";
+                    
+                    await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        ThemeService.Instance.Apply(savedTheme);
+                        Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] ThemeService.Instance.Apply(savedTheme)");
+
+                        Application.Current!.RequestedThemeVariant = config.UseDarkTheme.HasValue
+                            ? (config.UseDarkTheme.Value ? ThemeVariant.Dark : ThemeVariant.Light)
+                            : ThemeVariant.Default;
+                        Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] Tema claro/oscuro aplicado");
+
+                        var vm = new MainWindowViewModel();
+                        Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] MainWindowViewModel creado");
+
+                        var mainWindow = new MainWindow { DataContext = vm };
+                        Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] MainWindow creada");
+
+                        desktop.MainWindow = mainWindow;
+                        mainWindow.Show();
+                        splash.Close();
+                    });
+                });
+            }
+
+            Task.Run(HandleUpdaterTempFolder);
+            base.OnFrameworkInitializationCompleted();
         }
-        Task.Run(HandleUpdaterTempFolder);
-        base.OnFrameworkInitializationCompleted();
+    
+    private void ExtractDefaultTheme()
+    {
+        var themesDir = Path.Combine(
+            Path.GetDirectoryName(Environment.ProcessPath!)!,
+            "Themes", "Default");
+
+        Directory.CreateDirectory(themesDir);
+
+        var assembly = typeof(App).Assembly;
+        const string prefix = "VManager.Assets.Themes.Default.";
+
+        foreach (var resourceName in assembly.GetManifestResourceNames()
+                     .Where(n => n.StartsWith(prefix)))
+        {
+            var fileName = resourceName[prefix.Length..]; // ej: "Colors.axaml"
+            var destFile = Path.Combine(themesDir, fileName);
+
+            if (File.Exists(destFile)) continue;
+
+            using var stream = assembly.GetManifestResourceStream(resourceName)!;
+            using var fs = File.Create(destFile);
+            stream.CopyTo(fs);
+            Console.WriteLine($"[STARTUP] Extraído: {fileName}");
+        }
     }
 
-    private void ApplyCustomTheme(ThemeVariant? theme = null)
+    public void ApplyCustomTheme(ThemeVariant? theme = null)
     {
         var actualTheme = theme ?? ActualThemeVariant;
 
         if (actualTheme == ThemeVariant.Dark)
         {
-            Resources["WindowBackgroundBrush"] = Resources["WindowBackgroundBrushDark"];
-            Resources["PanelBackgroundBrush"] = Resources["PanelBackgroundBrushDark"];
-            Resources["BorderBrushPrimary"] = Resources["BorderBrushPrimaryDark"];
+            TryGetResource("WindowBackgroundBrushDark", null, out var wb); Resources["WindowBackgroundBrush"] = wb;
+            TryGetResource("PanelBackgroundBrushDark", null, out var pb); Resources["PanelBackgroundBrush"] = pb;
+            TryGetResource("BorderBrushPrimaryDark", null, out var bb); Resources["BorderBrushPrimary"] = bb;
         }
         else
         {
-            Resources["WindowBackgroundBrush"] = Resources["WindowBackgroundBrushLight"];
-            Resources["PanelBackgroundBrush"] = Resources["PanelBackgroundBrushLight"];
-            Resources["BorderBrushPrimary"] = Resources["BorderBrushPrimaryLight"];
+            TryGetResource("WindowBackgroundBrushLight", null, out var wb); Resources["WindowBackgroundBrush"] = wb;
+            TryGetResource("PanelBackgroundBrushLight", null, out var pb); Resources["PanelBackgroundBrush"] = pb;
+            TryGetResource("BorderBrushPrimaryLight", null, out var bb); Resources["BorderBrushPrimary"] = bb;
         }
     }
 

@@ -15,7 +15,7 @@
         Width="900" Height="650"
         WindowStartupLocation="CenterScreen"
         SystemDecorations="Full"
-        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaToDecorationsHint="False"
         Background="{DynamicResource WindowBackgroundBrush}">
     
     <Design.DataContext>
@@ -36,7 +36,7 @@
         <!-- BorderThickness="1" -->
         <!-- BoxShadow="0 8 32 0 #66000000" -->
         
-        <Grid x:Name="MainGrid" RowDefinitions="32,*"> <!-- 32,*-->
+        <Grid x:Name="MainGrid" RowDefinitions="32,*" > <!-- 32,*-->
             
             <controls:CustomTitleBar x:Name="TheTitleBar" Grid.Row="0"/>
     
@@ -234,6 +234,7 @@
                         <ToggleButton DockPanel.Dock="Top"
                                       x:Name="ToggleTheme"
                                       Theme="{DynamicResource ThemeToggleButton}"
+                                      IsVisible="{Binding !HidePane}"
                                       Content="Cambiar Tema"
                                       HotKey="T"
                                       HorizontalAlignment="Right"

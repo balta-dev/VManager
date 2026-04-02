@@ -22,7 +22,13 @@ namespace VManager.ViewModels;
 public class MainWindowViewModel : ViewModelBase
 {
     public bool IsWelcomeVisible => CurrentView == null;
-    public bool HidePane => ConfigurationService.Current.HidePane;
+    
+    private bool _hidePane;
+    public bool HidePane
+    {
+        get => _hidePane;
+        set => this.RaiseAndSetIfChanged(ref _hidePane, value);
+    }
     
     private Herramienta1ViewModel? _herramienta1;
     private Herramienta2ViewModel? _herramienta2;
@@ -284,6 +290,9 @@ public class MainWindowViewModel : ViewModelBase
         
         _configuration.WhenAnyValue(x => x.ProfileImagePath)
             .Subscribe(_ => LoadProfileImage());
+        
+        _configuration.WhenAnyValue(x => x.HidePane)
+            .Subscribe(value => HidePane = value);
     }
     
     public ConfigurationViewModel Configuration => _configuration; 

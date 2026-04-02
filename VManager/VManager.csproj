@@ -33,11 +33,13 @@
   </ItemGroup>
 
   <ItemGroup>
-      <AvaloniaResource Include="Assets\**" 
-                        Exclude="Assets\Sounds\**;Assets\Localization\**" />
+      <AvaloniaResource Include="Assets\**" Exclude="Assets\Sounds\**;Assets\Localization\**;Assets\Themes\**" />
       <EmbeddedResource Include="Assets\Sounds\**\*" />
       <EmbeddedResource Include="Assets\Localization\*.json" />
       <AvaloniaResource Include="Assets\VManager.ico" />
+      <EmbeddedResource Include="Assets\Themes\Default\Colors.axaml">
+          <LogicalName>VManager.Assets.Themes.Default.Colors.axaml</LogicalName>
+      </EmbeddedResource>
   </ItemGroup>
 
   <!-- Paquetes NuGet -->
@@ -46,6 +48,7 @@
     <PackageReference Include="Avalonia.Controls.ColorPicker" Version="11.3.7" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.7" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.7" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.3.7" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.7" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.7" />
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.7" />
@@ -123,6 +126,14 @@
     </Compile>
     <Compile Update="Views\Guias\GuideWindow.axaml.cs">
       <DependentUpon>GuideWindow.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\CustomTitleBar.axaml.cs">
+      <DependentUpon>CustomTitleBar.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\CancelDialog.axaml.cs">
+      <DependentUpon>CancelDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

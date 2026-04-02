@@ -103,7 +103,6 @@ namespace VManager.Views
             }
             
             InitializeComponent();
-            ApplyDecorationMode();
             
             SoundBehaviour.Attach(this);
             _ = SoundManager.Play("dummy.wav");
@@ -282,7 +281,6 @@ namespace VManager.Views
             {
                 Console.WriteLine($"Error al lanzar updater: {ex}");
                 var owner = this.GetVisualRoot() as Window;
-                ErrorService.Show(ex, owner);
             }
         }
         
@@ -326,19 +324,6 @@ namespace VManager.Views
                     }
                     // Si ninguna herramienta está corriendo, se permite cerrar sin diálogo
                 }
-            }
-        }
-        
-        private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e)
-        {
-            if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-            {
-                if (e.ClickCount == 2)
-                    WindowState = WindowState == WindowState.Maximized
-                        ? WindowState.Normal
-                        : WindowState.Maximized;
-                else
-                    BeginMoveDrag(e);
             }
         }
         

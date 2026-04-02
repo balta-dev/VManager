@@ -60,7 +60,7 @@
         <!-- ============================= -->
         <!-- ToggleButton -->
         <!-- ============================= -->
-
+        
         <!-- Normal -->
         <Style Selector="ToggleButton PathIcon:not(.NoAccent)">
             <Setter Property="Foreground"
@@ -171,7 +171,7 @@
         </Style>
         
         <!-- ============================= -->
-        <!-- TEXBOX -->
+        <!-- TEXTBOX -->
         <!-- ============================= -->
         
         <!-- PointerOver -->
@@ -195,6 +195,12 @@
             <Setter Property="BorderBrush" Value="{DynamicResource TextControlBorderBrushDisabled}" />
         </Style>
         
+        <!-- EXPANDER -->
+        <Style Selector="Expander">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+        
         <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
         <StyleInclude Source="avares://RangeSlider.Avalonia/Themes/Fluent/RangeSliderTheme.axaml"/>
         
@@ -211,27 +217,6 @@
             </ResourceDictionary.MergedDictionaries>
             
         </ResourceDictionary>
-        
-        <!-- Tema Claro -->
-        <SolidColorBrush x:Key="PanelBackgroundBrushLight">#fff5f0</SolidColorBrush>
-        <SolidColorBrush x:Key="BorderBrushPrimaryLight">#FFAAAAAA</SolidColorBrush>
-        <SolidColorBrush x:Key="WindowBackgroundBrushLight">#fff7f3</SolidColorBrush>
-        <SolidColorBrush x:Key="ToggleButtonBorderLight">#1c1c1c</SolidColorBrush>
-
-        <!-- Tema Oscuro -->
-        <SolidColorBrush x:Key="PanelBackgroundBrushDark">#FF2A2A2A</SolidColorBrush>
-        <SolidColorBrush x:Key="BorderBrushPrimaryDark">#FF444444</SolidColorBrush>
-        <SolidColorBrush x:Key="WindowBackgroundBrushDark">#1c1c1c</SolidColorBrush>
-        <SolidColorBrush x:Key="ToggleButtonBorderDark">#fff7f3</SolidColorBrush>
-        
-        <!-- Forma de RangeSlider -->
-        <CornerRadius x:Key="SliderThumbCornerRadius">0</CornerRadius>
-        <x:Double x:Key="SliderHorizontalThumbWidth">10</x:Double>
-        <x:Double x:Key="SliderHorizontalThumbHeight">20</x:Double>
-        
-        <!-- Fill fuera del slider -->
-        <SolidColorBrush x:Key="SliderTrackFillPointerOver" Color="Gray"/>
-        <SolidColorBrush x:Key="SliderTrackFillPressed" Color="Gray"/>
         
     </Application.Resources>
 
