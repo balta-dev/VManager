@@ -30,6 +30,13 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _hidePane, value);
     }
     
+    private bool _showThemeToggleButton = true;
+    public bool ShowThemeToggleButton
+    {
+        get => _showThemeToggleButton;
+        set => this.RaiseAndSetIfChanged(ref _showThemeToggleButton, value);
+    }
+    
     private Herramienta1ViewModel? _herramienta1;
     private Herramienta2ViewModel? _herramienta2;
     private Herramienta3ViewModel? _herramienta3;
@@ -293,6 +300,9 @@ public class MainWindowViewModel : ViewModelBase
         
         _configuration.WhenAnyValue(x => x.HidePane)
             .Subscribe(value => HidePane = value);
+        
+        _configuration.WhenAnyValue(x => x.ShowThemeToggleButton)
+            .Subscribe(value => ShowThemeToggleButton  = value);
     }
     
     public ConfigurationViewModel Configuration => _configuration; 

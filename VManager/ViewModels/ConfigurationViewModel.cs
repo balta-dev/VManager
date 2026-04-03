@@ -216,6 +216,13 @@ namespace VManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref _hidePane, value);
         }
         
+        private bool _showThemeToggleButton = true;
+        public bool ShowThemeToggleButton
+        {
+            get => _showThemeToggleButton;
+            set => this.RaiseAndSetIfChanged(ref _showThemeToggleButton, value);
+        }
+        
         public IEnumerable<string> AvailableThemes => ThemeService.Instance.GetThemes();
 
         private string _themeName;
@@ -322,7 +329,8 @@ namespace VManager.ViewModels
             UseDarkTheme = _config.UseDarkTheme;
             UseCustomDecorations = _config.UseCustomDecorations;
             HidePane = _config.HidePane;
-            _themeName = _config.ThemeName ?? "Default";
+            ShowThemeToggleButton = _config.ShowThemeToggleButton;
+            ThemeName = _config.ThemeName ?? "Default";
 
             // Guardar cambios automáticamente
             this.WhenAnyValue(x => x.EnableSounds)
@@ -342,7 +350,7 @@ namespace VManager.ViewModels
             this.WhenAnyValue(x => x.IdiomaSeleccionado, x => x.UseCustomIcon, x => x.HideRemainingTime, x => x.SelectedColor, x => x.ProfileImagePath, x => x.PreferredDownloadFolder, x => x.Log)
                 .Subscribe(_ => SaveConfig());
             
-            this.WhenAnyValue(x => x.UseCustomDecorations, x => x.HidePane).Subscribe(_ => SaveConfig());
+            this.WhenAnyValue(x => x.UseCustomDecorations, x => x.HidePane, x => x.ShowThemeToggleButton).Subscribe(_ => SaveConfig());
             
         }
         
@@ -517,6 +525,7 @@ namespace VManager.ViewModels
             _config.UseCustomDecorations = UseCustomDecorations;
             _config.HidePane = HidePane;
             _config.ThemeName = ThemeName;
+            _config.ShowThemeToggleButton = ShowThemeToggleButton;
             ConfigurationService.Save(_config);
         }
     }

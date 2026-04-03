@@ -111,5 +111,7 @@ public class AppConfig : ReactiveObject
             set => this.RaiseAndSetIfChanged(ref _hidePane, value);
         }
         
+        public bool ShowThemeToggleButton { get; set; }
+        
         public string? ThemeName { get; set; }
     }

@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Converters;
 using VManager.Behaviours;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -31,6 +32,18 @@ namespace VManager.Views
     {
         public static Stopwatch? StartupStopwatch;
         private AppConfig Config => ConfigurationService.Current;
+
+        private void AdaptSplitView()
+        {
+            var splitViewGrid = this.FindControl<Grid>("SplitViewGrid");
+            
+            if (splitViewGrid != null)
+            {
+                splitViewGrid.Margin = Config.ShowThemeToggleButton
+                    ? new Thickness (10, 50, 10, 10)
+                    : new Thickness (10, 7, 10, 10);
+            }
+        }
         
         private void ApplyDecorationMode()
         {
@@ -105,7 +118,7 @@ namespace VManager.Views
             InitializeComponent();
             
             SoundBehaviour.Attach(this);
-            _ = SoundManager.Play("dummy.wav");
+            //_ = SoundManager.Play("dummy.wav");
             
             var accentObs = this.GetResourceObservable("SystemAccentColor")!
                 .OfType<Color>()
@@ -130,6 +143,8 @@ namespace VManager.Views
                         .Subscribe(_ => ApplyCustomAccent());
                     configVM.WhenAnyValue(x => x.UseCustomDecorations)
                         .Subscribe(_ => ApplyDecorationMode());
+                    configVM.WhenAnyValue(x => x.ShowThemeToggleButton)
+                        .Subscribe(_ => AdaptSplitView());
                 } 
                 
                 StartupStopwatch?.Stop();

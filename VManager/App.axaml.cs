@@ -13,6 +13,7 @@ using Avalonia.Styling;
 using VManager.ViewModels;
 using VManager.Views;
 using VManager.Services;
+using VManager.Splash;
 
 namespace VManager;
 
@@ -34,44 +35,38 @@ public partial class App : Application
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var splash = new SplashScreen();
-                desktop.MainWindow = splash;
-                splash.Show();
+                // Trabajo pesado fuera del hilo UI
+                ExtractDefaultTheme();
+                Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] ExtractDefaultTheme ejecutado");
                 
-                Task.Run(async () =>
-                {
-                    // Trabajo pesado fuera del hilo UI
-                    ExtractDefaultTheme();
-                    Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] ExtractDefaultTheme ejecutado");
+                var config = ConfigurationService.Current;
+                Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] Config cargada");
 
-                    var config = ConfigurationService.Current;
-                    Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] Config cargada");
-
-                    var savedTheme = config.ThemeName ?? "Default";
+                var savedTheme = config.ThemeName ?? "Default";
                     
-                    await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        ThemeService.Instance.Apply(savedTheme);
-                        Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] ThemeService.Instance.Apply(savedTheme)");
+                Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    ThemeService.Instance.Apply(savedTheme);
+                    Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] ThemeService.Instance.Apply(savedTheme)");
 
-                        Application.Current!.RequestedThemeVariant = config.UseDarkTheme.HasValue
-                            ? (config.UseDarkTheme.Value ? ThemeVariant.Dark : ThemeVariant.Light)
-                            : ThemeVariant.Default;
-                        Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] Tema claro/oscuro aplicado");
+                    Application.Current!.RequestedThemeVariant = config.UseDarkTheme.HasValue
+                        ? (config.UseDarkTheme.Value ? ThemeVariant.Dark : ThemeVariant.Light)
+                        : ThemeVariant.Default;
+                    Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] Tema claro/oscuro aplicado");
 
-                        var vm = new MainWindowViewModel();
-                        Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] MainWindowViewModel creado");
+                    var vm = new MainWindowViewModel();
+                    Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] MainWindowViewModel creado");
 
-                        var mainWindow = new MainWindow { DataContext = vm };
-                        Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] MainWindow creada");
+                    var mainWindow = new MainWindow { DataContext = vm };
+                    Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] MainWindow creada");
 
-                        desktop.MainWindow = mainWindow;
-                        mainWindow.Show();
-                        splash.Close();
-                    });
+                    desktop.MainWindow = mainWindow;
+                    mainWindow.Show();
+                    NativeSplash.Close();
+                        
                 });
+                
             }
-
             Task.Run(HandleUpdaterTempFolder);
             base.OnFrameworkInitializationCompleted();
         }

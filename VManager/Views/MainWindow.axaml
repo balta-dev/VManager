@@ -53,7 +53,7 @@
 
             <!-- SIDEBAR (pane) -->
             <SplitView.Pane>
-                <Grid Margin="10 50 10 10">
+                <Grid x:Name="SplitViewGrid" Margin="10 50 10 10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
@@ -234,7 +234,7 @@
                         <ToggleButton DockPanel.Dock="Top"
                                       x:Name="ToggleTheme"
                                       Theme="{DynamicResource ThemeToggleButton}"
-                                      IsVisible="{Binding !HidePane}"
+                                      IsVisible="{Binding ShowThemeToggleButton}"
                                       Content="Cambiar Tema"
                                       HotKey="T"
                                       HorizontalAlignment="Right"

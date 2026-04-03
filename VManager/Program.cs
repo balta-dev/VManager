@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using VManager.Services;
 using VManager.Services.Models;
+using VManager.Splash;
 using VManager.Views;
 
 namespace VManager;
@@ -39,19 +40,37 @@ sealed class Program
         }
     }
     
+    static string ExtractBannerToTemp()
+    {
+        var tmp = Path.Combine(Path.GetTempPath(), "vmanager_banner.png");
+        if (File.Exists(tmp)) return tmp;
+    
+        using var stream = typeof(Program).Assembly
+            .GetManifestResourceStream("VManager.Assets.banner.png");
+        if (stream == null) return "";
+    
+        using var fs = File.Create(tmp);
+        stream.CopyTo(fs);
+        return tmp;
+    }
+    
     [STAThread]
     public static void Main(string[] args)
     {
         var sw = Stopwatch.StartNew();
         MainWindow.StartupStopwatch = sw;
-        
-        Directory.CreateDirectory(LogsFolder);
         var t0 = sw.ElapsedMilliseconds;
+        
+        var splashImage = ExtractBannerToTemp();
+        NativeSplash.Show(splashImage);
+        
+        Console.WriteLine($"[SPLASH] [{sw.ElapsedMilliseconds}ms] SplashScreen init (delta: {sw.ElapsedMilliseconds - t0}ms)");
+        if (!Directory.Exists(LogsFolder)) Directory.CreateDirectory(LogsFolder);
+        
+        t0 = sw.ElapsedMilliseconds;
         
         if (IsLoggingEnabled())
         {
-            
-            t0 = sw.ElapsedMilliseconds;
             
             var logFilePath = Path.Combine(
                 LogsFolder,

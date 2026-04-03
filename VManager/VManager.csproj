@@ -40,6 +40,11 @@
       <EmbeddedResource Include="Assets\Themes\Default\Colors.axaml">
           <LogicalName>VManager.Assets.Themes.Default.Colors.axaml</LogicalName>
       </EmbeddedResource>
+      <EmbeddedResource Include="Assets\Themes\Default\Colors.json">
+          <LogicalName>VManager.Assets.Themes.Default.Colors.json</LogicalName>
+      </EmbeddedResource>
+      <EmbeddedResource Include="Assets\Inter-Regular.ttf" />
+      <EmbeddedResource Include="Assets\banner.png" />
   </ItemGroup>
 
   <!-- Paquetes NuGet -->

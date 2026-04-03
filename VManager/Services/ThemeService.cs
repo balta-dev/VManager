@@ -7,6 +7,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
+using System.Text.Json;
+using Avalonia.Media;
 
 namespace VManager.Services;
 
@@ -33,6 +35,14 @@ public class ThemeService
         Console.WriteLine($"[ThemeService] Temas encontrados: {string.Join(", ", dirs!)}");
         return dirs!;
     }
+    
+    private static void LogInvalid(string file, string key, string type, string value, Exception? ex = null)
+    {
+        Console.WriteLine(
+            $"[ThemeService] Valor inválido ({type}) en {Path.GetFileName(file)} -> Key='{key}', Value='{value}'" +
+            (ex != null ? $" | {ex.Message}" : "")
+        );
+    }
 
     [UnconditionalSuppressMessage("Trimming", "IL2026")]
     public void Apply(string themeName)
@@ -41,52 +51,123 @@ public class ThemeService
         if (!Directory.Exists(folder))
             folder = DefaultThemePath;
 
-        // Limpiar recursos del tema anterior
+        var app = Application.Current!;
+
+        // limpiar
         foreach (var d in _loadedResources)
-            Application.Current!.Resources.MergedDictionaries.Remove(d);
+            app.Resources.MergedDictionaries.Remove(d);
         _loadedResources.Clear();
 
-        // Limpiar estilos del tema anterior
         foreach (var s in _loadedStyles)
-            Application.Current!.Styles.Remove(s);
+            app.Styles.Remove(s);
         _loadedStyles.Clear();
+
+        var files = Directory.GetFiles(folder, "*.json");
         
-        // Cargar todos los .axaml de la carpeta en orden alfabético
-        var files = Directory.GetFiles(folder, "*.axaml");
+        var options = new JsonDocumentOptions
+        {
+            CommentHandling = JsonCommentHandling.Skip
+        };
 
         foreach (var file in files)
         {
             try
             {
-                var xaml = File.ReadAllText(file);
-                var loaded = AvaloniaRuntimeXamlLoader.Load(xaml);
+                var json = File.ReadAllText(file);
+                var doc = JsonDocument.Parse(json, options);
 
-                switch (loaded)
+                var dict = new ResourceDictionary();
+
+                // Brushes
+                if (doc.RootElement.TryGetProperty("Brushes", out var brushes))
                 {
-                    case IResourceProvider dict:
-                        Application.Current!.Resources.MergedDictionaries.Add(dict);
-                        _loadedResources.Add(dict);
-                        Console.WriteLine($"[ThemeService] Recurso cargado: {Path.GetFileName(file)}");
-                        break;
-                    case IStyle style:
-                        Application.Current!.Styles.Add(style);
-                        _loadedStyles.Add(style);
-                        Console.WriteLine($"[ThemeService] Estilo cargado: {Path.GetFileName(file)}");
-                        break;
-                    default:
-                        Console.WriteLine($"[ThemeService] Tipo desconocido en: {Path.GetFileName(file)}");
-                        break;
+                    foreach (var prop in brushes.EnumerateObject())
+                    {
+                        var str = prop.Value.GetString();
+                        if (string.IsNullOrWhiteSpace(str))
+                        {
+                            LogInvalid(file, prop.Name, "Brush", "null o vacío");
+                            continue;
+                        }
+
+                        try
+                        {
+                            var color = Color.Parse(str);
+                            dict[prop.Name] = new SolidColorBrush(color);
+                        }
+                        catch (Exception ex)
+                        {
+                            LogInvalid(file, prop.Name, "Brush", str, ex);
+                        }
+                    }
                 }
+
+                // CornerRadius
+                if (doc.RootElement.TryGetProperty("CornerRadius", out var corners))
+                {
+                    foreach (var prop in corners.EnumerateObject())
+                    {
+                        if (!prop.Value.TryGetDouble(out var v))
+                        {
+                            LogInvalid(file, prop.Name, "CornerRadius", prop.Value.ToString());
+                            continue;
+                        }
+
+                        dict[prop.Name] = new CornerRadius(v);
+                    }
+                }
+
+                // Double
+                if (doc.RootElement.TryGetProperty("Double", out var doubles))
+                {
+                    foreach (var prop in doubles.EnumerateObject())
+                    {
+                        if (!prop.Value.TryGetDouble(out var v))
+                        {
+                            LogInvalid(file, prop.Name, "Double", prop.Value.ToString());
+                            continue;
+                        }
+
+                        dict[prop.Name] = v;
+                    }
+                }
+
+                // Thickness
+                if (doc.RootElement.TryGetProperty("Thickness", out var thicknesses))
+                {
+                    foreach (var prop in thicknesses.EnumerateObject())
+                    {
+                        var str = prop.Value.GetString();
+                        if (string.IsNullOrWhiteSpace(str))
+                        {
+                            LogInvalid(file, prop.Name, "Thickness", "null o vacío");
+                            continue;
+                        }
+
+                        try
+                        {
+                            dict[prop.Name] = Thickness.Parse(str);
+                        }
+                        catch (Exception ex)
+                        {
+                            LogInvalid(file, prop.Name, "Thickness", str, ex);
+                        }
+                    }
+                }
+
+                app.Resources.MergedDictionaries.Add(dict);
+                _loadedResources.Add(dict);
+
+                Console.WriteLine($"[ThemeService] JSON cargado: {Path.GetFileName(file)}");
             }
             catch (Exception ex)
             {
-                var inner = ex.InnerException?.Message ?? "sin inner exception";
-                Console.WriteLine($"[ThemeService] Error en {Path.GetFileName(file)}: {ex.Message} | Inner: {inner}");
+                Console.WriteLine($"[ThemeService] Error JSON {file}: {ex.Message}");
             }
         }
 
-        if (Application.Current is App app)
-            app.ApplyCustomTheme();
+        if (app is App a)
+            a.ApplyCustomTheme();
 
         Console.WriteLine($"[ThemeService] Tema aplicado: {themeName}");
     }
