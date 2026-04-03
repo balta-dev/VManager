@@ -265,7 +265,12 @@
       "ProfileImageSet": "已设置个人资料图片。",
       "ProfileImageRemoved": "已移除个人资料图片。",
       "MainWindowFail": "无法访问主窗口。",
-      "Welcome": "欢迎，{0}！您想更改什么？ :)"
+      "Welcome": "欢迎，{0}！您想更改什么？ :)",
+      "Theme": "主题",
+      "OpenThemesFolder": "打开主题文件夹",
+      "CustomDecorations": "自定义窗口装饰",
+      "ShowThemeToggleButton": "显示亮色/暗色主题按钮",
+      "KeepPaneHide": "保持面板隐藏"
     },
     "Tips": {
       "Hardware1": "此按钮会并行启动多个 FFmpeg 实例来检查",

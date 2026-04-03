@@ -265,7 +265,12 @@
       "ProfileImageSet": "Obraz profilu ustawiony.",
       "ProfileImageRemoved": "Obraz profilu usunięty.",
       "MainWindowFail": "Nie można uzyskać dostępu do głównego okna.",
-      "Welcome": "Witaj, {0}! Co chcesz zmienić? :)"
+      "Welcome": "Witaj, {0}! Co chcesz zmienić? :)",
+      "Theme": "Motyw",
+      "OpenThemesFolder": "Otwórz folder motywów",
+      "CustomDecorations": "Niestandardowe dekoracje okna",
+      "ShowThemeToggleButton": "Pokaż przycisk jasny/ciemny motyw",
+      "KeepPaneHide": "Utrzymuj panel ukryty"
     },
     "Tips": {
       "Hardware1": "Ten przycisk uruchamia wiele instancji FFmpeg równolegle, aby sprawdzić",

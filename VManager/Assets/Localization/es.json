@@ -265,7 +265,12 @@
       "ProfileImageSet": "Imagen de perfil establecida.",
       "ProfileImageRemoved": "Imagen de perfil eliminada.",
       "MainWindowFail": "No se pudo acceder a la ventana principal.",
-      "Welcome": "¡Bienvenid@, {0}! ¿Qué necesitas cambiar? :)"
+      "Welcome": "¡Bienvenid@, {0}! ¿Qué necesitas cambiar? :)",
+      "Theme": "Tema",
+      "OpenThemesFolder": "Abrir carpeta de temas",
+      "CustomDecorations": "Decoraciones de ventana personalizada",
+      "ShowThemeToggleButton": "Mostrar botón de tema claro/oscuro",
+      "KeepPaneHide": "Mantener panel oculto"
     },
     "Tips": {
       "Hardware1": "Este botón inicia múltiples instancias de FFMpeg en paralelo para comprobar",

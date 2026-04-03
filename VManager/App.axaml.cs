@@ -36,8 +36,8 @@ public partial class App : Application
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 // Trabajo pesado fuera del hilo UI
-                ExtractDefaultTheme();
-                Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] ExtractDefaultTheme ejecutado");
+                ExtractThemes();
+                Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] ExtractThemes ejecutado");
                 
                 var config = ConfigurationService.Current;
                 Console.WriteLine($"[STARTUP] [{MainWindow.StartupStopwatch?.ElapsedMilliseconds}ms] Config cargada");
@@ -71,29 +71,50 @@ public partial class App : Application
             base.OnFrameworkInitializationCompleted();
         }
     
-    private void ExtractDefaultTheme()
+    private void ExtractThemes()
     {
-        var themesDir = Path.Combine(
+        var baseDir = Path.Combine(
             Path.GetDirectoryName(Environment.ProcessPath!)!,
-            "Themes", "Default");
+            "Themes");
 
-        Directory.CreateDirectory(themesDir);
+        Directory.CreateDirectory(baseDir);
 
         var assembly = typeof(App).Assembly;
-        const string prefix = "VManager.Assets.Themes.Default.";
+        const string prefix = "VManager.Assets.Themes.";
 
         foreach (var resourceName in assembly.GetManifestResourceNames()
                      .Where(n => n.StartsWith(prefix)))
         {
-            var fileName = resourceName[prefix.Length..]; // ej: "Colors.axaml"
-            var destFile = Path.Combine(themesDir, fileName);
+            var relativePath = resourceName[prefix.Length..]
+                .Replace('.', Path.DirectorySeparatorChar);
+
+            // FIX importante: restaurar extensión (.json)
+            var lastDot = relativePath.LastIndexOf(Path.DirectorySeparatorChar);
+            if (lastDot >= 0)
+            {
+                var dir = relativePath[..lastDot];
+                var file = relativePath[(lastDot + 1)..];
+
+                var fileParts = file.Split(Path.DirectorySeparatorChar);
+            }
+
+            // solución más simple y robusta:
+            var parts = resourceName[prefix.Length..].Split('.');
+            var fileName = parts[^2] + "." + parts[^1]; // Colors.json
+            var themePath = Path.Combine(parts.Take(parts.Length - 2).ToArray());
+
+            var destDir = Path.Combine(baseDir, themePath);
+            Directory.CreateDirectory(destDir);
+
+            var destFile = Path.Combine(destDir, fileName);
 
             if (File.Exists(destFile)) continue;
 
             using var stream = assembly.GetManifestResourceStream(resourceName)!;
             using var fs = File.Create(destFile);
             stream.CopyTo(fs);
-            Console.WriteLine($"[STARTUP] Extraído: {fileName}");
+
+            Console.WriteLine($"[STARTUP] Extraído: {themePath}/{fileName}");
         }
     }
 

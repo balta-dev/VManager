@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -285,11 +286,49 @@ namespace Updater
                 return null;
             }
         }
+        
+        private string? LoadCustomThemeFromConfig()
+        {
+            Console.WriteLine("[Updater] Entrando a LoadCustomThemeFromConfig()");
+
+            if (!File.Exists(ConfigPath))
+            {
+                Console.WriteLine("[Updater] Config no existe");
+                return null;
+            }
+
+            try
+            {
+                var json = File.ReadAllText(ConfigPath);
+                Console.WriteLine("[Updater] JSON leído OK");
+
+                using var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
+
+                if (root.TryGetProperty("ThemeName", out var themeName) &&
+                    themeName.ValueKind == JsonValueKind.String) return themeName.GetString();
+                
+                Console.WriteLine("[Updater] Propiedad 'ThemeName' NO encontrada en JSON");
+                return "Default";
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Updater] Error: {ex.Message}");
+                return null;
+            }
+        }
+        
         public override void OnFrameworkInitializationCompleted()
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                ExtractThemes();
+                var savedTheme = LoadCustomThemeFromConfig();
+                ThemeService.Instance.Apply(savedTheme);
+                
                 var useDarkTheme = ResolveUseDarkTheme();
+                
                 RequestedThemeVariant = useDarkTheme.HasValue
                     ? (useDarkTheme.Value ? ThemeVariant.Dark : ThemeVariant.Light)
                     : ThemeVariant.Default;
@@ -612,22 +651,70 @@ namespace Updater
             }
         }
         
-        private void ApplyCustomTheme(ThemeVariant? theme = null)
+        public void ApplyCustomTheme(ThemeVariant? theme = null)
         {
             var actualTheme = theme ?? ActualThemeVariant;
 
             if (actualTheme == ThemeVariant.Dark)
             {
-                Resources["WindowBackgroundBrush"] = Resources["WindowBackgroundBrushDark"];
-                Resources["PanelBackgroundBrush"] = Resources["PanelBackgroundBrushDark"];
-                Resources["BorderBrushPrimary"] = Resources["BorderBrushPrimaryDark"];
+                TryGetResource("WindowBackgroundBrushDark", null, out var wb); Resources["WindowBackgroundBrush"] = wb;
+                TryGetResource("PanelBackgroundBrushDark", null, out var pb); Resources["PanelBackgroundBrush"] = pb;
+                TryGetResource("BorderBrushPrimaryDark", null, out var bb); Resources["BorderBrushPrimary"] = bb;
             }
             else
             {
-                Resources["WindowBackgroundBrush"] = Resources["WindowBackgroundBrushLight"];
-                Resources["PanelBackgroundBrush"] = Resources["PanelBackgroundBrushLight"];
-                Resources["BorderBrushPrimary"] = Resources["BorderBrushPrimaryLight"];
+                TryGetResource("WindowBackgroundBrushLight", null, out var wb); Resources["WindowBackgroundBrush"] = wb;
+                TryGetResource("PanelBackgroundBrushLight", null, out var pb); Resources["PanelBackgroundBrush"] = pb;
+                TryGetResource("BorderBrushPrimaryLight", null, out var bb); Resources["BorderBrushPrimary"] = bb;
             }
         }
+        
+        private void ExtractThemes()
+        {
+            var baseDir = Path.Combine(
+                Path.GetDirectoryName(Environment.ProcessPath!)!,
+                "Themes");
+
+            Directory.CreateDirectory(baseDir);
+
+            var assembly = typeof(App).Assembly;
+            const string prefix = "VManager.Assets.Themes.";
+
+            foreach (var resourceName in assembly.GetManifestResourceNames()
+                         .Where(n => n.StartsWith(prefix)))
+            {
+                var relativePath = resourceName[prefix.Length..]
+                    .Replace('.', Path.DirectorySeparatorChar);
+
+                // FIX importante: restaurar extensión (.json)
+                var lastDot = relativePath.LastIndexOf(Path.DirectorySeparatorChar);
+                if (lastDot >= 0)
+                {
+                    var dir = relativePath[..lastDot];
+                    var file = relativePath[(lastDot + 1)..];
+
+                    var fileParts = file.Split(Path.DirectorySeparatorChar);
+                }
+
+                // solución más simple y robusta:
+                var parts = resourceName[prefix.Length..].Split('.');
+                var fileName = parts[^2] + "." + parts[^1]; // Colors.json
+                var themePath = Path.Combine(parts.Take(parts.Length - 2).ToArray());
+
+                var destDir = Path.Combine(baseDir, themePath);
+                Directory.CreateDirectory(destDir);
+
+                var destFile = Path.Combine(destDir, fileName);
+
+                if (File.Exists(destFile)) continue;
+
+                using var stream = assembly.GetManifestResourceStream(resourceName)!;
+                using var fs = File.Create(destFile);
+                stream.CopyTo(fs);
+
+                Console.WriteLine($"[STARTUP] Extraído: {themePath}/{fileName}");
+            }
+        }
+        
     }
 }

@@ -167,6 +167,9 @@
                   <ComboBox ItemsSource="{Binding AvailableThemes}"
                             SelectedItem="{Binding ThemeName, Mode=TwoWay}"
                             Width="170"/>
+                  <Button Content="{Binding L[Configuration.Fields.OpenThemesFolder]}"
+                          Command="{Binding OpenThemesFolderCommand}"
+                          FontSize="13"/>
                 </StackPanel>
                 
                 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">

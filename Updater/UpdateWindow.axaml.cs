@@ -24,6 +24,9 @@ namespace Updater
         {
             InitializeComponent();
             _customColor = LoadCustomColorFromConfig();
+            Console.WriteLine(
+                Application.Current!.Resources["PanelBackgroundBrush"]
+            );
             
             Title = App.UpdaterLocalization.T("WindowTitle");
 

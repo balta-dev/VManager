@@ -265,7 +265,12 @@
       "ProfileImageSet": "प्रोफाइल इमेज सेट की गई।",
       "ProfileImageRemoved": "प्रोफाइल इमेज हटाई गई।",
       "MainWindowFail": "मुख्य विंडो तक पहुंच नहीं हो सकी।",
-      "Welcome": "स्वागत है, {0}! आप क्या बदलना चाहते हैं? :)"
+      "Welcome": "स्वागत है, {0}! आप क्या बदलना चाहते हैं? :)",
+      "Theme": "थीम",
+      "OpenThemesFolder": "थीम फ़ोल्डर खोलें",
+      "CustomDecorations": "कस्टम विंडो सजावट",
+      "ShowThemeToggleButton": "हल्का/गहरा थीम बटन दिखाएं",
+      "KeepPaneHide": "पैनल छुपा रखें"
     },
     "Tips": {
       "Hardware1": "यह बटन कई FFmpeg इंस्टेंस को समानांतर में शुरू करता है ताकि",

@@ -1,0 +1,23 @@
+{
+  "Brushes": {
+    "PanelBackgroundBrushLight": "#FBEAEC",
+    "BorderBrushPrimaryLight": "#E07A86",
+    "WindowBackgroundBrushLight": "#FFF5F6",
+    "ToggleButtonBorderLight": "#7A2C34",
+
+    "PanelBackgroundBrushDark": "#2A0D12",
+    "BorderBrushPrimaryDark": "#6B1E28",
+    "WindowBackgroundBrushDark": "#1A070A",
+    "ToggleButtonBorderDark": "#BE4A5A",
+
+    "SliderTrackFillPointerOver": "#BE4A5A",
+    "SliderTrackFillPressed": "#6B1E28"
+  },
+  "CornerRadius": {
+    "SliderThumbCornerRadius": 0
+  },
+  "Double": {
+    "SliderHorizontalThumbWidth": 10,
+    "SliderHorizontalThumbHeight": 20
+  }
+}

@@ -265,7 +265,12 @@
       "ProfileImageSet": "Immagine profilo impostata.",
       "ProfileImageRemoved": "Immagine profilo rimossa.",
       "MainWindowFail": "Impossibile accedere alla finestra principale.",
-      "Welcome": "Benvenuto, {0}! Cosa vuoi modificare? :)"
+      "Welcome": "Benvenuto, {0}! Cosa vuoi modificare? :)",
+      "Theme": "Tema",
+      "OpenThemesFolder": "Apri cartella temi",
+      "CustomDecorations": "Decorazioni finestra personalizzate",
+      "ShowThemeToggleButton": "Mostra pulsante tema chiaro/scuro",
+      "KeepPaneHide": "Mantieni pannello nascosto"
     },
     "Tips": {
       "Hardware1": "Questo pulsante avvia più istanze di FFmpeg in parallelo per verificare",

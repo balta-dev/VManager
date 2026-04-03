@@ -265,7 +265,12 @@
       "ProfileImageSet": "Profilbild festgelegt.",
       "ProfileImageRemoved": "Profilbild entfernt.",
       "MainWindowFail": "Kein Zugriff auf das Hauptfenster möglich.",
-      "Welcome": "Willkommen, {0}! Was möchten Sie ändern? :)"
+      "Welcome": "Willkommen, {0}! Was möchten Sie ändern? :)",
+      "Theme": "Design",
+      "OpenThemesFolder": "Designordner öffnen",
+      "CustomDecorations": "Benutzerdefinierte Fensterdekoration",
+      "ShowThemeToggleButton": "Hell/Dunkel-Schaltfläche anzeigen",
+      "KeepPaneHide": "Panel ausgeblendet lassen"
     },
     "Tips": {
       "Hardware1": "Diese Schaltfläche startet mehrere FFmpeg-Instanzen parallel, um",

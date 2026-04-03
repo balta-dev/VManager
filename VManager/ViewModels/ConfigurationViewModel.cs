@@ -247,6 +247,7 @@ namespace VManager.ViewModels
         public ReactiveCommand<Unit, Unit> RemoveCookiesFileCommand { get; }
         
         public ReactiveCommand<Unit, Unit> OpenLogsFolderCommand { get; }
+        public ReactiveCommand<Unit, Unit> OpenThemesFolderCommand { get; }
         
         private readonly AppConfig _config;
         
@@ -258,6 +259,16 @@ namespace VManager.ViewModels
     
             Directory.CreateDirectory(logsFolder); // por si no existe
             Process.Start(new ProcessStartInfo(logsFolder) { UseShellExecute = true });
+        }
+        
+        public void OpenThemesFolder()
+        {
+            var themesDir = Path.Combine(
+                Path.GetDirectoryName(Environment.ProcessPath!)!,
+                "Themes");
+
+            if (!Directory.Exists(themesDir)) Directory.CreateDirectory(themesDir);
+            Process.Start(new ProcessStartInfo(themesDir) { UseShellExecute = true });
         }
         
         private async Task BrowseDownloadFolderAsync()
@@ -293,6 +304,7 @@ namespace VManager.ViewModels
         {
             RefreshCodecsCommand = ReactiveCommand.CreateFromTask(ReloadCodecsAsync, outputScheduler: AvaloniaScheduler.Instance);
             OpenLogsFolderCommand = ReactiveCommand.Create(OpenLogsFolder, outputScheduler: AvaloniaScheduler.Instance);
+            OpenThemesFolderCommand = ReactiveCommand.Create(OpenThemesFolder, outputScheduler: AvaloniaScheduler.Instance);
             
             ResetAccentColorCommand = ReactiveCommand.Create<Unit>(
                 () =>

@@ -37,11 +37,14 @@
       <EmbeddedResource Include="Assets\Sounds\**\*" />
       <EmbeddedResource Include="Assets\Localization\*.json" />
       <AvaloniaResource Include="Assets\VManager.ico" />
-      <EmbeddedResource Include="Assets\Themes\Default\Colors.axaml">
-          <LogicalName>VManager.Assets.Themes.Default.Colors.axaml</LogicalName>
-      </EmbeddedResource>
       <EmbeddedResource Include="Assets\Themes\Default\Colors.json">
-          <LogicalName>VManager.Assets.Themes.Default.Colors.json</LogicalName>
+        <LogicalName>VManager.Assets.Themes.Default.Colors.json</LogicalName>
+      </EmbeddedResource>
+      <EmbeddedResource Include="Assets\Themes\OceanBlue\Colors.json">
+        <LogicalName>VManager.Assets.Themes.OceanBlue.Colors.json</LogicalName>
+      </EmbeddedResource>
+      <EmbeddedResource Include="Assets\Themes\MutedRed\Colors.json">
+        <LogicalName>VManager.Assets.Themes.MutedRed.Colors.json</LogicalName>
       </EmbeddedResource>
       <EmbeddedResource Include="Assets\Inter-Regular.ttf" />
       <EmbeddedResource Include="Assets\banner.png" />

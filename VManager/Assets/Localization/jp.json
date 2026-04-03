@@ -265,7 +265,12 @@
       "ProfileImageSet": "プロフィール画像を設定しました。",
       "ProfileImageRemoved": "プロフィール画像を削除しました。",
       "MainWindowFail": "メインウィンドウにアクセスできません。",
-      "Welcome": "ようこそ、{0}！何を変更しますか？ :)"
+      "Welcome": "ようこそ、{0}！何を変更しますか？ :)",
+      "Theme": "テーマ",
+      "OpenThemesFolder": "テーマフォルダを開く",
+      "CustomDecorations": "カスタムウィンドウ装飾",
+      "ShowThemeToggleButton": "ライト/ダークテーマボタンを表示",
+      "KeepPaneHide": "パネルを非表示にする"
     },
     "Tips": {
       "Hardware1": "このボタンは複数のFFmpegインスタンスを並列起動して",

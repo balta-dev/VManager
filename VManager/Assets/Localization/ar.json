@@ -265,7 +265,12 @@
       "ProfileImageSet": "تم تعيين صورة الملف الشخصي.",
       "ProfileImageRemoved": "تم إزالة صورة الملف الشخصي.",
       "MainWindowFail": "لا يمكن الوصول إلى النافذة الرئيسية.",
-      "Welcome": "مرحباً، {0}! ماذا تريد تغييره؟ :)"
+      "Welcome": "مرحباً، {0}! ماذا تريد تغييره؟ :)",
+      "Theme": "السمة",
+      "OpenThemesFolder": "فتح مجلد السمات",
+      "CustomDecorations": "تزيينات نافذة مخصصة",
+      "ShowThemeToggleButton": "إظهار زر السمة الفاتحة/الداكنة",
+      "KeepPaneHide": "إبقاء اللوحة مخفية"
     },
     "Tips": {
       "Hardware1": "هذا الزر يطلق عدة نسخ من FFmpeg بالتوازي للتحقق من",

@@ -265,7 +265,12 @@
       "ProfileImageSet": "프로필 이미지 설정됨.",
       "ProfileImageRemoved": "프로필 이미지 제거됨.",
       "MainWindowFail": "메인 윈도우에 접근할 수 없습니다.",
-      "Welcome": "환영합니다, {0}! 무엇을 변경하시겠어요? :)"
+      "Welcome": "환영합니다, {0}! 무엇을 변경하시겠어요? :)",
+      "Theme": "테마",
+      "OpenThemesFolder": "테마 폴더 열기",
+      "CustomDecorations": "사용자 정의 창 장식",
+      "ShowThemeToggleButton": "밝기/어두운 테마 버튼 표시",
+      "KeepPaneHide": "패널 숨김 유지"
     },
     "Tips": {
       "Hardware1": "이 버튼은 여러 FFmpeg 인스턴스를 병렬로 실행하여",
