@@ -364,7 +364,7 @@ namespace VManager.ViewModels.Herramientas
                     }
 
                     successCount++;
-                    _ = SoundManager.Play("success.wav");
+                    if (!OperatingSystem.IsWindows()) _ = SoundManager.Play("success.wav");
                     SetLastCompressedFile(result.OutputPath);
 
                     NotificationService notificationService = new NotificationService();

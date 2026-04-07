@@ -1,7 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using VManager.Views;
+#if WINDOWS
+using Microsoft.Toolkit.Uwp.Notifications;
+#endif
 
 namespace VManager.Services.Core;
 public class NotificationService
@@ -20,6 +22,25 @@ public class NotificationService
                 System.Console.WriteLine($"Notificaciones {(value ? "activadas" : "desactivadas")}");
             }
         }
+    }
+    
+    public void ShowNotificationWindows(string title, string message)
+    {
+    #if WINDOWS
+        try 
+        {
+            new ToastContentBuilder()
+                .AddText(title)
+                .AddText(message)
+                .Show();
+        }
+
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error mostrando notificación: {ex.Message}");
+        }
+        
+    #endif
     }
     
     public void ShowNotificationLinux(string title, string message)
@@ -66,12 +87,7 @@ public class NotificationService
         }
         else if (OperatingSystem.IsWindows())
         {
-            var toast = new ToastNotificationWindow(
-                status,
-                message,
-                "Assets/VManager.ico"
-            );
-            toast.Show(); 
+            ShowNotificationWindows(status, message);
         }
     }
     

@@ -133,7 +133,7 @@ namespace VManager.ViewModels.Herramientas
             }
             catch (OperationCanceledException)
             {
-                _ = SoundManager.Play("fail.wav");
+                if (!OperatingSystem.IsWindows()) _ = SoundManager.Play("success.wav");
                 Status = L["VAudiofy.Fields.Canceled"];
                 Progress = 0;
                 this.RaisePropertyChanged(nameof(Status));

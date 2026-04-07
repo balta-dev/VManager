@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFrameworks>net9.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">net9.0;net9.0-windows10.0.17763.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
@@ -24,6 +25,10 @@
     <IsLinux Condition="$(RuntimeIdentifier.Contains('linux'))">true</IsLinux>
     <IsMac Condition="$(RuntimeIdentifier.Contains('osx'))">true</IsMac>
   </PropertyGroup>
+
+<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-windows10.0.17763.0'">
+  <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.2" />
+</ItemGroup>
 
   <!-- Carpetas y recursos básicos -->
   <ItemGroup>

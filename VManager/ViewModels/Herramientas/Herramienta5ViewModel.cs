@@ -703,7 +703,7 @@ namespace VManager.ViewModels.Herramientas
                             var notifier = new NotificationService();
                             notifier.ShowFileConvertedNotification($"{L["VideoStatus.Downloaded"]} {currentVideo.Title}", outputTemplate);
 
-                            _ = SoundManager.Play("success.wav");
+                            if (!OperatingSystem.IsWindows()) _ = SoundManager.Play("success.wav");
                             SetLastCompressedFile(outputTemplate);
                         }
                         else

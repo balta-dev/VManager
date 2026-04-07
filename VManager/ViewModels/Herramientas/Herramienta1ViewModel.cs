@@ -605,7 +605,7 @@ namespace VManager.ViewModels.Herramientas
                         result.OutputPath
                     );
 
-                    _ = SoundManager.Play("success.wav");
+                    if (!OperatingSystem.IsWindows()) _ = SoundManager.Play("success.wav");
                     SetLastCompressedFile(result.OutputPath);
 
                     Status = string.Format(L["VCut.Fields.Completed"], result.Message);
