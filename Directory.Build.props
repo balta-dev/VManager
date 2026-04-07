@@ -2,8 +2,8 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
-    <Version>1.8.0</Version>
-    <FileVersion>1.8.0.0</FileVersion>
+    <Version>1.8.1</Version>
+    <FileVersion>1.8.1.0</FileVersion>
     <Authors>Baltazar Franz</Authors>
     <Product>VManager</Product>
     <Company>Baltazar Franz</Company>

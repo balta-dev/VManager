@@ -23,6 +23,9 @@ public class VideoInfo
     
     [JsonPropertyName("formats")]
     public List<FormatInfo> Formats { get; set; } = new();
+    
+    [JsonPropertyName("original_language")]
+    public string? OriginalLanguage { get; set; }
 }
 
 public class FormatInfo

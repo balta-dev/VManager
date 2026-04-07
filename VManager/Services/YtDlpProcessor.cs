@@ -370,7 +370,8 @@ public class YtDlpProcessor
         IProgress<YtDlpProgress> progress,
         CancellationToken cancellationToken,
         string? formatId = null,
-        bool useCookies = true)
+        bool useCookies = true,
+        string? originalLanguage = null)
     {
         string safeOutput = OutputPathBuilder.SanitizeFilename(outputTemplate);
         
@@ -407,21 +408,49 @@ public class YtDlpProcessor
         {
             if (formatId == "0")
             {
+                string audioSelector = !string.IsNullOrEmpty(originalLanguage)
+                    ? $"bestaudio[language={originalLanguage}]/bestaudio"
+                    : "bestaudio";
+
+                psi.ArgumentList.Add("-f");
+                psi.ArgumentList.Add(audioSelector);
                 psi.ArgumentList.Add("-x");
                 psi.ArgumentList.Add("--audio-format");
                 psi.ArgumentList.Add("mp3");
             }
             else if (formatId == "1")
             {
+                string audioSelector = !string.IsNullOrEmpty(originalLanguage)
+                    ? $"bestaudio[language={originalLanguage}]/bestaudio"
+                    : "bestaudio";
+
+                psi.ArgumentList.Add("-f");
+                psi.ArgumentList.Add(audioSelector);
                 psi.ArgumentList.Add("-x");
                 psi.ArgumentList.Add("--audio-format");
                 psi.ArgumentList.Add("wav");
             }
             else
             {
-                // Formato de video real: pedir ese formato + mejor audio disponible
+                string baseFormatId = formatId.Contains('-') ? formatId.Split('-')[0] : formatId;
+    
+                string formatSelector;
+                if (!string.IsNullOrEmpty(originalLanguage))
+                {
+                    // Intentar el formato base con el idioma original, luego fallbacks
+                    formatSelector = 
+                        $"{baseFormatId}[language={originalLanguage}]+bestaudio[language={originalLanguage}]" +
+                        $"/{baseFormatId}[language={originalLanguage}]" +
+                        $"/{baseFormatId}+bestaudio[language={originalLanguage}]" +
+                        $"/{baseFormatId}+bestaudio/best";
+                }
+                else
+                {
+                    formatSelector = $"{baseFormatId}+bestaudio/best";
+                }
+    
                 psi.ArgumentList.Add("-f");
-                psi.ArgumentList.Add($"{formatId}+bestaudio/best");
+                psi.ArgumentList.Add(formatSelector);
             }
         }
 

@@ -59,38 +59,19 @@ namespace VManager.Behaviours
 
         private static async Task PlayButtonSound(Button button)
         {
-            switch (button.Name)
+            var sound = button.Name switch
             {
-                case "ToggleTheme":
-                    await SoundManager.Play("toggletheme.wav");
-                    break;
+                "ToggleTheme" => "toggletheme.wav",
+                "ClearInfo"   => "click.wav",
+                "LinuxDnD"    => OperatingSystem.IsLinux() ? "click.wav" : "dummy.wav",
+        
+                string name when name.StartsWith("QuestionMark") => "dummy.wav",
+                string name when name.Contains("Button")         => "dummy.wav",
+        
+                _ => "click.wav"
+            };
 
-                case "ClearInfo":
-                    await SoundManager.Play("click.wav");
-                    break;
-                
-                case "LinuxDnD":
-                    if (OperatingSystem.IsLinux())
-                    {
-                        await SoundManager.Play("click.wav");
-                    }
-                    else
-                    {
-                        await SoundManager.Play("dummy.wav");
-                    }
-                    break;
-                
-                default:
-                    if (button.Name != null && button.Name.StartsWith("QuestionMark"))
-                    {
-                        await SoundManager.Play("dummy.wav");
-                    }
-                    else
-                    {
-                        await SoundManager.Play("click.wav");
-                    }
-                    break;
-            }
+            await SoundManager.Play(sound);
         }
     }
 
