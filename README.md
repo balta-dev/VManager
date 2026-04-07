@@ -24,7 +24,7 @@ VManager es una aplicación open-source multiplataforma para recortar, comprimir
 * [CONTRIBUIR](CONTRIBUTING.md#contribuir-a-vmanager)
   * [Abrir un Issue](CONTRIBUTING.md#abrir-un-issue)
   * [Instrucciones para Desarrolladores](CONTRIBUTING.md#instrucciones-para-desarrolladores)
-    
+  
 * [EXTRA](#extra)
   * [Motivaciones](#motivaciones)
   * [Objetivos](#objetivos)
@@ -176,18 +176,18 @@ La lista de ubicaciones por defecto que están en PATH son:
 ### Windows
 
    ```powershell
-   dotnet publish VManager/VManager.csproj -c Release -r win-x64 --no-self-contained -o ./publish/win
+   dotnet publish VManager/VManager.csproj -c Release -f net9.0-windows10.0.17763.0 -r win-x64 --no-self-contained -o ./publish/win
    ```
 
 ### Linux
    ```bash
-   dotnet publish VManager/VManager.csproj -c Release -r linux-x64 --no-self-contained -o ./publish/linux
+   dotnet publish VManager/VManager.csproj -c Release -f net9.0 -r linux-x64 --no-self-contained -o ./publish/linux
    ```
 
 ### macOS
 
    ```bash
-   dotnet publish VManager/VManager.csproj -c Release -r osx-x64 --no-self-contained -o ./publish/mac
+   dotnet publish VManager/VManager.csproj -c Release -f net9.0 -r osx-x64 --no-self-contained -o ./publish/mac
    ```
 
 > El ejecutable queda en la carpeta `publish/<plataforma>/`.
@@ -200,18 +200,18 @@ Esta modalidad genera un ejecutable que **no requiere que el usuario tenga .NET 
 ### Windows
 
    ```powershell
-   dotnet publish VManager/VManager.csproj -c Release -r win-x64 --self-contained -o ./publish/win-sc
+   dotnet publish VManager/VManager.csproj -c Release -f net9.0-windows10.0.17763.0 -r win-x64 --self-contained -o ./publish/win-sc
    ```
 
 ### Linux
    ```bash
-   dotnet publish VManager/VManager.csproj -c Release -r linux-x64 --self-contained -o ./publish/linux-sc
+   dotnet publish VManager/VManager.csproj -c Release -f net9.0 -r linux-x64 --self-contained -o ./publish/linux-sc
    ```
 
 ### macOS
 
    ```bash
-   dotnet publish VManager/VManager.csproj -c Release -r osx-x64 --self-contained -o ./publish/mac-sc
+   dotnet publish VManager/VManager.csproj -c Release -f net9.0 -r osx-x64 --self-contained -o ./publish/mac-sc
    ```
 
 ------
