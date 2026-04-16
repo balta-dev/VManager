@@ -352,7 +352,18 @@
               </Style>
             </ToggleButton.Styles>
           </ToggleButton>
+          <TextBlock Text="{Binding L[VDownload.Fields.ChangeFolder]}"
+                     FontSize="11"
+                     Opacity="0.6"
+                     HorizontalAlignment="Center"
+                     Margin="0,8,0,0"/>
 
+          <Button Content="{Binding L[VDownload.Buttons.GoToConfig]}"
+                  FontSize="11"
+                  HorizontalAlignment="Center"
+                  Padding="6,2"
+                  Margin="0,2,0,20"
+                  Command="{Binding #Root.((herramientas:Herramienta5ViewModel)DataContext).GoToConfigCommand}"/>
         </StackPanel>
       </ScrollViewer>
     </Border>

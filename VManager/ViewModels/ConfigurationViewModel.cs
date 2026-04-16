@@ -24,7 +24,7 @@ namespace VManager.ViewModels
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
     public class ConfigurationViewModel : CodecViewModelBase
     {
-        
+        public Action? RequestScrollToBottom { get; set; }
         public ObservableCollection<string> Idiomas { get; } = new()
         {
             "English",

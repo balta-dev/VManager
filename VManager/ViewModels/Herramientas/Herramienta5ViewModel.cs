@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
+using VManager.Messages;
 using VManager.Models;
 using VManager.Services;
 using VManager.Services.Core;
@@ -83,6 +84,7 @@ namespace VManager.ViewModels.Herramientas
         public ReactiveCommand<VideoDownloadItem, Unit> RemoveUrlCommand { get; }
         public ReactiveCommand<Unit, Unit> HideDownloadHelpCommand { get; }
         public ReactiveCommand<Unit, Unit> ClearAllCommand { get; }
+        public ReactiveCommand<Unit, Unit> GoToConfigCommand { get; }
 
         private readonly SemaphoreSlim _downloadSemaphore = new SemaphoreSlim(3, 3);
 
@@ -96,6 +98,10 @@ namespace VManager.ViewModels.Herramientas
                 () => { ShowDownloadHelp = false; },
                 outputScheduler: AvaloniaScheduler.Instance
             );
+            GoToConfigCommand = ReactiveCommand.Create(() =>
+            {
+                MessageBus.Current.SendMessage(new NavigateToConfigAndScrollMessage());
+            }, outputScheduler: AvaloniaScheduler.Instance);
             ClearAllCommand = ReactiveCommand.Create(ClearAll, outputScheduler: AvaloniaScheduler.Instance);
             SelectedAudioFormat = SupportedAudioFormats[0]; // mp3
         }

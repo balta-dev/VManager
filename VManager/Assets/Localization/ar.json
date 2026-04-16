@@ -458,5 +458,6 @@
     "CookiesExpired": "انتهت صلاحية ملف الكوكيز. يرجى تجديده أو إزالته.",
     "CookiesWarningTitle": "تحذير",
     "RetryingWithoutCookies": "yt-dlp يواجه مشاكل. إعادة المحاولة بدون كوكيز..."
-  }
+  },
+  "VDownload": { "Fields": { "ChangeFolder": "هل تريد تغيير مجلد التنزيل؟" }, "Buttons": { "GoToConfig": "الذهاب إلى الإعدادات ->" } }
 }

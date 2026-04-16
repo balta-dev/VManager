@@ -111,7 +111,7 @@ namespace VManager.Views
                 TransparencyLevelHint = new[]
                 {
                     WindowTransparencyLevel.AcrylicBlur,
-                    WindowTransparencyLevel.Transparent
+                    //WindowTransparencyLevel.Transparent
                 };
             }
             

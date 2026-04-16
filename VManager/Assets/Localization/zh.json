@@ -458,5 +458,6 @@
     "CookiesExpired": "Cookie 文件已过期。请更新或删除它。",
     "CookiesWarningTitle": "警告",
     "RetryingWithoutCookies": "yt-dlp 遇到问题。正在不使用 Cookie 重试..."
-  }
+  },
+  "VDownload": { "Fields": { "ChangeFolder": "您想更改下载文件夹吗？" }, "Buttons": { "GoToConfig": "前往设置 ->" } }
 }

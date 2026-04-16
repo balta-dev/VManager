@@ -458,5 +458,6 @@
     "CookiesExpired": "Su archivo de cookies caducó. Por favor, renuévelo o quítelo.",
     "CookiesWarningTitle": "Advertencia",
     "RetryingWithoutCookies": "yt-dlp está teniendo problemas. Reintentando sin cookies..."
-  }
+  },
+  "VDownload": { "Fields": { "ChangeFolder": "¿Querés cambiar la carpeta de descarga?" }, "Buttons": { "GoToConfig": "Ir a configuración ->" } }
 }

@@ -458,5 +458,6 @@
     "CookiesExpired": "Cookieファイルの有効期限が切れています。更新または削除してください。",
     "CookiesWarningTitle": "警告",
     "RetryingWithoutCookies": "yt-dlpに問題が発生しています。Cookieなしで再試行中..."
-  }
+  },
+  "VDownload": { "Fields": { "ChangeFolder": "ダウンロードフォルダを変更しますか？" }, "Buttons": { "GoToConfig": "設定へ移動 ->" } }
 }

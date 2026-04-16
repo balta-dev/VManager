@@ -458,5 +458,6 @@
     "CookiesExpired": "Plik cookies wygasł. Proszę go odnowić lub usunąć.",
     "CookiesWarningTitle": "Ostrzeżenie",
     "RetryingWithoutCookies": "yt-dlp ma problemy. Ponawiam próbę bez cookies..."
-  }
+  },
+  "VDownload": { "Fields": { "ChangeFolder": "Czy chcesz zmienić folder pobierania?" }, "Buttons": { "GoToConfig": "Przejdź do ustawień ->" } }
 }

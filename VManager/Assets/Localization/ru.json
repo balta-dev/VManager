@@ -458,5 +458,6 @@
     "CookiesExpired": "Файл cookies устарел. Пожалуйста, обновите или удалите его.",
     "CookiesWarningTitle": "Предупреждение",
     "RetryingWithoutCookies": "yt-dlp испытывает проблемы. Повторная попытка без cookies..."
-  }
+  },
+  "VDownload": { "Fields": { "ChangeFolder": "Хотите изменить папку для скачивания?" }, "Buttons": { "GoToConfig": "Перейти в настройки ->" } }
 }

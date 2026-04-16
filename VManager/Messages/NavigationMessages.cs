@@ -1,6 +1,4 @@
-namespace VManager.Messages;
-
-public class NavigationMessages
+namespace VManager.Messages
 {
-    
+    public class NavigateToConfigAndScrollMessage { }
 }

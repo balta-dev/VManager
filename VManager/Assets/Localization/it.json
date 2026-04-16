@@ -458,5 +458,6 @@
     "CookiesExpired": "Il file dei cookie è scaduto. Rinnovalo o rimuovilo.",
     "CookiesWarningTitle": "Avviso",
     "RetryingWithoutCookies": "yt-dlp sta riscontrando problemi. Nuovo tentativo senza cookie..."
-  }
+  },
+  "VDownload": { "Fields": { "ChangeFolder": "Vuoi cambiare la cartella di download?" }, "Buttons": { "GoToConfig": "Vai alle impostazioni ->" } }
 }

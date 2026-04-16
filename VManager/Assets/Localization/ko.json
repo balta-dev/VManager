@@ -458,5 +458,6 @@
     "CookiesExpired": "쿠키 파일이 만료되었습니다. 갱신하거나 삭제해 주세요.",
     "CookiesWarningTitle": "경고",
     "RetryingWithoutCookies": "yt-dlp에 문제가 발생했습니다. 쿠키 없이 재시도 중..."
-  }
+  },
+  "VDownload": { "Fields": { "ChangeFolder": "다운로드 폴더를 변경하시겠습니까?" }, "Buttons": { "GoToConfig": "설정으로 이동 ->" } }
 }

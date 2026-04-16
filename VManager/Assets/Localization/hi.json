@@ -458,5 +458,6 @@
     "CookiesExpired": "आपकी कुकी फाइल समाप्त हो गई है। कृपया इसे नवीनीकृत या हटाएं।",
     "CookiesWarningTitle": "चेतावनी",
     "RetryingWithoutCookies": "yt-dlp में समस्या है। कुकीज़ के बिना पुनः प्रयास हो रहा है..."
-  }
+  },
+  "VDownload": { "Fields": { "ChangeFolder": "क्या आप डाउनलोड फ़ोल्डर बदलना चाहते हैं?" }, "Buttons": { "GoToConfig": "सेटिंग्स पर जाएं ->" } }
 }

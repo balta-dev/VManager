@@ -26,7 +26,7 @@
             behaviours:DragDropHelper.DropTarget="CookiesFilePath"
             behaviours:DragDropHelper.AllowTxt="True">
 
-      <ScrollViewer Padding="0"
+      <ScrollViewer Padding="0" x:Name="MainScroll"
                     VerticalScrollBarVisibility="Auto"
                     HorizontalScrollBarVisibility="Disabled"
                     AllowAutoHide="True">

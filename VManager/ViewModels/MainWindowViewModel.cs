@@ -12,6 +12,7 @@ using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using Avalonia;
 using Avalonia.Media.Imaging;
+using VManager.Messages;
 using VManager.Services;
 using VManager.Services.Core;
 using VManager.ViewModels.Herramientas;
@@ -162,6 +163,13 @@ public class MainWindowViewModel : ViewModelBase
         // se necesitan para suscripciones y sincronización de config
         _configuration = new ConfigurationViewModel();
         _acercaDe = new AcercaDeViewModel();
+        
+        MessageBus.Current.Listen<NavigateToConfigAndScrollMessage>()
+            .Subscribe(_ =>
+            {
+                CurrentView = _configuration;
+                _configuration.RequestScrollToBottom?.Invoke();
+            });
         
         // Las 5 herramientas ya NO se crean acá, se crean lazy al primer uso
         
