@@ -29,11 +29,7 @@ public static class NativeSplash
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             _thread.SetApartmentState(ApartmentState.STA);
         _thread.Start();
-
-        // Esperar hasta que la ventana sea visible (máx 1s)
-        var deadline = DateTime.UtcNow.AddMilliseconds(1000);
-        while (!_isReady && DateTime.UtcNow < deadline)
-            Thread.Sleep(5);
+        
     }
 
     public static void Close()

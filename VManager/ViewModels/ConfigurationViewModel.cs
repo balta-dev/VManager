@@ -16,6 +16,7 @@ using ReactiveUI;
 using VManager.Services;
 using VManager.Services.Core;
 using System.Diagnostics;
+using System.Globalization;
 using VManager.Services.Models;
 using Avalonia.Styling;
 
@@ -57,7 +58,29 @@ namespace VManager.ViewModels
             set => this.RaiseAndSetIfChanged(ref _hideRemainingTime, value);
         }
 
-        private string _idiomaSeleccionado = "";
+        public static string GetDefaultIdioma()
+        {
+            var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+            return lang switch
+            {
+                "es" => "Español",
+                "fr" => "Français",
+                "de" => "Deutsch",
+                "it" => "Italiano",
+                "pl" => "Polski",
+                "pt" => "Português",
+                "ru" => "Русский",
+                "uk" => "Українська",
+                "hi" => "हिंदी",
+                "ja" => "日本語",
+                "ko" => "한국어",
+                "zh" => "中文",
+                "ar" => "عربي",
+                _    => "English"
+            };
+        }
+        
+        private string _idiomaSeleccionado = GetDefaultIdioma();
         public string IdiomaSeleccionado
         {
             get => _idiomaSeleccionado;
@@ -77,7 +100,7 @@ namespace VManager.ViewModels
                     case "Русский": LocalizationService.Instance.CurrentLanguage = "ru"; break;
                     case "Українська": LocalizationService.Instance.CurrentLanguage = "uk"; break;
                     case "हिंदी":     LocalizationService.Instance.CurrentLanguage = "hi"; break;
-                    case "日本語": LocalizationService.Instance.CurrentLanguage = "jp"; break;
+                    case "日本語": LocalizationService.Instance.CurrentLanguage = "ja"; break;
                     case "한국어":    LocalizationService.Instance.CurrentLanguage = "ko"; break;
                     case "中文": LocalizationService.Instance.CurrentLanguage = "zh"; break;
                     case "عربي": LocalizationService.Instance.CurrentLanguage = "ar"; break;

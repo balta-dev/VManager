@@ -387,7 +387,8 @@ namespace VManager.ViewModels.Herramientas
 
             changedItem.FormatOverriddenByUser = true;
 
-            foreach (var item in Videos)
+            var videosCopy = Videos.ToList();
+            foreach (var item in videosCopy)
             {
                 if (item == changedItem) continue;
                 if (item.PlaylistId != changedItem.PlaylistId) continue;
@@ -709,7 +710,13 @@ namespace VManager.ViewModels.Herramientas
                             var notifier = new NotificationService();
                             notifier.ShowFileConvertedNotification($"{L["VideoStatus.Downloaded"]} {currentVideo.Title}", outputTemplate);
 
-                            if (!OperatingSystem.IsWindows()) _ = SoundManager.Play("success.wav");
+                            if (!OperatingSystem.IsWindows())
+                            {
+                                // finishedCount todavía no fue incrementado acá, se incrementa en el finally
+                                // así que comparamos con total - 1
+                                bool isLast = (finishedCount + 1) == total;
+                                _ = SoundManager.Play(isLast ? "sucess-final.wav" : "sucess-partial.wav");
+                            }
                             SetLastCompressedFile(outputTemplate);
                         }
                         else

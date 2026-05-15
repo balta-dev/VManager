@@ -62,6 +62,11 @@ internal static class X11Splash
         // ── Seleccionar eventos ───────────────────────────────────────────────
         XSelectInput(display, window, ExposureMask | StructureNotifyMask);
         XMapWindow(display, window);
+        
+        var watch = XCreateFontCursor(display, 150); // XC_watch = 150
+        XDefineCursor(display, window, watch);
+        XFreeCursor(display, watch);
+        
         XFlush(display);
 
         // ── GC para dibujo ────────────────────────────────────────────────────
@@ -416,6 +421,9 @@ internal static class X11Splash
     [DllImport("libX11.so.6")] static extern int    XDisplayHeight(IntPtr display, int screen);
     [DllImport("libX11.so.6")] static extern IntPtr XCreateWindow(IntPtr display, IntPtr parent, int x, int y, uint w, uint h, uint border, int depth, uint cls, IntPtr visual, ulong mask, ref XSetWindowAttributes attrs);
     [DllImport("libX11.so.6")] static extern int    XMapWindow(IntPtr display, IntPtr window);
+    [DllImport("libX11")] static extern IntPtr XCreateFontCursor(IntPtr display, uint shape);
+    [DllImport("libX11")] static extern int XDefineCursor(IntPtr display, IntPtr window, IntPtr cursor);
+    [DllImport("libX11")] static extern int XFreeCursor(IntPtr display, IntPtr cursor);
     [DllImport("libX11.so.6")] static extern int    XDestroyWindow(IntPtr display, IntPtr window);
     [DllImport("libX11.so.6")] static extern int    XFlush(IntPtr display);
     [DllImport("libX11.so.6")] static extern int    XPending(IntPtr display);

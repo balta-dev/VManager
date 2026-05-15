@@ -220,7 +220,8 @@ namespace VManager.ViewModels.Herramientas
                 int currentFileIndex = 0;
                 int successCount = 0;
 
-                foreach (var video in VideoPaths)
+                var videosCopy = VideoPaths.ToList();
+                foreach (var video in videosCopy)
                 {
                     currentFileIndex++;
 
@@ -262,7 +263,8 @@ namespace VManager.ViewModels.Herramientas
                     }
 
                     successCount++;
-                    if (!OperatingSystem.IsWindows()) _ = SoundManager.Play("success.wav");
+                    bool isLast = currentFileIndex == totalFiles;
+                    _ = SoundManager.Play(isLast ? "sucess-final.wav" : "sucess-partial.wav");
                     SetLastCompressedFile(result.OutputPath);
 
                     NotificationService notificationService = new NotificationService();

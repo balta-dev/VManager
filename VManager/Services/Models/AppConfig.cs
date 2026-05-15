@@ -8,14 +8,14 @@ namespace VManager.Services.Models;
 
 public class AppConfig : ReactiveObject
     {
-        private string _language = "Español";
+        private string _language = "English";
         public string Language
         {
             get => _language;
             set => this.RaiseAndSetIfChanged(ref _language, value);
         }
 
-        private bool _enableSounds = true;
+        private bool _enableSounds = false;
         public bool EnableSounds
         {
             get => _enableSounds;

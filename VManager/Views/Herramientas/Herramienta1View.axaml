@@ -72,7 +72,7 @@
                 </StackPanel>
               </Button.Content>
             </Button>
-            <Button x:Name="QuestionMarkDesde" Content="?" Width="30" FontWeight="Bold">
+            <Button x:Name="QuestionMarkDesde" Content="?" Cursor="Arrow" Width="30" FontWeight="Bold">
               <ToolTip.Tip>
                 <TextBlock MaxWidth="400" TextWrapping="Wrap">
                   <Run Text="{Binding L[VCut.Tips.FormatSelection]}"/>
@@ -199,6 +199,7 @@
 
         <!-- Botón recortar -->
         <Button Content="{Binding L[VCut.Buttons.Cut]}" 
+                x:Name="Execute"
                 HorizontalContentAlignment="Center"
                 FontSize="18" 
                 Classes="Accented"

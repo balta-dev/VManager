@@ -94,7 +94,7 @@
               <StackPanel Spacing="6" HorizontalAlignment="Center">
                   <TextBlock Text="{Binding L[VCompress.Fields.VideoCodec]}" HorizontalAlignment="Center"/>
                   <StackPanel Orientation="Horizontal" Spacing="6">
-                      <Button x:Name="QuestionMark6" Content="?" Width="30" FontWeight="Bold">
+                      <Button x:Name="QuestionMark6" Content="?" Cursor="Arrow" Width="30" FontWeight="Bold">
                           <ToolTip.Tip>
                               <TextBlock MaxWidth="400" TextWrapping="Wrap">
                                   <Run Text="{Binding L[VCompress.Tips.VideoCodecInfo]}"/>
@@ -119,7 +119,7 @@
               <StackPanel Spacing="6" HorizontalAlignment="Center">
                   <TextBlock Text="{Binding L[VCompress.Fields.AudioCodec]}" HorizontalAlignment="Center"/>
                   <StackPanel Orientation="Horizontal" Spacing="6">
-                      <Button x:Name="QuestionMark7" Content="?" Width="30" FontWeight="Bold">
+                      <Button x:Name="QuestionMark7" Content="?" Cursor="Arrow" Width="30" FontWeight="Bold">
                           <ToolTip.Tip>
                               <TextBlock MaxWidth="400" TextWrapping="Wrap">
                                   <Run Text="{Binding L[VCompress.Tips.AudioCodecInfo]}"/>
@@ -176,6 +176,7 @@
 
           <!-- Botón Comprimir -->
           <Button Content="{Binding L[VCompress.Buttons.Compress]}" 
+                  x:Name="Execute"
                   HorizontalContentAlignment="Center"
                   Classes="Accented"
                   IsEnabled="{Binding VideoPath, Converter={StaticResource ValidPathConverter}}"

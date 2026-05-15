@@ -95,15 +95,15 @@ sealed class Program
         // Medimos cuánto tarda en RETORNAR cada Initialize (no en completarse)
         // Si tarda >5ms en retornar, tiene código síncrono bloqueante antes del primer await
         
-        var ffmpegTask = FFmpegManager.Initialize();
+        var _ = FFmpegManager.Initialize();
         Console.WriteLine($"[STARTUP] [{sw.ElapsedMilliseconds}ms] FFmpegManager.Initialize() retornó (delta: {sw.ElapsedMilliseconds - t0}ms)");
     
         t0 = sw.ElapsedMilliseconds;
-        var ytDlpTask = YtDlpManager.Initialize();
+        var __ = YtDlpManager.Initialize();
         Console.WriteLine($"[STARTUP] [{sw.ElapsedMilliseconds}ms] YtDlpManager.Initialize() retornó (delta: {sw.ElapsedMilliseconds - t0}ms)");
     
         t0 = sw.ElapsedMilliseconds;
-        var denoTask = DenoManager.Initialize();
+        var ___ = DenoManager.Initialize();
         Console.WriteLine($"[STARTUP] [{sw.ElapsedMilliseconds}ms] DenoManager.Initialize() retornó (delta: {sw.ElapsedMilliseconds - t0}ms)");
     
         Console.WriteLine($"[STARTUP] [{sw.ElapsedMilliseconds}ms] Arrancando Avalonia...");

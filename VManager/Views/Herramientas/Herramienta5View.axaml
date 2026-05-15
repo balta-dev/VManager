@@ -320,6 +320,7 @@
 
           <!-- Botón descargar -->
           <Button Content="{Binding L[VDownload.Buttons.Download]}" 
+                  x:Name="Execute"
                   HorizontalContentAlignment="Center"
                   FontSize="18" 
                   Classes="Accented"

@@ -83,7 +83,7 @@
           <ComboBox ItemsSource="{Binding SupportedAudioFormats}"
                     SelectedItem="{Binding SelectedAudioFormat}"
                     MinWidth="80" MaxWidth="210"/>
-          <Button x:Name="QuestionMark" Content="?" Width="30" FontWeight="Bold">
+          <Button x:Name="QuestionMark" Content="?" Cursor="Arrow" Width="30" FontWeight="Bold">
             <ToolTip.Tip>
               <TextBlock MaxWidth="400" TextWrapping="Wrap">
                 <Run Text="{Binding L[VAudiofy.Tips.FormatSelection]}"/>
@@ -131,6 +131,7 @@
 
         <!-- Botón extraer -->
         <Button Content="{Binding L[VAudiofy.Buttons.Extract]}" 
+                x:Name="Execute"
                 HorizontalContentAlignment="Center"
                 FontSize="18" 
                 Classes="Accented"

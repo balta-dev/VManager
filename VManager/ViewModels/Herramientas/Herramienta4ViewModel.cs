@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,7 +61,8 @@ namespace VManager.ViewModels.Herramientas
                 int currentFileIndex = 0;
                 int successCount = 0;
 
-                foreach (var videoPath in VideoPaths)
+                var videosCopy = VideoPaths.ToList();
+                foreach (var videoPath in videosCopy)
                 {
                     currentFileIndex++;
                     
@@ -110,7 +112,8 @@ namespace VManager.ViewModels.Herramientas
                         successCount++;
                         var notifier = new NotificationService();
                         notifier.ShowFileConvertedNotification(result.Message, result.OutputPath);
-                        _ = SoundManager.Play("success.wav");
+                        bool isLast = currentFileIndex == totalFiles;
+                        _ = SoundManager.Play(isLast ? "sucess-final.wav" : "sucess-partial.wav");
                         SetLastCompressedFile(result.OutputPath);
                         Warning = result.Warning;
                     }

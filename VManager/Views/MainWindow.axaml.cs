@@ -208,21 +208,27 @@ namespace VManager.Views
             switch (e.Key)
             {
                 case Key.D1:
+                    _ = SoundManager.Play("click.wav");
                     vm.GoToHerramienta1.Execute().Subscribe();
                     break;
                 case Key.D2:
+                    _ = SoundManager.Play("click.wav");
                     vm.GoToHerramienta2.Execute().Subscribe();
                     break;
                 case Key.D3:
+                    _ = SoundManager.Play("click.wav");
                     vm.GoToHerramienta3.Execute().Subscribe();
                     break;
                 case Key.D4:
+                    _ = SoundManager.Play("click.wav");
                     vm.GoToHerramienta4.Execute().Subscribe();
                     break;
                 case Key.D5:
+                    _ = SoundManager.Play("click.wav");
                     vm.GoToHerramienta5.Execute().Subscribe();
                     break;
                 case Key.D6:
+                    _ = SoundManager.Play("click.wav");
                     vm.GoToAcercaDe.Execute().Subscribe();
                     break;
             }

@@ -23,7 +23,7 @@ namespace VManager.Services.Core
     }
     public static class SoundManager
     {
-        private static bool _enabled = true;
+        private static bool _enabled = false;
 
         public static bool Enabled
         {

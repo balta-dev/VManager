@@ -86,7 +86,7 @@
           <ComboBox ItemsSource="{Binding SupportedVideoFormats}"
                     SelectedItem="{Binding SelectedFormat}"
                     MinWidth="80" MaxWidth="140"/>
-          <Button x:Name="QuestionMark" Content="?" Width="30" FontWeight="Bold">
+          <Button x:Name="QuestionMark" Content="?" Cursor="Arrow" Width="30" FontWeight="Bold">
               <ToolTip.Tip>
                   <TextBlock MaxWidth="400" TextWrapping="Wrap">
                       <Run Text="{Binding L[VConvert.Tips.FormatSelection]}"/>
@@ -118,7 +118,7 @@
             <StackPanel Spacing="6" HorizontalAlignment="Center">
                 <TextBlock Text="{Binding L[VConvert.Fields.VideoCodec]}" HorizontalAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" Spacing="6">
-                    <Button x:Name="QuestionMark6" Content="?" Width="30" FontWeight="Bold">
+                    <Button x:Name="QuestionMark6" Content="?" Cursor="Arrow" Width="30" FontWeight="Bold">
                         <ToolTip.Tip>
                             <TextBlock MaxWidth="400" TextWrapping="Wrap">
                                 <Run Text="{Binding L[VConvert.Tips.VideoCodecInfo]}"/>
@@ -143,7 +143,7 @@
             <StackPanel Spacing="6" HorizontalAlignment="Center">
                 <TextBlock Text="{Binding L[VConvert.Fields.AudioCodec]}" HorizontalAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" Spacing="6">
-                    <Button x:Name="QuestionMark7" Content="?" Width="30" FontWeight="Bold">
+                    <Button x:Name="QuestionMark7" Content="?" Cursor="Arrow" Width="30" FontWeight="Bold">
                         <ToolTip.Tip>
                             <TextBlock MaxWidth="400" TextWrapping="Wrap">
                                 <Run Text="{Binding L[VConvert.Tips.AudioCodecInfo]}"/>
@@ -200,6 +200,7 @@
 
         <!-- Botón Convertir -->
         <Button Content="{Binding L[VConvert.Buttons.Convert]}" 
+                x:Name="Execute"
                 HorizontalContentAlignment="Center"
                 Classes="Accented"
                 IsEnabled="{Binding VideoPath, Converter={StaticResource ValidPathConverter}}"

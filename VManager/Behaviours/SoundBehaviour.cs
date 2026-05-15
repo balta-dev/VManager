@@ -64,6 +64,7 @@ namespace VManager.Behaviours
                 "ToggleTheme" => "toggletheme.wav",
                 "ClearInfo"   => "click.wav",
                 "LinuxDnD"    => OperatingSystem.IsLinux() ? "click.wav" : "dummy.wav",
+                "Execute" => "execute.wav",
         
                 string name when name.StartsWith("QuestionMark") => "dummy.wav",
                 string name when name.Contains("Button")         => "dummy.wav",
