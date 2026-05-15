@@ -63,6 +63,7 @@ internal static class Win32Splash
             lpszClassName = className,
             hbrBackground = CreateSolidBrush(0x001C1C1C),
             style         = 0x0003, // CS_HREDRAW | CS_VREDRAW
+            hCursor       = LoadCursor(IntPtr.Zero, 32514)
         };
         RegisterClassEx(ref wc);
 
@@ -78,8 +79,6 @@ internal static class Win32Splash
             0x80000000 | 0x10000000, // WS_POPUP | WS_VISIBLE
             x, y, WIN_W, WIN_H,
             IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
-        var wait = LoadCursor(IntPtr.Zero, 32514); // IDC_APPSTARTING = 32514
-        SetCursor(wait);
 
         ShowWindow(_hwnd, 5);
         UpdateWindow(_hwnd);
@@ -282,7 +281,6 @@ internal static class Win32Splash
     [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern ushort RegisterClassEx(ref WNDCLASSEX wc);
     [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern IntPtr CreateWindowEx(uint exStyle, string cls, string title, uint style, int x, int y, int w, int h, IntPtr parent, IntPtr menu, IntPtr inst, IntPtr param);
     [DllImport("user32.dll")] static extern IntPtr LoadCursor(IntPtr hInstance, int lpCursorName);
-    [DllImport("user32.dll")] static extern IntPtr SetCursor(IntPtr hCursor);
     [DllImport("user32.dll")] static extern bool   ShowWindow(IntPtr hWnd, int cmd);
     [DllImport("user32.dll")] static extern bool   UpdateWindow(IntPtr hWnd);
     [DllImport("user32.dll")] static extern bool   DestroyWindow(IntPtr hWnd);
