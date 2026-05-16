@@ -88,5 +88,11 @@ namespace VManager.Views
             GuideWindow.ShowGuide(new GuideVDownloadView(), owner!);
         }
         
+        protected void OpenGuideVMotion(object? sender, RoutedEventArgs e)
+        {
+            var owner = this.GetVisualRoot() as Window;
+            GuideWindow.ShowGuide(new GuideVMotionView(), owner!);
+        }
+        
     }
 }

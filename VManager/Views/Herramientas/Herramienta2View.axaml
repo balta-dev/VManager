@@ -77,9 +77,9 @@
           </StackPanel>
 
           <!-- Porcentaje de compresión -->
-          <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,15,0,0" HorizontalAlignment="Center">
+          <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,15,0,0" HorizontalAlignment="Center">
             <TextBlock Text="{Binding L[VCompress.Fields.Quality]}" FontSize="14" VerticalAlignment="Center"/>
-            <TextBox Text="{Binding PorcentajeCompresionUsuario}" Width="30"/>
+            <TextBox Margin="6 0 0 0" HorizontalContentAlignment="Right" Text="{Binding PorcentajeCompresionUsuario}" Width="50" MinWidth="0"/>
             <TextBlock Text="%" FontSize="14" VerticalAlignment="Center"/>
           </StackPanel>
 

@@ -18,7 +18,7 @@
     "Shortcuts": {
       "Title": "ショートカット一覧：",
       "Items": {
-        "Item1Title": "ボタン1/2/3/4/5：",
+        "Item1Title": "ボタン1/2/3/4/5/6：",
         "Item1Description": " ツールを切り替え",
         "Item2Title": "F5：",
         "Item2Description": " 画面を更新",
@@ -459,5 +459,64 @@
     "CookiesWarningTitle": "警告",
     "RetryingWithoutCookies": "yt-dlpに問題が発生しています。Cookieなしで再試行中..."
   },
-  "VDownload": { "Fields": { "ChangeFolder": "ダウンロードフォルダを変更しますか？" }, "Buttons": { "GoToConfig": "設定へ移動 ->" } }
+  "VDownload": { "Fields": { "ChangeFolder": "ダウンロードフォルダを変更しますか？" }, "Buttons": { "GoToConfig": "設定へ移動 ->" } },
+  "VMotion":
+  {
+    "Title": "速度とFPS",
+    "Buttons": {
+      "Refresh": "更新",
+      "Browse": "参照",
+      "Process": "動画/音声を変換",
+      "Cancel": "キャンセル",
+      "ShowFileInFolder": "フォルダでファイルを表示"
+    },
+    "Fields": {
+      "SelectFile": "動画/音声を選択:",
+      "FilePath": "動画のパス",
+      "Fps": "フレーム毎秒",
+      "Speed": "速度",
+      "NoFiles": "ファイルが選択されていません。",
+      "InvalidSpeed": "無効な速度です。",
+      "InvalidFps": "無効なFPSです。",
+      "Transforming": "変換中 ({0}/{1}): {2}...",
+      "Error": "{0} の変換中にエラーが発生しました: {1}",
+      "CompletedAll": "{0} 個のファイルが正常に変換されました{2}！",
+      "CompletedPartial": "処理が中断されました: {0}/{1} ファイル完了",
+      "Canceled": "ユーザーによって変換がキャンセルされました。",
+      "NotificationTitle": "ファイルが変換されました",
+      "NotificationMessage": "{0}"
+    },
+    "Tips": {
+      "FpsInfo": "動画の1秒あたりのフレーム数。",
+      "FpsLocked": "ロックされている場合は、動画が追加されていないか、リストに音声ファイルがあるためです。",
+      "SpeedInfo": "希望する速度の倍率。",
+      "SpeedDefault": "デフォルトの1は効果がありません。1 = 100%、0.5 = 50%、1.33 = 33%速く。"
+    }
+  },
+  "Guide": {
+    "VMotion": {
+      "Title": "VMotion — FPSと速度",
+      "Description": "VMotionは、1つ以上の動画や音声の速度を変換し、1つ以上の動画のFPSをすばやく変更することができます。",
+      "HowTo": {
+        "Title": "使用方法:",
+        "Step1": "1) 1つ以上の音声または動画ファイルを選択またはドラッグします。",
+        "Step2": "2) FPSおよび/または希望の速度を変更します。",
+        "Step3": "3) Enterを押すか、「動画/音声を変換」ボタンを押します。",
+        "Step4": "4) バックグラウンドで処理が完了するまで待ちます。"
+      }
+    }
+  },
+  "AcercaDe": {
+    "Guides": {
+      "VMotion": "VMotion — 動画/音声を変換"
+    }
+  },
+  "General": {
+    "Border": {
+      "Items1": {
+        "Item6Title": "VMOTION:",
+        "Item6Description": " 動画/音声の速度またはFPSを変更します。"
+      }
+    }
+  }
 }

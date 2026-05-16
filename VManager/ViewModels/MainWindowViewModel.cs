@@ -43,6 +43,7 @@ public class MainWindowViewModel : ViewModelBase
     private Herramienta3ViewModel? _herramienta3;
     private Herramienta4ViewModel? _herramienta4;
     private Herramienta5ViewModel? _herramienta5;
+    private Herramienta6ViewModel? _herramienta6;
     public ConfigurationViewModel _configuration;
     private AcercaDeViewModel _acercaDe;
 
@@ -51,9 +52,10 @@ public class MainWindowViewModel : ViewModelBase
     private Herramienta3ViewModel Herramienta3 => _herramienta3 ??= new Herramienta3ViewModel();
     private Herramienta4ViewModel Herramienta4 => _herramienta4 ??= new Herramienta4ViewModel();
     private Herramienta5ViewModel Herramienta5 => _herramienta5 ??= new Herramienta5ViewModel();
+    private Herramienta6ViewModel Herramienta6 => _herramienta6 ??= new Herramienta6ViewModel();
 
     public List<ViewModelBase> Tools =>
-        new ViewModelBase?[] { _herramienta1, _herramienta2, _herramienta3, _herramienta4, _herramienta5 }
+        new ViewModelBase?[] { _herramienta1, _herramienta2, _herramienta3, _herramienta4, _herramienta5, _herramienta6 }
             .Where(t => t != null)
             .Cast<ViewModelBase>()
             .ToList();
@@ -93,6 +95,13 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _herramienta5Activa, value);
     }
     
+    private bool _herramienta6Activa;
+    public bool Herramienta6Activa
+    {
+        get => _herramienta6Activa;
+        set => this.RaiseAndSetIfChanged(ref _herramienta6Activa, value);
+    }
+    
     private bool _configuracionActiva;
     public bool ConfiguracionActiva
     {
@@ -123,6 +132,7 @@ public class MainWindowViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit> GoToHerramienta3 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta4 { get; }
     public ReactiveCommand<Unit, Unit> GoToHerramienta5 { get; }
+    public ReactiveCommand<Unit, Unit> GoToHerramienta6 { get; }
     public ReactiveCommand<Unit, Unit> GoToAcercaDe { get; }
     public ReactiveCommand<Unit, Unit> ToggleThemeCommand { get; }
     public ReactiveCommand<Unit, Unit> OpenGitHubCommand { get; }
@@ -181,6 +191,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta3Activa = false;
                 Herramienta4Activa = false;
                 Herramienta5Activa = false;
+                Herramienta6Activa = false;
                 ConfiguracionActiva = false;
                 AcercaDeActivo = false;
                 CurrentView = Herramienta1; // propiedad lazy, no campo
@@ -197,6 +208,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta3Activa = false;
                 Herramienta4Activa = false;
                 Herramienta5Activa = false;
+                Herramienta6Activa = false;
                 ConfiguracionActiva = false;
                 AcercaDeActivo = false;
                 CurrentView = Herramienta2;
@@ -213,6 +225,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta2Activa = false;
                 Herramienta4Activa = false;
                 Herramienta5Activa = false;
+                Herramienta6Activa = false;
                 ConfiguracionActiva = false;
                 AcercaDeActivo = false;
                 CurrentView = Herramienta3;
@@ -229,6 +242,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta2Activa = false;
                 Herramienta3Activa = false;
                 Herramienta5Activa = false;
+                Herramienta6Activa = false;
                 ConfiguracionActiva = false;
                 AcercaDeActivo = false;
                 CurrentView = Herramienta4;
@@ -245,9 +259,27 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta2Activa = false;
                 Herramienta3Activa = false;
                 Herramienta4Activa = false;
+                Herramienta6Activa = false;
                 ConfiguracionActiva = false;
                 AcercaDeActivo = false;
                 CurrentView = Herramienta5;
+                return Unit.Default;
+            },
+            outputScheduler: AvaloniaScheduler.Instance
+        );
+        
+        GoToHerramienta6 = ReactiveCommand.Create(
+            () =>
+            {
+                Herramienta6Activa = true;
+                Herramienta1Activa = false;
+                Herramienta2Activa = false;
+                Herramienta3Activa = false;
+                Herramienta4Activa = false;
+                Herramienta5Activa = false;
+                ConfiguracionActiva = false;
+                AcercaDeActivo = false;
+                CurrentView = Herramienta6;
                 return Unit.Default;
             },
             outputScheduler: AvaloniaScheduler.Instance
@@ -261,6 +293,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta3Activa = false;
                 Herramienta4Activa = false;
                 Herramienta5Activa = false;
+                Herramienta6Activa = false;
                 ConfiguracionActiva = true;
                 AcercaDeActivo = false;
                 CurrentView = _configuration;
@@ -278,6 +311,7 @@ public class MainWindowViewModel : ViewModelBase
                 Herramienta3Activa = false;
                 Herramienta4Activa = false;
                 Herramienta5Activa = false;
+                Herramienta6Activa = false;
                 ConfiguracionActiva = false;
                 CurrentView = _acercaDe;
                 return Unit.Default;

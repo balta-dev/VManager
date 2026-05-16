@@ -229,6 +229,10 @@ namespace VManager.Views
                     break;
                 case Key.D6:
                     _ = SoundManager.Play("click.wav");
+                    vm.GoToHerramienta6.Execute().Subscribe();
+                    break;
+                case Key.D7:
+                    _ = SoundManager.Play("click.wav");
                     vm.GoToAcercaDe.Execute().Subscribe();
                     break;
             }

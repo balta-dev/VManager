@@ -18,7 +18,7 @@
     "Shortcuts": {
       "Title": "快捷键列表：",
       "Items": {
-        "Item1Title": "按键 1/2/3/4/5：",
+        "Item1Title": "按键 1/2/3/4/5/6：",
         "Item1Description": " 切换工具",
         "Item2Title": "F5：",
         "Item2Description": " 刷新屏幕",
@@ -459,5 +459,64 @@
     "CookiesWarningTitle": "警告",
     "RetryingWithoutCookies": "yt-dlp 遇到问题。正在不使用 Cookie 重试..."
   },
-  "VDownload": { "Fields": { "ChangeFolder": "您想更改下载文件夹吗？" }, "Buttons": { "GoToConfig": "前往设置 ->" } }
+  "VDownload": { "Fields": { "ChangeFolder": "您想更改下载文件夹吗？" }, "Buttons": { "GoToConfig": "前往设置 ->" } },
+  "VMotion":
+  {
+    "Title": "速度与FPS",
+    "Buttons": {
+      "Refresh": "刷新",
+      "Browse": "浏览",
+      "Process": "转换视频/音频",
+      "Cancel": "取消",
+      "ShowFileInFolder": "在文件夹中显示文件"
+    },
+    "Fields": {
+      "SelectFile": "选择视频/音频：",
+      "FilePath": "视频路径",
+      "Fps": "每秒帧数",
+      "Speed": "速度",
+      "NoFiles": "未选择任何文件。",
+      "InvalidSpeed": "无效的速度。",
+      "InvalidFps": "无效的FPS。",
+      "Transforming": "正在转换 ({0}/{1})：{2}...",
+      "Error": "转换 {0} 时出错：{1}",
+      "CompletedAll": "{0} 个文件已成功转换{2}！",
+      "CompletedPartial": "进程已中断：已完成 {0}/{1} 个文件",
+      "Canceled": "用户已取消转换。",
+      "NotificationTitle": "文件已转换",
+      "NotificationMessage": "{0}"
+    },
+    "Tips": {
+      "FpsInfo": "视频每秒的帧数。",
+      "FpsLocked": "如果已锁定，是因为未添加视频或列表中存在音频文件。",
+      "SpeedInfo": "所需的速度倍率。",
+      "SpeedDefault": "默认值1没有任何效果。1 = 100%，0.5 = 50%，1.33 = 快33%。"
+    }
+  },
+  "Guide": {
+    "VMotion": {
+      "Title": "VMotion — FPS与速度",
+      "Description": "VMotion允许您转换一个或多个视频或音频的速度，并快速修改一个或多个视频的FPS。",
+      "HowTo": {
+        "Title": "使用方法：",
+        "Step1": "1) 选择或拖入一个或多个音频或视频文件。",
+        "Step2": "2) 修改FPS和/或所需速度。",
+        "Step3": "3) 按Enter或点击 转换视频/音频 按钮。",
+        "Step4": "4) 等待后台处理完成。"
+      }
+    }
+  },
+  "AcercaDe": {
+    "Guides": {
+      "VMotion": "VMotion — 转换视频/音频"
+    }
+  },
+  "General": {
+    "Border": {
+      "Items1": {
+        "Item6Title": "VMOTION:",
+        "Item6Description": " 修改您的视频/音频的速度或FPS。"
+      }
+    }
+  }
 }

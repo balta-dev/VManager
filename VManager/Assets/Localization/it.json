@@ -18,7 +18,7 @@
     "Shortcuts": {
       "Title": "Elenco scorciatoie:",
       "Items": {
-        "Item1Title": "Tasti 1/2/3/4/5:",
+        "Item1Title": "Tasti 1/2/3/4/5/6:",
         "Item1Description": " Cambia tra gli strumenti",
         "Item2Title": "F5:",
         "Item2Description": " Aggiorna schermo",
@@ -459,5 +459,64 @@
     "CookiesWarningTitle": "Avviso",
     "RetryingWithoutCookies": "yt-dlp sta riscontrando problemi. Nuovo tentativo senza cookie..."
   },
-  "VDownload": { "Fields": { "ChangeFolder": "Vuoi cambiare la cartella di download?" }, "Buttons": { "GoToConfig": "Vai alle impostazioni ->" } }
+  "VDownload": { "Fields": { "ChangeFolder": "Vuoi cambiare la cartella di download?" }, "Buttons": { "GoToConfig": "Vai alle impostazioni ->" } },
+  "VMotion":
+  {
+    "Title": "Velocità e FPS",
+    "Buttons": {
+      "Refresh": "Aggiorna",
+      "Browse": "Sfoglia",
+      "Process": "Trasforma video/audio",
+      "Cancel": "ANNULLA",
+      "ShowFileInFolder": "Mostra file nella cartella"
+    },
+    "Fields": {
+      "SelectFile": "Seleziona video/audio:",
+      "FilePath": "Percorso del video",
+      "Fps": "Fotogrammi al secondo",
+      "Speed": "Velocità",
+      "NoFiles": "Nessun file selezionato.",
+      "InvalidSpeed": "Velocità non valida.",
+      "InvalidFps": "FPS non valido.",
+      "Transforming": "Trasformazione ({0}/{1}): {2}...",
+      "Error": "Errore durante la trasformazione di {0}: {1}",
+      "CompletedAll": "{0} file{1} trasformato{2} con successo!",
+      "CompletedPartial": "Processo interrotto: {0}/{1} file completati",
+      "Canceled": "Trasformazione annullata dall'utente.",
+      "NotificationTitle": "File trasformato",
+      "NotificationMessage": "{0}"
+    },
+    "Tips": {
+      "FpsInfo": "Numero di fotogrammi del video al secondo.",
+      "FpsLocked": "Se bloccato, è perché non sono stati aggiunti video o è presente un file audio nell'elenco.",
+      "SpeedInfo": "Moltiplicatore di velocità desiderato.",
+      "SpeedDefault": "Di default 1 non ha alcun effetto. 1 = 100%, 0.5 = 50%, 1.33 = 33% più veloce."
+    }
+  },
+  "Guide": {
+    "VMotion": {
+      "Title": "VMotion — FPS e Velocità",
+      "Description": "VMotion consente di trasformare la velocità di uno o più video o audio e di modificare gli FPS di uno o più video rapidamente.",
+      "HowTo": {
+        "Title": "Come usare:",
+        "Step1": "1) Seleziona o trascina uno o più file audio o video.",
+        "Step2": "2) Modifica gli FPS e/o la velocità desiderata.",
+        "Step3": "3) Premi Invio o il pulsante 'Trasforma video/audio'.",
+        "Step4": "4) Attendi che venga elaborato in background."
+      }
+    }
+  },
+  "AcercaDe": {
+    "Guides": {
+      "VMotion": "VMotion — Trasforma video/audio"
+    }
+  },
+  "General": {
+    "Border": {
+      "Items1": {
+        "Item6Title": "VMOTION:",
+        "Item6Description": " modifica la velocità o gli FPS dei tuoi video/audio."
+      }
+    }
+  }
 }

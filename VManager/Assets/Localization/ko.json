@@ -18,7 +18,7 @@
     "Shortcuts": {
       "Title": "단축키 목록:",
       "Items": {
-        "Item1Title": "1/2/3/4/5 버튼:",
+        "Item1Title": "1/2/3/4/5/6 버튼:",
         "Item1Description": " 도구 전환",
         "Item2Title": "F5:",
         "Item2Description": " 화면 새로 고침",
@@ -459,5 +459,64 @@
     "CookiesWarningTitle": "경고",
     "RetryingWithoutCookies": "yt-dlp에 문제가 발생했습니다. 쿠키 없이 재시도 중..."
   },
-  "VDownload": { "Fields": { "ChangeFolder": "다운로드 폴더를 변경하시겠습니까?" }, "Buttons": { "GoToConfig": "설정으로 이동 ->" } }
+  "VDownload": { "Fields": { "ChangeFolder": "다운로드 폴더를 변경하시겠습니까?" }, "Buttons": { "GoToConfig": "설정으로 이동 ->" } },
+  "VMotion":
+  {
+    "Title": "속도 및 FPS",
+    "Buttons": {
+      "Refresh": "새로 고침",
+      "Browse": "찾아보기",
+      "Process": "동영상/오디오 변환",
+      "Cancel": "취소",
+      "ShowFileInFolder": "폴더에서 파일 표시"
+    },
+    "Fields": {
+      "SelectFile": "동영상/오디오 선택:",
+      "FilePath": "동영상 경로",
+      "Fps": "초당 프레임 수",
+      "Speed": "속도",
+      "NoFiles": "선택된 파일이 없습니다.",
+      "InvalidSpeed": "잘못된 속도입니다.",
+      "InvalidFps": "잘못된 FPS입니다.",
+      "Transforming": "변환 중 ({0}/{1}): {2}...",
+      "Error": "{0} 변환 중 오류 발생: {1}",
+      "CompletedAll": "{0}개의 파일이 성공적으로 변환되었습니다{2}!",
+      "CompletedPartial": "프로세스 중단됨: {0}/{1} 파일 완료",
+      "Canceled": "사용자가 변환을 취소했습니다.",
+      "NotificationTitle": "파일 변환됨",
+      "NotificationMessage": "{0}"
+    },
+    "Tips": {
+      "FpsInfo": "동영상의 초당 프레임 수입니다.",
+      "FpsLocked": "잠긴 경우, 동영상이 추가되지 않았거나 목록에 오디오 파일이 있기 때문입니다.",
+      "SpeedInfo": "원하는 속도 배율입니다.",
+      "SpeedDefault": "기본값 1은 아무 효과가 없습니다. 1 = 100%, 0.5 = 50%, 1.33 = 33% 빠름."
+    }
+  },
+  "Guide": {
+    "VMotion": {
+      "Title": "VMotion — FPS 및 속도",
+      "Description": "VMotion을 사용하면 하나 이상의 동영상 또는 오디오의 속도를 변환하고 하나 이상의 동영상의 FPS를 빠르게 수정할 수 있습니다.",
+      "HowTo": {
+        "Title": "사용 방법:",
+        "Step1": "1) 하나 이상의 오디오 또는 동영상 파일을 선택하거나 드래그합니다.",
+        "Step2": "2) FPS 및/또는 원하는 속도를 수정합니다.",
+        "Step3": "3) Enter를 누르거나 '동영상/오디오 변환' 버튼을 누릅니다.",
+        "Step4": "4) 백그라운드에서 처리가 완료될 때까지 기다립니다."
+      }
+    }
+  },
+  "AcercaDe": {
+    "Guides": {
+      "VMotion": "VMotion — 동영상/오디오 변환"
+    }
+  },
+  "General": {
+    "Border": {
+      "Items1": {
+        "Item6Title": "VMOTION:",
+        "Item6Description": " 동영상/오디오의 속도 또는 FPS를 수정합니다."
+      }
+    }
+  }
 }

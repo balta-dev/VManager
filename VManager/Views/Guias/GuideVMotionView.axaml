@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:VManager.ViewModels"
+             x:Class="VManager.Views.Guias.GuideVMotionView"
+             x:DataType="vm:AcercaDeViewModel">
+
+    <StackPanel Spacing="16">
+
+        <TextBlock Text="{Binding L[Guide.VMotion.Title]}"
+                   FontSize="22"
+                   FontWeight="Bold"
+                   TextWrapping="Wrap"/>
+
+        <TextBlock Text="{Binding L[Guide.VMotion.Description]}"
+                   TextWrapping="Wrap"
+                   FontSize="15"/>
+
+        <StackPanel Spacing="8">
+            <TextBlock Text="{Binding L[Guide.VMotion.HowTo.Title]}"
+                       TextWrapping="Wrap"
+                       FontSize="16"
+                       FontWeight="SemiBold"/>
+
+            <TextBlock Text="{Binding L[Guide.VMotion.HowTo.Step1]}" TextWrapping="Wrap" FontSize="14"/>
+            <TextBlock Text="{Binding L[Guide.VMotion.HowTo.Step2]}" TextWrapping="Wrap" FontSize="14"/>
+            <TextBlock Text="{Binding L[Guide.VMotion.HowTo.Step3]}" TextWrapping="Wrap" FontSize="14"/>
+            <TextBlock Text="{Binding L[Guide.VMotion.HowTo.Step4]}" TextWrapping="Wrap" FontSize="14"/>
+        </StackPanel>
+
+        <!-- GIF acá -->
+        <!-- 
+        <Image Source="/Assets/guides/vmotion.gif" Stretch="Uniform"/>
+        -->
+
+    </StackPanel>
+</UserControl>

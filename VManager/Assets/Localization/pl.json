@@ -18,7 +18,7 @@
     "Shortcuts": {
       "Title": "Lista skrótów:",
       "Items": {
-        "Item1Title": "Przyciski 1/2/3/4/5:",
+        "Item1Title": "Przyciski 1/2/3/4/5/6:",
         "Item1Description": " Przełączanie między narzędziami",
         "Item2Title": "F5:",
         "Item2Description": " Odśwież ekran",
@@ -459,5 +459,64 @@
     "CookiesWarningTitle": "Ostrzeżenie",
     "RetryingWithoutCookies": "yt-dlp ma problemy. Ponawiam próbę bez cookies..."
   },
-  "VDownload": { "Fields": { "ChangeFolder": "Czy chcesz zmienić folder pobierania?" }, "Buttons": { "GoToConfig": "Przejdź do ustawień ->" } }
+  "VDownload": { "Fields": { "ChangeFolder": "Czy chcesz zmienić folder pobierania?" }, "Buttons": { "GoToConfig": "Przejdź do ustawień ->" } },
+  "VMotion":
+  {
+    "Title": "Prędkość i FPS",
+    "Buttons": {
+      "Refresh": "Odśwież",
+      "Browse": "Przeglądaj",
+      "Process": "Przekształć wideo/audio",
+      "Cancel": "ANULUJ",
+      "ShowFileInFolder": "Pokaż plik w folderze"
+    },
+    "Fields": {
+      "SelectFile": "Wybierz wideo/audio:",
+      "FilePath": "Ścieżka wideo",
+      "Fps": "Klatki na sekundę",
+      "Speed": "Prędkość",
+      "NoFiles": "Nie wybrano żadnych plików.",
+      "InvalidSpeed": "Nieprawidłowa prędkość.",
+      "InvalidFps": "Nieprawidłowe FPS.",
+      "Transforming": "Przekształcanie ({0}/{1}): {2}...",
+      "Error": "Błąd podczas przekształcania {0}: {1}",
+      "CompletedAll": "{0} plik{1} przekształcony{2} pomyślnie!",
+      "CompletedPartial": "Proces przerwany: ukończono {0}/{1} plików",
+      "Canceled": "Przekształcanie anulowane przez użytkownika.",
+      "NotificationTitle": "Plik przekształcony",
+      "NotificationMessage": "{0}"
+    },
+    "Tips": {
+      "FpsInfo": "Liczba klatek wideo na sekundę.",
+      "FpsLocked": "Jeśli zablokowane, oznacza to, że nie dodano żadnych filmów lub na liście znajduje się plik audio.",
+      "SpeedInfo": "Żądany mnożnik prędkości.",
+      "SpeedDefault": "Domyślnie 1 nie ma żadnego efektu. 1 = 100%, 0.5 = 50%, 1.33 = 33% szybciej."
+    }
+  },
+  "Guide": {
+    "VMotion": {
+      "Title": "VMotion — FPS i Prędkość",
+      "Description": "VMotion umożliwia zmianę prędkości jednego lub więcej filmów lub audio oraz szybką modyfikację FPS jednego lub więcej filmów.",
+      "HowTo": {
+        "Title": "Jak używać:",
+        "Step1": "1) Wybierz lub przeciągnij jeden lub więcej plików audio lub wideo.",
+        "Step2": "2) Zmodyfikuj FPS i/lub żądaną prędkość.",
+        "Step3": "3) Naciśnij Enter lub przycisk 'Przekształć wideo/audio'.",
+        "Step4": "4) Poczekaj, aż przetwarzanie zakończy się w tle."
+      }
+    }
+  },
+  "AcercaDe": {
+    "Guides": {
+      "VMotion": "VMotion — Przekształć wideo/audio"
+    }
+  },
+  "General": {
+    "Border": {
+      "Items1": {
+        "Item6Title": "VMOTION:",
+        "Item6Description": " modyfikuje prędkość lub FPS Twoich filmów/audio."
+      }
+    }
+  }
 }

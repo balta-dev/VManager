@@ -143,6 +143,13 @@
                          Foreground="{DynamicResource AccentColorBrush}"
                          Text="{Binding L[AcercaDe.Guides.VDownload]}"
                          PointerPressed="OpenGuideVDownload"/>
+              
+              <TextBlock TextDecorations="Underline"
+                         Cursor="Hand"
+                         FontSize="15"
+                         Foreground="{DynamicResource AccentColorBrush}"
+                         Text="{Binding L[AcercaDe.Guides.VMotion]}"
+                         PointerPressed="OpenGuideVMotion"/>
 
             </StackPanel>
           </StackPanel>
