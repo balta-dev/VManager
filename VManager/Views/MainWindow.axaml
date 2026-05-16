@@ -446,7 +446,7 @@
                                                TextAlignment="Center"
                                                Opacity="0.7">
                                         <Run Text="{Binding L[General.WelcomePanel.PressText]}"/>
-                                        <Run FontWeight="SemiBold" Text="1-5" Foreground="{DynamicResource AccentBrush}"/>
+                                        <Run FontWeight="SemiBold" Text="1-6" Foreground="{DynamicResource AccentBrush}"/>
                                         <Run Text="{Binding L[General.WelcomePanel.ToSwitchTools]}"/>
                                         <Run Text="{Binding L[General.WelcomePanel.OrText]}"/>
                                         <Run FontWeight="SemiBold" Text="C" Foreground="{DynamicResource AccentBrush}"/>
