@@ -1,4 +1,6 @@
 // Services/Utils/OutputPathBuilder.cs
+
+using System;
 using System.IO;
 using VManager.Services; // para ProcessingConstants si lo dejaste en VideoProcessor
 
@@ -21,13 +23,18 @@ namespace VManager.Services.Core.Media
             return newPath;
         }
         
-        public static string GetCutOutputPath(string inputPath)
+        public static string GetCutOutputPath(string inputPath, TimeSpan start, TimeSpan duration)
         {
             inputPath = SanitizeFilename(inputPath);
             string dir = Path.GetDirectoryName(inputPath)!;
             string name = Path.GetFileNameWithoutExtension(inputPath);
             string ext = Path.GetExtension(inputPath);
-            return Path.Combine(dir, $"{name}{ProcessingConstants.CutSuffix}{ext}");
+            TimeSpan end = start + duration;
+            string startStr = start.ToString(@"hh\-mm\-ss");
+            string endStr = end.ToString(@"hh\-mm\-ss");
+
+            return Path.Combine(dir,
+                $"{name}{ProcessingConstants.CutSuffix}_{startStr}_{endStr}{ext}");
         }
 
         public static string GetCompressOutputPath(string inputPath, int percentage)

@@ -72,8 +72,9 @@ namespace VManager.Tests.Unit
         [Fact]
         public void GetCutOutputPath_AppendsCutSuffix()
         {
+            TimeSpan mock = TimeSpan.Zero;
             var result = OutputPathBuilder.GetCutOutputPath(
-                @"C:\Videos\test.mp4");
+                @"C:\Videos\test.mp4",mock, mock);
 
             result.Should().Be(@"C:\Videos\test-VCUT.mp4");
         }

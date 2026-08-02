@@ -8,5 +8,6 @@
     <Product>VManager</Product>
     <Company>Baltazar Franz</Company>
     <Copyright>© 2026 Baltazar Franz</Copyright>
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
 </Project>

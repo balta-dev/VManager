@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag para la release (ej: v1.5.0)'
+        description: 'Tag para la release (ej: v1.9.0)'
         required: true
         default: 'v1.5.0'
 jobs:
@@ -20,35 +20,35 @@ jobs:
           # Windows Self-Contained
           - os: windows-latest
             runtime: win-x64
-            framework: net9.0-windows10.0.17763.0
+            framework: net10.0-windows10.0.17763.0
             self-contained: true
             compression: "-p:EnableCompressionInSingleFile=true"
             archive-name: VManager-win-x64-self-contained.zip
-            archive-cmd: 7z a VManager-win-x64-self-contained.zip -r ./VManager/bin/Release/net9.0-windows10.0.17763.0/win-x64/publish/*
+            archive-cmd: 7z a VManager-win-x64-self-contained.zip -r ./VManager/bin/Release/net10.0-windows10.0.17763.0/win-x64/publish/*
           # Windows Framework-Dependent (no self)
           - os: windows-latest
             runtime: win-x64
-            framework: net9.0-windows10.0.17763.0
+            framework: net10.0-windows10.0.17763.0
             self-contained: false
             compression: ""
             archive-name: VManager-win-x64.zip
-            archive-cmd: 7z a VManager-win-x64.zip -r ./VManager/bin/Release/net9.0-windows10.0.17763.0/win-x64/publish/*
+            archive-cmd: 7z a VManager-win-x64.zip -r ./VManager/bin/Release/net10.0-windows10.0.17763.0/win-x64/publish/*
           # Linux Self-Contained
           - os: ubuntu-latest
             runtime: linux-x64
-            framework: net9.0
+            framework: net10.0
             self-contained: true
             compression: "-p:EnableCompressionInSingleFile=true"
             archive-name: VManager-linux-x64.tar.gz
-            archive-cmd: tar -czf VManager-linux-x64.tar.gz -C ./VManager/bin/Release/net9.0/linux-x64/publish .
+            archive-cmd: tar -czf VManager-linux-x64.tar.gz -C ./VManager/bin/Release/net10.0/linux-x64/publish .
           # macOS Self-Contained
           - os: macos-latest
             runtime: osx-x64
-            framework: net9.0
+            framework: net10.0
             self-contained: true
             compression: "-p:EnableCompressionInSingleFile=true"
             archive-name: VManager-osx-x64.tar.gz
-            archive-cmd: tar -czf VManager-osx-x64.tar.gz -C ./VManager/bin/Release/net9.0/osx-x64/publish .
+            archive-cmd: tar -czf VManager-osx-x64.tar.gz -C ./VManager/bin/Release/net10.0/osx-x64/publish .
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -57,7 +57,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '10.0.x'
       - name: Restore dependencies
         run: |
           dotnet restore VManager/VManager.csproj

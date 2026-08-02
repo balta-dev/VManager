@@ -60,37 +60,37 @@ namespace VManager.Views
         
         protected void OpenGuideVCut(object? sender, RoutedEventArgs e)
         {
-            var owner = this.GetVisualRoot() as Window;
+            var owner = TopLevel.GetTopLevel(this) as Window;
             GuideWindow.ShowGuide(new GuideVCutView(), owner!);
         }
 
         protected void OpenGuideVCompress(object? sender, RoutedEventArgs e)
         {
-            var owner = this.GetVisualRoot() as Window;
+            var owner = TopLevel.GetTopLevel(this) as Window;
             GuideWindow.ShowGuide(new GuideVCompressView(), owner!);
         }
 
         protected void OpenGuideVConvert(object? sender, RoutedEventArgs e)
         {
-            var owner = this.GetVisualRoot() as Window;
+            var owner = TopLevel.GetTopLevel(this) as Window;
             GuideWindow.ShowGuide(new GuideVConvertView(), owner!);
         }
 
         protected void OpenGuideVAudiofy(object? sender, RoutedEventArgs e)
         {
-            var owner = this.GetVisualRoot() as Window;
+            var owner = TopLevel.GetTopLevel(this) as Window;
             GuideWindow.ShowGuide(new GuideVAudiofyView(), owner!);
         }
 
         protected void OpenGuideVDownload(object? sender, RoutedEventArgs e)
         {
-            var owner = this.GetVisualRoot() as Window;
+            var owner = TopLevel.GetTopLevel(this) as Window;
             GuideWindow.ShowGuide(new GuideVDownloadView(), owner!);
         }
         
         protected void OpenGuideVMotion(object? sender, RoutedEventArgs e)
         {
-            var owner = this.GetVisualRoot() as Window;
+            var owner = TopLevel.GetTopLevel(this) as Window;
             GuideWindow.ShowGuide(new GuideVMotionView(), owner!);
         }
         

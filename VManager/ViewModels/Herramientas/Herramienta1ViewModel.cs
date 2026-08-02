@@ -586,7 +586,7 @@ namespace VManager.ViewModels.Herramientas
                 this.RaisePropertyChanged(nameof(IsConverting));
                 this.RaisePropertyChanged(nameof(IsOperationRunning));
                 
-                string OutputPath = OutputPathBuilder.GetCutOutputPath(VideoPath);
+                string OutputPath = OutputPathBuilder.GetCutOutputPath(VideoPath, start, duration);
 
                 var result = await processor.CutAsync(
                     VideoPath,

@@ -50,7 +50,7 @@ namespace VManager.Views
             
             if (Config.UseCustomDecorations)
             {
-                SystemDecorations = SystemDecorations.None;
+                WindowDecorations = WindowDecorations.None;
                 TransparencyLevelHint = new[]
                 {
                     WindowTransparencyLevel.AcrylicBlur,
@@ -59,7 +59,7 @@ namespace VManager.Views
             }
             else
             {
-                SystemDecorations = SystemDecorations.Full;
+                WindowDecorations = WindowDecorations.Full;
                 TransparencyLevelHint = new[]
                 {
                     WindowTransparencyLevel.None
@@ -107,7 +107,7 @@ namespace VManager.Views
         {
             if (Config.UseCustomDecorations)
             {
-                SystemDecorations = SystemDecorations.None;
+                WindowDecorations = WindowDecorations.None;
                 TransparencyLevelHint = new[]
                 {
                     WindowTransparencyLevel.AcrylicBlur,
@@ -305,7 +305,7 @@ namespace VManager.Views
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al lanzar updater: {ex}");
-                var owner = this.GetVisualRoot() as Window;
+                var owner = TopLevel.GetTopLevel(this) as Window;
             }
         }
         

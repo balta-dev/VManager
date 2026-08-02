@@ -29,7 +29,7 @@ namespace VManager.Behaviours
 
             if (container is Control ctrl)
             {
-                var window = ctrl.GetVisualRoot() as Window;
+                var window = TopLevel.GetTopLevel(ctrl) as Window;
                 if (window != null)
                 {
                     window.AddHandler(InputElement.KeyDownEvent, async (s, e) =>
