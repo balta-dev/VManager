@@ -345,6 +345,43 @@ public class MainWindowViewModel : ViewModelBase
         
         _configuration.WhenAnyValue(x => x.ShowThemeToggleButton)
             .Subscribe(value => ShowThemeToggleButton  = value);
+        
+        // Aplicar herramienta solicitada por línea de comandos
+        ApplyStartupTool();
+    }
+    
+    private void ApplyStartupTool()
+    {
+        var tool = StartupOptions.RequestedTool;
+        if (string.IsNullOrEmpty(tool))
+            return;
+
+        switch (tool)
+        {
+            case "vcut":
+            case "1":
+                GoToHerramienta1.Execute().Subscribe();
+                break;
+            case "vcompress":
+            case "2":
+                GoToHerramienta2.Execute().Subscribe();
+                break;
+            case "vconvert":
+            case "3":
+                GoToHerramienta3.Execute().Subscribe();
+                break;
+            // etc para 4, 5, 6
+            case "config":
+                GoToConfiguration.Execute().Subscribe();
+                break;
+            case "about":
+            case "acercade":
+                GoToAcercaDe.Execute().Subscribe();
+                break;
+            default:
+                Console.WriteLine($"[STARTUP] Herramienta desconocida: '{tool}'");
+                break;
+        }
     }
     
     public ConfigurationViewModel Configuration => _configuration; 

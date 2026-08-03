@@ -57,6 +57,8 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        StartupOptions.Parse(args);
+        
         var sw = Stopwatch.StartNew();
         MainWindow.StartupStopwatch = sw;
         var t0 = sw.ElapsedMilliseconds;
