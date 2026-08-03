@@ -13,6 +13,12 @@ public static class FFmpegManager
     public static string FfmpegPath { get; private set; } = string.Empty;
     public static string FfprobePath { get; private set; } = string.Empty;
 
+    // Carpeta persistente, hermana de "Themes"
+    private static string AppRoot => Path.GetDirectoryName(Environment.ProcessPath!)!;
+    private static string BinariesPath => Path.Combine(AppRoot, "Binaries");
+
+    private static readonly SemaphoreSlim _extractLock = new(1, 1);
+
     public static async Task Initialize()
     {
         if (!await TryUseSystemFFmpeg())
@@ -49,14 +55,19 @@ public static class FFmpegManager
 
     private static async Task UseEmbeddedFFmpeg()
     {
+        Directory.CreateDirectory(BinariesPath);
+
         string ffmpegTarget = OperatingSystem.IsWindows() ? "ffmpeg.exe" : "ffmpeg";
         string ffprobeTarget = OperatingSystem.IsWindows() ? "ffprobe.exe" : "ffprobe";
 
-        FfmpegPath = ExtractFFmpeg(GetFFmpegResourceName(), ffmpegTarget);
-        FfprobePath = ExtractFFmpeg(GetFFprobeResourceName(), ffprobeTarget);
+        FfmpegPath = await ExtractFFmpeg(GetFFmpegResourceName(), ffmpegTarget);
+        FfprobePath = await ExtractFFmpeg(GetFFprobeResourceName(), ffprobeTarget);
 
         if (!OperatingSystem.IsWindows())
+        {
             Process.Start("chmod", $"+x \"{FfmpegPath}\"")?.WaitForExit();
+            Process.Start("chmod", $"+x \"{FfprobePath}\"")?.WaitForExit();
+        }
 
         if (!await TestBinary(FfmpegPath) || !await TestBinary(FfprobePath))
             throw new Exception("Los binarios de FFmpeg no son válidos.");
@@ -124,21 +135,37 @@ public static class FFmpegManager
 
     // =====================================================
 
-    private static string ExtractFFmpeg(string resourceName, string targetFileName)
+    private static async Task<string> ExtractFFmpeg(string resourceName, string targetFileName)
     {
-        string tempPath = Path.Combine(Path.GetTempPath(), targetFileName);
+        string finalPath = Path.Combine(BinariesPath, targetFileName);
 
-        if (File.Exists(tempPath))
-            return tempPath;
+        if (File.Exists(finalPath))
+            return finalPath;
 
-        var assembly = Assembly.GetExecutingAssembly();
-        using var stream = assembly.GetManifestResourceStream(resourceName)
-            ?? throw new Exception($"Recurso {resourceName} no encontrado");
+        await _extractLock.WaitAsync();
+        try
+        {
+            // Doble chequeo por si otro hilo ya extrajo mientras esperábamos el lock
+            if (File.Exists(finalPath))
+                return finalPath;
 
-        using var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write);
-        stream.CopyTo(fs);
+            var assembly = Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream(resourceName)
+                ?? throw new Exception($"Recurso {resourceName} no encontrado");
 
-        return tempPath;
+            string tempPath = finalPath + $".tmp_{Guid.NewGuid():N}";
+            using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write))
+            {
+                await stream.CopyToAsync(fs);
+            }
+            File.Move(tempPath, finalPath, overwrite: true);
+
+            return finalPath;
+        }
+        finally
+        {
+            _extractLock.Release();
+        }
     }
 
     private static string GetFFmpegResourceName()

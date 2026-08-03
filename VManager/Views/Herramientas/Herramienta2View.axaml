@@ -38,7 +38,7 @@
                            VerticalAlignment="Center"
                            FontWeight="Bold"
                            PointerPressed="OpenGuideVCompress"/>
-                <Button HotKey="D" IsVisible="False" x:Name="LinuxDnD" IsEnabled="{Binding IsLinuxPlatform}" Content="Activar DD" Command="{Binding OpenTerminalCommand}"/>
+                <!-- <Button HotKey="D" IsVisible="False" x:Name="LinuxDnD" IsEnabled="{Binding IsLinuxPlatform}" Content="Activar DD" Command="{Binding OpenTerminalCommand}"/> -->
                 <Button Command="{Binding ClearInfoCommand}"
                         x:Name="ClearInfo"
                         HotKey="F5"

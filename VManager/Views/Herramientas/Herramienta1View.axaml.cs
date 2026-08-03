@@ -18,9 +18,17 @@ namespace VManager.Views.Herramientas
         public Herramienta1View()
         {
             InitializeComponent();
+            /*
             var border = this.FindControl<Border>("DropZoneBorder");
             if (border != null && OperatingSystem.IsLinux())
                 _feedbackApplier = new X11DragFeedbackApplier(border);
+
+            this.DetachedFromVisualTree += (_, _) =>
+            {
+                _feedbackApplier?.Dispose();
+                _feedbackApplier = null;
+            };
+            */
         }
 
         private void InitializeComponent()

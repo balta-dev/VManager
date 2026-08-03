@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace VManager.Services;
@@ -10,13 +11,20 @@ public static class YtDlpManager
 {
     public static string YtDlpPath { get; private set; } = string.Empty;
 
+    // Carpeta persistente, hermana de "Themes"
+    private static string AppRoot => Path.GetDirectoryName(Environment.ProcessPath!)!;
+    private static string BinariesPath => Path.Combine(AppRoot, "Binaries");
+
+    private static readonly SemaphoreSlim _extractLock = new(1, 1);
+
     public static async Task Initialize()
     {
         string targetFile = OperatingSystem.IsWindows() ? "yt-dlp.exe"
                           : OperatingSystem.IsMacOS() ? "yt-dlp_macos"
                           : "yt-dlp";
 
-        YtDlpPath = Path.Combine(Path.GetTempPath(), targetFile);
+        Directory.CreateDirectory(BinariesPath);
+        YtDlpPath = Path.Combine(BinariesPath, targetFile);
 
         if (File.Exists(YtDlpPath) && !OperatingSystem.IsWindows())
             Process.Start("chmod", $"+x \"{YtDlpPath}\"")?.WaitForExit();
@@ -26,7 +34,7 @@ public static class YtDlpManager
         if (needsExtract)
         {
             Console.WriteLine("[YTDLP] Extrayendo versión embebida…");
-            ExtractForOS(targetFile);
+            await ExtractForOS(targetFile);
         }
 
         Console.WriteLine($"[YTDLP] path: {YtDlpPath}");
@@ -34,17 +42,29 @@ public static class YtDlpManager
         _ = TryAutoUpdateAsync();
     }
 
-    private static void ExtractForOS(string targetFile)
+    private static async Task ExtractForOS(string targetFile)
     {
-        if (OperatingSystem.IsWindows())
-            ExtractBinary("VManager.Binaries.Windows.yt-dlp.exe", targetFile);
-        else if (OperatingSystem.IsLinux())
-            ExtractBinary("VManager.Binaries.Linux.yt-dlp", targetFile);
-        else if (OperatingSystem.IsMacOS())
-            ExtractBinary("VManager.Binaries.Mac.yt-dlp_macos", targetFile);
+        await _extractLock.WaitAsync();
+        try
+        {
+            // Doble chequeo por si otro hilo ya extrajo mientras esperábamos
+            if (File.Exists(YtDlpPath) && await TestYtDlpAsync())
+                return;
 
-        if (!OperatingSystem.IsWindows())
-            Process.Start("chmod", $"+x \"{YtDlpPath}\"")?.WaitForExit();
+            string resourceName = OperatingSystem.IsWindows() ? "VManager.Binaries.Windows.yt-dlp.exe"
+                                 : OperatingSystem.IsLinux()   ? "VManager.Binaries.Linux.yt-dlp"
+                                 : OperatingSystem.IsMacOS()   ? "VManager.Binaries.Mac.yt-dlp_macos"
+                                 : throw new PlatformNotSupportedException();
+
+            ExtractBinary(resourceName, targetFile);
+
+            if (!OperatingSystem.IsWindows())
+                Process.Start("chmod", $"+x \"{YtDlpPath}\"")?.WaitForExit();
+        }
+        finally
+        {
+            _extractLock.Release();
+        }
     }
 
     private static async Task<bool> TestYtDlpAsync()
@@ -79,13 +99,18 @@ public static class YtDlpManager
         using var stream = assembly.GetManifestResourceStream(resourceName)
             ?? throw new Exception($"Recurso {resourceName} no encontrado");
 
-        using var fs = new FileStream(Path.Combine(Path.GetTempPath(), targetFile), FileMode.Create, FileAccess.Write);
-        stream.CopyTo(fs);
+        // Extracción atómica: temp + move, mismo criterio que en SoundManager
+        string tempPath = Path.Combine(BinariesPath, $"{targetFile}.tmp_{Guid.NewGuid():N}");
+        using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write))
+        {
+            stream.CopyTo(fs);
+        }
+        File.Move(tempPath, YtDlpPath, overwrite: true);
     }
 
     private static async Task TryAutoUpdateAsync()
     {
-        var lockFilePath = Path.Combine(Path.GetTempPath(), "yt-dlp_update.lock");
+        var lockFilePath = Path.Combine(BinariesPath, "yt-dlp_update.lock");
 
         try
         {

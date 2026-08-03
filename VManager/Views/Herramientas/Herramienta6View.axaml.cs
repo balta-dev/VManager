@@ -105,7 +105,7 @@ public partial class Herramienta6View : SoundEnabledUserControl
     public Herramienta6View()
     {
         InitializeComponent();
-
+        /*
         if (OperatingSystem.IsLinux())
         {
             _x11Display = XOpenDisplay(null);
@@ -113,6 +113,13 @@ public partial class Herramienta6View : SoundEnabledUserControl
             var border = this.FindControl<Border>("DropZoneBorder");
             if (border != null)
                 _feedbackApplier = new X11DragFeedbackApplier(border);
+            
+            this.DetachedFromVisualTree += (_, _) =>
+            {
+                _feedbackApplier?.Dispose();
+                _feedbackApplier = null;
+            };
         }
+        */
     }
 }

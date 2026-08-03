@@ -25,17 +25,16 @@ namespace VManager.Behaviours
                 // Suscribimos el mismo handler para todos los botones
                 button.Click += OnButtonClick;
             }
-            
 
             if (container is Control ctrl)
             {
                 var window = TopLevel.GetTopLevel(ctrl) as Window;
                 if (window != null)
                 {
-                    window.AddHandler(InputElement.KeyDownEvent, async (s, e) =>
+                    EventHandler<KeyEventArgs> keyDownHandler = async (s, e) =>
                     {
-                        var buttons = container.GetLogicalDescendants().OfType<Button>();
-                        foreach (var button in buttons)
+                        var btns = container.GetLogicalDescendants().OfType<Button>();
+                        foreach (var button in btns)
                         {
                             if (button.HotKey?.Matches(e) == true)
                             {
@@ -43,10 +42,17 @@ namespace VManager.Behaviours
                                 break;
                             }
                         }
-                    }, handledEventsToo: true);
+                    };
+
+                    window.AddHandler(InputElement.KeyDownEvent, keyDownHandler, handledEventsToo: true);
+
+                    // Usamos ctrl (Control), no container (ILogical)
+                    ctrl.DetachedFromVisualTree += (_, _) =>
+                    {
+                        window.RemoveHandler(InputElement.KeyDownEvent, keyDownHandler);
+                    };
                 }
             }
-
         }
 
         private static async void OnButtonClick(object? sender, RoutedEventArgs e)
@@ -63,11 +69,11 @@ namespace VManager.Behaviours
             {
                 "ToggleTheme" => "toggletheme.wav",
                 "ClearInfo"   => "click.wav",
-                "LinuxDnD"    => OperatingSystem.IsLinux() ? "click.wav" : "dummy.wav",
+                //"LinuxDnD"    => OperatingSystem.IsLinux() ? "click.wav" : "dummy.wav",
                 "Execute" => "execute.wav",
         
-                string name when name.StartsWith("QuestionMark") => "dummy.wav",
-                string name when name.Contains("Button")         => "dummy.wav",
+                //string name when name.StartsWith("QuestionMark") => "dummy.wav",
+                //string name when name.Contains("Button")         => "dummy.wav",
         
                 _ => "click.wav"
             };

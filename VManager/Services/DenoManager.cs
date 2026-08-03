@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace VManager.Services;
@@ -10,13 +11,20 @@ public static class DenoManager
 {
     public static string DenoPath { get; private set; } = string.Empty;
 
+    // Carpeta persistente, hermana de "Themes"
+    private static string AppRoot => Path.GetDirectoryName(Environment.ProcessPath!)!;
+    private static string BinariesPath => Path.Combine(AppRoot, "Binaries");
+
+    private static readonly SemaphoreSlim _extractLock = new(1, 1);
+
     public static async Task Initialize()
     {
         string targetFile = OperatingSystem.IsWindows() ? "deno.exe"
                           : OperatingSystem.IsMacOS() ? "deno_macos"
                           : "deno";
 
-        DenoPath = Path.Combine(Path.GetTempPath(), targetFile);
+        Directory.CreateDirectory(BinariesPath);
+        DenoPath = Path.Combine(BinariesPath, targetFile);
 
         if (File.Exists(DenoPath) && !OperatingSystem.IsWindows())
             Process.Start("chmod", $"+x \"{DenoPath}\"")?.WaitForExit();
@@ -26,7 +34,7 @@ public static class DenoManager
         if (needsExtract)
         {
             Console.WriteLine("[DENO] Extrayendo versión embebida…");
-            ExtractForOS(targetFile);
+            await ExtractForOS(targetFile);
         }
 
         Console.WriteLine($"[DENO] path: {DenoPath}");
@@ -34,17 +42,29 @@ public static class DenoManager
         _ = TryAutoUpdateAsync();
     }
 
-    private static void ExtractForOS(string targetFile)
+    private static async Task ExtractForOS(string targetFile)
     {
-        if (OperatingSystem.IsWindows())
-            ExtractBinary("VManager.Binaries.Windows.deno.exe", targetFile);
-        else if (OperatingSystem.IsLinux())
-            ExtractBinary("VManager.Binaries.Linux.deno", targetFile);
-        else if (OperatingSystem.IsMacOS())
-            ExtractBinary("VManager.Binaries.Mac.deno", targetFile);
+        await _extractLock.WaitAsync();
+        try
+        {
+            // Doble chequeo por si otro hilo ya extrajo mientras esperábamos
+            if (File.Exists(DenoPath) && await TestDenoAsync())
+                return;
 
-        if (!OperatingSystem.IsWindows())
-            Process.Start("chmod", $"+x \"{DenoPath}\"")?.WaitForExit();
+            string resourceName = OperatingSystem.IsWindows() ? "VManager.Binaries.Windows.deno.exe"
+                                 : OperatingSystem.IsLinux()   ? "VManager.Binaries.Linux.deno"
+                                 : OperatingSystem.IsMacOS()   ? "VManager.Binaries.Mac.deno"
+                                 : throw new PlatformNotSupportedException();
+
+            ExtractBinary(resourceName, targetFile);
+
+            if (!OperatingSystem.IsWindows())
+                Process.Start("chmod", $"+x \"{DenoPath}\"")?.WaitForExit();
+        }
+        finally
+        {
+            _extractLock.Release();
+        }
     }
 
     private static async Task<bool> TestDenoAsync()
@@ -79,13 +99,17 @@ public static class DenoManager
         using var stream = assembly.GetManifestResourceStream(resourceName)
             ?? throw new Exception($"Recurso {resourceName} no encontrado");
 
-        using var fs = new FileStream(Path.Combine(Path.GetTempPath(), targetFile), FileMode.Create, FileAccess.Write);
-        stream.CopyTo(fs);
+        string tempPath = Path.Combine(BinariesPath, $"{targetFile}.tmp_{Guid.NewGuid():N}");
+        using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write))
+        {
+            stream.CopyTo(fs);
+        }
+        File.Move(tempPath, DenoPath, overwrite: true);
     }
 
     private static async Task TryAutoUpdateAsync()
     {
-        var lockFilePath = Path.Combine(Path.GetTempPath(), "deno_update.lock");
+        var lockFilePath = Path.Combine(BinariesPath, "deno_update.lock");
 
         try
         {
