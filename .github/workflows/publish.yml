@@ -25,14 +25,6 @@ jobs:
             compression: "-p:EnableCompressionInSingleFile=true"
             archive-name: VManager-win-x64-self-contained.zip
             archive-cmd: 7z a VManager-win-x64-self-contained.zip -r ./VManager/bin/Release/net10.0-windows10.0.17763.0/win-x64/publish/*
-          # Windows Framework-Dependent (no self)
-          - os: windows-latest
-            runtime: win-x64
-            framework: net10.0-windows10.0.17763.0
-            self-contained: false
-            compression: ""
-            archive-name: VManager-win-x64.zip
-            archive-cmd: 7z a VManager-win-x64.zip -r ./VManager/bin/Release/net10.0-windows10.0.17763.0/win-x64/publish/*
           # Linux Self-Contained
           - os: ubuntu-latest
             runtime: linux-x64
