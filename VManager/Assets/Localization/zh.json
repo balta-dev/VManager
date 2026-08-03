@@ -518,5 +518,10 @@
         "Item6Description": " 修改您的视频/音频的速度或FPS。"
       }
     }
+  },
+  "Configuration": {
+    "Fields": {
+      "EnableExperimentalResumable": "启用安全模式操作(实验性)"
+    }
   }
 }

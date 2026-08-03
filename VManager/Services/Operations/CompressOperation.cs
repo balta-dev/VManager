@@ -67,32 +67,29 @@ namespace VManager.Services.Operations
 
             Console.WriteLine($"Compresión - Video: {selectedVideoCodec}, Audio: {selectedAudioCodec}, Bitrate: {targetBitrate} kbps");
 
-            /*
-             
-             WIP - No funciona bien todavía, no está listo para release
-             
-            if (duration > 300) // >5 minutos → resumable
+            bool useResumable = ConfigurationService.Current.EnableExperimentalResumable && duration > 300;
+            
+            if (useResumable)
             {
                 return await _resumableExecutor.ExecuteResumableAsync(
-                    inputPath,
-                    outputPath,
-                    options =>
-                    {
-                        options
-                            .WithCustomArgument("-map 0")
-                            .WithVideoCodec(selectedVideoCodec)
-                            .WithVideoBitrate(targetBitrate)
-                            .WithAudioCodec(selectedAudioCodec)
-                            .WithAudioBitrate(128);
-                        HardwareAccelerationConfigurator.Configure(options, selectedVideoCodec);
-                        return options;
-                    },
-                    duration,
-                    progress,
-                    cancellationToken
+                       inputPath,
+                       outputPath,
+                       options =>
+                       {
+                           options
+                               .WithCustomArgument("-map 0")
+                               .WithVideoCodec(selectedVideoCodec)
+                               .WithVideoBitrate(targetBitrate)
+                               .WithAudioCodec(selectedAudioCodec)
+                               .WithAudioBitrate(128);
+                           HardwareAccelerationConfigurator.Configure(options, selectedVideoCodec);
+                           return options;
+                       },
+                       duration,
+                       progress,
+                       cancellationToken
                 );
             }
-            */
 
             // Modo normal
             var args = FFMpegArguments

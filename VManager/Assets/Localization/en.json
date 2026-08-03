@@ -518,5 +518,10 @@
         "Item6Description": " modifies the speed or FPS of your videos/audios."
       }
     }
+  },
+  "Configuration": {
+    "Fields": {
+      "EnableExperimentalResumable": "Enable safe-mode operations (EXPERIMENTAL)"
+    }
   }
 }

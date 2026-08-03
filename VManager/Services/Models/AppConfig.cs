@@ -111,6 +111,13 @@ public class AppConfig : ReactiveObject
             set => this.RaiseAndSetIfChanged(ref _hidePane, value);
         }
         
+        private bool _enableExperimentalResumable = false;
+        public bool EnableExperimentalResumable
+        {
+            get => _enableExperimentalResumable;
+            set => this.RaiseAndSetIfChanged(ref _enableExperimentalResumable, value);
+        }
+        
         public bool ShowThemeToggleButton { get; set; }
         
         public string? ThemeName { get; set; }

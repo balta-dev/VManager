@@ -518,5 +518,10 @@
         "Item6Description": " ändert die Geschwindigkeit oder FPS Ihrer Videos/Audios."
       }
     }
+  },
+  "Configuration": {
+    "Fields": {
+      "EnableExperimentalResumable": "Sicherheitsmodus-Vorgänge aktivieren (EXPERIMENTELL)"
+    }
   }
 }

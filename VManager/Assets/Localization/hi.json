@@ -518,5 +518,10 @@
         "Item6Description": " आपके वीडियो/ऑडियो की गति या FPS बदलता है।"
       }
     }
+  },
+  "Configuration": {
+    "Fields": {
+      "EnableExperimentalResumable": "सुरक्षित मोड में संचालन सक्षम करें (प्रायोगिक)"
+    }
   }
 }

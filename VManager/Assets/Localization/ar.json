@@ -518,5 +518,10 @@
         "Item6Description": " يعدّل سرعة أو عدد إطارات مقاطع الفيديو/الصوت الخاصة بك."
       }
     }
+  },
+  "Configuration": {
+    "Fields": {
+      "EnableExperimentalResumable": "تفعيل العمليات في الوضع الآمن (تجريبي)"
+    }
   }
 }

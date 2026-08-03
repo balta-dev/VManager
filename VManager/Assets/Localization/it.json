@@ -518,5 +518,10 @@
         "Item6Description": " modifica la velocità o gli FPS dei tuoi video/audio."
       }
     }
+  },
+  "Configuration": {
+    "Fields": {
+      "EnableExperimentalResumable": "Abilita operazioni in modalità sicura (SPERIMENTALE)"
+    }
   }
 }

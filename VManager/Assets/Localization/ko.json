@@ -518,5 +518,10 @@
         "Item6Description": " 동영상/오디오의 속도 또는 FPS를 수정합니다."
       }
     }
+  },
+  "Configuration": {
+    "Fields": {
+      "EnableExperimentalResumable": "안전 모드 작업 활성화 (실험적 기능)"
+    }
   }
 }

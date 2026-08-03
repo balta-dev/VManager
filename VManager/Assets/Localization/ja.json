@@ -518,5 +518,10 @@
         "Item6Description": " 動画/音声の速度またはFPSを変更します。"
       }
     }
+  },
+  "Configuration": {
+    "Fields": {
+      "EnableExperimentalResumable": "セーフモード操作を有効にする(実験的機能)"
+    }
   }
 }

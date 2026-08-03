@@ -518,5 +518,10 @@
         "Item6Description": " змінює швидкість або FPS ваших відео/аудіо."
       }
     }
+  },
+  "Configuration": {
+    "Fields": {
+      "EnableExperimentalResumable": "Увімкнути операції в безпечному режимі (ЕКСПЕРИМЕНТАЛЬНО)"
+    }
   }
 }

@@ -245,6 +245,12 @@ namespace VManager.ViewModels
             get => _showThemeToggleButton;
             set => this.RaiseAndSetIfChanged(ref _showThemeToggleButton, value);
         }
+        private bool _enableExperimentalResumable = false;
+        public bool EnableExperimentalResumable
+        {
+            get => _enableExperimentalResumable;
+            set => this.RaiseAndSetIfChanged(ref _enableExperimentalResumable, value);
+        }
         
         public IEnumerable<string> AvailableThemes => ThemeService.Instance.GetThemes();
 
@@ -366,6 +372,7 @@ namespace VManager.ViewModels
             HidePane = _config.HidePane;
             ShowThemeToggleButton = _config.ShowThemeToggleButton;
             ThemeName = _config.ThemeName ?? "Default";
+            EnableExperimentalResumable = _config.EnableExperimentalResumable;
 
             // Guardar cambios automáticamente
             this.WhenAnyValue(x => x.EnableSounds)
@@ -386,6 +393,8 @@ namespace VManager.ViewModels
                 .Subscribe(_ => SaveConfig());
             
             this.WhenAnyValue(x => x.UseCustomDecorations, x => x.HidePane, x => x.ShowThemeToggleButton).Subscribe(_ => SaveConfig());
+            
+            this.WhenAnyValue(x => x.EnableExperimentalResumable).Subscribe(_ => SaveConfig());
             
         }
         
@@ -561,6 +570,7 @@ namespace VManager.ViewModels
             _config.HidePane = HidePane;
             _config.ThemeName = ThemeName;
             _config.ShowThemeToggleButton = ShowThemeToggleButton;
+            _config.EnableExperimentalResumable = EnableExperimentalResumable;
             ConfigurationService.Save(_config);
         }
     }

@@ -518,5 +518,10 @@
         "Item6Description": " modyfikuje prędkość lub FPS Twoich filmów/audio."
       }
     }
+  },
+  "Configuration": {
+    "Fields": {
+      "EnableExperimentalResumable": "Włącz operacje w trybie bezpiecznym (EKSPERYMENTALNE)"
+    }
   }
 }

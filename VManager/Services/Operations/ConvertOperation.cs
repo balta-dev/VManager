@@ -71,13 +71,9 @@ namespace VManager.Services.Operations
 
             Console.WriteLine($"Conversión - Video: {selectedVideoCodec}, Audio: {selectedAudioCodec}, Formato: {selectedFormat}");
             Console.WriteLine($"[DEBUG] Recodificación necesaria: {needsReencoding}");
-
-            // MODO RESUMABLE solo si recodifica Y es largo (>5 min)
-            // Para conversiones simples (copy), siempre modo normal
-            /*
-             WIP - No está listo para release oficial todavía
-             
-            if (needsReencoding && duration > 300)
+            bool useResumable = ConfigurationService.Current.EnableExperimentalResumable && needsReencoding && duration > 300;
+            
+            if (useResumable)
             {
                 return await _resumableExecutor.ExecuteResumableAsync(
                     inputPath,
@@ -98,7 +94,6 @@ namespace VManager.Services.Operations
                     cancellationToken
                 );
             }
-            */
 
             // Modo normal (rápido)
             var args = FFMpegArguments
