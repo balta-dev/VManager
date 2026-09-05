@@ -391,12 +391,13 @@ public abstract class ViewModelBase : ReactiveObject
             return;
         }
 
-        var videoPatterns = new[] { "*.mp4", "*.mkv", "*.avi", "*.mov", "*.webm", "*.wmv", "*.flv", "*.3gp"};
+        var videoPatterns = new[] { "*.mp4", "*.mkv", "*.avi", "*.mov", "*.webm", "*.wmv", "*.flv", "*.3gp", "*.m3u8", "*.m3u"};
         var audioPatterns = new[] { "*.mp3", "*.ogg", "*.flac", "*.aac", ".wav", ".wma" };
 
         var filters = new List<FilePickerFileType>
         {
-            new FilePickerFileType("Videos") { Patterns = videoPatterns }
+            new FilePickerFileType("Videos") { Patterns = videoPatterns },
+            new FilePickerFileType("HLS / Playlists") { Patterns = new[] { "*.m3u8", "*.m3u" } }
         };
 
         if (AllowAudioFiles)

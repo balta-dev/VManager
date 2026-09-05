@@ -14,25 +14,33 @@ namespace VManager.Services.Core.Media
             bool isUrl = Uri.TryCreate(inputPath, UriKind.Absolute, out var uriResult)
                 && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps || uriResult.Scheme == "rtsp" || uriResult.Scheme == "rtmp");
 
+            bool isHls = HlsPlaylistHelper.IsHlsPlaylist(inputPath);
+
             try
             {
                 if (!isUrl && !File.Exists(inputPath))
                     return new AnalysisResult<IMediaAnalysis>(false, ErrorMessages.FileNotFound);
-                
-                var mediaInfo = await FFProbe.AnalyseAsync(inputPath);
+
+                IMediaAnalysis mediaInfo = isHls
+                    ? await FFProbe.AnalyseAsync(inputPath, customArguments: HlsPlaylistHelper.FfprobeCustomArguments)
+                    : await FFProbe.AnalyseAsync(inputPath);
                 
                 // Si es un stream, una duración de 0 o menor puede ser normal. Para archivos locales sí es inválida.
-                if (!isUrl && mediaInfo.Duration.TotalSeconds <= 0)
+                // HLS VOD suele reportar duración; HLS live puede ser 0.
+                if (!isUrl && !isHls && mediaInfo.Duration.TotalSeconds <= 0)
                     return new AnalysisResult<IMediaAnalysis>(false, ErrorMessages.InvalidDuration);
+
+                if (isHls)
+                    Console.WriteLine($"[HLS] Playlist detectado. Duración: {mediaInfo.Duration.TotalSeconds:F1}s");
 
                 return new AnalysisResult<IMediaAnalysis>(true, "Análisis completado", mediaInfo);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al analizar video {(isUrl ? "(Streaming)" : "(Local)")}. {ex.Message}");
+                Console.WriteLine($"Error al analizar video {(isUrl || isHls ? "(Streaming/HLS)" : "(Local)")}. {ex.Message}");
                 
-                // No mostrar diálogo UI molesto si es un error de streaming/red
-                if (!isUrl)
+                // No mostrar diálogo UI molesto si es un error de streaming/red / HLS remoto
+                if (!isUrl && !isHls)
                 {
                     ErrorService.Show(ex);
                 }

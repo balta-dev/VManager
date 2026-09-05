@@ -251,7 +251,7 @@
         //Formatos aceptados
         static readonly string[] VideoExtensions =
         {
-            ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".3gp"
+            ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".3gp", ".m3u8", ".m3u"
         };
 
         static readonly string[] AudioExtensions =

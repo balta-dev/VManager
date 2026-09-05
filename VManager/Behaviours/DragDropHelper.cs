@@ -51,7 +51,7 @@ namespace VManager.Behaviours
         // Only video and audio
         private static readonly string[] VideoExtensions = 
         {
-            ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".3gp"
+            ".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm", ".3gp", ".m3u8", ".m3u"
         };
         
         private static readonly string[] AudioExtensions = 

@@ -59,6 +59,8 @@ namespace VManager.Services.Operations
                 selectedAudioCodec = "pcm_s24le";
             }
 
+            bool isHls = HlsPlaylistHelper.IsHlsPlaylist(inputPath);
+
             // Análisis del video
             var analysisResult = await _analyzer.AnalyzeAsync(inputPath);
             if (!analysisResult.Success)
@@ -71,8 +73,13 @@ namespace VManager.Services.Operations
             bool needsReencoding = RequiresReencoding(mediaInfo, selectedVideoCodec, selectedAudioCodec);
 
             Console.WriteLine($"Conversión - Video: {selectedVideoCodec}, Audio: {selectedAudioCodec}, Formato: {selectedFormat}");
-            Console.WriteLine($"[DEBUG] Recodificación necesaria: {needsReencoding}");
-            bool useResumable = ConfigurationService.Current.EnableExperimentalResumable && needsReencoding && duration > 300;
+            Console.WriteLine($"[DEBUG] Recodificación necesaria: {needsReencoding}, HLS: {isHls}");
+
+            // Resumable no aplica a HLS: el input es un playlist remoto, no un archivo local segmentable
+            bool useResumable = !isHls
+                && ConfigurationService.Current.EnableExperimentalResumable
+                && needsReencoding
+                && duration > 300;
             
             if (useResumable)
             {
@@ -101,15 +108,13 @@ namespace VManager.Services.Operations
                 );
             }
 
-            // Modo normal (rápido)
-            var args = FFMpegArguments
-                .FromFileInput(inputPath)
+            var args = HlsPlaylistHelper.CreateInputArguments(inputPath, isHls)
                 .OutputToFile(outputPath, overwrite: true, options =>
                 {
-                    options.WithCustomArgument("-map 0:v");
+                    options.WithCustomArgument("-map 0:v?");
                     if (mediaInfo.PrimaryAudioStream != null)
                     {
-                        options.WithCustomArgument("-map 0:a");
+                        options.WithCustomArgument("-map 0:a?");
                     }
                     
                     if (needsReencoding)
@@ -124,7 +129,7 @@ namespace VManager.Services.Operations
                     }
                     else
                     {
-                        // Solo cambiar contenedor, sin recodificar (ULTRA RÁPIDO)
+                        // Solo cambiar contenedor / materializar HLS, sin recodificar
                         options.WithCustomArgument("-c copy");
                     }
                 });
@@ -133,7 +138,7 @@ namespace VManager.Services.Operations
                 inputPath,
                 outputPath,
                 args,
-                duration,
+                duration > 0 ? duration : 1, // evita división por 0 en progreso si HLS live
                 progress,
                 cancellationToken,
                 pauseToken
@@ -159,7 +164,7 @@ namespace VManager.Services.Operations
             bool videoMatches = 
                 (currentVideoCodec == targetVideo) ||
                 (currentVideoCodec == "h264" && targetVideo == "libx264") ||
-                (currentVideoCodec == "hevc" && targetVideo == "libx265") ||
+                (currentVideoCodec == "hevc" && (targetVideo == "libx265" || targetVideo == "hevc")) ||
                 (currentVideoCodec == "vp9" && targetVideo == "libvpx-vp9");
 
             bool audioMatches = audioStream == null || 

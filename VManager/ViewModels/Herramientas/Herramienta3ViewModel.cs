@@ -36,21 +36,119 @@ namespace VManager.ViewModels.Herramientas
         public ReactiveCommand<Unit, Unit> RefreshCodecsCommand { get; } 
        
         private bool _isUpdatingCodecs = false;
+        private string? _preferredVideoCodecFromInput;
+        private string? _preferredAudioCodecFromInput;
+        private int _inputMatchRequestId;
         
         public Herramienta3ViewModel()
         {
             ConvertCommand = ReactiveCommand.CreateFromTask(ConvertVideo, outputScheduler: AvaloniaScheduler.Instance);
             SelectedFormat = SupportedVideoFormats[0]; //mp4
-            _ = LoadCodecsAsync();
             
-            // Suscripción única que maneja todos los cambios
+            // Compatibilidad entre códecs seleccionados
             this.WhenAnyValue(
                 x => x.SelectedVideoCodec, 
-                x => x.SelectedAudioCodec,
-                x => x.SelectedFormat)
-                .Throttle(TimeSpan.FromMilliseconds(50)) // Evita múltiples updates rápidos
+                x => x.SelectedAudioCodec)
+                .Throttle(TimeSpan.FromMilliseconds(50))
                 .ObserveOn(AvaloniaScheduler.Instance)
                 .Subscribe(_ => UpdateCodecCompatibility());
+
+            // Al cambiar formato, revalidar y reaplicar match del archivo (si hay)
+            this.WhenAnyValue(x => x.SelectedFormat)
+                .Skip(1)
+                .Throttle(TimeSpan.FromMilliseconds(50))
+                .ObserveOn(AvaloniaScheduler.Instance)
+                .Subscribe(_ =>
+                {
+                    UpdateCodecCompatibility();
+                    ApplyPreferredCodecsFromInput();
+                });
+
+            // Al cargar un archivo, leer códecs de entrada y preseleccionar para favorecer -c copy
+            this.WhenAnyValue(x => x.VideoPath)
+                .Throttle(TimeSpan.FromMilliseconds(150))
+                .ObserveOn(AvaloniaScheduler.Instance)
+                .Subscribe(path => _ = MatchCodecsFromInputAsync(path));
+
+            _ = InitializeCodecsAsync();
+        }
+
+        private async Task InitializeCodecsAsync()
+        {
+            await LoadCodecsAsync();
+            // Si el usuario ya cargó un archivo mientras se detectaban códecs, reaplicar match
+            if (!string.IsNullOrWhiteSpace(VideoPath))
+                await MatchCodecsFromInputAsync(VideoPath);
+        }
+
+        private async Task MatchCodecsFromInputAsync(string? path)
+        {
+            var requestId = Interlocked.Increment(ref _inputMatchRequestId);
+
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                _preferredVideoCodecFromInput = null;
+                _preferredAudioCodecFromInput = null;
+                return;
+            }
+
+            bool pathExists = File.Exists(path);
+            bool isHls = HlsPlaylistHelper.IsHlsPlaylist(path);
+            if (!pathExists && !isHls)
+            {
+                _preferredVideoCodecFromInput = null;
+                _preferredAudioCodecFromInput = null;
+                return;
+            }
+
+            try
+            {
+                var analyzer = new MediaAnalyzer();
+                var analysis = await analyzer.AnalyzeAsync(path);
+                if (requestId != _inputMatchRequestId)
+                    return;
+
+                if (!analysis.Success || analysis.Result == null)
+                {
+                    Console.WriteLine($"[VConvert] No se pudieron leer códecs de entrada: {analysis.Message}");
+                    return;
+                }
+
+                _preferredVideoCodecFromInput = analysis.Result.PrimaryVideoStream?.CodecName;
+                _preferredAudioCodecFromInput = analysis.Result.PrimaryAudioStream?.CodecName;
+
+                Console.WriteLine(
+                    $"[VConvert] Códecs de entrada detectados: video={_preferredVideoCodecFromInput ?? "-"}, audio={_preferredAudioCodecFromInput ?? "-"}");
+
+                ApplyPreferredCodecsFromInput();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[VConvert] Error al matchear códecs de entrada: {ex.Message}");
+            }
+        }
+
+        private void ApplyPreferredCodecsFromInput()
+        {
+            if (_allVideoCodecs == null || _allVideoCodecs.Count == 0)
+                return;
+
+            var matchedVideo = CodecMatchHelper.FindBestVideoEncoder(
+                _preferredVideoCodecFromInput, AvailableVideoCodecs);
+            var matchedAudio = CodecMatchHelper.FindBestAudioEncoder(
+                _preferredAudioCodecFromInput, AvailableAudioCodecs);
+
+            if (matchedVideo != null && matchedVideo != SelectedVideoCodec)
+                SelectedVideoCodec = matchedVideo;
+
+            if (matchedAudio != null && matchedAudio != SelectedAudioCodec)
+                SelectedAudioCodec = matchedAudio;
+
+            if (matchedVideo != null || matchedAudio != null)
+            {
+                Console.WriteLine(
+                    $"[VConvert] Selección ajustada para copy: video={SelectedVideoCodec}, audio={SelectedAudioCodec}");
+            }
         }
         
         /// <summary>
